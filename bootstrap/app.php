@@ -1,10 +1,12 @@
 <?php
 
+use App\Domain\Access\Actions\RecordAccessDenied;
 use App\Http\Middleware\NoIndexOutsideProduction;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -19,4 +21,13 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
         );
+
+        // Every refused request lands in the audit log, then renders as usual.
+        $exceptions->render(function (HttpExceptionInterface $e, Request $request) {
+            if ($e->getStatusCode() === 403) {
+                app(RecordAccessDenied::class)($request);
+            }
+
+            return null;
+        });
     })->create();

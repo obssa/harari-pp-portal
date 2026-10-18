@@ -1,5 +1,7 @@
 <?php
 
+use App\Domain\Access\Enums\SystemRole;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -10,3 +12,21 @@ use Tests\TestCase;
 */
 pest()->extend(TestCase::class)->use(RefreshDatabase::class)->in('Feature');
 pest()->extend(TestCase::class)->in('Unit');
+
+/**
+ * A staff account with one system role. Privileged roles get an
+ * authenticator secret by default so they pass the MFA requirement.
+ *
+ * @param  array<string, mixed>  $attributes
+ */
+function staff(SystemRole $role, ?bool $mfa = null, array $attributes = []): User
+{
+    $user = User::factory()->create($attributes);
+    $user->assignRole($role->value);
+
+    if ($mfa ?? $role->requiresMfa()) {
+        $user->forceFill(['app_authentication_secret' => 'JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP'])->saveQuietly();
+    }
+
+    return $user->fresh() ?? $user;
+}

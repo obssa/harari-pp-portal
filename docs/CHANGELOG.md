@@ -4,6 +4,24 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 1, step 1.2 — admin panel, roles, two-factor login, audit log (2026-10-18)
+
+- Filament 5 admin panel at `/admin` with sign-in, password reset, profile and the party colour.
+- Two-factor login (authenticator app with recovery codes) required for Super Admin, Admin and Publisher;
+  optional for other staff.
+- 92 permissions in a registry, the 13 roles of PLAN.md §8 with their default grants, and role scopes
+  (office, league, language). `portal:sync-permissions` runs on every deploy and keeps Super Admin edits.
+- Deny-by-default policies and Filament strict authorization; Admins cannot touch Super Admins, nobody can
+  delete themselves or the last Super Admin, accounts are never purged.
+- Users screen: invite by email or temporary password, roles and scopes, suspend/reactivate, send sign-in
+  link, reset two-factor login, soft delete and restore. Roles screen with the role × permission matrix.
+  Read-only audit log with before/after values.
+- Audit trail: account and role changes with diffs (secrets excluded), role and scope grants, sign-ins,
+  sign-outs, failed sign-ins (email only), every refused (403) request, with IP and browser. Entries kept
+  two years. Role or scope changes and suspensions sign the person out everywhere.
+- Commands: `portal:create-super-admin`, `portal:sync-permissions`, `portal:demo-accounts` (staging only).
+- Admin and permission labels in English, Amharic and Afaan Oromo; Harari keys present and empty.
+
 ### Phase 1, step 1.1 — repository, CI/CD, holding page (2026-10-18)
 
 - Laravel 13.11 skeleton on PHP 8.3 with Pest 4, Larastan (level 6) and Pint.

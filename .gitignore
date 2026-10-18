@@ -32,3 +32,6 @@ Thumbs.db
 /tmp
 /storage/app/translations/*.xlsx
 .phpstan.cache
+/public/js/filament
+/public/css/filament
+/public/fonts/filament

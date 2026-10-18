@@ -11,3 +11,6 @@ Harari translators.
 | `site.name` | om | Paartii Badhaadhinaa Hararii | Official branch name in Afaan Oromo |
 | `site.office` | om | Waajjira Damee Naannoo Hararii | Official office name |
 | `holding.*` | am, om | see `lang/am.json`, `lang/om.json` | Temporary holding page; register and wording |
+| `access.role.*` | am, om | role names | Official titles used inside the party (e.g. ዋና አስተዳዳሪ, Bulchaa Olaanaa) |
+| `access.module.*`, `access.action.*` | am, om | permission matrix labels | Technical terms (ፈቃድ, ሚና, ኦዲት, 2FA) |
+| `admin.*` | am, om | admin screens and the sign-in email | Register of the sign-in email; staff-facing wording |

@@ -2,24 +2,17 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Domain\Access\Actions\SyncPermissions;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
     /**
-     * Seed the application's database.
+     * Seeds what every environment needs. People are never seeded here:
+     * use `portal:create-super-admin` (and `portal:demo-accounts` on staging).
      */
-    public function run(): void
+    public function run(SyncPermissions $sync): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        $sync();
     }
 }

@@ -44,6 +44,22 @@ Status: **provisioned 2026-10-18**; first release `502124372d0f` deployed by Git
 * * * * * cd $HOME/hararipp.orcamind.dev && /opt/alt/php83/usr/bin/php artisan queue:work --stop-when-empty --max-time=50 --tries=3 >> /dev/null 2>&1
 ```
 
+## First Super Admin (one time)
+
+Run in the cPanel terminal (or over SSH) and keep the printed password private; it is not stored anywhere:
+
+```
+cd ~/hararipp.orcamind.dev
+/opt/alt/php83/usr/bin/php artisan portal:create-super-admin you@example.org --name="Your Name"
+```
+
+Then sign in at https://hararipp.orcamind.dev/admin, set up the authenticator app (save the recovery
+codes), and change the password under Profile.
+
+Optional sample accounts for testing each role (staging only): add `PORTAL_DEMO_ACCOUNTS=true` to the
+server `.env`, run `php artisan config:cache`, then `php artisan portal:demo-accounts`. Remove them with
+`php artisan portal:demo-accounts --remove`.
+
 ## How a release works
 
 1. A push to `main` runs CI (lint, tests with coverage, asset build).
@@ -56,7 +72,7 @@ Status: **provisioned 2026-10-18**; first release `502124372d0f` deployed by Git
    cPanel creates (`.well-known`, `cgi-bin`, `.user.ini`, `php.ini`, `error_log`).
 5. `scripts/deploy/release.sh` runs on the server: rebuilds `public/.htaccess` as cPanel's own blocks
    (the PHP 8.3 handler) followed by Laravel's rules, moves shadowing `.env.<env>` files aside, rebuilds
-   the storage skeleton, `migrate --force`, `optimize`, `storage:link`, `queue:restart`, folder
+   the storage skeleton, `migrate --force`, `portal:sync-permissions`, `optimize`, `storage:link`, `queue:restart`, folder
    permissions, then brings the site up.
 6. `scripts/deploy/smoke.sh` checks `/up`, the home page and the `X-Robots-Tag: noindex` header on the
    live URL. A failure runs `scripts/deploy/rollback.sh` (code only) and fails the job.

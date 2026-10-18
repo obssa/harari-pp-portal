@@ -68,3 +68,36 @@ differently in SQLite.
 **Decision.** Pest runs against MySQL 8 (`harari_test`) locally in Docker and as a service container in CI.
 
 **Consequences.** Tests need the MySQL container running; `scripts/task.py test` starts it.
+
+## ADR-0005 — Own permission registry and role scopes instead of filament-shield (2026-10-18)
+
+**Context.** PLAN.md lists `bezhansalleh/filament-shield` and asks for fine-grained permissions named like
+`posts.publish` and `translations.har.edit`, plus scopes that narrow a role to an office, league or
+language. Shield generates `Action:Model` permissions and policy stubs per resource; it cannot express
+module-level permissions for screens that do not exist yet, nor scopes.
+
+**Decision.** `App\Domain\Access\Support\PermissionRegistry` is the single list of permissions
+(`module.action`, plus `translations.<locale>.edit`), `App\Domain\Access\Enums\SystemRole` holds the 13
+roles of PLAN.md §8 with their default grants, and `portal:sync-permissions` (run on every deploy) creates
+what is missing without undoing grants a Super Admin changed. Scopes live in a `role_scopes` table
+(user, role, scope type, value) rather than extra columns on `model_has_roles`, because that table's
+primary key would forbid one role scoped to two offices. Policies are hand-written and deny by default;
+the Filament panel runs with `strictAuthorization()`. spatie/laravel-permission 8 does the storage and
+checks; Shield is not installed.
+
+**Consequences.** Scope-sensitive checks must call `hasPermissionInScope()` (plain `can()` means
+"anywhere"). New modules add their permissions to the registry and their defaults to `SystemRole`.
+
+## ADR-0006 — Two-factor login required only for privileged roles (2026-10-18)
+
+**Context.** PLAN.md §7 requires TOTP two-factor login for Admin and Publisher (we add Super Admin).
+Filament 5's built-in requirement is panel-wide.
+
+**Decision.** Filament's app-authenticator MFA (with recovery codes) is enabled for everyone; the
+"required" middleware is replaced by `RequireMfaForPrivilegedRoles`, which only redirects users holding a
+role in `config('portal.mfa_required_roles')` to the set-up page. Secrets and recovery codes are stored
+encrypted. Super Admins are created with `portal:create-super-admin`, which prints a one-time password in
+the terminal of whoever runs it (never in CI logs).
+
+**Consequences.** Other staff may opt in from their profile. Losing a phone needs an Admin to run
+"Reset two-factor login", which is audited and signs the user out.

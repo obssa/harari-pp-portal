@@ -44,6 +44,7 @@ fi
 trap '"$PHP_BIN" artisan up >/dev/null 2>&1 || true' EXIT
 
 "$PHP_BIN" artisan migrate --force --no-interaction
+"$PHP_BIN" artisan portal:sync-permissions --no-interaction
 "$PHP_BIN" artisan optimize
 [ -e public/storage ] || "$PHP_BIN" artisan storage:link
 "$PHP_BIN" artisan queue:restart || true
