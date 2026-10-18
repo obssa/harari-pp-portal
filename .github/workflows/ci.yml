@@ -1,0 +1,89 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: lint
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/setup-php
+      - name: Pint (code style)
+        run: vendor/bin/pint --test
+      - name: Larastan (static analysis)
+        run: vendor/bin/phpstan analyse --memory-limit=1G --no-progress --error-format=github
+      - name: Composer security audit
+        run: composer audit --no-interaction
+      - name: Composer manifest is valid and the lock file matches
+        run: composer validate --strict --no-check-publish
+
+  test:
+    name: test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: harari_test
+          MYSQL_USER: harari
+          MYSQL_PASSWORD: secret
+        ports: ["3306:3306"]
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval=5s --health-timeout=5s --health-retries=30
+    env:
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_USERNAME: harari
+      DB_PASSWORD: secret
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/setup-php
+        with:
+          coverage: pcov
+      - name: Pest with coverage (minimum 80%)
+        run: vendor/bin/pest --colors=never --coverage --min=80 --coverage-clover=coverage.xml
+      - name: Keep the coverage report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage
+          path: coverage.xml
+          if-no-files-found: ignore
+          retention-days: 14
+
+  assets:
+    name: assets
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm audit --audit-level=high
+      - run: npm run build
+      - name: Enforce the asset budget (JS < 80 KB gz, CSS < 60 KB gz)
+        run: |
+          js=$(cat public/build/assets/*.js 2>/dev/null | gzip -9 | wc -c)
+          css=$(cat public/build/assets/*.css 2>/dev/null | gzip -9 | wc -c)
+          echo "JS gz: ${js} bytes, CSS gz: ${css} bytes" | tee -a "$GITHUB_STEP_SUMMARY"
+          test "$js" -lt 81920
+          test "$css" -lt 61440

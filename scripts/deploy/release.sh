@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# Runs ON THE SERVER after new code is copied (piped over SSH by deploy.yml).
+# Env: APP_DIR (site folder), PHP_BIN (php 8.3 CLI)
+set -euo pipefail
+: "${APP_DIR:?APP_DIR is required}"
+PHP_BIN="${PHP_BIN:-php}"
+cd "$APP_DIR"
+
+if [ ! -f .env ]; then
+    echo "ERROR: $APP_DIR/.env is missing."
+    exit 1
+fi
+if [ ! -f vendor/autoload.php ]; then
+    echo "ERROR: vendor/ is missing; the release was not copied."
+    exit 1
+fi
+
+# Laravel prefers .env.{APP_ENV} over .env when APP_ENV is in the process
+# environment; a stray copy would silently shadow the real configuration.
+for f in .env.production .env.staging .env.local .env.testing; do
+    if [ -e "$f" ]; then mv "$f" "$f.unused.$(date +%s)"; echo "moved aside $f"; fi
+done
+
+mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views \
+         storage/logs storage/app/public bootstrap/cache
+# Stale compiled caches can reference dev-only providers the --no-dev vendor lacks.
+rm -f bootstrap/cache/*.php
+
+"$PHP_BIN" artisan down --retry=15 || true
+trap '"$PHP_BIN" artisan up >/dev/null 2>&1 || true' EXIT
+
+"$PHP_BIN" artisan migrate --force --no-interaction
+"$PHP_BIN" artisan optimize
+[ -e public/storage ] || "$PHP_BIN" artisan storage:link
+"$PHP_BIN" artisan queue:restart || true
+
+# rsync mirrors the runner's modes; LiteSpeed needs a traversable site folder.
+chmod 711 "$APP_DIR"
+chmod 755 "$APP_DIR/public"
+
+echo "release OK: $(cat REVISION 2>/dev/null || echo 'unknown revision')"

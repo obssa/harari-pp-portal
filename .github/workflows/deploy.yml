@@ -1,0 +1,147 @@
+name: Deploy
+
+# main -> CI green -> build release -> https://hararipp.orcamind.dev (staging)
+#
+# No commits are created (the repository owner stays the sole author, ADR-0003).
+# The job is skipped until the repository variable DEPLOY_ENABLED is "true".
+# Secrets:   DEPLOY_HOST, DEPLOY_USER, DEPLOY_PORT, DEPLOY_SSH_KEY, DEPLOY_KNOWN_HOSTS
+# Variables: DEPLOY_ENABLED, DEPLOY_PATH, DEPLOY_PHP_BIN, DEPLOY_URL
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-staging
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: build release
+    # Only pushes to this repository deploy. Pull requests (including from
+    # forks of the public repo) run CI but can never reach the deploy job.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push' &&
+       github.event.workflow_run.head_branch == 'main' &&
+       github.event.workflow_run.head_repository.full_name == github.repository)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    outputs:
+      sha: ${{ steps.rev.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - id: rev
+        run: echo "sha=$(git rev-parse --short=12 HEAD)" >> "$GITHUB_OUTPUT"
+
+      - uses: ./.github/actions/setup-php
+        with:
+          composer-flags: --no-dev --optimize-autoloader
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Build frontend assets
+        run: npm ci && npm run build
+
+      - name: Assemble the release folder
+        run: |
+          mkdir -p release
+          rsync -a ./ release/ \
+            --exclude=.git/ --exclude=.github/ --exclude=node_modules/ --exclude=tests/ \
+            --exclude=docker/ --exclude=docs/ --exclude=release/ --exclude=storage/ \
+            --exclude='.env*' --exclude=compose.test.yml --exclude=phpunit.xml \
+            --exclude=phpstan.neon --exclude=pint.json --exclude=.phpstan.cache/ \
+            --exclude=scripts/task.py --exclude=scripts/check-hardcoded-strings.py \
+            --exclude=AGENTS.md --exclude=CLAUDE.md --exclude=coverage.xml
+          echo "${{ steps.rev.outputs.sha }}" > release/REVISION
+          tar -czf release.tar.gz -C release .
+          du -sh release.tar.gz
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: release
+          path: release.tar.gz
+          retention-days: 7
+
+  deploy:
+    name: deploy to staging
+    needs: build
+    if: vars.DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    environment:
+      name: staging
+      url: ${{ vars.DEPLOY_URL || 'https://hararipp.orcamind.dev' }}
+    env:
+      SSH_HOST: ${{ secrets.DEPLOY_HOST }}
+      SSH_USER: ${{ secrets.DEPLOY_USER }}
+      SSH_PORT: ${{ secrets.DEPLOY_PORT || '22' }}
+      APP_DIR: ${{ vars.DEPLOY_PATH }}
+      PHP_BIN: ${{ vars.DEPLOY_PHP_BIN || 'php' }}
+      URL: ${{ vars.DEPLOY_URL || 'https://hararipp.orcamind.dev' }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          sparse-checkout: scripts/deploy
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: release
+
+      - name: Unpack the release
+        run: mkdir release && tar -xzf release.tar.gz -C release
+
+      - name: Configure SSH (pinned host key)
+        env:
+          KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          test -n "$SSH_HOST" && test -n "$SSH_USER" && test -n "$APP_DIR" || { echo "deploy secrets/variables are incomplete"; exit 1; }
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts && chmod 644 ~/.ssh/known_hosts
+          printf 'Host target\n  HostName %s\n  User %s\n  Port %s\n  IdentityFile ~/.ssh/deploy_key\n  IdentitiesOnly yes\n  StrictHostKeyChecking yes\n  ServerAliveInterval 15\n' \
+            "$SSH_HOST" "$SSH_USER" "$SSH_PORT" > ~/.ssh/config
+
+      - name: Maintenance mode and rollback snapshot
+        run: ssh target "APP_DIR='$APP_DIR' PHP_BIN='$PHP_BIN' bash -s" < scripts/deploy/pre-release.sh
+
+      - name: Copy the release
+        id: copy
+        run: |
+          rsync -az --delete --exclude-from=scripts/deploy/rsync-excludes.txt \
+            -e ssh release/ "target:$APP_DIR/"
+
+      - name: Migrate, cache, restart queue
+        run: ssh target "APP_DIR='$APP_DIR' PHP_BIN='$PHP_BIN' bash -s" < scripts/deploy/release.sh
+
+      - name: Smoke test the live site
+        run: bash scripts/deploy/smoke.sh "$URL" yes
+
+      - name: Roll back on failure
+        if: failure() && steps.copy.outcome != 'skipped'
+        run: ssh target "APP_DIR='$APP_DIR' PHP_BIN='$PHP_BIN' bash -s" < scripts/deploy/rollback.sh
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "### Staging deploy"
+            echo "- Revision: \`${{ needs.build.outputs.sha }}\`"
+            echo "- URL: $URL"
+            echo "- Result: ${{ job.status }}"
+          } >> "$GITHUB_STEP_SUMMARY"

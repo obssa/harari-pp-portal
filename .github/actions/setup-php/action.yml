@@ -1,0 +1,38 @@
+name: Set up PHP and Composer dependencies
+description: PHP 8.3 with the extensions the app needs, cached Composer install.
+
+inputs:
+  coverage:
+    description: Coverage driver (none or pcov)
+    default: none
+  composer-flags:
+    description: Extra flags for composer install
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - name: Set up PHP 8.3
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: "8.3"
+        extensions: mbstring, intl, pdo_mysql, gd, zip, bcmath, exif, fileinfo, dom, curl
+        tools: composer:v2
+        coverage: ${{ inputs.coverage }}
+        ini-values: memory_limit=1G
+
+    - name: Locate Composer cache
+      id: composer-cache
+      shell: bash
+      run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+    - name: Cache Composer downloads
+      uses: actions/cache@v6
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: composer-${{ runner.os }}-${{ hashFiles('composer.lock') }}
+        restore-keys: composer-${{ runner.os }}-
+
+    - name: Install Composer dependencies
+      shell: bash
+      run: composer install --no-interaction --no-progress --prefer-dist ${{ inputs.composer-flags }}
