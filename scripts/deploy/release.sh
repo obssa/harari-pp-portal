@@ -26,6 +26,20 @@ mkdir -p storage/framework/cache/data storage/framework/sessions storage/framewo
 # Stale compiled caches can reference dev-only providers the --no-dev vendor lacks.
 rm -f bootstrap/cache/*.php
 
+# public/.htaccess is never copied by rsync: cPanel keeps its PHP version
+# handler there. Rebuild it as cPanel's own blocks followed by Laravel's rules.
+if [ -f scripts/deploy/public.htaccess ]; then
+    blocks="$(awk '/BEGIN cPanel-generated/{k=1} k{print} /END cPanel-generated/{k=0}' public/.htaccess 2>/dev/null || true)"
+    {
+        if [ -n "$blocks" ]; then printf '%s
+
+' "$blocks"; fi
+        cat scripts/deploy/public.htaccess
+    } > public/.htaccess.new
+    mv public/.htaccess.new public/.htaccess
+    echo "public/.htaccess rebuilt ($(printf '%s' "$blocks" | grep -c 'BEGIN cPanel-generated') cPanel block(s) kept)"
+fi
+
 "$PHP_BIN" artisan down --retry=15 || true
 trap '"$PHP_BIN" artisan up >/dev/null 2>&1 || true' EXIT
 

@@ -67,6 +67,7 @@ jobs:
             --exclude=scripts/task.py --exclude=scripts/check-hardcoded-strings.py \
             --exclude=AGENTS.md --exclude=CLAUDE.md --exclude=coverage.xml
           echo "${{ steps.rev.outputs.sha }}" > release/REVISION
+          cp public/.htaccess release/scripts/deploy/public.htaccess
           tar -czf release.tar.gz -C release .
           du -sh release.tar.gz
 
