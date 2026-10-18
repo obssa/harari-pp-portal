@@ -19,3 +19,7 @@ All notable changes. Dates are Gregorian.
 - First UI strings in `lang/{en,am,om,har}.json` with a consistency test.
 - Docs: `docs/PLAN.md` (spec), `docs/DECISIONS.md` (ADR-0001 to 0004), Phase 0/1 plan, server runbook,
   translations review list.
+- Staging provisioned on cPanel: document root `~/hararipp.orcamind.dev/public`, PHP 8.3 (CloudLinux
+  alt-php83) for this domain only, MySQL database, server `.env`, cron, restricted deploy key, pinned
+  host key. The deploy keeps cPanel's PHP handler in `public/.htaccess`.
+- Repository made public (server and account names removed from the docs and history first).

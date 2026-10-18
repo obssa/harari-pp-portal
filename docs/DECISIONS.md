@@ -33,11 +33,14 @@ Redis, Meilisearch, Horizon, Supervisor or Docker. The plan's production stack n
 | Mail | SMTP on the cPanel mail server | Mailgun / SES |
 | Media | `public` disk on the account | S3-compatible (R2/B2/MinIO) |
 | Full-page cache | Cloudflare edge + `Cache-Control: s-maxage` | same |
+| PHP | CloudLinux `alt-php83` for this domain only (MultiPHP); the cPanel EasyApache builds stop at 8.2 | distribution PHP 8.3+ |
 
 Tests run against MySQL 8 with array/sync drivers. Features that need Horizon (dashboard) or Meilisearch
 (typo tolerance) degrade gracefully, as PLAN.md §11 already requires.
 
 **Consequences.** No code change is needed to move to a VPS with Redis and Meilisearch; only `.env`.
+cPanel stores the per-domain PHP handler in `public/.htaccess`, so the deploy never overwrites that file
+and rebuilds it from cPanel's blocks plus Laravel's rules.
 Long-running jobs must finish within one cron cycle (`--max-time=50`).
 
 ## ADR-0003 — Deploy by rsync from GitHub Actions, no artifact branches (2026-10-18)
