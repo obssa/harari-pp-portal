@@ -2,6 +2,7 @@
 
 use App\Domain\Access\Enums\SystemRole;
 use App\Domain\Access\Enums\UserStatus;
+use App\Filament\Support\InitialsAvatarProvider;
 use App\Models\User;
 use Filament\Facades\Filament;
 use Spatie\Activitylog\Models\Activity;
@@ -74,4 +75,16 @@ it('records refused requests in the audit log', function () {
 
 it('has no screen for creating or editing audit entries', function () {
     $this->actingAs(staff(SystemRole::SuperAdmin))->get('/admin/audit-log/create')->assertNotFound();
+});
+
+it('draws staff avatars locally instead of sending names to a third party', function () {
+    $user = staff(SystemRole::Admin, attributes: ['name' => 'Abebe Kebede']);
+
+    $url = Filament::getUserAvatarUrl($user);
+    $svg = base64_decode(substr($url, strlen('data:image/svg+xml;base64,')));
+
+    expect($url)->toStartWith('data:image/svg+xml;base64,')
+        ->and($svg)->toContain('>AK</text>')
+        ->and((new InitialsAvatarProvider)->get(staff(SystemRole::Editor, attributes: ['name' => 'ሐመልማል <b>'])))
+        ->toStartWith('data:image/svg+xml;base64,');
 });

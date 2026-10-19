@@ -64,6 +64,8 @@ jobs:
           coverage: pcov
       - name: Pest with coverage (minimum 80%)
         run: vendor/bin/pest --colors=never --coverage --min=80 --coverage-clover=coverage.xml
+      - name: Domain code coverage (minimum 80% each)
+        run: python3 scripts/coverage-gate.py coverage.xml --min 80 app/Domain app/Services app/Settings
       - name: Keep the coverage report
         if: always()
         uses: actions/upload-artifact@v7

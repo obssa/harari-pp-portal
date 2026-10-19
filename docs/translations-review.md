@@ -27,3 +27,4 @@ Harari translators.
 | `nav.*`, `footer.*` | am, om | site navigation and footer | Short UI labels; "hotline" (ቀጥታ መስመር / Sarara kallattii) and the copyright line |
 | `errors.*` | am, om | error and maintenance pages | Tone of the apology on 500/503; "session expired" wording on 419 |
 | `site.description` | am, om | page description for search engines | Must match the branch's official self-description once supplied |
+| `docs/manual/01-getting-started.am.md` | am | staff manual, chapter 1 | Whole chapter; UI labels quoted must match the Amharic admin |

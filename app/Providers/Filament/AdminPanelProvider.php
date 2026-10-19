@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Support\InitialsAvatarProvider;
 use App\Http\Middleware\RequireMfaForPrivilegedRoles;
 use App\Http\Middleware\SetAdminLocale;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
@@ -46,6 +47,8 @@ class AdminPanelProvider extends PanelProvider
             ->multiFactorAuthenticationRequiredMiddlewareName(RequireMfaForPrivilegedRoles::class)
             // Deny by default: a resource without a policy method fails closed.
             ->strictAuthorization()
+            // Initials drawn locally: no staff names sent to a third party, CSP-safe.
+            ->defaultAvatarProvider(InitialsAvatarProvider::class)
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([

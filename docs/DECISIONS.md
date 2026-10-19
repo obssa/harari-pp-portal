@@ -286,6 +286,9 @@ whose Alpine components evaluate expressions at run time.
   deploy (mobile; performance, accessibility and best practices ≥ 0.9; HTML ≤ 60 KB and JS ≤ 80 KB
   transferred; CLS ≤ 0.1). SEO is not scored on staging because it is noindex.
 
+- **Admin avatars** are SVG initials drawn on the server (`InitialsAvatarProvider`) rather than
+  Filament's default ui-avatars.com images, which would send staff names to a third party.
+
 **Consequences.** Logos are placeholders (a neutral favicon in party colours) until the party supplies
 its brand files (PLAN.md §14). Adding Livewire components to public pages will need either Livewire's
 CSP-safe mode or a review of the public policy.

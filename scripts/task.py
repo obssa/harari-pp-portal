@@ -99,9 +99,19 @@ def test(args: list[str]) -> None:
     app("vendor/bin/pest", "--colors=never", *args)
 
 
+COVERAGE_AREAS = ["app/Domain", "app/Services", "app/Settings"]
+
+
 def coverage() -> None:
     ensure_up()
-    app("vendor/bin/pest", "--colors=never", "--coverage", f"--min={COVERAGE_MIN}")
+    clover = "storage/logs/coverage.xml"
+    app("vendor/bin/pest", "--colors=never", "--coverage", f"--min={COVERAGE_MIN}", f"--coverage-clover={clover}")
+    # Domain code must meet the minimum on its own, as in CI.
+    code = subprocess.call(
+        [sys.executable, "scripts/coverage-gate.py", clover, "--min", COVERAGE_MIN, *COVERAGE_AREAS], cwd=ROOT,
+    )
+    if code != 0:
+        sys.exit(code)
 
 
 def lint() -> None:

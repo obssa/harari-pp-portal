@@ -4,6 +4,20 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+## v0.1.0-foundation — Phase 1 complete (2026-10-19)
+
+Gate of PLAN.md §13 Phase 1 met; report in `docs/phases/01-foundation.md`.
+
+### Phase 1, step 1.7 — phase gate (2026-10-19)
+
+- CI checks line coverage of `app/Domain`, `app/Services` and `app/Settings` separately (≥ 80% each),
+  as does `python scripts/task.py coverage`.
+- Staff avatars are drawn locally from initials instead of being fetched from ui-avatars.com (no staff
+  names leave the server; allowed by the admin CSP).
+- Lighthouse reports are kept as workflow artifacts and the scores appear in the run summary.
+- Staff manual chapter 1, "Getting started", in English and Amharic (`docs/manual/`).
+- Phase 1 report with the gate evidence, a demo script and the open items.
+
 ### Phase 1, step 1.6 — design system, public layout, security headers (2026-10-19)
 
 - Design tokens: party blue scale, Harar terracotta accent, semantic and dark-mode colours, headline

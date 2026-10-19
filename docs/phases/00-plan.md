@@ -7,7 +7,7 @@ Written 2026-10-18 from `docs/PLAN.md`, adjusted by `docs/DECISIONS.md`.
 | Layer | Choice | Note |
 |---|---|---|
 | Runtime | PHP 8.3, Laravel 13 | ADR-0001 |
-| Admin | Filament 5 (Livewire 4) + filament-shield | ADR-0001 |
+| Admin | Filament 5 (Livewire 4) with our own permission registry (no filament-shield) | ADR-0001, ADR-0005 |
 | Public front end | Blade + Livewire 4 + Alpine, Tailwind 4, Vite 8 | server-rendered |
 | Database | MySQL 8, utf8mb4_0900_ai_ci | tests on MySQL too (ADR-0004) |
 | Cache / sessions / queue | database drivers on staging, Redis later | ADR-0002 |
@@ -25,7 +25,7 @@ Written 2026-10-18 from `docs/PLAN.md`, adjusted by `docs/DECISIONS.md`.
 | 1.4 | Settings (encrypted integration keys), `sites` table, Ethiopian calendar service + Blade component | done 2026-10-19 |
 | 1.5 | Media library (WebP/AVIF, EXIF strip, SVG sanitising, alt per locale) | done 2026-10-19 |
 | 1.6 | Design tokens, self-hosted fonts, public layout, error pages, security headers + CSP nonces, styleguide, Lighthouse CI | done 2026-10-19 |
-| 1.7 | Coverage gate on domain code, manual chapter, phase report, tag `v0.1.0-foundation` | |
+| 1.7 | Coverage gate on domain code, manual chapter, phase report, tag `v0.1.0-foundation` | done 2026-10-19 (report: `docs/phases/01-foundation.md`) |
 
 ## Folder layout
 

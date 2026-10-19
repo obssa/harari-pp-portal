@@ -33,10 +33,19 @@ jobs:
         env:
           LHCI_BUILD_CONTEXT__CURRENT_HASH: ${{ github.event.workflow_run.head_sha || github.sha }}
         run: npx --yes @lhci/cli@0.15.1 autorun --config=lighthouserc.json
+      - name: Scores in the job summary
+        if: always()
+        run: |
+          test -f lighthouse-reports/manifest.json || exit 0
+          {
+            echo "| Page | Performance | Accessibility | Best practices |"
+            echo "|---|---|---|---|"
+            jq -r '.[] | select(.isRepresentativeRun) | "| \(.url) | \(.summary.performance * 100 | round) | \(.summary.accessibility * 100 | round) | \(.summary["best-practices"] * 100 | round) |"' lighthouse-reports/manifest.json
+          } >> "$GITHUB_STEP_SUMMARY"
       - name: Keep the reports
         if: always()
         uses: actions/upload-artifact@v7
         with:
           name: lighthouse-reports
-          path: .lighthouseci/
+          path: lighthouse-reports/
           retention-days: 14
