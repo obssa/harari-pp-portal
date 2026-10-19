@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Organisation\Concerns;
+namespace App\Domain\Content\Concerns;
 
 use App\Domain\Content\Enums\ContentStatus;
 use Carbon\CarbonImmutable;
@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * A language of a directory record that is either a draft or published,
- * switched by holders of the module's `manage` permission (ADR-0017).
+ * A language of a record that is either a draft or published, switched by
+ * holders of the module's permission (ADR-0017): directory entries,
+ * galleries, videos, events, documents and projects.
  *
  * @property ContentStatus $status
  * @property ?CarbonImmutable $published_at

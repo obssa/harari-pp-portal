@@ -2,6 +2,7 @@
 
 use App\Domain\Translation\Support\Locales;
 use App\Http\Controllers\Public\FeedController;
+use App\Http\Controllers\Public\GalleryController;
 use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\LeaderController;
 use App\Http\Controllers\Public\LeagueController;
@@ -84,6 +85,8 @@ Route::prefix('{locale}')
         Route::get('leagues', [LeagueController::class, 'index'])->name('leagues.index');
         Route::get('leagues/{slug}', [LeagueController::class, 'show'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('leagues.show');
         Route::get('structure', StructureController::class)->name('structure');
+        Route::get('gallery', [GalleryController::class, 'index'])->name('gallery.index');
+        Route::get('gallery/{slug}', [GalleryController::class, 'show'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('gallery.show');
         Route::get('search', SearchController::class)
             ->withoutMiddleware(CachePublicPages::class)
             ->middleware('throttle:search')

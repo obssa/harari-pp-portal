@@ -2,6 +2,7 @@
 
 namespace App\Domain\Organisation\Actions;
 
+use App\Domain\Content\Actions\WriteTranslations;
 use App\Domain\Media\Actions\SyncMediaUsage;
 use App\Domain\Organisation\Enums\OfficeType;
 use App\Domain\Organisation\Models\Leader;

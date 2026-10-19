@@ -677,3 +677,27 @@ cannot be read without logging in; their Telegram channels have public preview p
 (Social Media Hub). Photos posted after their story was imported are skipped; editors can add them
 from the source link. If Telegram changes its preview markup, imports fail visibly on the content
 sources screen until the reader is updated.
+
+## ADR-0023 — Photo galleries (2026-10-20)
+
+**Context.** PLAN.md §4 asks for photo albums with a lightbox, responsive images and optional download
+of the original, and §10 for `galleries` and `gallery_items`.
+
+**Decision.**
+
+- An album has a title, slug and short description per language, published per language like the
+  directory (ADR-0017, now a shared `PublishedPerLanguage` concern and `WriteTranslations` action in the
+  content module), a cover, the date taken and an optional office or league. Its photos are library
+  images (ADR-0009) in order, each with a caption per language; removing a photo from the library
+  removes it from its albums.
+- The album page shows square thumbnails; each opens a full-screen view on its own address
+  (`#photo-3`) using the CSS `:target` selector, with previous, next, close, caption and credit links.
+  It needs no JavaScript, works with the back button and keeps the page budget; full-size images load
+  only when opened.
+- When an album allows it, each photo links to its original (already cleaned of location and camera
+  data at upload).
+- A homepage section shows up to eight photos of the newest album; Harari readers also see Amharic
+  albums (ADR-0014).
+
+**Consequences.** Swiping between photos on phones and keyboard arrows wait for an optional small script
+later; the links work everywhere today.

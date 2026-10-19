@@ -54,7 +54,7 @@ class Page extends Model implements TranslatableModel
     public const RESERVED_SLUGS = [
         'news', 'offices', 'leaders', 'leagues', 'events', 'documents', 'projects', 'social', 'search',
         'gallery', 'videos', 'live', 'contact', 'join', 'members', 'volunteer', 'newsletter', 'feedback',
-        'preview', 'feed', 'structure',
+        'preview', 'feed', 'structure', 'notices', 'achievements', 'press', 'get-involved', 'tickets', 'forms',
     ];
 
     protected $fillable = ['template', 'parent_id', 'sort', 'featured_image_id'];

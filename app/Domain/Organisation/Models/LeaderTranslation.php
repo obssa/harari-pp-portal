@@ -2,10 +2,10 @@
 
 namespace App\Domain\Organisation\Models;
 
+use App\Domain\Content\Concerns\PublishedPerLanguage;
 use App\Domain\Content\Enums\ContentStatus;
 use App\Domain\Content\Models\Translation;
 use App\Domain\Content\Support\BodyRenderer;
-use App\Domain\Organisation\Concerns\PublishedPerLanguage;
 use App\Domain\Search\Concerns\SearchableTranslation;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

@@ -32,8 +32,10 @@ use App\Domain\Homepage\Policies\HomepageSectionPolicy;
 use App\Domain\Import\Models\ContentSource;
 use App\Domain\Import\Policies\ContentSourcePolicy;
 use App\Domain\Media\Enums\MediaKind;
+use App\Domain\Media\Models\Gallery;
 use App\Domain\Media\Models\Media;
 use App\Domain\Media\Models\MediaFolder;
+use App\Domain\Media\Policies\GalleryPolicy;
 use App\Domain\Media\Policies\MediaFolderPolicy;
 use App\Domain\Media\Policies\MediaPolicy;
 use App\Domain\Organisation\Models\Leader;
@@ -177,6 +179,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(SearchTerm::class, SearchTermPolicy::class);
         Gate::policy(Announcement::class, AnnouncementPolicy::class);
         Gate::policy(ContentSource::class, ContentSourcePolicy::class);
+        Gate::policy(Gallery::class, GalleryPolicy::class);
 
         // Super Admins hold every permission (PLAN.md §8). Only permission
         // names (`module.action`) are short-circuited, so policy rules such as

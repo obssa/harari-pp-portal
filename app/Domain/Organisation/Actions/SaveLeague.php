@@ -2,6 +2,7 @@
 
 namespace App\Domain\Organisation\Actions;
 
+use App\Domain\Content\Actions\WriteTranslations;
 use App\Domain\Media\Actions\SyncMediaUsage;
 use App\Domain\Organisation\Models\Leader;
 use App\Domain\Organisation\Models\League;

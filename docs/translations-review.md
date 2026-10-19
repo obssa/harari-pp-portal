@@ -42,3 +42,4 @@ Harari translators.
 | `search.*`, `admin.search_terms.*` | am, om | search page, header search, search insights | "search" (ፍለጋ / Barbaacha); quotation marks around the query in am/om |
 | `dashboard.*` | am, om | admin dashboard, widgets and announcements | "widget" kept as a loanword in om (Widget) and as መግብር in am; fiscal-year wording (በጀት ዓመት / Bara baajataa) |
 | `import.*`, `news.source` | am, om | content sources screen, imported-post notes | "draft" (ረቂቅ / wixinee), "source" (ምንጭ / Madda); "Ethiopic script" (ግዕዝ ፊደል / qubee Saabaa) |
+| `gallery.*`, `homepage.section.gallery` | am, om | photo albums | "photo album" (የፎቶ ስብስብ / kuusaa suuraa); count forms for photos |

@@ -4,6 +4,17 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 3, step 3.1 — photo galleries (2026-10-20)
+
+- Admin → Content → Photo albums: albums of library photos in order, a caption per language for each
+  photo, a cover (the first photo unless chosen), the date taken, the office or league, and whether
+  visitors may download the full-size photos. Each language is published with one switch (ADR-0023).
+- `/{lang}/gallery` lists the albums; each album page shows its photos in a grid and opens them one by
+  one with previous and next, captions and credits, without any JavaScript.
+- A homepage section shows photos from the newest album; menus can link to the gallery; albums are in
+  the sitemaps.
+- Phase 3 plan in `docs/phases/03-media-events-documents.md`.
+
 ### Imported stories: Harari and publishing (2026-10-20)
 
 - Stories written in Harari are recognised (own words and the ዚ-/ዪ- forms) and arrive in the Harari

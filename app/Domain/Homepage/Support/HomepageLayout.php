@@ -8,6 +8,8 @@ use App\Domain\Content\Models\Translation;
 use App\Domain\Content\Queries\PublicPosts;
 use App\Domain\Homepage\Enums\SectionKey;
 use App\Domain\Homepage\Models\HomepageSection;
+use App\Domain\Media\Models\Gallery;
+use App\Domain\Media\Models\GalleryItem;
 use App\Domain\Organisation\Models\Leader;
 use App\Domain\Organisation\Models\League;
 use App\Domain\Organisation\Queries\PublicDirectory;
@@ -118,6 +120,7 @@ final class HomepageLayout
             SectionKey::Counters => $this->items($section, $locale, 'label', ['value']),
             SectionKey::Values => $this->items($section, $locale, 'title', [], ['text']),
             SectionKey::Leagues => $this->leagues($locale, $limit),
+            SectionKey::Gallery => $this->gallery($locale, $limit),
             SectionKey::Partners => $this->items($section, $locale, 'label', ['url']),
         };
     }
@@ -181,6 +184,29 @@ final class HomepageLayout
         }
 
         return $spotlight === [] ? null : $spotlight;
+    }
+
+    /**
+     * The newest published album with its first photos.
+     *
+     * @return array{gallery: Gallery, translation: Translation, items: list<GalleryItem>}|null
+     */
+    private function gallery(string $locale, int $limit): ?array
+    {
+        $gallery = PublicDirectory::visible(Gallery::query(), $locale)
+            ->whereHas('items')
+            ->with(['items.media'])
+            ->orderByDesc('taken_on')
+            ->orderByDesc('created_at')
+            ->first();
+        $translation = $gallery !== null ? PublicDirectory::shown($gallery, $locale) : null;
+        if ($gallery === null || $translation === null) {
+            return null;
+        }
+
+        $items = array_values($gallery->items->take($limit)->all());
+
+        return $items === [] ? null : ['gallery' => $gallery, 'translation' => $translation, 'items' => $items];
     }
 
     /**
