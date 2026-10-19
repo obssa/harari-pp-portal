@@ -4,6 +4,25 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 1, step 1.5 — media library (2026-10-19)
+
+- Admin → Content → Media library: upload up to 20 files at once (photos, SVG, documents, video,
+  audio) into folders, search, filter by type, folder, tag, "missing alt text", "not used anywhere"
+  and "uploaded by me", move and tag in bulk, storage used against the quota.
+- Every upload is checked by its content, not its name; PHP, HTML, macro documents, oversized or
+  damaged images are refused with a reason in the uploader's language.
+- Photos are re-encoded on upload (upright, at most 3840 px, EXIF and location removed); SVGs are
+  sanitised. Originals are stored outside the web root and served with safe headers.
+- Cropped WebP copies (AVIF where the server supports it) in 16:9, 1:1 and 3:2 around a focal point
+  chosen by clicking the photo; moving the point remakes the crops.
+- Alt text per language (Harari falls back to Amharic), credit and tags per file; usage tracking keeps
+  files in use from being deleted; every change is in the audit log.
+- Media folders screen (nested folders, unique names, only empty folders can be deleted).
+- `<x-picture>` component for public pages (AVIF/WebP srcsets, sizes, focal point, translated alt).
+- `php artisan portal:work-queues` drains all queues (default, media) from cron.
+- Deploy: private media folders, a no-scripts rule for public uploads, and a smoke check that uploads
+  are served.
+
 ### Phase 1, step 1.4 — settings, sites, Ethiopian calendar (2026-10-19)
 
 - Admin → Settings → Site: default language, which calendar leads and whether the other is shown,

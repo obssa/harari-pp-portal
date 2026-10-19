@@ -93,6 +93,11 @@ Access control lives in `app/Domain/Access` (ADR-0005, ADR-0006): add permission
 `PermissionRegistry`, default grants to `SystemRole`, and a policy for every new model. Use
 `hasPermissionInScope()` for office/league/language-scoped checks. Test helper: `staff(SystemRole::X)`.
 
+Media (ADR-0009): content stores library media ids (e.g. `featured_image_id`) and calls
+`SyncMediaUsage` on save; render images with `<x-picture :media="..." preset="landscape" />`; add
+uploads only through `UploadMedia`. Settings and the current site (ADR-0008): `app(SiteSettings::class)`,
+`Site::current()`; dates through `<x-date>` or `EthiopianCalendar`.
+
 ## Definition of done for the whole project
 
 The acceptance checklist in PLAN.md §13 is fully ticked, a non-developer can publish a 4-language post in

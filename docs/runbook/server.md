@@ -34,27 +34,32 @@ Status: **provisioned 2026-10-18**; first release `502124372d0f` deployed by Git
 | 6 | Deploy key | generated on the owner's PC, public half appended to `~/.ssh/authorized_keys` with `restrict` (file backed up first), private half in the GitHub secret `DEPLOY_SSH_KEY` | 2026-10-18 |
 | 7 | Pinned host key | `ssh-keyscan` output compared with the owner's known_hosts, stored as `DEPLOY_KNOWN_HOSTS` | 2026-10-18 |
 | 8 | GitHub secrets and variables | secrets `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_PORT`, `DEPLOY_SSH_KEY`, `DEPLOY_KNOWN_HOSTS`; variables `DEPLOY_PATH`, `DEPLOY_PHP_BIN`, `DEPLOY_URL`, `DEPLOY_ENABLED=true` | 2026-10-18 |
-| 9 | Cron | two lines appended (crontab backed up to `~/backups/` first; other sites' lines untouched) | 2026-10-18 |
+| 9 | Cron | two lines appended (crontab backed up to `~/backups/` first; other sites' lines untouched); queue line switched to `portal:work-queues` on 2026-10-19 | 2026-10-18 |
 | 10 | Cloudflare | DNS record for `hararipp` proxied; site answers over HTTPS | 2026-10-18 |
 
 ### Cron entries
 
 ```
 * * * * * cd $HOME/hararipp.orcamind.dev && /opt/alt/php83/usr/bin/php artisan schedule:run >> /dev/null 2>&1
-* * * * * cd $HOME/hararipp.orcamind.dev && /opt/alt/php83/usr/bin/php artisan queue:work --stop-when-empty --max-time=50 --tries=3 >> /dev/null 2>&1
+* * * * * cd $HOME/hararipp.orcamind.dev && /opt/alt/php83/usr/bin/php artisan portal:work-queues >> /dev/null 2>&1
 ```
+
+`portal:work-queues` drains every queue in `config('portal.queues')` (default, media) and stops when
+they are empty or after 50 seconds, so runs never overlap. Adding a queue in code needs no cron change.
 
 ## First Super Admin (one time)
 
-Run in the cPanel terminal (or over SSH) and keep the printed password private; it is not stored anywhere:
+Done on 2026-10-19. For another Super Admin, run this in the cPanel terminal (or over SSH), replacing
+both values in angle brackets with the real email address and full name, and keep the printed
+password private; it is not stored anywhere:
 
 ```
 cd ~/hararipp.orcamind.dev
-/opt/alt/php83/usr/bin/php artisan portal:create-super-admin you@example.org --name="Your Name"
+/opt/alt/php83/usr/bin/php artisan portal:create-super-admin <email> --name="<full name>"
 ```
 
 Then sign in at https://hararipp.orcamind.dev/admin, set up the authenticator app (save the recovery
-codes), and change the password under Profile.
+codes), and change the password under Profile. The email and name can also be corrected there.
 
 Optional sample accounts for testing each role (staging only): add `PORTAL_DEMO_ACCOUNTS=true` to the
 server `.env`, run `php artisan config:cache`, then `php artisan portal:demo-accounts`. Remove them with
@@ -105,3 +110,15 @@ Logs: `~/hararipp.orcamind.dev/storage/logs/laravel-*.log` (daily, 14 days).
   Never change `APP_KEY` in the server `.env` without re-entering every key afterwards; until then the
   integrations page shows them as not configured. PHP's `calendar` extension is required (Ethiopian
   dates) and is part of alt-php83 on the host.
+
+## Media library (ADR-0009)
+
+- Originals: `~/hararipp.orcamind.dev/storage/app/media/library/<uuid>/` (private, mode 750).
+  Copies: `storage/app/public/library/<uuid>/conversions/`, served at `/storage/...`.
+- Every deploy rewrites `storage/app/public/.htaccess` (no script files in public uploads) and
+  `storage/app/public/smoke.txt` (checked by the smoke test).
+- Copies are made by the queue within a minute of upload (cron, `portal:work-queues`). Remake all copies
+  after changing presets: `php artisan media-library:regenerate --only-missing` (or without the flag to
+  remake everything).
+- PHP limits for uploads come from the domain's PHP settings in cPanel (MultiPHP INI Editor):
+  `upload_max_filesize` and `post_max_size` must be at least the largest upload (50 MB for video).

@@ -8,6 +8,11 @@ use App\Domain\Access\Models\Role;
 use App\Domain\Access\Policies\ActivityPolicy;
 use App\Domain\Access\Policies\RolePolicy;
 use App\Domain\Access\Policies\UserPolicy;
+use App\Domain\Media\Enums\MediaKind;
+use App\Domain\Media\Models\Media;
+use App\Domain\Media\Models\MediaFolder;
+use App\Domain\Media\Policies\MediaFolderPolicy;
+use App\Domain\Media\Policies\MediaPolicy;
 use App\Domain\Settings\Listeners\RecordSettingsChanges;
 use App\Domain\Translation\FallbackTranslator;
 use App\Domain\Translation\Support\Locales;
@@ -64,7 +69,21 @@ class AppServiceProvider extends ServiceProvider
         $this->bootAuthorization();
         $this->bootAuditing();
         $this->bootLocalization();
+        $this->bootMedia();
         $this->bootSafetyNets();
+    }
+
+    private function bootMedia(): void
+    {
+        // Livewire's temporary uploads (admin upload field): the largest file
+        // the media library accepts, and no server-side preview of SVGs, which
+        // are only safe once sanitised (ADR-0009).
+        config([
+            'livewire.temporary_file_upload.rules' => ['required', 'file', 'max:'.MediaKind::largestUploadKb()],
+            'livewire.temporary_file_upload.preview_mimes' => [
+                'png', 'gif', 'jpg', 'jpeg', 'webp', 'mp4', 'webm', 'mp3', 'm4a',
+            ],
+        ]);
     }
 
     private function bootLocalization(): void
@@ -87,6 +106,8 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(User::class, UserPolicy::class);
         Gate::policy(Role::class, RolePolicy::class);
         Gate::policy(Activity::class, ActivityPolicy::class);
+        Gate::policy(Media::class, MediaPolicy::class);
+        Gate::policy(MediaFolder::class, MediaFolderPolicy::class);
 
         // Super Admins hold every permission (PLAN.md §8). Only permission
         // names (`module.action`) are short-circuited, so policy rules such as

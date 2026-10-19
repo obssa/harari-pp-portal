@@ -33,6 +33,10 @@ for locale in en am om har; do
 done
 echo "PASS: /en /am /om /har render in their language with hreflang and no raw keys"
 
+code="$(fetch /storage/smoke.txt)"
+[ "$code" = "200" ] || { echo "FAIL: public uploads are not served (/storage/smoke.txt returned $code)"; exit 1; }
+echo "PASS: public uploads are served (/storage)"
+
 code="$(fetch /admin/login)"
 [ "$code" = "200" ] || { echo "FAIL: /admin/login returned $code"; head -c 2000 /tmp/smoke.body; exit 1; }
 grep -q 'wire:snapshot' /tmp/smoke.body || { echo "FAIL: admin sign-in page did not render Livewire"; exit 1; }

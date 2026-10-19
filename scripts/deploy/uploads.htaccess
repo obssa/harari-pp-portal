@@ -1,0 +1,10 @@
+# Written by scripts/deploy/release.sh on every deploy (ADR-0009).
+# Public uploads are images and copies made by the media library; nothing
+# here is ever run as code, whatever its name.
+<FilesMatch "(?i)\.(php[0-9]?|phtml|phar|pht|phps|cgi|pl|py|sh|asp|aspx|jsp)$">
+    Require all denied
+</FilesMatch>
+<IfModule mod_mime.c>
+    RemoveHandler .php .php3 .php4 .php5 .php7 .php8 .phtml .phar .pht
+    RemoveType .php .php3 .php4 .php5 .php7 .php8 .phtml .phar .pht
+</IfModule>

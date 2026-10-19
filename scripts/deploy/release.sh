@@ -22,7 +22,13 @@ for f in .env.production .env.staging .env.local .env.testing; do
 done
 
 mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views \
-         storage/logs storage/app/public bootstrap/cache
+         storage/logs storage/app/public storage/app/media storage/app/media-work bootstrap/cache
+
+# Media library (ADR-0009): originals stay private; public uploads never run as code.
+chmod 750 storage/app/media storage/app/media-work
+cp scripts/deploy/uploads.htaccess storage/app/public/.htaccess
+chmod 644 storage/app/public/.htaccess
+printf 'ok\n' > storage/app/public/smoke.txt
 # Stale compiled caches can reference dev-only providers the --no-dev vendor lacks.
 rm -f bootstrap/cache/*.php
 

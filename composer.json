@@ -18,7 +18,9 @@
         "filament/spatie-laravel-settings-plugin": "^5.10",
         "laravel/framework": "^13.17",
         "laravel/tinker": "^3.0",
+        "rhukster/dom-sanitizer": "^1.0.19",
         "spatie/laravel-activitylog": "^4.12",
+        "spatie/laravel-medialibrary": "^11.23",
         "spatie/laravel-permission": "^8.3",
         "spatie/laravel-settings": "^3.9",
         "spatie/laravel-translation-loader": "^2.8"

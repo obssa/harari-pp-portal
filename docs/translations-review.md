@@ -22,3 +22,5 @@ Harari translators.
 | `calendar.ethiopian.month.*`, `calendar.gregorian.month.*` | om | Fulbaana … Qaammee; Amajjii … Muddee | Afaan Oromo uses the same month names for both calendars; only the era mark tells them apart |
 | `calendar.ethiopian.date` | om | `:month :day, :year A.L.I.` | Confirm the era abbreviation for the Ethiopian calendar (A.L.I., "Akka Lakkoobsa Itoophiyaa") |
 | `admin.settings.*` | am, om | settings screens | Staff-facing wording of the settings and integrations screens |
+| `admin.media.*`, `admin.media_folders.*` | am, om | media library screens | Terms: alt text (አማራጭ ጽሑፍ / Barreeffama bakka bu'aa), folder (ማህደር / Fooldara), media library (የሚዲያ ማከማቻ / Kuusaa miidiyaa), focal point (የትኩረት ነጥብ / Qabxii xiyyeeffannaa), upload (ጫን / Fe'i) |
+| `media.rejected.*` | am, om | upload refusal messages | Shown to staff when a file is refused; check they read as plain instructions |

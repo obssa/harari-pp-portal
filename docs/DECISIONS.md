@@ -179,3 +179,55 @@ the Gregorian one everywhere a date appears, in an order chosen in the admin.
 **Consequences.** Rotating `APP_KEY` makes the stored keys unreadable, so they must be re-entered (see
 the runbook). A second site needs its own settings rows, written by a settings migration run with
 `Site::setCurrent()`. Phase 2 content models take `site_id` from `Site::current()`.
+
+## ADR-0009 — Media library: private originals, cleaned uploads, focal crops (2026-10-19)
+
+**Context.** PLAN.md §7 asks for a media library with folders, alt text per language, a focal point,
+usage tracking, WebP/AVIF copies and responsive sizes. §11 asks for MIME sniffing, re-encoded images,
+sanitised SVGs, no executable types and uploads stored outside the web root. The host is shared cPanel:
+GD only (no Imagick, no optimiser binaries), PHP memory limits, a cron-drained database queue.
+
+**Decision.**
+
+- **Package.** spatie/laravel-medialibrary 11.23 (12.x needs PHP 8.4) with its bundled spatie/image on
+  GD. intervention/image is not added: spatie/image already re-encodes, resizes and crops around a point.
+- **Owner.** Library files belong to the site (`Site` implements `HasMedia`, collection `library`), so
+  they exist independently of posts and pages. Content refers to them by id (e.g. `featured_image_id`)
+  and records each use through `SyncMediaUsage` (`media_usages`); a used file cannot be deleted.
+- **Extra columns** on `media`: `site_id`, `folder_id`, `uploaded_by`, `kind`, `alt` (JSON per
+  language), `credit`, `focal_x`/`focal_y` (percent), `width`, `height`, `tags`.
+- **What is accepted.** `UploadInspector` decides the type from the file's bytes (finfo); the name may
+  only pick between specific types the bytes support (e.g. an Office ZIP). Allowed: JPEG, PNG, WebP, GIF;
+  SVG; PDF, DOCX, XLSX, PPTX, ODT, ODS, ODP, TXT, CSV; MP4, WebM; MP3, M4A, OGG. Limits per kind are in
+  `config/portal.php`. Refused: anything else (HTML, PHP, old binary Office formats), text or SVG
+  containing `<?php`, Office files with macros or path tricks, images over 50 megapixels (checked from
+  the header, before decoding), damaged images.
+- **Cleaning.** Photos are re-encoded with GD on upload: turned upright from EXIF, scaled to a 3840 px
+  longest edge, and saved again, which drops EXIF/GPS and any appended payload. Animated GIFs become
+  still images. SVGs go through rhukster/dom-sanitizer (MIT; the common enshrined/svg-sanitize is GPL)
+  plus a final check; SVGs that need DOCTYPE entities are refused and must be exported again.
+- **Names.** The stored file name is a slug of the title plus the extension of the real type, so
+  "photo.php.jpg" can never be stored as PHP. Folders on disk are the media UUID, not the id.
+- **Where files live.** Originals on the private `media` disk (`storage/app/media`), served only by
+  `MediaFileController` at `/media/{uuid}/{name}` with the stored type, `nosniff`, a year of caching,
+  `inline` only for images, PDF, audio and video, and a sandbox CSP for SVG and text. No session or
+  cookies on that route, so Cloudflare can cache it. Copies go to the `public` disk under
+  `storage/library/{uuid}/conversions/`; the deploy writes an `.htaccess` there that refuses script
+  files, and the smoke test checks that public uploads are still served.
+- **Copies.** A 320 px preview (made at upload) and three presets cropped around the focal point:
+  landscape 16:9 (480, 960, 1600), square 1:1 (320, 640), photo 3:2 (600, 1200). Each is WebP (q80) and,
+  when GD can write AVIF (`MEDIA_AVIF=auto`), AVIF (q60). Widths larger than the original are skipped.
+  Moving the focal point remakes the crops; versioned URLs make browsers and Cloudflare fetch them.
+  No optimiser binaries are used. `<x-picture>` renders `<picture>` with AVIF/WebP srcsets, width and
+  height, the focal point as `object-position`, and alt text in the page's language.
+- **Queue.** Copies are made on the `media` queue. Cron runs `php artisan portal:work-queues`, which
+  drains every queue listed in `config('portal.queues')`; new queues need no server change.
+- **Who.** `media.view` opens the library, `media.upload` uploads and edits one's own files,
+  `media.update` edits any file and manages folders, `media.delete` deletes unused files and empty folders.
+  Alt text is optional in the library; Phase 2 requires English, Amharic and Afaan Oromo before an image
+  becomes a featured image (Harari falls back to Amharic).
+
+**Consequences.** Large originals cost disk space on the host; the media screen shows usage against
+`MEDIA_QUOTA_GB`. PDF previews, video posters and an in-browser crop editor need Imagick or ffmpeg and
+are left for a host that has them. A move to S3/R2 is a disk change (`MEDIA_DISK`,
+`MEDIA_CONVERSIONS_DISK`) plus a signed-URL variant of the media route.

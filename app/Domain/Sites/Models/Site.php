@@ -2,11 +2,17 @@
 
 namespace App\Domain\Sites\Models;
 
+use App\Domain\Media\Models\Media;
+use App\Domain\Media\Support\ImageConversions;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media as BaseMedia;
 
 /**
  * A portal site. Only the default site exists for now; sub-sites for offices
  * or leagues can be added later without schema changes (PLAN.md §7).
+ * The site owns its media library (ADR-0009).
  *
  * @property int $id
  * @property string $key
@@ -14,8 +20,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property ?string $domain
  * @property bool $is_default
  */
-class Site extends Model
+class Site extends Model implements HasMedia
 {
+    use InteractsWithMedia;
+
     protected $fillable = ['key', 'name', 'domain', 'is_default'];
 
     private static ?Site $current = null;
@@ -23,6 +31,16 @@ class Site extends Model
     protected function casts(): array
     {
         return ['is_default' => 'boolean'];
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection(Media::LIBRARY);
+    }
+
+    public function registerMediaConversions(?BaseMedia $media = null): void
+    {
+        ImageConversions::register($this, $media);
     }
 
     /**
