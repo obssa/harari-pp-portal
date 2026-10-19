@@ -323,3 +323,39 @@ languages along a chain (Harari → Amharic → English, Afaan Oromo → English
 **Consequences.** Every content model of Phase 2 onward uses this pattern; categories and tags are the
 first. Public pages show only languages a record has (with the fallback rules decided per page type in
 step 2.4).
+
+## ADR-0012 — Posts: block content, per-language status, revisions (2026-10-19)
+
+**Context.** PLAN.md §7 asks for a block editor (paragraphs, headings, images with caption and credit,
+gallery, video, quote, table, file, call-out), a featured image with focal point and alt text per
+language, per-language status and publish date, revision history with diff and restore, duplicate and
+bulk actions. The public pages must stay small, accessible and within the strict CSP (ADR-0010).
+
+**Decision.**
+
+- **Editor.** Filament's rich editor (TipTap) stores the body as JSON per language. Toolbar: bold,
+  italic, link, H2/H3, quote, lists, table, undo/redo. File attachments are off: images come from the
+  media library through custom blocks, so every image is cleaned, cropped and described (ADR-0009).
+- **Blocks** (`App\Domain\Content\Blocks`): photo (library image, caption, credit, normal/wide), gallery
+  (up to 24 library photos), video (YouTube only, embedded from youtube-nocookie.com and lazy-loaded),
+  highlighted note (information/important/good news), file (library document, audio or video). PDF
+  viewing in the page waits for the documents module (Phase 3).
+- **Rendering.** `BodyRenderer` renders the JSON with Filament's `RichContentRenderer` (escaped text,
+  our Blade views per block), gives plain text for counts and search, and lists the library media used.
+  Word count covers Latin and Ethiopic words; reading time assumes 200 words a minute.
+- **Saving** goes through `SavePost` (one transaction): at least one language must have a title; only
+  `posts.publish` publishes, schedules or archives, and a published language edited by a non-publisher
+  stays published; translators change text only (type, image, categories, tags and flags need
+  `posts.update`, or `posts.update_own` on one's own post); a featured image needs alt text in each live
+  language among English, Amharic and Afaan Oromo (Harari falls back to Amharic); publishing without a
+  date stamps the current time; media used as featured image or in the body is recorded
+  (`SyncMediaUsage`), so it cannot be deleted from the library.
+- **Revisions** (`revisions` table, any content type): a version of a language is kept when its text,
+  slug, status or date changed since the last version. Comparing shows changes paragraph by paragraph;
+  restoring brings back the text only (title, kicker, summary, body, SEO texts), never the status, date
+  or address, and is itself a new version.
+- Blocks live in the domain although they extend a Filament class: the same classes define the editor
+  form and the public HTML.
+
+**Consequences.** Scheduling, review and send-back move to the workflow of step 2.3; the public news
+pages (2.4) render bodies through `BodyRenderer` only.

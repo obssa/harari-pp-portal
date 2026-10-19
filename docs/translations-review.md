@@ -29,3 +29,5 @@ Harari translators.
 | `site.description` | am, om | page description for search engines | Must match the branch's official self-description once supplied |
 | `docs/manual/01-getting-started.am.md` | am | staff manual, chapter 1 | Whole chapter; UI labels quoted must match the Amharic admin |
 | `admin.categories.*`, `admin.tags.*`, `admin.translations.*` | am, om | category/tag screens and language tabs | "slug" kept as a loanword (ስሉግ); category (ምድብ / Ramaddii), tag (መለያ / Mallattoo) |
+| `content.post_type.*`, `content.status.*` | am, om | post types and workflow statuses | Party usage for press release (ጋዜጣዊ መግለጫ / Ibsa miidiyaa) and statement (መግለጫ / Ibsa); status words |
+| `admin.posts.*`, `content.block.*`, `admin.revisions.*` | am, om | post editor, blocks, versions | Editor-facing wording; "kicker" (ንዑስ ርዕስ / Mata-duree xiqqaa); Oromo uses Finfinnee for Addis Ababa |

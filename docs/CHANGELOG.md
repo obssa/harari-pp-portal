@@ -4,6 +4,21 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 2, step 2.2 — posts (2026-10-19)
+
+- Admin → Content → Posts: news, press releases, statements, speeches and announcements, with a tab
+  per language (title, kicker, address, summary, text, status, publication date, search-engine fields).
+- Block editor with headings, lists, quotes, tables and links, plus library photos with caption and
+  credit, photo galleries, YouTube videos (privacy-enhanced, lazy-loaded), highlighted notes and files.
+- Each language has its own status (draft, in review, translating, scheduled, published, archived);
+  only publishers publish, schedule or archive; translators change the text only.
+- Featured image from the media library; it needs alt text in every live language among English,
+  Amharic and Afaan Oromo. Images and files used by a post cannot be deleted from the library.
+- Categories, tags, "featured" and "pinned" flags; word count and reading time per language.
+- Versions of every language with a paragraph-by-paragraph comparison and restore (text only; status,
+  date and address stay). Duplicate a post as a new draft. List with languages and statuses, filters
+  for type, status, category and missing language, soft delete and restore.
+
 ### Phase 2, step 2.1 — translatable content foundation (2026-10-19)
 
 - Translation-table pattern for content (one row per language, fallback chain, per-language slugs that
