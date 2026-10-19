@@ -46,6 +46,15 @@
         <div class="prose-content mt-8 max-w-prose">{!! $body !!}</div>
 
         <footer class="mt-10 max-w-prose space-y-6 border-t border-line pt-6">
+            @if ($post->source_url)
+                <p class="text-sm text-ink-muted">
+                    {{ __('news.source') }}:
+                    <a href="{{ $post->source_url }}" rel="noopener nofollow" class="text-link underline-offset-4 hover:underline">{{ $post->source_name }}</a>
+                    @if ($post->source_published_at)
+                        · <x-date :date="$post->source_published_at" />
+                    @endif
+                </p>
+            @endif
             @if ($post->categories->isNotEmpty() || $post->tags->isNotEmpty())
                 <ul class="flex flex-wrap gap-2" aria-label="{{ __('news.topics') }}">
                     @foreach ($post->categories as $category)

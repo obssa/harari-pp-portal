@@ -17,6 +17,9 @@ Schedule::command('activitylog:clean --force')->dailyAt('02:30');
 // ADR-0013: scheduled posts go live within a minute of their time.
 Schedule::command('content:publish-due')->everyMinute()->withoutOverlapping();
 
+// ADR-0022: new stories from the public channels arrive as drafts.
+Schedule::command('content:import')->everyThirtyMinutes()->withoutOverlapping();
+
 // ADR-0021: the dashboard shows when the scheduler last ran.
 Schedule::call(fn () => Cache::forever(QueueHealth::HEARTBEAT, now()->toIso8601String()))
     ->everyMinute()

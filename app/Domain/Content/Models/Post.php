@@ -12,6 +12,7 @@ use App\Domain\Media\Models\Media;
 use App\Domain\Organisation\Models\Leader;
 use App\Domain\Organisation\Models\League;
 use App\Domain\Organisation\Models\Office;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
@@ -34,6 +35,9 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property bool $is_sticky
  * @property ?string $source_locale
  * @property int $view_count
+ * @property ?string $source_url
+ * @property ?string $source_name
+ * @property ?CarbonImmutable $source_published_at
  * @property-read ?Media $featuredImage
  */
 class Post extends Model implements TranslatableModel
@@ -59,6 +63,7 @@ class Post extends Model implements TranslatableModel
             'is_featured' => 'boolean',
             'is_sticky' => 'boolean',
             'view_count' => 'integer',
+            'source_published_at' => 'immutable_datetime',
         ];
     }
 

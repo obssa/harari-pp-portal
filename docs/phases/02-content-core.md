@@ -21,7 +21,7 @@ the homepage and a post.
 | 2.8 | Homepage builder: reorderable, toggleable sections (hero slider, ticker, leadership message, latest news, press releases, counters, core values, leagues spotlight, partner links; event/social/video sections show once their modules exist), limits and curated picks, per-language overrides | done 2026-10-19 (mega-menu panels and the top bar menu stay for later; event/social/video sections arrive with their modules) |
 | 2.9 | Search per language (Scout database driver now, Meilisearch-ready): search page and header search, Ethiopic-aware matching, zero-result log | done 2026-10-19 (typo tolerance beyond spelling variants waits for Meilisearch) |
 | 2.10 | Dashboard v1: widget registry, per-role default layouts, per-user layouts (add, remove, reorder, resize), global range/language/office filters, first widgets (KPI strip, attention needed, editorial pipeline, translation coverage, activity feed, quick actions, announcements, media storage, queue health, top content) | done 2026-10-19 (top content waits for analytics; site searches shown instead; role defaults follow permissions) |
-| 2.11 | Content import from public sources (`docs/content/sources.md`): Telegram public channels of the branch and the communication office into drafts with source links, de-duplication and staff review; no scraping behind logins | |
+| 2.11 | Content import from public sources (`docs/content/sources.md`): Telegram public channels of the branch and the communication office into drafts with source links, de-duplication and staff review; no scraping behind logins | done 2026-10-19 |
 | 2.12 | Phase 2 gate: end-to-end four-language post on staging, Lighthouse on homepage and post, manual chapter "Publishing a post", phase report | |
 
 ## Main decisions to record
@@ -62,4 +62,5 @@ the homepage and a post.
 4. Whether press releases need a separate approval from statements [same workflow for all types].
 5. Machine translation provider and budget for am/om (Phase 4) [none; manual translation].
 6. Permission from the communication office to republish its material (`docs/content/sources.md`)
-   [import the branch's own channel only until confirmed].
+   [both channels import drafts, as the owner asked on 2026-10-19; office stories are published only
+   once the office's permission is confirmed].

@@ -158,3 +158,11 @@ Logs: `~/hararipp.orcamind.dev/storage/logs/laravel-*.log` (daily, 14 days).
 - Moving to Meilisearch later: set `SCOUT_DRIVER=meilisearch`, `MEILISEARCH_HOST` and
   `MEILISEARCH_KEY` in `.env`, `composer require meilisearch/meilisearch-php`, then
   `php artisan scout:import` for each of the five translation models.
+
+## Content import (ADR-0022)
+
+- `content:import` runs every 30 minutes from the scheduler and only adds drafts. Run it by hand with
+  `php artisan content:import`; on the first run, `--pages=3` reads about sixty messages back.
+- Problems (Telegram unreachable, changed page layout) show on Administration → Content sources in
+  "Last problem"; the next run tries again.
+- Imported photos go through the normal media pipeline; their copies are made by the queue.

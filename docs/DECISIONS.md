@@ -639,3 +639,40 @@ delivers the first version with the widgets whose data exists.
 **Consequences.** Traffic, social, members, applications, events and tickets widgets arrive with
 their modules and analytics; alerts, exports, scheduled snapshots and named dashboards come later.
 Visitors and page views wait for privacy-friendly analytics (Phase 4).
+
+## ADR-0022 — Importing stories from the public channels (2026-10-19)
+
+**Context.** The owner asked for real content from the Harari branch's own channels first and the
+Harari Government Communication Affairs Office second (docs/content/sources.md). Their Facebook pages
+cannot be read without logging in; their Telegram channels have public preview pages.
+
+**Decision.**
+
+- `content_sources` lists the channels: the branch (`t.me/hrprosperityparty`, primary) and the office
+  (`t.me/HarariGovernmentCommunication`, secondary), both on from the start at the owner's request.
+  Under Administration → Content sources, admins see each channel's state and can import now; Super
+  Admins can also switch a channel off, rename it and set its language. New channels are added in code
+  after the branch confirms them.
+- `content:import` runs every half hour. It reads `https://t.me/s/<channel>` (no account, no login,
+  Telegram publishes no robots rules for it) with an identifying user agent, only messages newer than
+  the last one read, the branch first. Only that address and photos on Telegram's CDN
+  (`cdn*.telesco.pe`) are ever requested.
+- A text message is a story; photo albums posted within two minutes of it are its photos; albums with
+  no text nearby are skipped. Each story becomes a **draft** news post: the first line is the title,
+  the rest the text, unchanged. Ethiopic text takes the channel's language (Amharic; Harari shares the
+  script, so staff change it when needed), Latin text is told apart as Afaan Oromo or English. Up to
+  ten photos are downloaded once, cleaned like any upload (ADR-0009) and credited to the channel; the
+  first is the featured photo, the rest a gallery.
+- Every post keeps its source: name, message link and original time. Editors see it in the post
+  editor with a reminder to check names and facts; readers see "Source: …" under the story.
+- A story that matches one already imported from the same or a higher-priority source within three
+  days (sixty first words, 60 % in common after normalisation) is recorded as a duplicate, so the
+  office's reposts of branch stories are skipped. `content_imports` records every message read.
+- Nothing is published automatically; machine translation is not used. Stories from the
+  communication office are published only once the office's permission to republish is confirmed
+  (PLAN.md §14 input; editors see the source on every imported draft).
+
+**Consequences.** Facebook and YouTube are read through their APIs with the branch's tokens in Phase 5
+(Social Media Hub). Photos posted after their story was imported are skipped; editors can add them
+from the source link. If Telegram changes its preview markup, imports fail visibly on the content
+sources screen until the reader is updated.

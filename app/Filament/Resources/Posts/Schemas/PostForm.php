@@ -46,6 +46,11 @@ class PostForm
                     ->columnSpan(['default' => 3, 'lg' => 1])
                     ->disabled(fn (?Post $record): bool => $record !== null && ! CurrentUser::get()->can('updateStructure', $record))
                     ->schema([
+                        TextEntry::make('source_name')
+                            ->label(__('import.post.source'))
+                            ->url(fn (?Post $record): ?string => $record?->source_url, shouldOpenInNewTab: true)
+                            ->helperText(__('import.post.source_help'))
+                            ->visible(fn (?Post $record): bool => filled($record?->source_url)),
                         Select::make('type')
                             ->label(__('admin.posts.field.type'))
                             ->options(PostType::options())

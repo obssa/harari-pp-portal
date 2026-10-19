@@ -17,6 +17,7 @@ use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
@@ -88,6 +89,9 @@ class PostsTable
                     ->query(fn (Builder $query, array $data): Builder => filled($data['value'] ?? null)
                         ? $query->whereHas('categories', fn (Builder $q) => $q->whereKey($data['value']))
                         : $query),
+                Filter::make('imported')
+                    ->label(__('import.filter.imported'))
+                    ->query(fn (Builder $query): Builder => $query->whereNotNull('source_url')),
                 TrashedFilter::make(),
             ])
             ->recordActions([

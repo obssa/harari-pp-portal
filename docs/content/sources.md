@@ -2,8 +2,8 @@
 
 The site owner asked (2026-10-19) for real content taken from the branch's own public channels first
 and from the Harari regional government communication office second. This file records which channels
-are official, how they can be read, and the rules for importing from them. The import itself arrives
-with the content module (Phase 2).
+are official, how they can be read, and the rules for importing from them. The import runs every half
+hour since step 2.11 (ADR-0022); admins manage it under Administration → Content sources.
 
 ## Official channels
 

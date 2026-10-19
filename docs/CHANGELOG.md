@@ -4,6 +4,17 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 2, step 2.11 — stories from the public channels (2026-10-19)
+
+- Every half hour, new stories from the branch's Telegram channel and the regional communication
+  office's channel arrive as **draft** news posts: title and text as written, photos downloaded and
+  credited, the source link and original time kept (ADR-0022). Nothing is published automatically.
+- The office's reposts of branch stories are recognised and skipped.
+- Posts → filter "Imported from channels"; the post editor shows where a story came from with a
+  reminder to check names and facts; published stories show "Source: …" with the link.
+- Administration → Content sources: admins see when each channel was last read and any problem, and
+  can import now; Super Admins can switch a channel on or off and set its language.
+
 ### Phase 2, step 2.10 — dashboard v1 (2026-10-19)
 
 - The admin home is a dashboard of widgets with a period (7, 30, 90 days, 12 months or this fiscal
