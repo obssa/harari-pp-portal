@@ -4,6 +4,18 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 2, step 2.10 — dashboard v1 (2026-10-19)
+
+- The admin home is a dashboard of widgets with a period (7, 30, 90 days, 12 months or this fiscal
+  year), language and office filter on top (ADR-0021).
+- Widgets: announcements, key figures with the change against the period before, needs attention,
+  quick actions, editorial pipeline per language, translation coverage, site searches, media storage,
+  background work and recent activity. Each person sees only the widgets their role allows.
+- **Customise dashboard**: add, remove, reorder and resize widgets; **Reset** goes back to the standard
+  layout for the role.
+- Administration → Announcements (Super Admins): notices shown on every staff dashboard, with start and
+  end times.
+
 ### Phase 2, step 2.9 — site search (2026-10-19)
 
 - A search box in the header of every page and a search page (`/{lang}/search`) finding news, pages,

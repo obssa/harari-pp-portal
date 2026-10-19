@@ -25,6 +25,8 @@ use App\Domain\Content\Policies\PostPolicy;
 use App\Domain\Content\Policies\RedirectPolicy;
 use App\Domain\Content\Policies\RevisionPolicy;
 use App\Domain\Content\Policies\TaxonomyPolicy;
+use App\Domain\Dashboard\Models\Announcement;
+use App\Domain\Dashboard\Policies\AnnouncementPolicy;
 use App\Domain\Homepage\Models\HomepageSection;
 use App\Domain\Homepage\Policies\HomepageSectionPolicy;
 use App\Domain\Media\Enums\MediaKind;
@@ -171,6 +173,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(League::class, LeaguePolicy::class);
         Gate::policy(HomepageSection::class, HomepageSectionPolicy::class);
         Gate::policy(SearchTerm::class, SearchTermPolicy::class);
+        Gate::policy(Announcement::class, AnnouncementPolicy::class);
 
         // Super Admins hold every permission (PLAN.md §8). Only permission
         // names (`module.action`) are short-circuited, so policy rules such as

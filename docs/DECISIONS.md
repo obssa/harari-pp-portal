@@ -604,3 +604,38 @@ host and Meilisearch later.
 
 **Consequences.** Typo tolerance beyond letter variants (missing letters, swapped vowels) waits for
 Meilisearch. Events, documents and projects join search with their modules.
+
+## ADR-0021 — Dashboard v1 (2026-10-19)
+
+**Context.** PLAN.md §7 describes a role-aware, user-configurable widget dashboard: a widget registry
+(permission, default size, data), default layouts per role, layouts per person (add, remove, reorder,
+resize), global range/language/office filters, drill-down links and a long widget catalogue. Phase 2
+delivers the first version with the widgets whose data exists.
+
+**Decision.**
+
+- The admin home is our own Filament dashboard page with three filters on top (period: 7, 30 or 90
+  days, 12 months or the Ethiopian fiscal year from 1 Hamle; language; office) that every widget
+  reads, and a 12-column grid (one column on phones).
+- Widgets implement `App\Domain\Dashboard\Contracts\DashboardWidget` (key, title, permission, default
+  width) and are listed in `App\Filament\Support\DashboardRegistry`. The registry order is the default
+  layout; a role's default is the part of it the role may see, so publishers start with editorial
+  widgets and admins also get operations. Super Admins editing role defaults in the admin is left for
+  later.
+- Each person can open **Customise dashboard** to add, remove, reorder and resize widgets (quarter,
+  third, half, two thirds, full width), or **Reset**; the layout is saved in `dashboard_layouts` and
+  widgets they may no longer see are dropped when it is read.
+- First widgets: announcements, key figures (published in the period with the change against the
+  period before and a daily trend, waiting for review, missing translations, searches with no
+  results), needs attention, quick actions, editorial pipeline per language, translation coverage
+  (interface texts and published posts), site searches, media storage, background work (jobs waiting
+  per queue, failed jobs and a scheduler heartbeat written every minute) and recent activity. Figures
+  link to the lists behind them.
+- Announcements are written by Super Admins under Administration → Announcements, with a kind and
+  optional start and end times.
+- The widget views use Filament's own components plus a few inline styles instead of a separate admin
+  theme build, so the asset pipeline and the public CSS budget are unchanged.
+
+**Consequences.** Traffic, social, members, applications, events and tickets widgets arrive with
+their modules and analytics; alerts, exports, scheduled snapshots and named dashboards come later.
+Visitors and page views wait for privacy-friendly analytics (Phase 4).

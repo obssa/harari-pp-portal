@@ -40,3 +40,4 @@ Harari translators.
 | `directory.*`, `leaders.*`, `offices.*`, `leagues.*`, `structure.*` | am, om | public directory pages | Page titles and the short labels on profiles |
 | `homepage.*` | am, om | homepage sections and builder | Core values: መደመር / Ida'amuu, ኅብረ ብሔራዊ አንድነት / Tokkummaa sab-daneessummaa, ብሔራዊ ሉዓላዊነት / Olaantummaa biyyaa, አካታችነት / Hammattummaa; confirm against party documents. "Breaking news" (ሰበር ዜና / Oduu ariifachiisaa) |
 | `search.*`, `admin.search_terms.*` | am, om | search page, header search, search insights | "search" (ፍለጋ / Barbaacha); quotation marks around the query in am/om |
+| `dashboard.*` | am, om | admin dashboard, widgets and announcements | "widget" kept as a loanword in om (Widget) and as መግብር in am; fiscal-year wording (በጀት ዓመት / Bara baajataa) |
