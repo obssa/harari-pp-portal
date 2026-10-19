@@ -1,9 +1,82 @@
-@import 'tailwindcss';
+/* Public site styles only: the admin panel has Filament's own CSS. */
+@import 'tailwindcss' source(none);
+@import './fonts.css';
+@import './tokens.css';
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
+@source '../views';
+@source not '../views/filament';
+@source '../../app/View';
 
-@theme {
-    --font-sans: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+@layer base {
+    html {
+        color-scheme: light dark;
+        -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+        background-color: var(--color-canvas);
+        color: var(--color-ink);
+        line-height: 1.6;
+    }
+
+    /* Ethiopic script needs more room between lines (PLAN.md §12). */
+    :lang(am),
+    :lang(har) {
+        line-height: 1.7;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+        line-height: 1.25;
+        text-wrap: balance;
+    }
+
+    /* Ethiopic headlines look heavier than Latin at the same size (PLAN.md §12). */
+    :root {
+        --heading-scale: 1;
+    }
+
+    :lang(am),
+    :lang(har) {
+        --heading-scale: 0.92;
+    }
+
+    :focus-visible {
+        outline: 3px solid var(--color-primary-500);
+        outline-offset: 2px;
+    }
+
+    a {
+        color: inherit;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            scroll-behavior: auto !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+}
+
+/* Headline sizes that shrink slightly for Ethiopic (use instead of text-4xl etc. on headings). */
+@utility heading-1 {
+    font-size: calc(var(--text-4xl) * var(--heading-scale, 1));
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+@utility heading-2 {
+    font-size: calc(var(--text-2xl) * var(--heading-scale, 1));
+    font-weight: 650;
+}
+
+@utility heading-3 {
+    font-size: calc(var(--text-xl) * var(--heading-scale, 1));
+    font-weight: 600;
 }

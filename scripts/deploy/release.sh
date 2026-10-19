@@ -46,7 +46,7 @@ if [ -f scripts/deploy/public.htaccess ]; then
     echo "public/.htaccess rebuilt ($(printf '%s' "$blocks" | grep -c 'BEGIN cPanel-generated') cPanel block(s) kept)"
 fi
 
-"$PHP_BIN" artisan down --retry=15 || true
+"$PHP_BIN" artisan down --render="errors::503" --retry=15 || true
 trap '"$PHP_BIN" artisan up >/dev/null 2>&1 || true' EXIT
 
 "$PHP_BIN" artisan migrate --force --no-interaction

@@ -93,7 +93,10 @@ it('offers every language in its own script and marks the current one', function
 });
 
 it('keeps links in the language of the page', function () {
-    $this->get('/om')->assertSee('href="'.url('/om').'" class="font-semibold', escape: false);
+    $html = (string) $this->get('/om')->getContent();
+
+    expect($html)->toMatch('#<a href="'.preg_quote(url('/om'), '#').'"\s+aria-current="page"#')
+        ->not->toMatch('#<a href="'.preg_quote(url('/en'), '#').'"\s+aria-current="page"#');
 });
 
 it('remembers the language a visitor chose', function () {

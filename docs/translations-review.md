@@ -24,3 +24,6 @@ Harari translators.
 | `admin.settings.*` | am, om | settings screens | Staff-facing wording of the settings and integrations screens |
 | `admin.media.*`, `admin.media_folders.*` | am, om | media library screens | Terms: alt text (አማራጭ ጽሑፍ / Barreeffama bakka bu'aa), folder (ማህደር / Fooldara), media library (የሚዲያ ማከማቻ / Kuusaa miidiyaa), focal point (የትኩረት ነጥብ / Qabxii xiyyeeffannaa), upload (ጫን / Fe'i) |
 | `media.rejected.*` | am, om | upload refusal messages | Shown to staff when a file is refused; check they read as plain instructions |
+| `nav.*`, `footer.*` | am, om | site navigation and footer | Short UI labels; "hotline" (ቀጥታ መስመር / Sarara kallattii) and the copyright line |
+| `errors.*` | am, om | error and maintenance pages | Tone of the apology on 500/503; "session expired" wording on 419 |
+| `site.description` | am, om | page description for search engines | Must match the branch's official self-description once supplied |

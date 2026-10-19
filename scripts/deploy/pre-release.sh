@@ -14,7 +14,7 @@ fi
 
 mkdir -p "$SNAP_DIR"
 if [ -f "$APP_DIR/artisan" ] && [ -f "$APP_DIR/vendor/autoload.php" ]; then
-    (cd "$APP_DIR" && "$PHP_BIN" artisan down --retry=15) || true
+    (cd "$APP_DIR" && "$PHP_BIN" artisan down --render="errors::503" --retry=15) || true
     tar -czf "$SNAP_DIR/prev.tar.gz.tmp" -C "$APP_DIR" \
         --exclude=./storage --exclude=./.env --exclude='./.env.*' \
         --exclude=./public/storage --exclude=./bootstrap/cache .

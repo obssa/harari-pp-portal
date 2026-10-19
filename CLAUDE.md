@@ -83,6 +83,8 @@ python scripts/task.py test     # Pest in the php:8.3 test container against MyS
 python scripts/task.py lint     # Pint --test + Larastan
 python scripts/task.py composer require vendor/package   # Composer inside the container
 python scripts/task.py artisan <command>                  # artisan inside the container
+python scripts/check-hardcoded-strings.py                  # visible text in templates must use __()
+python scripts/fonts/build_fonts.py                        # rebuild self-hosted fonts (rarely)
 ```
 
 Languages (ADR-0007): put every visible string in `lang/en.json` and the other three files in the same
@@ -97,6 +99,10 @@ Media (ADR-0009): content stores library media ids (e.g. `featured_image_id`) an
 `SyncMediaUsage` on save; render images with `<x-picture :media="..." preset="landscape" />`; add
 uploads only through `UploadMedia`. Settings and the current site (ADR-0008): `app(SiteSettings::class)`,
 `Site::current()`; dates through `<x-date>` or `EthiopianCalendar`.
+
+Public pages (ADR-0010): use the tokens (`bg-primary-600`, `text-ink-muted`, `heading-1` ...) and the
+`x-ui.*` components shown at `/styleguide`; no inline `<script>`/`<style>` without `@nonce`; public routes
+stay without session (add the session middleware only to pages with forms).
 
 ## Definition of done for the whole project
 

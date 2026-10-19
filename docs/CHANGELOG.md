@@ -4,6 +4,24 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 1, step 1.6 — design system, public layout, security headers (2026-10-19)
+
+- Design tokens: party blue scale, Harar terracotta accent, semantic and dark-mode colours, headline
+  sizes tuned for Ethiopic.
+- Self-hosted Inter and Noto Sans Ethiopic (subset to the Ethiopic block, 41% smaller), preloaded per
+  language.
+- New public layout: skip link, today in both calendars, language switcher, header and main menu,
+  footer with contact details and social links from the site settings.
+- Components: button, badge, card, date tile (Ethiopian day and month with the Gregorian date).
+- Translated error pages (403, 404, 419, 429, 500); the maintenance page shows all four languages.
+- Security headers on every response: strict Content-Security-Policy with nonces on public pages,
+  HSTS, frame, referrer, permissions and opener policies.
+- Public pages carry no session cookie and tell Cloudflare it may cache them for 10 minutes; hashed
+  assets and fonts are cached for a year.
+- `/styleguide` (not in production), a hard-coded text check in CI, and a Lighthouse audit of the live
+  site after every deploy.
+- Content sources for Phase 2 recorded in `docs/content/sources.md`.
+
 ### Phase 1, step 1.5 — media library (2026-10-19)
 
 - Admin → Content → Media library: upload up to 20 files at once (photos, SVG, documents, video,

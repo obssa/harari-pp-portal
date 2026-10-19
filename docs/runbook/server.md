@@ -40,7 +40,7 @@ Status: **provisioned 2026-10-18**; first release `502124372d0f` deployed by Git
 ### Cron entries
 
 ```
-* * * * * cd $HOME/hararipp.orcamind.dev && /opt/alt/php83/usr/bin/php artisan schedule:run >> /dev/null 2>&1
+* * * * * sleep $((RANDOM \% 60)) && cd $HOME/hararipp.orcamind.dev && /opt/alt/php83/usr/bin/php artisan schedule:run >> /dev/null 2>&1
 * * * * * cd $HOME/hararipp.orcamind.dev && /opt/alt/php83/usr/bin/php artisan portal:work-queues >> /dev/null 2>&1
 ```
 
@@ -122,3 +122,17 @@ Logs: `~/hararipp.orcamind.dev/storage/logs/laravel-*.log` (daily, 14 days).
   remake everything).
 - PHP limits for uploads come from the domain's PHP settings in cPanel (MultiPHP INI Editor):
   `upload_max_filesize` and `post_max_size` must be at least the largest upload (50 MB for video).
+
+## Caching, headers and audits (ADR-0010)
+
+- Public pages send `Cache-Control: public, max-age=0, s-maxage=600` when they set no cookie. Cloudflare
+  caches HTML only with a Cache Rule: in the Cloudflare dashboard for orcamind.dev, add a rule for
+  hostname `hararipp.orcamind.dev` and paths starting with `/en`, `/am`, `/om`, `/har`, set "Eligible for
+  cache" and "Respect origin" for Edge TTL. Never include `/admin` or `/livewire`. After publishing urgent
+  changes, purge the cache for the host.
+- Security headers come from the application on every PHP response; static files are served by
+  LiteSpeed with the caching rule in `public/.htaccess`.
+- The Lighthouse workflow audits the live `/en` and `/am` after each deploy; reports are kept 14 days as
+  workflow artifacts. Run it by hand from GitHub → Actions → Lighthouse → Run workflow.
+- Fonts live in `public/fonts/portal/` and are rebuilt with `python scripts/fonts/build_fonts.py`
+  (needs fontTools and brotli) after updating the font packages; bump `VERSION` in the script.

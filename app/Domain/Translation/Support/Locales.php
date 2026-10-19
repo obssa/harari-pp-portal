@@ -2,6 +2,8 @@
 
 namespace App\Domain\Translation\Support;
 
+use Illuminate\Http\Request;
+
 /**
  * The portal's languages and how a visitor's language is chosen
  * (PLAN.md §3: URL, then cookie, then Accept-Language, then default).
@@ -110,5 +112,25 @@ final class Locales
         usort($candidates, fn (array $a, array $b): int => [$b['q'], $a['pos']] <=> [$a['q'], $b['pos']]);
 
         return $candidates[0]['locale'] ?? null;
+    }
+
+    /**
+     * The language for a request that did not go through the locale routes
+     * (error pages, maintenance): the URL prefix, then the cookie, then the
+     * browser, then the default.
+     */
+    public static function fromRequest(Request $request): string
+    {
+        $prefix = strtolower((string) $request->segment(1));
+        if (self::isSupported($prefix)) {
+            return $prefix;
+        }
+
+        $cookie = $request->cookies->get(self::COOKIE);
+        if (is_string($cookie) && self::isSupported($cookie)) {
+            return $cookie;
+        }
+
+        return self::fromAcceptLanguage($request->header('Accept-Language')) ?? self::default();
     }
 }

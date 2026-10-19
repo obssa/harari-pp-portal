@@ -231,3 +231,61 @@ GD only (no Imagick, no optimiser binaries), PHP memory limits, a cron-drained d
 `MEDIA_QUOTA_GB`. PDF previews, video posters and an in-browser crop editor need Imagick or ffmpeg and
 are left for a host that has them. A move to S3/R2 is a disk change (`MEDIA_DISK`,
 `MEDIA_CONVERSIONS_DISK`) plus a signed-URL variant of the media route.
+
+## ADR-0010 — Design tokens, public layout, security headers and edge caching (2026-10-19)
+
+**Context.** PLAN.md §12 sets the visual system (party blue, a Harar accent, Inter and Noto Sans
+Ethiopic, 8 px spacing, 1280 px container) and §9/§11 set the budgets (Lighthouse ≥ 90, HTML < 60 KB,
+JS < 80 KB gzipped), a strict CSP with nonces, HSTS and Cloudflare caching. The admin panel is Filament,
+whose Alpine components evaluate expressions at run time.
+
+**Decision.**
+
+- **Tokens.** `resources/css/tokens.css` defines the Tailwind 4 theme: `primary-50…950` around
+  `#3151ED` (600), `accent-50…950` around Harar terracotta `#B4532A` (600), semantic success, warning and
+  danger, and surface/ink/line/link colours that switch with `prefers-color-scheme: dark`. Headings use
+  `heading-1/2/3` utilities whose size is multiplied by `--heading-scale` (0.92 for Ethiopic).
+- **Fonts.** Self-hosted in `public/fonts/portal/` with the version in the file name (cached a year),
+  built by `scripts/fonts/build_fonts.py`: Inter (Latin, Latin Extended, variable weight) and Noto Sans
+  Ethiopic subset to the main Ethiopic block U+1200–U+137F (198 KB → 117 KB). Phones that already have
+  Noto Sans Ethiopic use it locally. Inter is preloaded everywhere, the Ethiopic font on am/har pages.
+  Ethiopic text gets line-height 1.7.
+- **Public CSS only scans public templates** (`resources/views` without `filament/`, `app/View`):
+  about 22 KB raw, 6 KB gzipped. No JavaScript is shipped yet.
+- **Layout.** Skip link, utility bar (today in both calendars, language switcher), header with the
+  wordmark and main menu, `<main id="content">`, footer with about, contact and social blocks read from
+  the site settings (blocks without data are left out; only `https://` social links are shown).
+  Components: `x-ui.button`, `x-ui.badge`, `x-ui.card`, `x-ui.date-tile`, `x-picture`, `x-date`.
+  Search and accessibility controls arrive with their features rather than as dead placeholders.
+- **Error pages** (403, 404, 419, 429, 500, 503) are translated and do not need the database: the
+  language comes from the URL prefix, then the cookie, then the browser. The 503 page is pre-rendered by
+  `artisan down --render` at deploy time, so it shows all four languages.
+- **Security headers** (`SecurityHeaders`, every response): `X-Content-Type-Options`,
+  `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy`
+  (camera, microphone, geolocation, payment, USB, topics off), `Cross-Origin-Opener-Policy`, and HSTS
+  (one year, subdomains) over HTTPS.
+- **CSP.** Public pages: `script-src` and `style-src` are `'self'` plus a per-request nonce (Vite tags
+  carry it; inline code must use `@nonce`), `style-src-attr 'unsafe-inline'` for one-off positions such
+  as focal points, no `unsafe-eval`, `object-src 'none'`, `frame-ancestors 'none'`, YouTube's
+  privacy-enhanced domain allowed for embeds. Admin and Livewire paths get a relaxed policy with
+  `'unsafe-inline' 'unsafe-eval'` because Filament needs them; they sit behind sign-in and two-factor
+  login. A CSP set by a controller (the SVG sandbox) is kept.
+- **Edge caching.** Public pages, `/`, the styleguide and media files run without the session
+  middleware, so they set no session cookie. `CachePublicPages` marks an anonymous GET 200 that sets no
+  cookie as `public, max-age=0, s-maxage=600, stale-while-revalidate=60`; anything else is
+  `private, no-cache`. Pages with forms (Phase 3) opt back into the session. Cloudflare only caches HTML
+  once a Cache Rule tells it to respect origin headers (runbook). A page served from the edge cache
+  repeats its nonce until it expires; nonces stay a second line of defence behind output escaping.
+- **Static files** under `public/` with `.js`, `.css` or `.woff2` names (hashed builds, versioned
+  fonts, Filament's `?v=` assets) are sent with `Cache-Control: public, max-age=31536000, immutable`.
+- **Styleguide** at `/styleguide` (404 in production) shows tokens and components; `?lang=` switches
+  the language. It is developer-facing, so its labels are English and it is exempt from the
+  hard-coded string check.
+- **Checks.** `scripts/check-hardcoded-strings.py` (CI lint job) fails when a template shows text not
+  passed through `__()`. The Lighthouse workflow audits `/en` and `/am` on the live site after each
+  deploy (mobile; performance, accessibility and best practices ≥ 0.9; HTML ≤ 60 KB and JS ≤ 80 KB
+  transferred; CLS ≤ 0.1). SEO is not scored on staging because it is noindex.
+
+**Consequences.** Logos are placeholders (a neutral favicon in party colours) until the party supplies
+its brand files (PLAN.md §14). Adding Livewire components to public pages will need either Livewire's
+CSP-safe mode or a review of the public policy.

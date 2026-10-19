@@ -33,6 +33,15 @@ for locale in en am om har; do
 done
 echo "PASS: /en /am /om /har render in their language with hreflang and no raw keys"
 
+grep -qi "^content-security-policy: default-src 'self'; script-src 'self' 'nonce-" /tmp/smoke.headers     || { echo "FAIL: public pages have no strict Content-Security-Policy"; exit 1; }
+grep -qi '^x-frame-options: DENY' /tmp/smoke.headers || { echo "FAIL: X-Frame-Options missing"; exit 1; }
+echo "PASS: security headers (CSP with nonce, X-Frame-Options)"
+
+code="$(fetch /en/this-page-does-not-exist)"
+[ "$code" = "404" ] || { echo "FAIL: unknown page returned $code instead of 404"; exit 1; }
+grep -q '<html lang="en">' /tmp/smoke.body || { echo "FAIL: the 404 page is not the portal's translated page"; exit 1; }
+echo "PASS: unknown pages get the translated 404 page"
+
 code="$(fetch /storage/smoke.txt)"
 [ "$code" = "200" ] || { echo "FAIL: public uploads are not served (/storage/smoke.txt returned $code)"; exit 1; }
 echo "PASS: public uploads are served (/storage)"

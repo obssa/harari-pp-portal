@@ -27,6 +27,10 @@ jobs:
         run: vendor/bin/phpstan analyse --memory-limit=1G --no-progress --error-format=github
       - name: Translations complete for am/om (lang:missing)
         run: php artisan lang:missing --files-only
+      - name: No hard-coded visible text in templates
+        run: |
+          python3 scripts/check-hardcoded-strings.py --self-test
+          python3 scripts/check-hardcoded-strings.py
       - name: Composer security audit
         run: composer audit --no-interaction
       - name: Composer manifest is valid and the lock file matches

@@ -1,0 +1,77 @@
+/*
+ * Design tokens (PLAN.md §12, ADR-0010). Every colour, font and radius used by
+ * the public site comes from here; components use the Tailwind utilities
+ * these tokens generate (bg-primary-600, text-accent-700, rounded-card ...).
+ */
+@theme {
+    /* Prosperity Party blue; 600 is the brand colour (#3151ED, 5.9:1 on white). */
+    --color-primary-50: #eef1fe;
+    --color-primary-100: #dfe4fd;
+    --color-primary-200: #c5cefc;
+    --color-primary-300: #a1aef9;
+    --color-primary-400: #7a86f4;
+    --color-primary-500: #5562ef;
+    --color-primary-600: #3151ed;
+    --color-primary-700: #2539c9;
+    --color-primary-800: #2231a2;
+    --color-primary-900: #222f80;
+    --color-primary-950: #161c4b;
+
+    /* Harar heritage ochre/terracotta, used sparingly for highlights (600: 5.0:1 on white). */
+    --color-accent-50: #fdf5ef;
+    --color-accent-100: #f9e6d8;
+    --color-accent-200: #f2cbb0;
+    --color-accent-300: #e9a87f;
+    --color-accent-400: #de7f4f;
+    --color-accent-500: #cd6234;
+    --color-accent-600: #b4532a;
+    --color-accent-700: #934225;
+    --color-accent-800: #773723;
+    --color-accent-900: #622f20;
+    --color-accent-950: #35160e;
+
+    /* Semantic colours. */
+    --color-success-50: var(--color-emerald-50);
+    --color-success-600: var(--color-emerald-600);
+    --color-success-800: var(--color-emerald-800);
+    --color-warning-50: var(--color-amber-50);
+    --color-warning-600: var(--color-amber-600);
+    --color-warning-800: var(--color-amber-800);
+    --color-danger-50: var(--color-red-50);
+    --color-danger-600: var(--color-red-600);
+    --color-danger-800: var(--color-red-800);
+
+    /* Surfaces and text; redefined for dark mode below. */
+    --color-canvas: var(--color-slate-50);
+    --color-surface: var(--color-white);
+    --color-surface-muted: var(--color-slate-100);
+    --color-line: var(--color-slate-200);
+    --color-ink: var(--color-slate-900);
+    --color-ink-muted: var(--color-slate-600);
+    --color-link: var(--color-primary-700);
+
+    --font-sans: 'Inter Variable', 'Noto Sans Ethiopic Variable', 'Abyssinica SIL', ui-sans-serif, system-ui,
+        sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+
+    --radius-card: 0.75rem;
+    --radius-control: 0.5rem;
+
+    --container-page: 80rem;
+    --container-prose: 70ch;
+
+    --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+    --duration-fast: 150ms;
+    --duration-base: 250ms;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --color-canvas: var(--color-slate-950);
+        --color-surface: var(--color-slate-900);
+        --color-surface-muted: var(--color-slate-800);
+        --color-line: var(--color-slate-700);
+        --color-ink: var(--color-slate-50);
+        --color-ink-muted: var(--color-slate-300);
+        --color-link: var(--color-primary-300);
+    }
+}

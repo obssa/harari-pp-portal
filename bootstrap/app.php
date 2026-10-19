@@ -3,6 +3,7 @@
 use App\Domain\Access\Actions\RecordAccessDenied;
 use App\Domain\Translation\Support\Locales;
 use App\Http\Middleware\NoIndexOutsideProduction;
+use App\Http\Middleware\SecurityHeaders;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -17,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->append(NoIndexOutsideProduction::class);
+        $middleware->append(SecurityHeaders::class);
 
         // The language choice is not sensitive and must stay readable without the app key.
         $middleware->encryptCookies(except: [Locales::COOKIE]);

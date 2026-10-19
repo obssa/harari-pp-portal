@@ -1,1 +1,1 @@
-<time datetime="{{ $iso }}" {{ $attributes }}>{{ $text }}</time>
+<time {{ $attributes->merge(['datetime' => $iso]) }}>{{ $text }}</time>
