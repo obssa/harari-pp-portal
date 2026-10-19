@@ -28,7 +28,7 @@ Status: **provisioned 2026-10-18**; first release `502124372d0f` deployed by Git
 |---|---|---|---|
 | 1 | Subdomain document root | `uapi SubDomain changedocroot domain=hararipp.orcamind.dev docroot=hararipp.orcamind.dev/public` | 2026-10-18 |
 | 2 | PHP 8.3 for this domain only | `uapi LangPHP php_set_vhost_versions vhost=hararipp.orcamind.dev version=alt-php83`; cPanel writes the handler into `public/.htaccess` | 2026-10-18 |
-| 3 | PHP extensions | web and CLI checked: pdo_mysql, intl, mbstring, gd (WebP/AVIF), zip, bcmath, exif, sodium, fileinfo, dom, curl, openssl all present | 2026-10-18 |
+| 3 | PHP extensions | web and CLI checked: pdo_mysql, intl, mbstring, gd (WebP/AVIF), zip, bcmath, exif, sodium, fileinfo, dom, curl, openssl all present; `calendar` (CLI) checked 2026-10-19 | 2026-10-18 |
 | 4 | Database + user | `uapi Mysql create_database / create_user / set_privileges_on_database`, random 40-character password generated on the server | 2026-10-18 |
 | 5 | Server `.env` | written on the server from the `.env.example` template, own `APP_KEY`, mode 600; login to the database verified | 2026-10-18 |
 | 6 | Deploy key | generated on the owner's PC, public half appended to `~/.ssh/authorized_keys` with `restrict` (file backed up first), private half in the GitHub secret `DEPLOY_SSH_KEY` | 2026-10-18 |
@@ -101,3 +101,7 @@ Logs: `~/hararipp.orcamind.dev/storage/logs/laravel-*.log` (daily, 14 days).
   affected; wait or ask the host to lift the block.
 - Changing the domain's PHP version in cPanel rewrites the handler block in `public/.htaccess`; the next
   deploy keeps whatever cPanel wrote.
+- Integration API keys (admin → Settings → Integrations) are encrypted with the server's `APP_KEY`.
+  Never change `APP_KEY` in the server `.env` without re-entering every key afterwards; until then the
+  integrations page shows them as not configured. PHP's `calendar` extension is required (Ethiopian
+  dates) and is part of alt-php83 on the host.

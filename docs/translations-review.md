@@ -17,3 +17,8 @@ Harari translators.
 | `nav.language` | am, om | ቋንቋ / Afaan | Label of the language switcher |
 | `lang/am/*.php`, `lang/om/*.php` | am, om | validation, sign-in, password and pagination messages | Taken from Laravel-Lang (MIT); some read as machine translation (e.g. Oromo password reset text mixes in English). Review all. |
 | Harari name in the switcher | har | ሐረሪ (`config/portal.php`) | The brief suggested "መሐዲያ"; confirm the name Harari speakers use for their language (Gey Sinan, ጌይ ሲናን?) |
+| `calendar.ethiopian.date` | am | `:month :day ቀን :year ዓ.ም.` | Confirm the usual written order and whether "ቀን" belongs in short dates |
+| `calendar.gregorian.month.*` | am | ጃንዩወሪ, ፌብሩወሪ … | Several spellings are in use (ጃንዋሪ, ጃኑዋሪ); pick the party's house style |
+| `calendar.ethiopian.month.*`, `calendar.gregorian.month.*` | om | Fulbaana … Qaammee; Amajjii … Muddee | Afaan Oromo uses the same month names for both calendars; only the era mark tells them apart |
+| `calendar.ethiopian.date` | om | `:month :day, :year A.L.I.` | Confirm the era abbreviation for the Ethiopian calendar (A.L.I., "Akka Lakkoobsa Itoophiyaa") |
+| `admin.settings.*` | am, om | settings screens | Staff-facing wording of the settings and integrations screens |

@@ -13,6 +13,12 @@ return [
     'default_locale' => env('PORTAL_DEFAULT_LOCALE', 'am'),
 
     /*
+    | Dates are stored in UTC and shown in this time zone (Ethiopian and
+    | Gregorian dates both follow the local day).
+    */
+    'timezone' => env('PORTAL_TIMEZONE', 'Africa/Addis_Ababa'),
+
+    /*
     | Where a missing or empty string is looked up next (PLAN.md §6):
     | Harari falls back to Amharic, then English; the others to English.
     */

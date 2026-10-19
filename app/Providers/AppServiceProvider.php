@@ -8,10 +8,14 @@ use App\Domain\Access\Models\Role;
 use App\Domain\Access\Policies\ActivityPolicy;
 use App\Domain\Access\Policies\RolePolicy;
 use App\Domain\Access\Policies\UserPolicy;
+use App\Domain\Settings\Listeners\RecordSettingsChanges;
 use App\Domain\Translation\FallbackTranslator;
+use App\Domain\Translation\Support\Locales;
 use App\Models\User;
+use App\Settings\SiteSettings;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
@@ -21,7 +25,9 @@ use Illuminate\Translation\TranslationServiceProvider;
 use Illuminate\Translation\Translator;
 use Illuminate\Validation\Rules\Password;
 use Spatie\Activitylog\Models\Activity;
+use Spatie\LaravelSettings\Events\SavingSettings;
 use Spatie\TranslationLoader\TranslationLoaderManager;
+use Throwable;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -57,7 +63,23 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->bootAuthorization();
         $this->bootAuditing();
+        $this->bootLocalization();
         $this->bootSafetyNets();
+    }
+
+    private function bootLocalization(): void
+    {
+        // The admin setting decides the default language; config is the fallback
+        // while settings are unavailable (e.g. before migrations run).
+        Locales::resolveDefaultUsing(function (): ?string {
+            try {
+                return app(SiteSettings::class)->default_locale;
+            } catch (Throwable) {
+                return null;
+            }
+        });
+
+        Blade::directive('ethiopianDate', fn (string $expression): string => "<?php echo e(app(\\App\\Services\\Calendar\\EthiopianCalendar::class)->formatEthiopian({$expression})); ?>");
     }
 
     private function bootAuthorization(): void
@@ -88,6 +110,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Event::subscribe(RecordAccessChanges::class);
         Event::subscribe(RecordAuthenticationActivity::class);
+        Event::listen(SavingSettings::class, RecordSettingsChanges::class);
 
         // Every audit entry made during a web request records where it came from.
         Activity::saving(function (Activity $activity): void {

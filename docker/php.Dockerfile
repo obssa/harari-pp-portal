@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libzip-dev libicu-dev libpng-dev libjpeg-dev libfreetype6-dev \
         libwebp-dev libavif-dev libonig-dev libxml2-dev \
  && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp --with-avif \
- && docker-php-ext-install -j"$(nproc)" pdo_mysql intl bcmath gd zip pcntl opcache exif \
+ && docker-php-ext-install -j"$(nproc)" pdo_mysql intl bcmath gd zip pcntl opcache exif calendar \
  && pecl install pcov && docker-php-ext-enable pcov \
  && apt-get purge -y --auto-remove && rm -rf /var/lib/apt/lists/* /tmp/pear
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer

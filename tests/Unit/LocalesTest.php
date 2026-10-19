@@ -28,9 +28,16 @@ it('follows the fallback chain from PLAN.md section 6', function () {
         ->and(Locales::fallbackChain('en'))->toBe(['en']);
 });
 
-it('falls back to the first locale when the configured default is unsupported', function () {
-    config(['portal.default_locale' => 'fr']);
+it('prefers the admin setting, then config, then the first locale', function () {
+    Locales::resolveDefaultUsing(fn (): ?string => 'om');
+    config(['portal.default_locale' => 'am']);
+    expect(Locales::default())->toBe('om');
 
+    Locales::resolveDefaultUsing(fn (): ?string => null);
+    expect(Locales::default())->toBe('am');
+
+    Locales::resolveDefaultUsing(fn (): ?string => 'fr');
+    config(['portal.default_locale' => 'fr']);
     expect(Locales::default())->toBe('en');
 });
 

@@ -6,6 +6,7 @@ use App\Domain\Access\Enums\UserStatus;
 use App\Domain\Access\Models\Role;
 use App\Filament\Resources\Users\Actions\UserActions;
 use App\Models\User;
+use App\Services\Calendar\EthiopianCalendar;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -49,6 +50,9 @@ class UsersTable
                 TextColumn::make('last_login_at')
                     ->label(__('admin.users.field.last_login'))
                     ->since()
+                    ->tooltip(fn (User $record): ?string => $record->last_login_at
+                        ? app(EthiopianCalendar::class)->format($record->last_login_at, withTime: true)
+                        : null)
                     ->placeholder(__('admin.users.field.never'))
                     ->sortable(),
             ])

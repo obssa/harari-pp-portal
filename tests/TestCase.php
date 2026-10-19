@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Domain\Sites\Models\Site;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
@@ -16,6 +17,9 @@ abstract class TestCase extends BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        // The current site is remembered per process; each test starts fresh.
+        Site::forgetCurrent();
 
         // Built assets are not needed to assert on HTML; CI builds them separately.
         $this->withoutVite();

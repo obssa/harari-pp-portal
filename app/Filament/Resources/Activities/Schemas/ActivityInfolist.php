@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Activities\Schemas;
 
+use App\Filament\Support\CalendarDate;
 use Filament\Infolists\Components\KeyValueEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
@@ -18,7 +19,7 @@ class ActivityInfolist
                 Section::make(__('admin.activity.section.what'))
                     ->columns(3)
                     ->schema([
-                        TextEntry::make('created_at')->label(__('admin.activity.field.when'))->dateTime(),
+                        TextEntry::make('created_at')->label(__('admin.activity.field.when'))->formatStateUsing(CalendarDate::format(withTime: true)),
                         TextEntry::make('log_name')->label(__('admin.activity.field.log'))->badge(),
                         TextEntry::make('event')->label(__('admin.activity.field.event')),
                         TextEntry::make('causer.name')

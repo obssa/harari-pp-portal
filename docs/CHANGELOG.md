@@ -4,6 +4,23 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 1, step 1.4 — settings, sites, Ethiopian calendar (2026-10-19)
+
+- Admin → Settings → Site: default language, which calendar leads and whether the other is shown,
+  contact email, phone and hotline, address and office hours per language, social links. Admins can
+  read it; only Super Admins change it.
+- Admin → Settings → Integrations (Super Admin only): SMS driver and sender, and API keys for SMS,
+  Google Translate, the LLM provider, Meta, YouTube, Telegram and Turnstile. Keys are encrypted at rest,
+  never shown again, kept when the field is left blank, and removable.
+- Settings changes appear in the audit log with before and after values; keys show only that they
+  changed.
+- The default language of `/` now comes from the site settings.
+- A `sites` table with the default site; settings are stored per site, ready for sub-sites later.
+- Ethiopian calendar service: conversion both ways in Addis Ababa time, month names and date formats in
+  English, Amharic and Afaan Oromo, dual dates in the order chosen in the settings.
+- The public top bar shows today's date in both calendars; admin audit log and user list show dual
+  dates.
+
 ### Phase 1, step 1.3 — languages: routing, fallback, translation tooling (2026-10-19)
 
 - Public pages under `/en`, `/am`, `/om`, `/har`; `/` picks the language from the remembered choice,

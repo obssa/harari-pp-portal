@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Activities\Tables;
 
+use App\Filament\Support\CalendarDate;
 use App\Models\User;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
@@ -21,7 +22,7 @@ class ActivitiesTable
             ->columns([
                 TextColumn::make('created_at')
                     ->label(__('admin.activity.field.when'))
-                    ->dateTime()
+                    ->formatStateUsing(CalendarDate::format(withTime: true))
                     ->description(fn (Activity $record): string => (string) $record->created_at?->diffForHumans())
                     ->sortable(),
                 TextColumn::make('log_name')

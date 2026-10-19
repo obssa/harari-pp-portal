@@ -11,7 +11,8 @@ it('sends "/" to the default language when nothing else is known', function () {
         ->and($response->headers->get('Cache-Control'))->toContain('private');
 });
 
-it('uses the configured default language', function () {
+it('falls back to the configured default when the admin setting is unavailable', function () {
+    Locales::resolveDefaultUsing(fn (): ?string => null);
     config(['portal.default_locale' => 'om']);
 
     $this->withHeader('Accept-Language', '')->get('/')->assertRedirect('/om');

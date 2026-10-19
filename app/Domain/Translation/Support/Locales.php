@@ -19,11 +19,34 @@ final class Locales
         return array_values(array_map('strval', (array) config('portal.locales')));
     }
 
+    /** @var (\Closure(): ?string)|null */
+    private static ?\Closure $defaultResolver = null;
+
+    /**
+     * Lets the admin setting (SiteSettings::default_locale) decide the default;
+     * config('portal.default_locale') is used when the setting is unavailable.
+     *
+     * @param  (\Closure(): ?string)|null  $resolver
+     */
+    public static function resolveDefaultUsing(?\Closure $resolver): void
+    {
+        self::$defaultResolver = $resolver;
+    }
+
     public static function default(): string
     {
-        $default = (string) config('portal.default_locale');
+        $candidates = [
+            self::$defaultResolver !== null ? (self::$defaultResolver)() : null,
+            (string) config('portal.default_locale'),
+        ];
 
-        return self::isSupported($default) ? $default : self::all()[0];
+        foreach ($candidates as $candidate) {
+            if (self::isSupported($candidate)) {
+                return (string) $candidate;
+            }
+        }
+
+        return self::all()[0];
     }
 
     public static function isSupported(?string $locale): bool

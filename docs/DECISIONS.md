@@ -140,3 +140,42 @@ the terminal of whoever runs it (never in CI logs).
 **Consequences.** Phase 4's translation screens edit `ui_translations` and use `TranslationCatalog` for
 coverage and diffs. Pages whose slugs differ per language pass their own URLs to `<x-locale-meta>` and
 `<x-language-switcher>`.
+
+## ADR-0008 — Settings, sites and the Ethiopian calendar (2026-10-19)
+
+**Context.** PLAN.md §7 lists the settings the admin manages and asks for "`site_id` on content and
+settings from day one". §11 stores API keys encrypted with `Crypt`. §6 shows the Ethiopian calendar with
+the Gregorian one everywhere a date appears, in an order chosen in the admin.
+
+**Decision.**
+
+- **Settings.** spatie/laravel-settings 3.9 with the official Filament plugin. Two groups exist now:
+  - `site` (`App\Settings\SiteSettings`): default language, which calendar leads and whether the other
+    is shown, contact email, phone and hotline, address and office hours per language, social links.
+  - `integrations` (`App\Settings\IntegrationSettings`): SMS driver and sender, and the keys for SMS,
+    Google Translate, the LLM provider, Meta, YouTube, Telegram and Turnstile.
+- **Secrets.** Integration keys are encrypted at rest with Laravel's encrypter, so they depend on the
+  server's `APP_KEY`. The admin never shows a stored key again. A blank field keeps the stored key, and
+  "remove" clears it. The audit log records that a key changed, never its value.
+- **Who.** Site settings are readable with `settings.view` (Admin) and changeable with `settings.manage`.
+  Integrations need `integrations.manage`. Both "manage" permissions belong to Super Admin only.
+- **Later groups.** The other groups of PLAN.md §7 arrive with the features they configure: logos with
+  the media library (1.5), colours and fonts with the design tokens (1.6), mail, SEO, analytics,
+  maintenance and feature flags in their phases.
+- **Sites.** A `sites` table holds one default site (`harari`). `Site::current()` picks the site whose
+  domain matches the request host, otherwise the default site. `App\Domain\Sites\Settings\SiteSettingsRepository`
+  adds `site_id` to every settings row and scopes every read and write to the current site. Content
+  tables get `site_id` from Phase 2. A queued job working for a non-default site calls
+  `Site::setCurrent()` first. spatie's settings cache stays off, because its key ignores the site.
+- **Calendar.** `App\Services\Calendar\EthiopianCalendar` wraps andegna/calender 2.4, which needs PHP's
+  `calendar` extension (present on the server, in CI and in the test image). Dates are stored in UTC and
+  converted to Addis Ababa time before conversion, so 22:30 UTC on 10 September is already Meskerem 1.
+  Times use the 24-hour clock in Addis Ababa time. Ethiopian hour notation (counting from 06:00) is not
+  used, since it reads ambiguously next to Gregorian dates.
+- **Display.** `<x-date :date="…" />`, `@ethiopianDate(…)` and `CalendarDate::format()` for Filament
+  columns all go through `EthiopianCalendar::format()`. Month names and date patterns are translation
+  keys (`calendar.*`), so each language orders day, month and year its own way.
+
+**Consequences.** Rotating `APP_KEY` makes the stored keys unreadable, so they must be re-entered (see
+the runbook). A second site needs its own settings rows, written by a settings migration run with
+`Site::setCurrent()`. Phase 2 content models take `site_id` from `Site::current()`.
