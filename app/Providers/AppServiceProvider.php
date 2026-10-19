@@ -34,6 +34,7 @@ use App\Models\User;
 use App\Settings\SiteSettings;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
@@ -89,6 +90,10 @@ class AppServiceProvider extends ServiceProvider
 
     private function bootMedia(): void
     {
+        // Public listings use a translated previous/next pagination.
+        Paginator::defaultView('pagination.simple');
+        Paginator::defaultSimpleView('pagination.simple');
+
         // Livewire's temporary uploads (admin upload field): the largest file
         // the media library accepts, and no server-side preview of SVGs, which
         // are only safe once sanitised (ADR-0009).

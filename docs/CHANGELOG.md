@@ -4,6 +4,19 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 2, step 2.4 — public news pages (2026-10-19)
+
+- `/{lang}/news`: news, press releases, statements, speeches and announcements with filters by type,
+  category and tag, cards with type, date in both calendars and summary, and a translated pager.
+  Harari pages also list Amharic posts that have no Harari version, marked as Amharic (ADR-0014).
+- `/{lang}/news/{slug}`: kicker, title, summary, dates, reading time, featured photo with credit,
+  the text with its photos, galleries, videos, notes and files, topics, "also available in", share
+  links (no third-party scripts) and related posts; the language switcher goes to the same post or to
+  the news listing.
+- RSS (`/{lang}/feed.xml`) and JSON Feed (`/{lang}/feed.json`) per language.
+- Signed preview links (7 days) for any language of a post, drafts included, from the post editor.
+- "News" in the main menu; reading styles for post text.
+
 ### Phase 2, step 2.3 — editorial workflow (2026-10-19)
 
 - Workflow buttons in each language tab of a post: submit for review, send back (with a required

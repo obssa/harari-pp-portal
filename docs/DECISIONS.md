@@ -393,3 +393,31 @@ language), notifications for editors, and §9 domain events with webhooks.
 **Consequences.** Scoped review (an office's editor reviewing only that office's posts) uses the
 existing role scopes once posts carry offices (step 2.7). A DNS answer can change between the address
 check and the request; deliveries contain only public information, which limits the impact.
+
+## ADR-0014 — Public news pages, language fallback for posts, previews and feeds (2026-10-19)
+
+**Context.** PLAN.md §3–4 define `/{lang}/news` and `/{lang}/news/{slug}`, filters, "available in"
+chips, a language switch that lands on the same post or the listing, RSS and JSON feeds per language,
+and tokenised previews of drafts. Harari will have little content of its own for a long time.
+
+**Decision.**
+
+- **Listings** show posts live in the page's language. For languages listed in
+  `portal.content_fallbacks` (Harari → Amharic) a post without a translation of its own appears in the
+  fallback language, marked "In አማርኛ", with `lang="am"` and a link to its Amharic page. A post page
+  itself exists only in languages the post is written in; the language switcher and hreflang link to
+  the post where it exists and to the news listing elsewhere.
+- **Filters** use query strings (`?type=press_release`, `?category=…`, `?tag=…`) so slugs never collide
+  with type names; sticky posts first, then newest; 12 per page with a translated previous/next pager.
+- **Post page**: kicker, title, summary, dual-calendar date, reading time, featured image (eager, high
+  priority, for LCP), body through `BodyRenderer`, topics, "also available in", share links (plain
+  links, no third-party scripts) and up to three related posts from the same categories.
+- **Feeds**: `/{lang}/feed.xml` (RSS 2.0 with `content:encoded`) and `/{lang}/feed.json` (JSON Feed
+  1.1), the 20 newest posts live in exactly that language.
+- **Previews**: signed URLs valid for seven days (`/preview/posts/{post}/{language}`), any status,
+  sent with `noindex` and `private, no-store`; editors get the link from the post editor. Revoking a
+  link early means changing `APP_KEY`, which also signs the rest of the site, so links are kept short.
+- Public news pages are stateless and cacheable at the edge like the home page (ADR-0010).
+
+**Consequences.** Search engines see Harari listings that contain Amharic items; their canonical pages
+stay Amharic, so no duplicate content is created. SEO metadata, sitemaps and redirects follow in 2.5.

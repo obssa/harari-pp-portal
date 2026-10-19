@@ -53,6 +53,14 @@
                                'text-ink hover:bg-surface-muted' => ! request()->routeIs('home'),
                            ])>{{ __('nav.home') }}</a>
                     </li>
+                    <li>
+                        <a href="{{ route('news.index') }}" @if (request()->routeIs('news.*')) aria-current="page" @endif
+                           @class([
+                               'inline-block rounded-control px-3 py-2 transition-colors duration-150',
+                               'bg-primary-50 text-primary-800 dark:bg-primary-950 dark:text-primary-200' => request()->routeIs('news.*'),
+                               'text-ink hover:bg-surface-muted' => ! request()->routeIs('news.*'),
+                           ])>{{ __('nav.news') }}</a>
+                    </li>
                 </ul>
             </nav>
         </div>

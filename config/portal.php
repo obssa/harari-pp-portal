@@ -30,6 +30,14 @@ return [
     ],
 
     /*
+    | Posts written in these languages stand in on listing pages when a post
+    | has no translation of its own (shown with their real language marked).
+    */
+    'content_fallbacks' => [
+        'har' => ['am'],
+    ],
+
+    /*
     | Each language named in its own script for the language switcher
     | (PLAN.md §12). These are the same in every locale, so they are data,
     | not translations. The Harari name awaits confirmation by the party.

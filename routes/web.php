@@ -1,7 +1,10 @@
 <?php
 
 use App\Domain\Translation\Support\Locales;
+use App\Http\Controllers\Public\FeedController;
 use App\Http\Controllers\Public\MediaFileController;
+use App\Http\Controllers\Public\NewsController;
+use App\Http\Controllers\Public\PreviewController;
 use App\Http\Controllers\Public\RedirectToPreferredLocale;
 use App\Http\Middleware\CachePublicPages;
 use App\Http\Middleware\OutsideProductionOnly;
@@ -37,6 +40,12 @@ Route::view('/styleguide', 'styleguide')
     ->withoutMiddleware($stateless)
     ->name('styleguide');
 
+// Signed preview of any language of a post, drafts included (PLAN.md §7).
+Route::get('/preview/posts/{post}/{language}', PreviewController::class)
+    ->middleware('signed')
+    ->withoutMiddleware($stateless)
+    ->name('preview.post');
+
 // Every public page lives under its language: /en, /am, /om, /har (PLAN.md §3).
 Route::prefix('{locale}')
     ->where(['locale' => implode('|', Locales::all())])
@@ -44,4 +53,10 @@ Route::prefix('{locale}')
     ->withoutMiddleware($stateless)
     ->group(function (): void {
         Route::view('/', 'pages.home')->name('home');
+        Route::get('news', [NewsController::class, 'index'])->name('news.index');
+        Route::get('news/{slug}', [NewsController::class, 'show'])
+            ->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')
+            ->name('news.show');
+        Route::get('feed.xml', [FeedController::class, 'rss'])->name('feed.rss');
+        Route::get('feed.json', [FeedController::class, 'json'])->name('feed.json');
     });

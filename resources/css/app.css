@@ -80,3 +80,68 @@
     font-size: calc(var(--text-xl) * var(--heading-scale, 1));
     font-weight: 600;
 }
+
+/* Post and page bodies from the block editor (ADR-0012). */
+@layer components {
+    .prose-content {
+        font-size: 1.0625rem;
+    }
+
+    .prose-content > * + * {
+        margin-top: 1em;
+    }
+
+    .prose-content h2 {
+        margin-top: 2em;
+        font-size: calc(var(--text-2xl) * var(--heading-scale, 1));
+        font-weight: 650;
+    }
+
+    .prose-content h3 {
+        margin-top: 1.6em;
+        font-size: calc(var(--text-xl) * var(--heading-scale, 1));
+        font-weight: 600;
+    }
+
+    .prose-content a {
+        color: var(--color-link);
+        text-decoration: underline;
+        text-underline-offset: 4px;
+    }
+
+    .prose-content ul {
+        list-style: disc;
+        padding-inline-start: 1.5em;
+    }
+
+    .prose-content ol {
+        list-style: decimal;
+        padding-inline-start: 1.5em;
+    }
+
+    .prose-content blockquote {
+        border-inline-start: 4px solid var(--color-accent-500);
+        padding-inline-start: 1em;
+        color: var(--color-ink-muted);
+        font-style: italic;
+    }
+
+    .prose-content table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9375rem;
+    }
+
+    .prose-content th,
+    .prose-content td {
+        border: 1px solid var(--color-line);
+        padding: 0.5em 0.75em;
+        text-align: start;
+        vertical-align: top;
+    }
+
+    .prose-content th {
+        background: var(--color-surface-muted);
+        font-weight: 600;
+    }
+}

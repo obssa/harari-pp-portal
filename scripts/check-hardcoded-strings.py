@@ -95,7 +95,8 @@ def findings(source: str) -> list[tuple[int, str]]:
     text = strip_blade(source)
     found: list[tuple[int, str]] = []
 
-    for tag in re.finditer(r"<[^<>]+>", text):
+    # A tag ends at the first ">" outside quotes ("->" in a component attribute is not the end).
+    for tag in re.finditer(r"<(?:[^<>\"']|\"[^\"]*\"|'[^']*')+>", text):
         for attribute in READABLE_ATTRIBUTES:
             for value in re.finditer(rf'(?<![\w:-]){attribute}\s*=\s*"([^"]*)"', tag.group(0)):
                 if LETTER.search(value.group(1)):
@@ -141,6 +142,8 @@ def self_test() -> int:
         "@php\n $a = 'Some text';\n@endphp": [],
         "<script>const label = 'Hi';</script>": [],
         '<x-ui.badge :tone="$tone">{{ ucfirst($tone) }}</x-ui.badge>': [],
+        """<x-ui.card :title="$post->title" :href="route('x')" />""": [],
+        """<x-layouts.public :title="$a ? $a->label() : __('k')">\n<p>Words here</p>""": ["Words here"],
     }
     failed = 0
     for source, expected in cases.items():
