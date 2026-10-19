@@ -4,6 +4,16 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 3, step 3.3 — events and calendars (2026-10-20)
+
+- Admin → Content → Events: start and end in Addis Ababa time (or all day), venue and address, map pin
+  or online link, an agenda and summary per language, speakers from the leaders, cover picture, office
+  or league; each language published with one switch (ADR-0025).
+- `/{lang}/events` lists upcoming events, with past events and a month view in both calendars; each
+  event page shows the agenda, speakers and map, with "Add to calendar" (.ics) and Google Calendar.
+- `/{lang}/events/feed.ics` lets anyone subscribe to the upcoming events in their calendar app.
+- Homepage "Upcoming events" section; events in search, the sitemaps and the menus.
+
 ### Phase 3, step 3.2 — videos and live (2026-10-20)
 
 - Admin → Content → Videos: paste a YouTube, Facebook or Telegram address, give a title and description

@@ -1,6 +1,7 @@
 <?php
 
 use App\Domain\Translation\Support\Locales;
+use App\Http\Controllers\Public\EventController;
 use App\Http\Controllers\Public\FeedController;
 use App\Http\Controllers\Public\GalleryController;
 use App\Http\Controllers\Public\HomeController;
@@ -86,6 +87,10 @@ Route::prefix('{locale}')
         Route::get('leagues', [LeagueController::class, 'index'])->name('leagues.index');
         Route::get('leagues/{slug}', [LeagueController::class, 'show'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('leagues.show');
         Route::get('structure', StructureController::class)->name('structure');
+        Route::get('events', [EventController::class, 'index'])->name('events.index');
+        Route::get('events/feed.ics', [EventController::class, 'feed'])->name('events.feed');
+        Route::get('events/{slug}.ics', [EventController::class, 'ics'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('events.ics');
+        Route::get('events/{slug}', [EventController::class, 'show'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('events.show');
         Route::get('gallery', [GalleryController::class, 'index'])->name('gallery.index');
         Route::get('videos', [VideoController::class, 'index'])->name('videos.index');
         Route::get('videos/{slug}', [VideoController::class, 'show'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('videos.show');

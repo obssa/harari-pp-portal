@@ -6,6 +6,7 @@ use App\Domain\Content\Enums\ContentStatus;
 use App\Domain\Content\Models\PageTranslation;
 use App\Domain\Content\Models\PostTranslation;
 use App\Domain\Content\Queries\PublicPosts;
+use App\Domain\Events\Models\EventTranslation;
 use App\Domain\Organisation\Models\LeaderTranslation;
 use App\Domain\Organisation\Models\LeagueTranslation;
 use App\Domain\Organisation\Models\OfficeTranslation;
@@ -21,13 +22,14 @@ use Illuminate\Support\Collection;
  */
 final class SiteSearch
 {
-    /** @var array<string, array{model: class-string<PostTranslation|PageTranslation|LeaderTranslation|OfficeTranslation|LeagueTranslation>, parent: string, order: string}> */
+    /** @var array<string, array{model: class-string<PostTranslation|PageTranslation|LeaderTranslation|OfficeTranslation|LeagueTranslation|EventTranslation>, parent: string, order: string}> */
     public const KINDS = [
         'news' => ['model' => PostTranslation::class, 'parent' => 'post', 'order' => 'published_at'],
         'pages' => ['model' => PageTranslation::class, 'parent' => 'page', 'order' => 'title'],
         'people' => ['model' => LeaderTranslation::class, 'parent' => 'leader', 'order' => 'name'],
         'offices' => ['model' => OfficeTranslation::class, 'parent' => 'office', 'order' => 'name'],
         'leagues' => ['model' => LeagueTranslation::class, 'parent' => 'league', 'order' => 'name'],
+        'events' => ['model' => EventTranslation::class, 'parent' => 'event', 'order' => 'title'],
     ];
 
     /** Results per kind on the overview; one kind alone shows more. */
@@ -114,6 +116,13 @@ final class SiteSearch
                 'title' => $translation->name,
                 'summary' => $translation->summary,
                 'label' => $translation->office->type->label(),
+                'locale' => $locale,
+            ],
+            $translation instanceof EventTranslation => [
+                'url' => route('events.show', ['locale' => $locale, 'slug' => $slug]),
+                'title' => $translation->title,
+                'summary' => $translation->summary,
+                'label' => __('search.kind.events'),
                 'locale' => $locale,
             ],
             $translation instanceof LeagueTranslation => [

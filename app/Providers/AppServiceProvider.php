@@ -27,6 +27,8 @@ use App\Domain\Content\Policies\RevisionPolicy;
 use App\Domain\Content\Policies\TaxonomyPolicy;
 use App\Domain\Dashboard\Models\Announcement;
 use App\Domain\Dashboard\Policies\AnnouncementPolicy;
+use App\Domain\Events\Models\Event as PortalEvent;
+use App\Domain\Events\Policies\EventPolicy;
 use App\Domain\Homepage\Models\HomepageSection;
 use App\Domain\Homepage\Policies\HomepageSectionPolicy;
 use App\Domain\Import\Models\ContentSource;
@@ -183,6 +185,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(ContentSource::class, ContentSourcePolicy::class);
         Gate::policy(Gallery::class, GalleryPolicy::class);
         Gate::policy(Video::class, VideoPolicy::class);
+        Gate::policy(PortalEvent::class, EventPolicy::class);
 
         // Super Admins hold every permission (PLAN.md §8). Only permission
         // names (`module.action`) are short-circuited, so policy rules such as

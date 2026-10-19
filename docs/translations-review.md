@@ -44,3 +44,4 @@ Harari translators.
 | `import.*`, `news.source` | am, om | content sources screen, imported-post notes | "draft" (ረቂቅ / wixinee), "source" (ምንጭ / Madda); "Ethiopic script" (ግዕዝ ፊደል / qubee Saabaa) |
 | `gallery.*`, `homepage.section.gallery` | am, om | photo albums | "photo album" (የፎቶ ስብስብ / kuusaa suuraa); count forms for photos |
 | `video.*`, `homepage.section.video`, `admin.categories.type.*` | am, om | videos, live page | "live broadcast" (ቀጥታ ስርጭት / Tamsaasa kallattii); "playlist" (የቪዲዮ ዝርዝር / Tarree viidiyoo) |
+| `events.*`, `calendar.weekday.short.*`, `homepage.section.events` | am, om | events list, month view, event page, admin | "event" (ሁነት / Sagantaa; om could also use Taatee); short weekday names in the month grid (ማክሰ for Tuesday is shortened); "agenda" (መርሐ ግብር / Sagantaa hojii) |

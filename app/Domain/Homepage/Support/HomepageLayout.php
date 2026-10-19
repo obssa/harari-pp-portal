@@ -6,6 +6,7 @@ use App\Domain\Content\Enums\PostType;
 use App\Domain\Content\Models\Post;
 use App\Domain\Content\Models\Translation;
 use App\Domain\Content\Queries\PublicPosts;
+use App\Domain\Events\Models\Event;
 use App\Domain\Homepage\Enums\SectionKey;
 use App\Domain\Homepage\Models\HomepageSection;
 use App\Domain\Media\Models\Gallery;
@@ -123,6 +124,7 @@ final class HomepageLayout
             SectionKey::Leagues => $this->leagues($locale, $limit),
             SectionKey::Gallery => $this->gallery($locale, $limit),
             SectionKey::Video => $this->video($locale),
+            SectionKey::Events => $this->nonEmptyEvents(PublicDirectory::visible(Event::query(), $locale)->upcoming()->orderBy('starts_at')->limit($limit)->get()),
             SectionKey::Partners => $this->items($section, $locale, 'label', ['url']),
         };
     }
@@ -186,6 +188,15 @@ final class HomepageLayout
         }
 
         return $spotlight === [] ? null : $spotlight;
+    }
+
+    /**
+     * @param  Collection<int, Event>  $events
+     * @return Collection<int, Event>|null
+     */
+    private function nonEmptyEvents(Collection $events): ?Collection
+    {
+        return $events->isEmpty() ? null : $events;
     }
 
     /**

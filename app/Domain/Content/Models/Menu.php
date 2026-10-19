@@ -27,7 +27,7 @@ class Menu extends Model
 
     public const LOCATIONS = ['header', 'footer', 'utility'];
 
-    public const TYPES = ['page', 'post', 'news', 'leaders', 'offices', 'leagues', 'structure', 'gallery', 'videos', 'live', 'url'];
+    public const TYPES = ['page', 'post', 'news', 'leaders', 'offices', 'leagues', 'structure', 'gallery', 'videos', 'live', 'events', 'url'];
 
     /** Items per level, so menus stay usable on phones. */
     public const MAX_ITEMS = 12;
@@ -136,6 +136,7 @@ class Menu extends Model
             'gallery' => ['url' => route('gallery.index', ['locale' => $locale]), 'external' => false, 'route' => 'gallery.*'],
             'videos' => ['url' => route('videos.index', ['locale' => $locale]), 'external' => false, 'route' => 'videos.*'],
             'live' => ['url' => route('videos.live', ['locale' => $locale]), 'external' => false, 'route' => 'videos.live'],
+            'events' => ['url' => route('events.index', ['locale' => $locale]), 'external' => false, 'route' => 'events.*'],
             'page' => self::pageTarget((string) ($item['page_id'] ?? ''), $locale),
             'post' => self::postTarget((string) ($item['post_id'] ?? ''), $locale),
             'url' => self::urlTarget((string) ($item['url'] ?? '')),

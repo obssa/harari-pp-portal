@@ -727,3 +727,31 @@ privacy-friendly way, playlists, a Live page and a homepage "video of the week" 
 
 **Consequences.** YouTube Live status is set by editors; reading it from the YouTube API comes with the
 social hub (Phase 4).
+
+## ADR-0025 — Events, calendars and registration (2026-10-20)
+
+**Context.** PLAN.md §4 asks for events with a calendar (month and list), an event page with the
+agenda, speakers, a map and "add to calendar", and a homepage "upcoming events" section; §10 lists
+`events` and `event_registrations`. Step 3.3 builds the events; step 3.4 adds registration.
+
+**Decision.**
+
+- An event has a start and an optional end (or "all day"), a venue and address per language, a map pin
+  or an online link (https only), an agenda per language (time and item lines), speakers chosen from the
+  leaders, a cover picture and an optional office or league. Title, summary, description, venue, address
+  and agenda are written per language and published per language (ADR-0017).
+- Times are entered in Addis Ababa time and stored in UTC, like posts. Pages show both calendars
+  through `<x-date>`.
+- `/{lang}/events` lists the upcoming events, `?past=1` the earlier ones, and `?month=YYYY-MM` shows a
+  month grid with the Ethiopian dates next to the Gregorian ones. Past events keep their page, marked as
+  ended, without the calendar buttons.
+- Each event has an `.ics` file and a Google Calendar link; `/{lang}/events/feed.ics` is a subscribable
+  feed of the upcoming events. The files are written by hand to RFC 5545 (escaped text, lines folded at
+  75 bytes, UTC times, dates only for all-day events), so no calendar package is added.
+- The event page carries schema.org `Event` data. Events are in search and the sitemaps, and the
+  homepage section shows the next few (three by default, up to six).
+- The registration columns (on/off, places, waiting list, closing time) are created now so that 3.4
+  only adds the registrations table.
+
+**Consequences.** Recurring events are not modelled; an editor copies the event instead. The map is the
+same OpenStreetMap frame as on office pages.
