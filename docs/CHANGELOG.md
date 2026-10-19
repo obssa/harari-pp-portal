@@ -4,6 +4,19 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 2, step 2.3 — editorial workflow (2026-10-19)
+
+- Workflow buttons in each language tab of a post: submit for review, send back (with a required
+  comment), mark as reviewed, publish, schedule, unpublish, archive and reopen; each person only sees
+  the moves they may make from the current status (ADR-0013).
+- Scheduled languages go live within a minute of their time (`content:publish-due` in the scheduler).
+- Internal comments on posts; send-back reasons are kept with the post.
+- Notifications in the admin bell and by email: reviewers when a post is submitted, publishers when it
+  is reviewed, the author when it is sent back, published, scheduled, taken offline or archived.
+- Every move is in the audit log and keeps a version.
+- Webhooks (Super Admin): signed HTTPS notifications to other systems when a post is published,
+  scheduled, taken offline or archived, with a delivery log and retries; private addresses refused.
+
 ### Phase 2, step 2.2 — posts (2026-10-19)
 
 - Admin → Content → Posts: news, press releases, statements, speeches and announcements, with a tab

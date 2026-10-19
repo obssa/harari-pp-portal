@@ -10,3 +10,6 @@ Artisan::command('inspire', function () {
 
 // PLAN.md §11: audit entries are kept for 2 years (config/activitylog.php).
 Schedule::command('activitylog:clean --force')->dailyAt('02:30');
+
+// ADR-0013: scheduled posts go live within a minute of their time.
+Schedule::command('content:publish-due')->everyMinute()->withoutOverlapping();

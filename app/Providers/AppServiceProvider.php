@@ -8,10 +8,14 @@ use App\Domain\Access\Models\Role;
 use App\Domain\Access\Policies\ActivityPolicy;
 use App\Domain\Access\Policies\RolePolicy;
 use App\Domain\Access\Policies\UserPolicy;
+use App\Domain\Content\Events\ContentTransitioned;
+use App\Domain\Content\Listeners\NotifyAboutTransition;
 use App\Domain\Content\Models\Category;
+use App\Domain\Content\Models\Comment;
 use App\Domain\Content\Models\Post;
 use App\Domain\Content\Models\Revision;
 use App\Domain\Content\Models\Tag;
+use App\Domain\Content\Policies\CommentPolicy;
 use App\Domain\Content\Policies\PostPolicy;
 use App\Domain\Content\Policies\RevisionPolicy;
 use App\Domain\Content\Policies\TaxonomyPolicy;
@@ -23,6 +27,9 @@ use App\Domain\Media\Policies\MediaPolicy;
 use App\Domain\Settings\Listeners\RecordSettingsChanges;
 use App\Domain\Translation\FallbackTranslator;
 use App\Domain\Translation\Support\Locales;
+use App\Domain\Webhooks\Listeners\QueueWebhooks;
+use App\Domain\Webhooks\Models\Webhook;
+use App\Domain\Webhooks\Policies\WebhookPolicy;
 use App\Models\User;
 use App\Settings\SiteSettings;
 use Illuminate\Contracts\Foundation\Application;
@@ -119,6 +126,8 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Tag::class, TaxonomyPolicy::class);
         Gate::policy(Post::class, PostPolicy::class);
         Gate::policy(Revision::class, RevisionPolicy::class);
+        Gate::policy(Comment::class, CommentPolicy::class);
+        Gate::policy(Webhook::class, WebhookPolicy::class);
 
         // Super Admins hold every permission (PLAN.md §8). Only permission
         // names (`module.action`) are short-circuited, so policy rules such as
@@ -143,6 +152,8 @@ class AppServiceProvider extends ServiceProvider
         Event::subscribe(RecordAccessChanges::class);
         Event::subscribe(RecordAuthenticationActivity::class);
         Event::listen(SavingSettings::class, RecordSettingsChanges::class);
+        Event::listen(ContentTransitioned::class, NotifyAboutTransition::class);
+        Event::listen(ContentTransitioned::class, QueueWebhooks::class);
 
         // Every audit entry made during a web request records where it came from.
         Activity::saving(function (Activity $activity): void {

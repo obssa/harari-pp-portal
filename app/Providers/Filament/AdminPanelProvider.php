@@ -47,6 +47,9 @@ class AdminPanelProvider extends PanelProvider
             ->multiFactorAuthenticationRequiredMiddlewareName(RequireMfaForPrivilegedRoles::class)
             // Deny by default: a resource without a policy method fails closed.
             ->strictAuthorization()
+            // In-app notifications from the editorial workflow (ADR-0013).
+            ->databaseNotifications()
+            ->databaseNotificationsPolling('60s')
             // Initials drawn locally: no staff names sent to a third party, CSP-safe.
             ->defaultAvatarProvider(InitialsAvatarProvider::class)
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')

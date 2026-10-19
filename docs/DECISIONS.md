@@ -359,3 +359,37 @@ bulk actions. The public pages must stay small, accessible and within the strict
 
 **Consequences.** Scheduling, review and send-back move to the workflow of step 2.3; the public news
 pages (2.4) render bodies through `BodyRenderer` only.
+
+## ADR-0013 — Editorial workflow, notifications and webhooks (2026-10-19)
+
+**Context.** PLAN.md §7 describes the editorial flow (author drafts and submits, an editor approves or
+sends back with comments, translators fill other languages, a publisher schedules or publishes per
+language), notifications for editors, and §9 domain events with webhooks.
+
+**Decision.**
+
+- **State machine per language** (`App\Domain\Content\Workflow`), no package. Moves: submit (draft or
+  translating → in review; anyone who may edit the post), send back (in review → draft; `posts.review`,
+  comment required), mark reviewed (records reviewer and time; `posts.review`), publish, schedule (a
+  future time), unpublish, archive and reopen (`posts.publish`). A move is refused unless it starts
+  from an allowed status and the person may make it; the admin only shows the moves that are possible.
+- **Status in the form is read-only**; it changes only through the workflow buttons in each language
+  tab. Publishers can still set the publication date shown on the site (for example when entering older
+  news). `SavePost` keeps its status rules for imports.
+- **Scheduled publishing**: `content:publish-due` runs every minute from the scheduler and publishes
+  languages whose time has passed.
+- **Records**: each move is in the audit log (`workflow`, with from/to status and comment), keeps a
+  version, and send-back comments are stored as internal comments (shown on the post, never public).
+- **Notifications** (database for the admin bell, and email): submitted → reviewers; reviewed →
+  publishers; sent back, published, scheduled, unpublished, archived → the author. Never the person who
+  acted, never suspended accounts. Each person reads them in their admin language.
+- **Events and webhooks**: every move dispatches `ContentTransitioned`. Webhooks (Super Admin,
+  `integrations.manage`) subscribe to `post.published`, `post.scheduled`, `post.unpublished`,
+  `post.archived`; deliveries are queued, signed (`X-Portal-Signature: sha256=` HMAC of the body),
+  limited to public HTTPS addresses (no private, loopback or link-local IPs, no credentials in the URL,
+  no redirects), retried three times, and logged. The payload carries ids and public facts only. The
+  secret is stored encrypted and shown once.
+
+**Consequences.** Scoped review (an office's editor reviewing only that office's posts) uses the
+existing role scopes once posts carry offices (step 2.7). A DNS answer can change between the address
+check and the request; deliveries contain only public information, which limits the impact.

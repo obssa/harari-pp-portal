@@ -31,3 +31,4 @@ Harari translators.
 | `admin.categories.*`, `admin.tags.*`, `admin.translations.*` | am, om | category/tag screens and language tabs | "slug" kept as a loanword (ስሉግ); category (ምድብ / Ramaddii), tag (መለያ / Mallattoo) |
 | `content.post_type.*`, `content.status.*` | am, om | post types and workflow statuses | Party usage for press release (ጋዜጣዊ መግለጫ / Ibsa miidiyaa) and statement (መግለጫ / Ibsa); status words |
 | `admin.posts.*`, `content.block.*`, `admin.revisions.*` | am, om | post editor, blocks, versions | Editor-facing wording; "kicker" (ንዑስ ርዕስ / Mata-duree xiqqaa); Oromo uses Finfinnee for Addis Ababa |
+| `content.transition.*`, `content.notification.*`, `admin.comments.*`, `admin.webhooks.*` | am, om | workflow buttons, staff notifications and emails, webhooks | Button wording (ለግምገማ አቅርብ, ለማስተካከያ መልስ); "webhook" kept as a loanword |

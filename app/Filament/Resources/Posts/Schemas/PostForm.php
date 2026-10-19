@@ -21,6 +21,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
@@ -108,18 +109,19 @@ class PostForm
                 ])
                 ->extraInputAttributes(['lang' => $locale]),
             Grid::make(2)->schema([
-                Select::make("translations.{$locale}.status")
+                TextEntry::make("workflow_status_{$locale}")
                     ->label(__('admin.posts.field.status'))
-                    ->options(fn (): array => ContentStatus::options($canPublish()))
-                    ->default(ContentStatus::Draft->value)
-                    ->selectablePlaceholder(false),
+                    ->state(fn (?Post $record): string => ($record?->translation($locale, fallback: false)->status ?? ContentStatus::Draft)->label())
+                    ->color(fn (?Post $record): string => ($record?->translation($locale, fallback: false)->status ?? ContentStatus::Draft)->color())
+                    ->badge(),
                 DateTimePicker::make("translations.{$locale}.published_at")
                     ->label(__('admin.posts.field.published_at'))
                     ->helperText(__('admin.posts.help.published_at'))
                     ->timezone(EthiopianCalendar::timezone())
                     ->seconds(false)
-                    ->disabled(fn (): bool => ! $canPublish()),
+                    ->visible(fn (): bool => $canPublish()),
             ]),
+            WorkflowActions::make($locale),
             Section::make(__('admin.posts.section.seo'))
                 ->collapsed()
                 ->compact()

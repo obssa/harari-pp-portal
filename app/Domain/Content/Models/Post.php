@@ -105,6 +105,14 @@ class Post extends Model implements TranslatableModel
         return $this->morphMany(Revision::class, 'revisionable');
     }
 
+    /**
+     * @return MorphMany<Comment, $this>
+     */
+    public function comments(): MorphMany
+    {
+        return $this->morphMany(Comment::class, 'commentable');
+    }
+
     public function title(?string $locale = null): string
     {
         return (string) $this->translation($locale)?->title;

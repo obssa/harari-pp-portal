@@ -7,6 +7,8 @@ use App\Domain\Content\Models\Post;
 use App\Filament\Resources\Posts\Pages\CreatePost;
 use App\Filament\Resources\Posts\Pages\EditPost;
 use App\Filament\Resources\Posts\Pages\ListPosts;
+use App\Filament\Resources\Posts\PostResource;
+use App\Filament\Resources\Posts\RelationManagers\CommentsRelationManager;
 use App\Filament\Resources\Posts\RelationManagers\RevisionsRelationManager;
 
 use function Pest\Livewire\livewire;
@@ -35,7 +37,7 @@ it('creates a post from the admin form and opens it for editing', function () {
         ->fillForm([
             'type' => 'statement',
             'translations' => [
-                'am' => ['title' => 'የሰላም መግለጫ', 'excerpt' => 'አጭር ማጠቃለያ', 'status' => 'in_review'],
+                'am' => ['title' => 'የሰላም መግለጫ', 'excerpt' => 'አጭር ማጠቃለያ'],
             ],
         ])
         ->call('create')
@@ -43,7 +45,7 @@ it('creates a post from the admin form and opens it for editing', function () {
 
     $post = Post::query()->with('translations')->firstOrFail();
     expect($post->type->value)->toBe('statement')
-        ->and($post->translation('am', fallback: false)?->status)->toBe(ContentStatus::InReview);
+        ->and($post->translation('am', fallback: false)?->status)->toBe(ContentStatus::Draft);
 });
 
 it('shows a form error when no language has a title', function () {
@@ -55,34 +57,29 @@ it('shows a form error when no language has a title', function () {
         ->assertHasFormErrors(['translations.en.title']);
 });
 
-it('offers publishing only to publishers', function () {
-    $post = adminPost();
+it('shows each person only the workflow buttons they may use', function () {
+    $author = staff(SystemRole::Author);
+    $post = app(SavePost::class)->handle(new Post, ['translations' => ['en' => ['title' => 'Workflow post']]], $author);
 
-    $this->actingAs(staff(SystemRole::Editor));
-    livewire(EditPost::class, ['record' => $post->getRouteKey()])
-        ->fillForm(['translations.en.status' => 'published'])
-        ->call('save')
-        ->assertHasFormErrors(['translations.en.status']);
-    expect($post->refresh()->translation('en')?->status)->toBe(ContentStatus::Draft);
+    $this->actingAs($author)->get(PostResource::getUrl('edit', ['record' => $post]))
+        ->assertOk()
+        ->assertSee(__('content.transition.submit'))
+        ->assertDontSee(__('content.transition.publish'));
 
-    $this->actingAs(staff(SystemRole::Publisher));
-    livewire(EditPost::class, ['record' => $post->getRouteKey()])
-        ->fillForm(['translations.en.status' => 'published'])
-        ->call('save')
-        ->assertHasNoFormErrors();
-    expect($post->refresh()->translation('en')?->status)->toBe(ContentStatus::Published)
-        ->and(array_keys(ContentStatus::options(false)))->toBe(['draft', 'in_review', 'translating']);
+    $this->actingAs(staff(SystemRole::Publisher))->get(PostResource::getUrl('edit', ['record' => $post]))
+        ->assertOk()
+        ->assertSee(__('content.transition.publish'))
+        ->assertSee(__('content.transition.schedule'));
 });
 
-it('edits a post, fills the form from all languages, and publishes', function () {
+it('edits a post, keeps its status, and fills the form from all languages', function () {
     $post = adminPost('Draft title');
     $this->actingAs(staff(SystemRole::Publisher));
 
     livewire(EditPost::class, ['record' => $post->getRouteKey()])
-        ->assertFormSet(['translations.en.title' => 'Draft title', 'translations.en.status' => 'draft'])
+        ->assertFormSet(['translations.en.title' => 'Draft title'])
         ->fillForm([
             'translations.en.title' => 'Final title',
-            'translations.en.status' => 'published',
             'translations.om.title' => 'Mata-duree xumuraa',
         ])
         ->call('save')
@@ -90,8 +87,22 @@ it('edits a post, fills the form from all languages, and publishes', function ()
 
     $post->refresh();
     expect($post->title('en'))->toBe('Final title')
-        ->and($post->translation('en')?->status)->toBe(ContentStatus::Published)
+        ->and($post->translation('en')?->status)->toBe(ContentStatus::Draft)
+        ->and($post->translation('om', fallback: false)?->status)->toBe(ContentStatus::Draft)
         ->and($post->translatedLocales())->toBe(['en', 'om']);
+});
+
+it('adds internal comments to a post', function () {
+    $post = adminPost();
+    $editor = staff(SystemRole::Editor);
+    $this->actingAs($editor);
+
+    livewire(CommentsRelationManager::class, ['ownerRecord' => $post, 'pageClass' => EditPost::class])
+        ->callTableAction('create', data: ['body' => 'Check the figures with the finance office.', 'locale' => 'en'])
+        ->assertHasNoTableActionErrors();
+
+    $comment = $post->comments()->firstOrFail();
+    expect($comment->user_id)->toBe($editor->id)->and($comment->kind)->toBe('comment');
 });
 
 it('lists posts with their languages and filters by a missing language', function () {
