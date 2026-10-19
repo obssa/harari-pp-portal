@@ -171,3 +171,5 @@ Logs: `~/hararipp.orcamind.dev/storage/logs/laravel-*.log` (daily, 14 days).
   `--harari=<post id>` for stories written in Harari that sit in the Amharic tab and
   `--skip=<post id>` for ones to keep as drafts. It publishes as the first Super Admin (`--as=<email>`
   for another).
+- Lighthouse audits one published post (`lighthouserc.json`); if that story is unpublished or
+  renamed, point the file at another published post.

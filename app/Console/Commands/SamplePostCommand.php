@@ -68,13 +68,18 @@ final class SamplePostCommand extends Command
             return self::FAILURE;
         }
 
-        $existing = Post::query()->whereHas('translations', fn ($q) => $q->where('locale', 'en')->where('slug', self::SLUG))->first();
+        $existing = Post::withTrashed()->whereHas('translations', fn ($q) => $q->where('locale', 'en')->where('slug', self::SLUG))->first();
 
         if ($this->option('remove')) {
             $existing?->forceDelete();
             $this->info($existing ? 'Sample story removed.' : 'No sample story.');
 
             return self::SUCCESS;
+        }
+
+        if ($existing !== null && $existing->trashed()) {
+            $existing->forceDelete();
+            $existing = null;
         }
 
         if ($existing !== null) {

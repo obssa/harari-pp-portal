@@ -17,7 +17,8 @@ it('publishes one labelled sample story in every language, once, and removes it'
     $this->get('/har/news')->assertOk()->assertSee('ናሙና፦ በአራት ቋንቋዎች የቀረበ ዜና')->assertSee('lang="am"', escape: false);
     expect($post->featuredImage?->hasAltFor('om'))->toBeTrue();
 
-    $this->artisan('portal:sample-post', ['--remove' => true])->assertSuccessful();
+    $post->delete();
+    $this->artisan('portal:sample-post', ['--remove' => true])->expectsOutputToContain('removed')->assertSuccessful();
     expect(Post::withTrashed()->count())->toBe(0);
 });
 
