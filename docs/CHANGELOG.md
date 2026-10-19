@@ -4,6 +4,10 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+## v0.2.0-content-core — Phase 2 complete (2026-10-20)
+
+Gate of PLAN.md §13 Phase 2 met; report in `docs/phases/02-content-core.md`.
+
 ### Phase 2, step 2.12 — phase gate (2026-10-20)
 
 - Staff manual, chapter 2: "Publishing a post" in English and Amharic (`docs/manual/02-...`).

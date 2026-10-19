@@ -104,3 +104,5 @@ edited.
 - Use alt text that describes the photo, not the file name.
 - Only publish photos and texts the branch has the right to use; credit the source.
 - Report anything unexpected in the audit log to the Super Admin.
+
+Next chapter: [Publishing a post](02-publishing-a-post.md).
