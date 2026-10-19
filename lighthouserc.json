@@ -3,7 +3,8 @@
         "collect": {
             "url": [
                 "https://hararipp.orcamind.dev/en",
-                "https://hararipp.orcamind.dev/am"
+                "https://hararipp.orcamind.dev/am",
+                "https://hararipp.orcamind.dev/en/news/sample-a-story-in-four-languages"
             ],
             "numberOfRuns": 3,
             "settings": {

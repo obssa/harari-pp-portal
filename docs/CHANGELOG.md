@@ -4,6 +4,14 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 2, step 2.12 — phase gate (2026-10-20)
+
+- Staff manual, chapter 2: "Publishing a post" in English and Amharic (`docs/manual/02-...`).
+- `php artisan portal:sample-post` publishes one labelled sample story in English, Amharic and Afaan
+  Oromo for checking staging end to end (refused in production; `--remove` deletes it).
+- Lighthouse also audits a post page after every deploy.
+- Imports also skip a story the same channel posts twice.
+
 ### Phase 2, step 2.11 — stories from the public channels (2026-10-19)
 
 - Every half hour, new stories from the branch's Telegram channel and the regional communication
