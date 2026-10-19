@@ -7,6 +7,7 @@ use App\Domain\Content\Models\Post;
 use App\Domain\Content\Models\PostTranslation;
 use App\Domain\Content\Queries\PublicPosts;
 use App\Domain\Content\Support\BodyRenderer;
+use App\Domain\Content\Support\OgImage;
 use App\Domain\Translation\Support\Locales;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\View\View;
@@ -56,7 +57,60 @@ final class NewsController extends Controller
             'body' => BodyRenderer::toHtml($translation->body),
             'alternates' => self::alternates($post),
             'related' => $this->related($post, $locale),
+            'image' => self::shareImage($post, $translation),
+            'jsonLd' => self::jsonLd($post, $translation),
         ]);
+    }
+
+    /**
+     * The featured photo when there is one, otherwise a generated card.
+     */
+    public static function shareImage(Post $post, PostTranslation $translation): string
+    {
+        $photo = $post->featuredImage;
+        if ($photo !== null && $photo->hasGeneratedConversion('landscape-1600')) {
+            return $photo->getUrl('landscape-1600');
+        }
+        if ($photo !== null && $photo->hasGeneratedConversion('landscape-960')) {
+            return $photo->getUrl('landscape-960');
+        }
+
+        return app(OgImage::class)->url("post-{$post->id}-{$translation->locale}", $translation->title, $post->type->label());
+    }
+
+    /**
+     * NewsArticle and BreadcrumbList (PLAN.md §11 JSON-LD).
+     *
+     * @return list<array<string, mixed>>
+     */
+    public static function jsonLd(Post $post, PostTranslation $translation): array
+    {
+        $url = route('news.show', ['slug' => $translation->slug]);
+
+        return [
+            array_filter([
+                '@type' => 'NewsArticle',
+                '@id' => $url.'#article',
+                'headline' => $translation->title,
+                'description' => $translation->excerpt,
+                'inLanguage' => $translation->locale,
+                'datePublished' => $translation->published_at?->toIso8601String(),
+                'dateModified' => $translation->updated_at?->toIso8601String(),
+                'mainEntityOfPage' => $url,
+                'image' => [self::shareImage($post, $translation)],
+                'wordCount' => $translation->word_count ?: null,
+                'publisher' => ['@id' => url('/').'#organization'],
+                'author' => ['@id' => url('/').'#organization'],
+            ], fn (mixed $value): bool => $value !== null),
+            [
+                '@type' => 'BreadcrumbList',
+                'itemListElement' => [
+                    ['@type' => 'ListItem', 'position' => 1, 'name' => __('nav.home'), 'item' => route('home')],
+                    ['@type' => 'ListItem', 'position' => 2, 'name' => __('news.title'), 'item' => route('news.index')],
+                    ['@type' => 'ListItem', 'position' => 3, 'name' => $translation->title, 'item' => $url],
+                ],
+            ],
+        ];
     }
 
     /**

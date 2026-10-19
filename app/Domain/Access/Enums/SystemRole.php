@@ -78,7 +78,7 @@ enum SystemRole: string
                 'posts.view', 'posts.create', 'posts.update', 'posts.translate', 'posts.review',
                 'posts.publish', 'posts.feature', 'posts.delete',
                 'pages.view', 'pages.create', 'pages.update', 'pages.translate', 'pages.publish', 'pages.delete',
-                'homepage.manage', 'menus.manage', 'taxonomies.manage',
+                'homepage.manage', 'menus.manage', 'taxonomies.manage', 'redirects.manage',
                 'media.view', 'media.upload', 'media.update',
                 'galleries.manage', 'videos.manage',
                 'leaders.view', 'leaders.manage', 'offices.view', 'offices.manage',

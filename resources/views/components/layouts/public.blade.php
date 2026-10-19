@@ -1,4 +1,4 @@
-@props(['title' => null, 'description' => null, 'alternates' => null])
+@props(['title' => null, 'description' => null, 'alternates' => null, 'image' => null, 'type' => 'website', 'jsonLd' => []])
 @php
     $locale = app()->getLocale();
     $ethiopic = in_array($locale, ['am', 'har'], true);
@@ -17,6 +17,7 @@
         <link rel="preload" href="/fonts/portal/noto-sans-ethiopic-wght-v5.woff2" as="font" type="font/woff2" crossorigin>
     @endif
     <x-locale-meta :alternates="$alternates" />
+    <x-seo :title="$title ?? __('site.name')" :description="$description ?? __('site.description')" :image="$image ?? app(\App\Domain\Content\Support\OgImage::class)->url('site-'.app()->getLocale(), __('site.name'), __('site.office'))" :type="$type" :json-ld="$jsonLd" />
     @vite(['resources/css/app.css'])
 </head>
 <body class="flex min-h-screen flex-col bg-canvas text-ink antialiased">

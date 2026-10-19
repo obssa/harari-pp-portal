@@ -67,6 +67,19 @@ class PostTranslation extends Translation
                 $translation->published_at = CarbonImmutable::now();
             }
         });
+
+        static::updated(function (PostTranslation $translation): void {
+            $old = $translation->getOriginal('slug');
+            $wasPublished = $translation->getOriginal('status') === ContentStatus::Published
+                || $translation->getOriginal('status') === ContentStatus::Published->value;
+
+            if ($translation->wasChanged('slug') && is_string($old) && $wasPublished) {
+                Redirect::moved(
+                    "/{$translation->locale}/news/{$old}",
+                    "/{$translation->locale}/news/{$translation->slug}",
+                );
+            }
+        });
     }
 
     public function getActivitylogOptions(): LogOptions

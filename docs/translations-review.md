@@ -33,3 +33,4 @@ Harari translators.
 | `admin.posts.*`, `content.block.*`, `admin.revisions.*` | am, om | post editor, blocks, versions | Editor-facing wording; "kicker" (ንዑስ ርዕስ / Mata-duree xiqqaa); Oromo uses Finfinnee for Addis Ababa |
 | `content.transition.*`, `content.notification.*`, `admin.comments.*`, `admin.webhooks.*` | am, om | workflow buttons, staff notifications and emails, webhooks | Button wording (ለግምገማ አቅርብ, ለማስተካከያ መልስ); "webhook" kept as a loanword |
 | `news.*`, `nav.news`, `pagination.*` | am, om | public news pages and feeds | Reading-time plural forms; "also available in" phrasing; share/related labels |
+| `admin.redirects.*`, `access.module.redirects` | am, om | redirects manager | "redirect" (አቅጣጫ ማዞሪያ / Qajeelcha); old/new address wording |

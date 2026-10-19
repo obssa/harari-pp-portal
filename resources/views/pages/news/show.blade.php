@@ -4,6 +4,9 @@
     :title="$translation->seo_title ?: $translation->title"
     :description="$translation->seo_description ?: $translation->excerpt"
     :alternates="$alternates"
+    :image="$image ?? null"
+    type="article"
+    :json-ld="$jsonLd ?? []"
 >
     <article class="mx-auto max-w-page px-4 py-10 sm:px-6">
         @if ($preview ?? false)

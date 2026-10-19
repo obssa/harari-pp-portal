@@ -421,3 +421,36 @@ and tokenised previews of drafts. Harari will have little content of its own for
 
 **Consequences.** Search engines see Harari listings that contain Amharic items; their canonical pages
 stay Amharic, so no duplicate content is created. SEO metadata, sitemaps and redirects follow in 2.5.
+
+## ADR-0015 — Search engines and sharing: metadata, sitemaps, robots, redirects, OG images (2026-10-19)
+
+**Context.** PLAN.md §11 SEO: hreflang and canonical URLs (done in ADR-0007), language sitemaps with an
+index, robots.txt, JSON-LD (PoliticalParty, NewsArticle, BreadcrumbList), Open Graph and Twitter cards
+with generated images for posts without a photo, 301 redirects on slug change and a redirect manager.
+
+**Decision.**
+
+- **`<x-seo>`** in the public layout: Open Graph (site name, type, title, description, URL, locale and
+  alternate locales, image) and Twitter card tags in the page's language, and one JSON-LD graph per
+  page (the party as `PoliticalParty` with its social profiles and contacts from the site settings,
+  plus the page's own nodes). The JSON-LD script carries the CSP nonce and escapes `<`, `>` and `&`.
+- **Post pages** add `NewsArticle` (headline, description, language, dates, image, word count, the
+  party as author and publisher) and `BreadcrumbList`, with `og:type=article`.
+- **Sharing images**: the post's featured photo (1600 px crop) when it has one; otherwise a generated
+  1200×630 PNG in the party colours with the type and title, drawn with GD from static bold TrueType
+  instances of Inter and Noto Sans Ethiopic (`resources/fonts/og`, built by `build_og_fonts.py`;
+  text is split into Latin and Ethiopic runs because GD has no font fallback). Images are made once per
+  title and kept on the public disk; other pages share one image per language.
+- **Sitemaps**: `/sitemap.xml` (index) and `/sitemaps/{lang}.xml` with the home page, the news listing
+  and every live post, each with `xhtml:link` alternates for the languages it exists in; cached for an
+  hour.
+- **robots.txt** is served by the application (the static file was removed): everything disallowed
+  outside production; in production the admin, Livewire and previews are disallowed and the sitemap
+  is announced.
+- **Redirects**: when a published post's slug changes, the old address redirects (301) to the new one;
+  older redirects are re-pointed so there are no chains, and a redirect from the new address is removed
+  so there are no loops. Publishers and admins add or edit redirects by hand (`redirects.manage`).
+  Unknown addresses are looked up before the 404 page is shown; hits are counted.
+
+**Consequences.** Search Console verification fields and search (WebSite + SearchAction) arrive with
+step 2.9. Generated images for staging live in `storage/app/public/og` and are safe to delete.

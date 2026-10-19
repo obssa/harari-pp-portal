@@ -136,3 +136,13 @@ Logs: `~/hararipp.orcamind.dev/storage/logs/laravel-*.log` (daily, 14 days).
   workflow artifacts. Run it by hand from GitHub → Actions → Lighthouse → Run workflow.
 - Fonts live in `public/fonts/portal/` and are rebuilt with `python scripts/fonts/build_fonts.py`
   (needs fontTools and brotli) after updating the font packages; bump `VERSION` in the script.
+
+## Search engines and sharing (ADR-0015)
+
+- `/robots.txt` and the sitemaps are made by the application, not files in `public/`. Outside
+  `APP_ENV=production` robots.txt refuses every crawler, so staging stays out of search results.
+- Sitemaps are cached for an hour; `php artisan cache:clear` rebuilds them at once.
+- Generated share images are kept in `storage/app/public/og/` (outside the deploy, so they survive
+  releases). Deleting the folder is safe: images are made again on the next visit. The fonts used
+  are in `resources/fonts/og/` (rebuild with `python scripts/fonts/build_og_fonts.py`).
+- Redirects are checked only when a page is not found, so they never slow down normal pages.

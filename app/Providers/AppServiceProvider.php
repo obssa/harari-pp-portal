@@ -13,10 +13,12 @@ use App\Domain\Content\Listeners\NotifyAboutTransition;
 use App\Domain\Content\Models\Category;
 use App\Domain\Content\Models\Comment;
 use App\Domain\Content\Models\Post;
+use App\Domain\Content\Models\Redirect;
 use App\Domain\Content\Models\Revision;
 use App\Domain\Content\Models\Tag;
 use App\Domain\Content\Policies\CommentPolicy;
 use App\Domain\Content\Policies\PostPolicy;
+use App\Domain\Content\Policies\RedirectPolicy;
 use App\Domain\Content\Policies\RevisionPolicy;
 use App\Domain\Content\Policies\TaxonomyPolicy;
 use App\Domain\Media\Enums\MediaKind;
@@ -131,6 +133,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Tag::class, TaxonomyPolicy::class);
         Gate::policy(Post::class, PostPolicy::class);
         Gate::policy(Revision::class, RevisionPolicy::class);
+        Gate::policy(Redirect::class, RedirectPolicy::class);
         Gate::policy(Comment::class, CommentPolicy::class);
         Gate::policy(Webhook::class, WebhookPolicy::class);
 

@@ -1,6 +1,7 @@
 <?php
 
 use App\Domain\Access\Actions\RecordAccessDenied;
+use App\Domain\Content\Actions\FollowRedirect;
 use App\Domain\Translation\Support\Locales;
 use App\Http\Middleware\NoIndexOutsideProduction;
 use App\Http\Middleware\SecurityHeaders;
@@ -9,6 +10,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -27,6 +29,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
         );
+
+        // Moved pages (ADR-0015): a known old address redirects instead of 404.
+        $exceptions->render(function (NotFoundHttpException $e, Request $request) {
+            return $request->isMethod('GET') ? FollowRedirect::for($request) : null;
+        });
 
         // Every refused request lands in the audit log, then renders as usual.
         $exceptions->render(function (HttpExceptionInterface $e, Request $request) {

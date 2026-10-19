@@ -6,6 +6,8 @@ use App\Http\Controllers\Public\MediaFileController;
 use App\Http\Controllers\Public\NewsController;
 use App\Http\Controllers\Public\PreviewController;
 use App\Http\Controllers\Public\RedirectToPreferredLocale;
+use App\Http\Controllers\Public\RobotsController;
+use App\Http\Controllers\Public\SitemapController;
 use App\Http\Middleware\CachePublicPages;
 use App\Http\Middleware\OutsideProductionOnly;
 use App\Http\Middleware\SetLocale;
@@ -45,6 +47,14 @@ Route::get('/preview/posts/{post}/{language}', PreviewController::class)
     ->middleware('signed')
     ->withoutMiddleware($stateless)
     ->name('preview.post');
+
+// Search engines (ADR-0015).
+Route::get('/robots.txt', RobotsController::class)->withoutMiddleware($stateless)->name('robots');
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->withoutMiddleware($stateless)->name('sitemap.index');
+Route::get('/sitemaps/{language}.xml', [SitemapController::class, 'language'])
+    ->whereIn('language', Locales::all())
+    ->withoutMiddleware($stateless)
+    ->name('sitemap.language');
 
 // Every public page lives under its language: /en, /am, /om, /har (PLAN.md §3).
 Route::prefix('{locale}')

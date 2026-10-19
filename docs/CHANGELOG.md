@@ -4,6 +4,21 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 2, step 2.5 — search engines and sharing (2026-10-19)
+
+- Every public page carries Open Graph and Twitter card tags and structured data describing the party
+  (PoliticalParty, with its social accounts and contacts from Settings); news posts add NewsArticle
+  and BreadcrumbList data (ADR-0015).
+- Share images: posts use their featured photo; pages and posts without one get a generated image
+  (1200×630, site colours, title in Latin or Ethiopic script), made once and kept.
+- Sitemaps: `/sitemap.xml` lists one sitemap per language (`/sitemaps/{lang}.xml`) with the home and
+  news pages and every published post, each with its other languages.
+- `/robots.txt` points to the sitemap on the live site and closes the whole site to search engines
+  everywhere else (staging included).
+- Redirects (Admin → Content → Redirects, publishers): permanent or temporary moves from an old
+  address to a new one, with a visit counter. Changing the address of a published post adds one
+  automatically; chains and loops are prevented.
+
 ### Phase 2, step 2.4 — public news pages (2026-10-19)
 
 - `/{lang}/news`: news, press releases, statements, speeches and announcements with filters by type,
