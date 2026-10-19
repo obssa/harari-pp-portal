@@ -198,3 +198,42 @@ it('shows the source under a published imported story', function () {
         ->assertSee('href="https://t.me/hrprosperityparty/101"', escape: false)
         ->assertSee('Prosperity Party Harari Region Branch');
 });
+
+it('recognises Harari text in Ethiopic script', function () {
+    expect(StoryText::language('ናሙና ኪም ሐላ ዚቅቲቤ ዪነብራዩ', 'am'))->toBe('har')
+        ->and(StoryText::language('ኢንጅነር ናሙና ዚያድ የመንገድ ስራዎችን ገመገሙ', 'am'))->toBe('am')
+        ->and(StoryText::looksHarari('የናሙና ዜና ርዕስ'))->toBeFalse();
+});
+
+it('publishes imported drafts on request, moving Harari stories and leaving chosen ones as drafts', function () {
+    staff(SystemRole::SuperAdmin);
+    fakeChannels(branch: telegramPage('hrprosperityparty', [
+        ['id' => 301, 'at' => '2026-10-15T10:00:00+00:00', 'text' => "የናሙና ዜና ርዕስ\n\nየናሙና ዜና ጽሑፍ።"],
+        ['id' => 302, 'at' => '2026-10-15T10:00:05+00:00', 'photos' => ['https://cdn4.telesco.pe/file/one.jpg']],
+        ['id' => 303, 'at' => '2026-10-15T11:00:00+00:00', 'text' => "ሌላ የናሙና ዜና\n\nየናሙና ጽሑፍ።"],
+        ['id' => 304, 'at' => '2026-10-15T12:00:00+00:00', 'text' => "ሦስተኛ የናሙና ዜና\n\nየናሙና ጽሑፍ።"],
+    ]), office: telegramPage('HarariGovernmentCommunication', []));
+    app(RunImport::class)->handle();
+
+    $harari = Post::query()->where('source_url', 'https://t.me/hrprosperityparty/301')->firstOrFail();
+    $skipped = Post::query()->where('source_url', 'https://t.me/hrprosperityparty/304')->firstOrFail();
+
+    $this->artisan('portal:publish-imported', ['--dry-run' => true])->expectsOutputToContain('would publish')->assertSuccessful();
+    expect(Post::query()->whereHas('translations', fn ($q) => $q->where('status', 'published'))->count())->toBe(0);
+
+    $this->artisan('portal:publish-imported', ['--harari' => [$harari->id], '--skip' => [$skipped->id]])->assertSuccessful();
+
+    $harari->refresh();
+    expect($harari->translation('har', fallback: false)?->status)->toBe(ContentStatus::Published)
+        ->and($harari->translation('am', fallback: false))->toBeNull()
+        ->and($harari->source_locale)->toBe('har')
+        ->and($harari->featuredImage?->alt)->toHaveKey('har')
+        ->and(Post::query()->where('source_url', 'https://t.me/hrprosperityparty/303')->firstOrFail()->translation('am', fallback: false)?->status)->toBe(ContentStatus::Published)
+        ->and($skipped->translation('am', fallback: false)?->status)->toBe(ContentStatus::Draft);
+
+    $this->get('/har/news/'.$harari->translation('har')?->slug)->assertOk()->assertSee('የናሙና ዜና ርዕስ');
+});
+
+it('refuses to publish without a Super Admin', function () {
+    $this->artisan('portal:publish-imported')->assertFailed();
+});

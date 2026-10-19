@@ -659,8 +659,9 @@ cannot be read without logging in; their Telegram channels have public preview p
   (`cdn*.telesco.pe`) are ever requested.
 - A text message is a story; photo albums posted within two minutes of it are its photos; albums with
   no text nearby are skipped. Each story becomes a **draft** news post: the first line is the title,
-  the rest the text, unchanged. Ethiopic text takes the channel's language (Amharic; Harari shares the
-  script, so staff change it when needed), Latin text is told apart as Afaan Oromo or English. Up to
+  the rest the text, unchanged. Ethiopic text takes the channel's language (Amharic) unless it reads as
+  Harari (three or more Harari words or ዚ-/ዪ- forms, which Amharic hardly uses); Latin text is told
+  apart as Afaan Oromo or English. Up to
   ten photos are downloaded once, cleaned like any upload (ADR-0009) and credited to the channel; the
   first is the featured photo, the rest a gallery.
 - Every post keeps its source: name, message link and original time. Editors see it in the post

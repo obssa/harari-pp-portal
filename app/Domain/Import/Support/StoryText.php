@@ -15,20 +15,39 @@ final class StoryText
     /** Common Afaan Oromo words, to tell Oromo from English in Latin script. */
     private const OROMO_WORDS = ['fi', 'kan', 'irratti', 'keessatti', 'naannoo', 'waliin', 'akka', 'hojii', 'ummata', 'bara', 'kana', 'jedhame', 'geggeeffame', 'irraa'];
 
+    /** Common Harari words that Amharic does not use. */
+    private const HARARI_WORDS = ['ኪም', 'ሐላ', 'ዛዩ', 'ሑሉፍ', 'ሩቡእ', 'አታጮት', 'ሞሸቤ', 'ላቂ', 'ታኹው', 'አርራ', 'ሑስኒ'];
+
     /** Above this share of shared words, two stories are the same story. */
     public const SAME_STORY = 0.6;
 
     public static function language(string $text, string $default): string
     {
         if (preg_match('/\p{Ethiopic}/u', $text) === 1) {
-            // Amharic and Harari share the script; the source's own language decides.
-            return $default;
+            // Amharic and Harari share the script: Harari is told by its own words and
+            // the ዚ-/ዪ- forms Amharic hardly uses; otherwise the channel's language decides.
+            return self::looksHarari($text) ? 'har' : $default;
         }
 
         $words = array_count_values(explode(' ', SearchText::normalize($text)));
         $oromo = array_sum(array_intersect_key($words, array_flip(self::OROMO_WORDS)));
 
         return $oromo >= 2 ? 'om' : 'en';
+    }
+
+    /** Three or more Harari signs: known Harari words or words starting with ዚ or ዪ. */
+    public static function looksHarari(string $text): bool
+    {
+        $markers = array_map(fn (string $word): string => SearchText::normalize($word), self::HARARI_WORDS);
+        $score = 0;
+        foreach (explode(' ', SearchText::normalize($text)) as $word) {
+            if (in_array($word, $markers, true)
+                || (mb_strlen($word) >= 3 && in_array(mb_substr($word, 0, 1), ['ዚ', 'ዪ'], true))) {
+                $score++;
+            }
+        }
+
+        return $score >= 3;
     }
 
     /**

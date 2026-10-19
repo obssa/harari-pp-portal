@@ -166,3 +166,8 @@ Logs: `~/hararipp.orcamind.dev/storage/logs/laravel-*.log` (daily, 14 days).
 - Problems (Telegram unreachable, changed page layout) show on Administration → Content sources in
   "Last problem"; the next run tries again.
 - Imported photos go through the normal media pipeline; their copies are made by the queue.
+- To publish the imported drafts in one go after they have been checked:
+  `php artisan portal:publish-imported --dry-run` lists them; then run it without `--dry-run`, adding
+  `--harari=<post id>` for stories written in Harari that sit in the Amharic tab and
+  `--skip=<post id>` for ones to keep as drafts. It publishes as the first Super Admin (`--as=<email>`
+  for another).

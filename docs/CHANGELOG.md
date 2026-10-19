@@ -4,6 +4,15 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Imported stories: Harari and publishing (2026-10-20)
+
+- Stories written in Harari are recognised (own words and the ዚ-/ዪ- forms) and arrive in the Harari
+  tab instead of the Amharic one.
+- Very short messages are never taken for duplicates.
+- `php artisan portal:publish-imported` publishes the imported stories that are still drafts, as a
+  Super Admin, once someone has decided they may go live: `--dry-run` lists them, `--harari=<id>`
+  moves a story from the Amharic tab to Harari first, `--skip=<id>` leaves one as a draft.
+
 ## v0.2.0-content-core — Phase 2 complete (2026-10-20)
 
 Gate of PLAN.md §13 Phase 2 met; report in `docs/phases/02-content-core.md`.

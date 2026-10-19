@@ -41,6 +41,9 @@ final class ImportStory
     /** Stories this many days apart are never the same story. */
     public const DUPLICATE_DAYS = 3;
 
+    /** Messages shorter than this (in words) are never taken for duplicates. */
+    public const MIN_WORDS_TO_COMPARE = 8;
+
     public function __construct(
         private readonly UploadMedia $upload,
         private readonly SyncMediaUsage $usage,
@@ -100,11 +103,12 @@ final class ImportStory
 
     /**
      * The import of the same story from this channel (a repost) or from a
-     * source of equal or higher priority.
+     * source of equal or higher priority. Very short messages are never
+     * compared: a few shared words prove nothing.
      */
     private function duplicateOf(ContentSource $source, TelegramMessage $message, string $fingerprint): ?ContentImport
     {
-        if ($fingerprint === '') {
+        if (count(explode(' ', $fingerprint)) < self::MIN_WORDS_TO_COMPARE) {
             return null;
         }
 
