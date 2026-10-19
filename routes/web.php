@@ -4,6 +4,7 @@ use App\Domain\Translation\Support\Locales;
 use App\Http\Controllers\Public\FeedController;
 use App\Http\Controllers\Public\MediaFileController;
 use App\Http\Controllers\Public\NewsController;
+use App\Http\Controllers\Public\PageController;
 use App\Http\Controllers\Public\PreviewController;
 use App\Http\Controllers\Public\RedirectToPreferredLocale;
 use App\Http\Controllers\Public\RobotsController;
@@ -69,4 +70,9 @@ Route::prefix('{locale}')
             ->name('news.show');
         Route::get('feed.xml', [FeedController::class, 'rss'])->name('feed.rss');
         Route::get('feed.json', [FeedController::class, 'json'])->name('feed.json');
+
+        // Pages (about/history ...): last, so fixed sections such as news always win.
+        Route::get('{path}', PageController::class)
+            ->where('path', '[a-z0-9]+(?:-[a-z0-9]+)*(?:/[a-z0-9]+(?:-[a-z0-9]+)*){0,2}')
+            ->name('page.show');
     });

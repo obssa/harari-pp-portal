@@ -454,3 +454,32 @@ with generated images for posts without a photo, 301 redirects on slug change an
 
 **Consequences.** Search Console verification fields and search (WebSite + SearchAction) arrive with
 step 2.9. Generated images for staging live in `storage/app/public/og` and are safe to delete.
+
+## ADR-0016 — Pages and menus (2026-10-19)
+
+**Context.** PLAN.md §3 and §7 ask for nested static pages (About, History, Vision …) with templates
+and the block editor, and menus for the header, footer and utility bar with labels per language.
+
+**Decision.**
+
+- **Pages** use the translation pattern (ADR-0011) and the block editor (ADR-0012). Templates: text
+  page, wide page, landing page with a large photo. Nesting goes at most three levels deep and can never
+  loop. A page's address is the chain of its and its ancestors' slugs in that language
+  (`/en/about/history`); a request with the right last slug but wrong parents gets a 301 to the real
+  address. Page routes are registered last in each language, so fixed sections such as `/news` always
+  win, and a page can never take the address of a fixed section (`news`, `offices`, `events` …):
+  it gets `-page` added. A language of a page is published or not with one switch held by
+  `pages.publish`; pages have no review workflow (posts do, ADR-0013). Pages keep versions and
+  record their media usage. Changing the address of a published page adds a redirect from the old
+  one (ADR-0015); its sub-pages follow through the wrong-parent redirect.
+- **Menus** are one record per place (header, footer, top bar) holding a small tree (items with up to
+  one level of sub-items, at most 12 per level) instead of a `menu_items` table: menus are short, edited
+  as a whole and read whole. Items point at a page, a post, the news listing, a site path or an
+  `https://` address, with a label per language (following the fallback chain). Items whose page or
+  post is not live in a language are left out of that language. Resolved menus are cached for ten
+  minutes and cleared when a menu or page is saved. Until a header menu exists, Home and News show.
+- Sub-items open with a native `<details>` disclosure (keyboard and screen-reader friendly, no
+  JavaScript).
+
+**Consequences.** Mega-menu panels with images and the utility bar items come with the homepage
+builder (2.8). Pages are added to the sitemaps in this step.

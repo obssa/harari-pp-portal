@@ -2,6 +2,7 @@
 
 namespace App\View\Components;
 
+use App\Domain\Content\Models\Menu;
 use App\Services\Calendar\EthiopianCalendar;
 use App\Settings\SiteSettings;
 use Illuminate\Contracts\View\View;
@@ -38,9 +39,13 @@ final class SiteFooter extends Component
 
     public string $years;
 
+    /** @var list<array<string, mixed>> links from Admin → Menus → footer */
+    public array $links = [];
+
     public function __construct()
     {
         $this->years = app(EthiopianCalendar::class)->years(now());
+        $this->links = Menu::resolved('footer', app()->getLocale());
 
         // Settings load lazily; a database problem must not take the footer down.
         try {

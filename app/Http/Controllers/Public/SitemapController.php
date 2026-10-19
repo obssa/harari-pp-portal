@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Public;
 
 use App\Domain\Content\Enums\ContentStatus;
+use App\Domain\Content\Models\Page;
+use App\Domain\Content\Models\PageTranslation;
 use App\Domain\Content\Models\Post;
 use App\Domain\Content\Models\PostTranslation;
 use App\Domain\Translation\Support\Locales;
@@ -77,6 +79,26 @@ final class SitemapController extends Controller
                 'lastmod' => $own->updated_at?->toAtomString(),
                 'alternates' => $alternates,
             ];
+        }
+
+        $pages = Page::query()->with('translations')->get();
+        foreach ($pages as $page) {
+            $alternates = [];
+            foreach (Locales::all() as $locale) {
+                $translation = $page->translation($locale, fallback: false);
+                $path = $page->path($locale);
+                if ($translation instanceof PageTranslation && $translation->isLive() && ! $translation->noindex && $path !== null) {
+                    $alternates[$locale] = route('page.show', ['locale' => $locale, 'path' => $path]);
+                }
+            }
+
+            if (isset($alternates[$language])) {
+                $entries[] = [
+                    'url' => $alternates[$language],
+                    'lastmod' => $page->translation($language, fallback: false)?->updated_at?->toAtomString(),
+                    'alternates' => $alternates,
+                ];
+            }
         }
 
         return $entries;

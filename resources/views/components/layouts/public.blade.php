@@ -44,26 +44,7 @@
                     <span class="block text-sm text-ink-muted">{{ __('site.office') }}</span>
                 </span>
             </a>
-            <nav aria-label="{{ __('nav.main') }}">
-                <ul class="flex flex-wrap gap-1 text-sm font-medium">
-                    <li>
-                        <a href="{{ route('home') }}" @if (request()->routeIs('home')) aria-current="page" @endif
-                           @class([
-                               'inline-block rounded-control px-3 py-2 transition-colors duration-150',
-                               'bg-primary-50 text-primary-800 dark:bg-primary-950 dark:text-primary-200' => request()->routeIs('home'),
-                               'text-ink hover:bg-surface-muted' => ! request()->routeIs('home'),
-                           ])>{{ __('nav.home') }}</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('news.index') }}" @if (request()->routeIs('news.*')) aria-current="page" @endif
-                           @class([
-                               'inline-block rounded-control px-3 py-2 transition-colors duration-150',
-                               'bg-primary-50 text-primary-800 dark:bg-primary-950 dark:text-primary-200' => request()->routeIs('news.*'),
-                               'text-ink hover:bg-surface-muted' => ! request()->routeIs('news.*'),
-                           ])>{{ __('nav.news') }}</a>
-                    </li>
-                </ul>
-            </nav>
+            <x-site-nav />
         </div>
     </header>
 

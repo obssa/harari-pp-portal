@@ -34,3 +34,4 @@ Harari translators.
 | `content.transition.*`, `content.notification.*`, `admin.comments.*`, `admin.webhooks.*` | am, om | workflow buttons, staff notifications and emails, webhooks | Button wording (ለግምገማ አቅርብ, ለማስተካከያ መልስ); "webhook" kept as a loanword |
 | `news.*`, `nav.news`, `pagination.*` | am, om | public news pages and feeds | Reading-time plural forms; "also available in" phrasing; share/related labels |
 | `admin.redirects.*`, `access.module.redirects` | am, om | redirects manager | "redirect" (አቅጣጫ ማዞሪያ / Qajeelcha); old/new address wording |
+| `admin.pages.*`, `admin.menus.*`, `pages.*`, `footer.links` | am, om | page and menu screens, footer quick links | Template names (የጽሑፍ ገጽ, መግቢያ ገጽ / Fuula seensaa); menu (ማውጫ / Baafata) |

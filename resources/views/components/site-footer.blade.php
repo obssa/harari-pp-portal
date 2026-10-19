@@ -6,6 +6,17 @@
             <p class="mt-4 max-w-prose text-ink-muted">{{ __('site.description') }}</p>
         </section>
 
+        @if ($links !== [])
+            <section aria-labelledby="footer-links">
+                <h2 id="footer-links" class="text-base font-semibold">{{ __('footer.links') }}</h2>
+                <ul class="mt-4 space-y-2">
+                    @foreach ($links as $link)
+                        <li><a href="{{ $link['url'] }}" @if ($link['external']) rel="noopener" @endif class="text-link underline-offset-4 hover:underline">{{ $link['label'] }}</a></li>
+                    @endforeach
+                </ul>
+            </section>
+        @endif
+
         <section aria-labelledby="footer-contact">
             <h2 id="footer-contact" class="text-base font-semibold">{{ __('footer.contact') }}</h2>
             @if ($hasContact())

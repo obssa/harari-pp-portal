@@ -4,6 +4,21 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 2, step 2.6 — pages and menus (2026-10-19)
+
+- Admin → Content → Pages: static pages (About, History, Vision …) with a tab per language, the block
+  editor, a layout (text page, wide page, landing page with a large photo), an optional page above
+  (up to three levels) and a featured photo. Publishers publish each language with one switch.
+- Pages live at their nested address in each language (`/en/about/history`); a page found under the
+  wrong parent is sent to its real address, a renamed page keeps its old address working, and pages
+  can never take the address of a fixed section such as `/news` (ADR-0016).
+- Admin → Content → Menus: the main menu, the footer links and the top bar, each with items (and one
+  level of sub-items) pointing to a page, a post, the news listing, a site path or an https address,
+  with a label per language. Items whose page or post is not published in a language are left out.
+- The header shows the main menu (Home and News until one is made; sub-items open without
+  JavaScript); the footer shows the quick links.
+- Published pages are listed in the sitemaps.
+
 ### Phase 2, step 2.5 — search engines and sharing (2026-10-19)
 
 - Every public page carries Open Graph and Twitter card tags and structured data describing the party
