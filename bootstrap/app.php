@@ -1,6 +1,7 @@
 <?php
 
 use App\Domain\Access\Actions\RecordAccessDenied;
+use App\Domain\Translation\Support\Locales;
 use App\Http\Middleware\NoIndexOutsideProduction;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -16,6 +17,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->append(NoIndexOutsideProduction::class);
+
+        // The language choice is not sensitive and must stay readable without the app key.
+        $middleware->encryptCookies(except: [Locales::COOKIE]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

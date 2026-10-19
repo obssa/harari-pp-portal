@@ -85,6 +85,10 @@ python scripts/task.py composer require vendor/package   # Composer inside the c
 python scripts/task.py artisan <command>                  # artisan inside the container
 ```
 
+Languages (ADR-0007): put every visible string in `lang/en.json` and the other three files in the same
+commit; run `python scripts/task.py artisan lang:missing` before committing. Public routes go inside the
+`{locale}` group in `routes/web.php`; use `route('name')` (the locale is filled in automatically).
+
 Access control lives in `app/Domain/Access` (ADR-0005, ADR-0006): add permissions to
 `PermissionRegistry`, default grants to `SystemRole`, and a policy for every new model. Use
 `hasPermissionInScope()` for office/league/language-scoped checks. Test helper: `staff(SystemRole::X)`.

@@ -21,7 +21,7 @@ Written 2026-10-18 from `docs/PLAN.md`, adjusted by `docs/DECISIONS.md`.
 |---|---|---|
 | 1.1 | Repo, test container, CI, deploy pipeline, holding page, first tests, docs | done 2026-10-18: live at hararipp.orcamind.dev |
 | 1.2 | Filament panel, auth + required 2FA for privileged roles, RBAC with scopes, audit log, user seeding | done 2026-10-18 |
-| 1.3 | Locale routing `/{en,am,om,har}`, cookie/Accept-Language detection, fallback chain, DB-backed UI strings, `lang:missing`, `lang:export` | |
+| 1.3 | Locale routing `/{en,am,om,har}`, cookie/Accept-Language detection, fallback chain, DB-backed UI strings, `lang:missing`, `lang:export` | done 2026-10-19 |
 | 1.4 | Settings (encrypted integration keys), `sites` table, Ethiopian calendar service + Blade component | |
 | 1.5 | Media library (WebP/AVIF, EXIF strip, SVG sanitising, alt per locale) | |
 | 1.6 | Design tokens, self-hosted fonts, public layout, error pages, security headers + CSP nonces, styleguide, Lighthouse CI | |

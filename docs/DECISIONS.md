@@ -101,3 +101,42 @@ the terminal of whoever runs it (never in CI logs).
 
 **Consequences.** Other staff may opt in from their profile. Losing a phone needs an Admin to run
 "Reset two-factor login", which is audited and signs the user out.
+
+## ADR-0007 — How UI strings are stored, resolved and exported (2026-10-19)
+
+**Context.** PLAN.md §6 keeps UI strings in `lang/*.json`, lets translators edit them in the admin
+(Harari by hand), and says an import should "regenerate `lang/har.json`". Two facts shape the design:
+
+- Laravel only falls back for PHP group files, never for JSON keys, and an empty JSON value prints the
+  raw key. Harari ships with every key present and empty, so Harari pages would show `site.office`.
+- Deploys copy the repository's `lang/` folder to the server, so a `lang/har.json` regenerated on the
+  server would be overwritten by the next deploy and translators' work would be lost.
+
+**Decision.**
+
+- `App\Domain\Translation\FallbackTranslator` replaces Laravel's translator: JSON and group strings
+  follow `config('portal.fallbacks')` (har → am → en, om → en, am → en), empty values count as missing,
+  `trans_choice()` follows the same chain, and strings served from a fallback are recorded per request.
+- Shipped strings stay in `lang/*.json` (developers, CI). Strings edited in the admin are stored in
+  `ui_translations` and override the files at runtime through spatie/laravel-translation-loader
+  (model `UiTranslation`: exact locale only, empty means missing). They survive every deploy.
+- `php artisan lang:export` writes the live strings (files + admin edits) in the repository's exact JSON
+  format: to `storage/app/translations/` on the server for download, or with `--to-lang` into `lang/`
+  on a developer machine so the edits can be committed. This replaces "regenerate lang/har.json".
+- `php artisan lang:missing` (CI, `--files-only`) fails when Amharic or Afaan Oromo miss a key, any
+  language breaks a `:placeholder` or plural form, a locale keeps keys English removed, or code uses a
+  key English lacks. Harari coverage is reported, never failed.
+- spatie's loader dropped Laravel's built-in English framework strings; `AppServiceProvider` rebuilds it
+  with the framework path first, as Laravel does. Amharic and Afaan Oromo framework strings
+  (validation, auth, passwords, pagination) come from Laravel-Lang (MIT), kept only where placeholders
+  match English (suffixes such as Oromo `:attributen` allowed), and await native review.
+- Routing: every public page lives under `/{en|am|om|har}`; `/` redirects by cookie (`hpp_locale`,
+  unencrypted), then Accept-Language, then `config('portal.default_locale')` (Amharic until the party
+  decides). The redirect is `private, no-store` with `Vary: Accept-Language, Cookie` so Cloudflare never
+  shares it. Pages carry hreflang for all four languages, `x-default` and a canonical URL.
+- The admin panel uses each staff member's preferred language (English if none); Filament's own labels
+  fall back to English because Filament ships no Amharic.
+
+**Consequences.** Phase 4's translation screens edit `ui_translations` and use `TranslationCatalog` for
+coverage and diffs. Pages whose slugs differ per language pass their own URLs to `<x-locale-meta>` and
+`<x-language-switcher>`.

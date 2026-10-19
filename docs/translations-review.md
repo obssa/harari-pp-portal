@@ -14,3 +14,6 @@ Harari translators.
 | `access.role.*` | am, om | role names | Official titles used inside the party (e.g. ዋና አስተዳዳሪ, Bulchaa Olaanaa) |
 | `access.module.*`, `access.action.*` | am, om | permission matrix labels | Technical terms (ፈቃድ, ሚና, ኦዲት, 2FA) |
 | `admin.*` | am, om | admin screens and the sign-in email | Register of the sign-in email; staff-facing wording |
+| `nav.language` | am, om | ቋንቋ / Afaan | Label of the language switcher |
+| `lang/am/*.php`, `lang/om/*.php` | am, om | validation, sign-in, password and pagination messages | Taken from Laravel-Lang (MIT); some read as machine translation (e.g. Oromo password reset text mixes in English). Review all. |
+| Harari name in the switcher | har | ሐረሪ (`config/portal.php`) | The brief suggested "መሐዲያ"; confirm the name Harari speakers use for their language (Gey Sinan, ጌይ ሲናን?) |

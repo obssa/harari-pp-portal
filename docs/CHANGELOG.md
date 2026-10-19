@@ -4,6 +4,22 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 1, step 1.3 — languages: routing, fallback, translation tooling (2026-10-19)
+
+- Public pages under `/en`, `/am`, `/om`, `/har`; `/` picks the language from the remembered choice,
+  then the browser, then the default (Amharic, configurable). Unknown languages return 404.
+- hreflang links for all four languages plus `x-default`, canonical URLs, and a language switcher with
+  each language named in its own script; the choice is remembered for a year.
+- Fallback chain har → am → en, om → en for every string (including plurals and framework messages);
+  empty Harari values show Amharic instead of raw keys.
+- Strings edited in the admin (`ui_translations`) override the shipped files, survive deploys, are
+  audited, and refresh immediately.
+- `php artisan lang:missing` (now in CI) and `php artisan lang:export`.
+- Amharic and Afaan Oromo framework messages (validation, sign-in, passwords, pagination) from
+  Laravel-Lang (MIT), pending native review.
+- The admin panel follows each staff member's preferred language.
+- Fixed: Laravel's own English framework messages had disappeared behind the translation loader.
+
 ### Phase 1, step 1.2 — admin panel, roles, two-factor login, audit log (2026-10-18)
 
 - Filament 5 admin panel at `/admin` with sign-in, password reset, profile and the party colour.

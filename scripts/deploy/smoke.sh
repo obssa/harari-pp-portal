@@ -18,10 +18,20 @@ done
 [ "$ok" = 1 ] || { echo "FAIL: /up never returned 200"; exit 1; }
 echo "PASS: /up 200"
 
-code="$(fetch /)"
-[ "$code" = "200" ] || { echo "FAIL: / returned $code"; head -c 2000 /tmp/smoke.body; exit 1; }
-grep -q 'lang="am"' /tmp/smoke.body || { echo "FAIL: home page has no Amharic section"; exit 1; }
-echo "PASS: / 200 with Amharic content"
+root="$(curl -sS -o /dev/null -w '%{http_code} %{redirect_url}' -H 'Accept-Language: om-ET,om;q=0.9' "$BASE/?smoke=$(date +%s%N)")"
+case "$root" in
+    "302 $BASE/om?smoke="*) echo "PASS: / redirects to the browser language (/om)";;
+    *) echo "FAIL: / answered '$root' instead of a redirect to /om"; exit 1;;
+esac
+
+for locale in en am om har; do
+    code="$(fetch "/$locale")"
+    [ "$code" = "200" ] || { echo "FAIL: /$locale returned $code"; head -c 2000 /tmp/smoke.body; exit 1; }
+    grep -q "<html lang=\"$locale\">" /tmp/smoke.body || { echo "FAIL: /$locale is not marked lang=$locale"; exit 1; }
+    grep -q 'hreflang="x-default"' /tmp/smoke.body || { echo "FAIL: /$locale has no hreflang links"; exit 1; }
+    if grep -qE '>(holding|site|nav)\.[a-z_]+<' /tmp/smoke.body; then echo "FAIL: /$locale shows raw translation keys"; exit 1; fi
+done
+echo "PASS: /en /am /om /har render in their language with hreflang and no raw keys"
 
 code="$(fetch /admin/login)"
 [ "$code" = "200" ] || { echo "FAIL: /admin/login returned $code"; head -c 2000 /tmp/smoke.body; exit 1; }

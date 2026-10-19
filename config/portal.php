@@ -7,6 +7,35 @@ return [
     'locales' => ['en', 'am', 'om', 'har'],
 
     /*
+    | Used when neither the visitor's cookie nor their browser names a
+    | supported language (PLAN.md §3). Amharic until the party decides.
+    */
+    'default_locale' => env('PORTAL_DEFAULT_LOCALE', 'am'),
+
+    /*
+    | Where a missing or empty string is looked up next (PLAN.md §6):
+    | Harari falls back to Amharic, then English; the others to English.
+    */
+    'fallbacks' => [
+        'en' => ['en'],
+        'am' => ['am', 'en'],
+        'om' => ['om', 'en'],
+        'har' => ['har', 'am', 'en'],
+    ],
+
+    /*
+    | Each language named in its own script for the language switcher
+    | (PLAN.md §12). These are the same in every locale, so they are data,
+    | not translations. The Harari name awaits confirmation by the party.
+    */
+    'locale_names' => [
+        'en' => 'English',
+        'am' => 'አማርኛ',
+        'om' => 'Afaan Oromoo',
+        'har' => 'ሐረሪ',
+    ],
+
+    /*
     | Staff with these roles must turn on an authenticator app before they can
     | use the admin panel (PLAN.md §7, §8).
     */

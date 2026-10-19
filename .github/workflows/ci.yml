@@ -25,6 +25,8 @@ jobs:
         run: vendor/bin/pint --test
       - name: Larastan (static analysis)
         run: vendor/bin/phpstan analyse --memory-limit=1G --no-progress --error-format=github
+      - name: Translations complete for am/om (lang:missing)
+        run: php artisan lang:missing --files-only
       - name: Composer security audit
         run: composer audit --no-interaction
       - name: Composer manifest is valid and the lock file matches

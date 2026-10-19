@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Http\Middleware\RequireMfaForPrivilegedRoles;
+use App\Http\Middleware\SetAdminLocale;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -65,8 +66,10 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
+            // Persistent: also applies to Livewire requests made from admin pages.
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+                SetAdminLocale::class,
+            ], isPersistent: true);
     }
 }

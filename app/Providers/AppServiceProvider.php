@@ -8,14 +8,20 @@ use App\Domain\Access\Models\Role;
 use App\Domain\Access\Policies\ActivityPolicy;
 use App\Domain\Access\Policies\RolePolicy;
 use App\Domain\Access\Policies\UserPolicy;
+use App\Domain\Translation\FallbackTranslator;
 use App\Models\User;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Translation\FileLoader;
+use Illuminate\Translation\TranslationServiceProvider;
+use Illuminate\Translation\Translator;
 use Illuminate\Validation\Rules\Password;
 use Spatie\Activitylog\Models\Activity;
+use Spatie\TranslationLoader\TranslationLoaderManager;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,7 +30,24 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // spatie/laravel-translation-loader builds its loader from lang/ only, which
+        // drops Laravel's built-in English framework strings (validation, auth,
+        // passwords, pagination). Rebuild it with both paths, framework first, as
+        // Laravel's own TranslationServiceProvider does.
+        $this->app->extend('translation.loader', function (FileLoader $loader, Application $app): TranslationLoaderManager {
+            $framework = dirname((string) (new \ReflectionClass(TranslationServiceProvider::class))->getFileName()).'/lang';
+
+            return new TranslationLoaderManager($app['files'], [$framework, $app->langPath()]);
+        });
+
+        // The portal's fallback chain (har → am → en, om → en) on top of the
+        // file + database loader from spatie/laravel-translation-loader.
+        $this->app->extend('translator', function (Translator $translator): FallbackTranslator {
+            $portal = new FallbackTranslator($translator->getLoader(), $translator->getLocale());
+            $portal->setFallback($translator->getFallback());
+
+            return $portal;
+        });
     }
 
     /**
