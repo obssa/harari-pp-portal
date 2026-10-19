@@ -78,7 +78,7 @@ enum SystemRole: string
                 'posts.view', 'posts.create', 'posts.update', 'posts.translate', 'posts.review',
                 'posts.publish', 'posts.feature', 'posts.delete',
                 'pages.view', 'pages.create', 'pages.update', 'pages.translate', 'pages.publish', 'pages.delete',
-                'homepage.manage', 'menus.manage',
+                'homepage.manage', 'menus.manage', 'taxonomies.manage',
                 'media.view', 'media.upload', 'media.update',
                 'galleries.manage', 'videos.manage',
                 'leaders.view', 'leaders.manage', 'offices.view', 'offices.manage',
@@ -90,7 +90,7 @@ enum SystemRole: string
             self::Editor => [
                 ...$staff,
                 'posts.view', 'posts.create', 'posts.update', 'posts.translate', 'posts.review',
-                'pages.view', 'pages.create', 'pages.update', 'pages.translate',
+                'pages.view', 'pages.create', 'pages.update', 'pages.translate', 'taxonomies.manage',
                 'media.view', 'media.upload', 'media.update',
                 'galleries.manage', 'videos.manage',
                 'leaders.view', 'leaders.manage', 'offices.view', 'offices.manage',

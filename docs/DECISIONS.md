@@ -292,3 +292,34 @@ whose Alpine components evaluate expressions at run time.
 **Consequences.** Logos are placeholders (a neutral favicon in party colours) until the party supplies
 its brand files (PLAN.md §14). Adding Livewire components to public pages will need either Livewire's
 CSP-safe mode or a review of the public policy.
+
+## ADR-0011 — Translations of content in translation tables, with our own concern (2026-10-19)
+
+**Context.** PLAN.md §6 and §10 store each translatable record as `thing` plus `thing_translations`
+(one row per language) with its own slug, status and publish date, and the portal resolves missing
+languages along a chain (Harari → Amharic → English, Afaan Oromo → English).
+
+**Decision.**
+
+- `App\Domain\Content\Concerns\HasTranslations` (plus the `TranslatableModel` contract) gives a model
+  `translations()`, `translation($locale, fallback)`, `translatedLocales()`, `putTranslation()` and the
+  scopes `withTranslation()` (eager-loads the language and its fallbacks, no N+1) and `translatedIn()`.
+  spatie/laravel-translatable (JSON columns) cannot index or uniquely constrain slugs per language, and
+  astrotomic/laravel-translatable has one fallback locale rather than a chain; neither models a status
+  per language.
+- Translation rows extend `App\Domain\Content\Models\Translation`. Slugs are unique per language
+  (`unique(locale, slug)`), made from the title or name when left empty, and never change when the title
+  changes; only an editor's edit changes a slug (redirects for changed slugs arrive in step 2.5).
+- `App\Domain\Content\Support\Slugger` writes Ethiopic in Latin letters with a readable table
+  (ሐረር ጁጎል → `harer-jugol`, የሴቶች ሊግ → `yesetoch-lig`) and reads Ethiopic numerals (፳፻፲፱ → 2019).
+  Laravel's built-in Amharic transliteration (`beletsegenaa`) was too far from how names are written.
+- Content records use ULIDs (`HasUlids`), belong to a site (`BelongsToSite`, a global scope on the
+  current site) and record `created_by`/`updated_by` (`TracksEditors`). The audit log subject and the
+  media usage owner became string columns so they can point at ULID records.
+- In the admin, `App\Filament\Support\Translatable` renders one tab per language (in each language's own
+  script), fills and saves the rows, removes a language whose main field is emptied, requires the main
+  field in at least one language, and checks slug uniqueness per language.
+
+**Consequences.** Every content model of Phase 2 onward uses this pattern; categories and tags are the
+first. Public pages show only languages a record has (with the fallback rules decided per page type in
+step 2.4).

@@ -8,6 +8,9 @@ use App\Domain\Access\Models\Role;
 use App\Domain\Access\Policies\ActivityPolicy;
 use App\Domain\Access\Policies\RolePolicy;
 use App\Domain\Access\Policies\UserPolicy;
+use App\Domain\Content\Models\Category;
+use App\Domain\Content\Models\Tag;
+use App\Domain\Content\Policies\TaxonomyPolicy;
 use App\Domain\Media\Enums\MediaKind;
 use App\Domain\Media\Models\Media;
 use App\Domain\Media\Models\MediaFolder;
@@ -108,6 +111,8 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Activity::class, ActivityPolicy::class);
         Gate::policy(Media::class, MediaPolicy::class);
         Gate::policy(MediaFolder::class, MediaFolderPolicy::class);
+        Gate::policy(Category::class, TaxonomyPolicy::class);
+        Gate::policy(Tag::class, TaxonomyPolicy::class);
 
         // Super Admins hold every permission (PLAN.md §8). Only permission
         // names (`module.action`) are short-circuited, so policy rules such as

@@ -22,6 +22,7 @@ final class PermissionRegistry
         'audit' => ['purge'],
         'posts' => ['view', 'create', 'update', 'update_own', 'translate', 'review', 'publish', 'feature', 'delete'],
         'pages' => ['view', 'create', 'update', 'translate', 'publish', 'delete'],
+        'taxonomies' => ['manage'],
         'homepage' => ['manage'],
         'menus' => ['manage'],
         'media' => ['view', 'upload', 'update', 'delete'],

@@ -38,7 +38,7 @@ security headers).
 | Static analysis | Larastan level 6, no errors |
 | Translations | English, Amharic and Afaan Oromo complete (335 keys); Harari keys present and empty |
 | Public CSS / JS | about 6 KB gzipped / none |
-| Lighthouse (mobile, live staging) | `/en` and `/am` pass performance, accessibility and best practices ≥ 90, HTML ≤ 60 KB, JS ≤ 80 KB, CLS ≤ 0.1 (median of 3 runs; scores in each Lighthouse run's summary) |
+| Lighthouse (mobile, live staging, median of 3 runs) | `/en`: performance 99, accessibility 100, best practices 96; `/am`: 98, 100, 96; budgets HTML ≤ 60 KB, JS ≤ 80 KB, CLS ≤ 0.1 met |
 
 ## Demo script (staging)
 

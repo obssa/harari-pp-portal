@@ -4,6 +4,15 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 2, step 2.1 — translatable content foundation (2026-10-19)
+
+- Translation-table pattern for content (one row per language, fallback chain, per-language slugs that
+  never change with the title), ULIDs, site ownership and editor tracking (ADR-0011).
+- Readable Latin slugs for Ethiopic titles (አዲስ አበባ → `adis-abeba`), including Ethiopic numerals.
+- Admin → Content → Categories (nested, ordered) and Tags, each with a tab per language; editors and
+  publishers manage them (`taxonomies.manage`), authors can see them.
+- Phase 2 plan in `docs/phases/02-content-core.md`; Phase 1 report completed with Lighthouse scores.
+
 ## v0.1.0-foundation — Phase 1 complete (2026-10-19)
 
 Gate of PLAN.md §13 Phase 1 met; report in `docs/phases/01-foundation.md`.
