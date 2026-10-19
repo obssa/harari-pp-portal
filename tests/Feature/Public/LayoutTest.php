@@ -1,5 +1,6 @@
 <?php
 
+use App\Domain\Translation\Support\Locales;
 use App\Services\Calendar\EthiopianCalendar;
 use App\Settings\SiteSettings;
 
@@ -67,9 +68,9 @@ it('shows the year in both calendars and marks the test site outside production'
 it('offers the four languages on the home page, each in its own language', function () {
     $html = (string) $this->get('/en')->getContent();
 
-    foreach (['en', 'am', 'om'] as $locale) {
-        expect($html)->toContain('<li lang="'.$locale.'">')
-            ->toContain(__('holding.read_in', [], $locale));
+    foreach (Locales::all() as $locale) {
+        expect($html)->toContain('lang="'.$locale.'" hreflang="'.$locale.'"')
+            ->toContain(e(Locales::nativeName($locale)));
     }
 });
 

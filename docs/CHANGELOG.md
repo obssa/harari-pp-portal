@@ -4,6 +4,17 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 2, step 2.8 — homepage builder (2026-10-19)
+
+- The homepage is built from content: a hero with hand-picked or featured stories (or a welcome),
+  breaking-news ticker, message from the leadership, latest news, press releases and statements,
+  numbers, core values, leagues and forums, and related links (ADR-0019).
+- Admin → Content → Homepage: drag the sections into order, switch each on or off, choose how many
+  items to show, hand-pick posts for the ticker and hero, write the leader's message, numbers, values
+  and links in each language, change a section's heading per language and limit it to some languages.
+- The core values start with Medemer, multinational unity, democracy, national sovereignty,
+  inclusiveness, patriotism and solidarity in English, Amharic and Afaan Oromo.
+
 ### Phase 2, step 2.7 — offices, leaders and leagues (2026-10-19)
 
 - Admin → Organisation: offices (kind, office above, head, phone, email, map pin, cover photo, and per

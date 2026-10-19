@@ -540,3 +540,32 @@ offices, leagues and the people who gave a speech or statement.
 **Consequences.** Office-scoped staff roles (an office head editing their own office and its news)
 come with the scoped publishing rules later in Phase 2/3. No real names are seeded: the directory is
 filled by staff or by the content import (2.11).
+
+## ADR-0019 — Homepage builder (2026-10-19)
+
+**Context.** PLAN.md §4 lists sixteen homepage blocks and asks that every one be a reorderable,
+toggleable block with limits, curated picks and per-language overrides (§7), stored in
+`homepage_sections` (§10).
+
+**Decision.**
+
+- One row per section and site in `homepage_sections` (key, on/off, order, settings JSON, hand-picked
+  post ids). Missing rows are created with defaults the first time the homepage or the builder is
+  opened, so new sections appear without a data migration.
+- Sections now: news ticker, hero, leadership message, latest news, press releases and statements,
+  numbers, core values, leagues spotlight and related links. Events, projects, the social hub, video
+  of the week, the photo strip and newsletter sign-up join when their modules exist (Phases 3–4).
+- Admin → Content → Homepage (permission `homepage.manage`): one screen where sections are dragged
+  into order and opened to set them: on or off, how many to show, hand-picked posts (ticker, hero),
+  the leader and message, numbers, values and links with text per language, a heading per language
+  and the languages a section shows in. Texts follow the language fallback chain; a section with
+  nothing to show in a language is left out.
+- The hero shows hand-picked posts, else posts marked as featured, else a welcome with the party's
+  name and description. Slides scroll sideways with CSS scroll snapping and numbered links; there is
+  no autoplay (WCAG 2.2.2) and no JavaScript. The first slide's photo loads first. Numbers are shown
+  as they are entered, without counting animations.
+- The core values start with the seven in PLAN.md §4, written in English, Amharic and Afaan Oromo;
+  editors can change or remove them.
+
+**Consequences.** The holding page is gone; the homepage is built from content. The builder replaces
+the "feature on homepage" idea with two tools: the post's "featured" switch and hand-picked posts.

@@ -2,6 +2,7 @@
 
 use App\Domain\Translation\Support\Locales;
 use App\Http\Controllers\Public\FeedController;
+use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\LeaderController;
 use App\Http\Controllers\Public\LeagueController;
 use App\Http\Controllers\Public\MediaFileController;
@@ -67,7 +68,7 @@ Route::prefix('{locale}')
     ->middleware([SetLocale::class, CachePublicPages::class])
     ->withoutMiddleware($stateless)
     ->group(function (): void {
-        Route::view('/', 'pages.home')->name('home');
+        Route::get('/', HomeController::class)->name('home');
         Route::get('news', [NewsController::class, 'index'])->name('news.index');
         Route::get('news/{slug}', [NewsController::class, 'show'])
             ->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')

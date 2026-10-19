@@ -38,6 +38,23 @@ final class PublicPosts
     }
 
     /**
+     * Up to `$limit` live posts; with `ids`, those posts in the given order.
+     *
+     * @param  array{type?: ?PostType, types?: list<PostType>, ids?: list<string>, featured?: bool}  $filters
+     * @return Collection<int, Post>
+     */
+    public function take(string $locale, int $limit, array $filters = []): Collection
+    {
+        $posts = $this->query($locale, $filters)->limit($limit)->get();
+        if (! empty($filters['ids'])) {
+            $order = array_flip($filters['ids']);
+            $posts = $posts->sortBy(fn (Post $post): int => $order[$post->id] ?? PHP_INT_MAX)->values();
+        }
+
+        return $posts;
+    }
+
+    /**
      * Latest live posts linked to an office, league or leader.
      *
      * @param  'offices'|'leagues'|'leaders'  $relation
@@ -75,7 +92,7 @@ final class PublicPosts
     }
 
     /**
-     * @param  array{type?: ?PostType, category?: ?string, tag?: ?string}  $filters
+     * @param  array{type?: ?PostType, types?: list<PostType>, ids?: list<string>, featured?: bool, category?: ?string, tag?: ?string}  $filters
      * @return Builder<Post>
      */
     private function query(string $locale, array $filters): Builder
@@ -88,6 +105,9 @@ final class PublicPosts
                 ->where('status', ContentStatus::Published->value)
                 ->where('published_at', '<=', now()))
             ->when($filters['type'] ?? null, fn (Builder $q, PostType $type) => $q->where('type', $type->value))
+            ->when($filters['types'] ?? null, fn (Builder $q, array $types) => $q->whereIn('type', array_map(fn (PostType $t): string => $t->value, $types)))
+            ->when($filters['ids'] ?? null, fn (Builder $q, array $ids) => $q->whereKey($ids))
+            ->when($filters['featured'] ?? false, fn (Builder $q) => $q->where('is_featured', true))
             ->when($filters['category'] ?? null, fn (Builder $q, string $slug) => $q->whereHas(
                 'categories.translations',
                 fn (Builder $c) => $c->where('slug', $slug)->whereIn('locale', $languages),

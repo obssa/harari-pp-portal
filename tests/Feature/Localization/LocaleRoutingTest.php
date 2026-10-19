@@ -55,14 +55,14 @@ it('serves the home page in every language with the right lang attribute', funct
     $this->get("/{$locale}")
         ->assertOk()
         ->assertSee('<html lang="'.$locale.'">', escape: false)
-        ->assertSee(__('holding.title', [], $locale));
+        ->assertSee(__('site.name', [], $locale));
 })->with(['en', 'am', 'om', 'har']);
 
 it('shows Amharic on the Harari page until Harari is translated, never raw keys', function () {
     $this->get('/har')
         ->assertOk()
-        ->assertSee(__('holding.title', [], 'am'))
-        ->assertDontSee('holding.title')
+        ->assertSee(__('site.name', [], 'am'))
+        ->assertDontSee('site.name')
         ->assertDontSee('site.office');
 });
 
