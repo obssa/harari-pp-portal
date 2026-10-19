@@ -2,13 +2,17 @@
 
 use App\Domain\Translation\Support\Locales;
 use App\Http\Controllers\Public\FeedController;
+use App\Http\Controllers\Public\LeaderController;
+use App\Http\Controllers\Public\LeagueController;
 use App\Http\Controllers\Public\MediaFileController;
 use App\Http\Controllers\Public\NewsController;
+use App\Http\Controllers\Public\OfficeController;
 use App\Http\Controllers\Public\PageController;
 use App\Http\Controllers\Public\PreviewController;
 use App\Http\Controllers\Public\RedirectToPreferredLocale;
 use App\Http\Controllers\Public\RobotsController;
 use App\Http\Controllers\Public\SitemapController;
+use App\Http\Controllers\Public\StructureController;
 use App\Http\Middleware\CachePublicPages;
 use App\Http\Middleware\OutsideProductionOnly;
 use App\Http\Middleware\SetLocale;
@@ -70,6 +74,14 @@ Route::prefix('{locale}')
             ->name('news.show');
         Route::get('feed.xml', [FeedController::class, 'rss'])->name('feed.rss');
         Route::get('feed.json', [FeedController::class, 'json'])->name('feed.json');
+
+        Route::get('leaders', [LeaderController::class, 'index'])->name('leaders.index');
+        Route::get('leaders/{slug}', [LeaderController::class, 'show'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('leaders.show');
+        Route::get('offices', [OfficeController::class, 'index'])->name('offices.index');
+        Route::get('offices/{slug}', [OfficeController::class, 'show'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('offices.show');
+        Route::get('leagues', [LeagueController::class, 'index'])->name('leagues.index');
+        Route::get('leagues/{slug}', [LeagueController::class, 'show'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('leagues.show');
+        Route::get('structure', StructureController::class)->name('structure');
 
         // Pages (about/history ...): last, so fixed sections such as news always win.
         Route::get('{path}', PageController::class)

@@ -72,6 +72,9 @@ final class SavePost
             if ($canEditStructure) {
                 $post->categories()->sync(array_values((array) ($data['categories'] ?? [])));
                 $post->tags()->sync(array_values((array) ($data['tags'] ?? [])));
+                $post->offices()->sync(array_values((array) ($data['offices'] ?? [])));
+                $post->leagues()->sync(array_values((array) ($data['leagues'] ?? [])));
+                $post->leaders()->sync(array_values((array) ($data['leaders'] ?? [])));
             }
 
             $this->saveTranslations($post, $translations, $actor);

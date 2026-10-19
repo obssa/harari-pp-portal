@@ -60,6 +60,29 @@ trait HasTranslations
     }
 
     /**
+     * The translation for this language or its fallbacks, otherwise the
+     * record's first language in portal order (labels in the admin, where a
+     * record written only in Amharic must still have a name).
+     *
+     * @return TTranslation|null
+     */
+    public function translationOrAny(?string $locale = null): ?Translation
+    {
+        if (($translation = $this->translation($locale)) !== null) {
+            return $translation;
+        }
+
+        $byLocale = $this->loadedOrQueriedTranslations()->keyBy('locale');
+        foreach (Locales::all() as $candidate) {
+            if ($byLocale->has($candidate)) {
+                return $byLocale->get($candidate);
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Languages this record has been written in, in portal order.
      *
      * @return list<string>

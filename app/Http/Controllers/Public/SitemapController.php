@@ -7,6 +7,10 @@ use App\Domain\Content\Models\Page;
 use App\Domain\Content\Models\PageTranslation;
 use App\Domain\Content\Models\Post;
 use App\Domain\Content\Models\PostTranslation;
+use App\Domain\Organisation\Models\Leader;
+use App\Domain\Organisation\Models\League;
+use App\Domain\Organisation\Models\Office;
+use App\Domain\Organisation\Queries\PublicDirectory;
 use App\Domain\Translation\Support\Locales;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
@@ -47,7 +51,7 @@ final class SitemapController extends Controller
     private function entries(string $language): array
     {
         $entries = [];
-        foreach (['home', 'news.index'] as $route) {
+        foreach (['home', 'news.index', 'leaders.index', 'offices.index', 'leagues.index', 'structure'] as $route) {
             $alternates = [];
             foreach (Locales::all() as $locale) {
                 $alternates[$locale] = route($route, ['locale' => $locale]);
@@ -100,6 +104,13 @@ final class SitemapController extends Controller
                 ];
             }
         }
+
+        $entries = [
+            ...$entries,
+            ...PublicDirectory::sitemap(Leader::query()->with('translations')->get(), $language, 'leaders.show'),
+            ...PublicDirectory::sitemap(Office::query()->with('translations')->get(), $language, 'offices.show'),
+            ...PublicDirectory::sitemap(League::query()->with('translations')->get(), $language, 'leagues.show'),
+        ];
 
         return $entries;
     }

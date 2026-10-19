@@ -9,7 +9,10 @@ use App\Domain\Content\Models\Post;
 use App\Domain\Content\Models\Tag;
 use App\Domain\Content\Support\BodyRenderer;
 use App\Domain\Media\Enums\MediaKind;
+use App\Domain\Organisation\Models\League;
+use App\Domain\Organisation\Models\Office;
 use App\Domain\Translation\Support\Locales;
+use App\Filament\Resources\Offices\OfficeResource;
 use App\Filament\Support\CurrentUser;
 use App\Filament\Support\MediaPicker;
 use App\Filament\Support\Translatable;
@@ -66,6 +69,23 @@ class PostForm
                             ->searchable()
                             ->options(fn (): array => Tag::query()->with('translations')->latest()->limit(200)->get()
                                 ->mapWithKeys(fn (Tag $t): array => [$t->id => $t->name()])->all()),
+                        Select::make('offices')
+                            ->label(__('admin.offices.plural'))
+                            ->multiple()
+                            ->searchable()
+                            ->options(fn (): array => Office::query()->with('translations')->orderBy('sort')->get()
+                                ->mapWithKeys(fn (Office $o): array => [$o->id => $o->name()])->all()),
+                        Select::make('leagues')
+                            ->label(__('admin.leagues.plural'))
+                            ->multiple()
+                            ->options(fn (): array => League::query()->with('translations')->orderBy('sort')->get()
+                                ->mapWithKeys(fn (League $l): array => [$l->id => $l->name()])->all()),
+                        Select::make('leaders')
+                            ->label(__('admin.posts.field.leaders'))
+                            ->helperText(__('admin.posts.help.leaders'))
+                            ->multiple()
+                            ->searchable()
+                            ->options(fn (): array => OfficeResource::leaderOptions()),
                         Toggle::make('is_featured')
                             ->label(__('admin.posts.field.is_featured'))
                             ->visible(fn (): bool => CurrentUser::get()->can('posts.feature')),

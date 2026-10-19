@@ -4,6 +4,26 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 2, step 2.7 — offices, leaders and leagues (2026-10-19)
+
+- Admin → Organisation: offices (kind, office above, head, phone, email, map pin, cover photo, and per
+  language name, summary, text, address and working hours), leaders (body, order, office, league, term,
+  portrait, public contacts and social links, and per language name, position, introduction and
+  biography) and leagues and forums (chair, logo, cover photo, contacts). Each language is published
+  with one switch (ADR-0017).
+- Posts can be linked to offices, leagues and the people who gave a speech or statement; copies keep
+  the links.
+- `/{lang}/leaders`: the leadership grouped by Executive Committee, Central Committee, Secretariat,
+  heads of offices and leagues; each person has a profile with term, contacts, social links and the
+  posts they appear in.
+- `/{lang}/offices`: the office directory with a filter by kind and a search by name; each office page
+  shows the head, contacts, working hours, a map pin, the leadership, the offices under it and its
+  news.
+- `/{lang}/leagues`: leagues and forums with their chair, leadership and news.
+- `/{lang}/structure`: the organisational chart built from the office tree.
+- Menu items can point to the leadership, office and league directories and the structure; all of
+  them are in the sitemaps, with structured data on each profile.
+
 ### Two-step sign-in made a switch (2026-10-19)
 
 - Administration → Security (Super Admins only): "Make two-step sign-in compulsory for senior roles".

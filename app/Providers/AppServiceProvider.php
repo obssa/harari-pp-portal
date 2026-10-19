@@ -30,6 +30,12 @@ use App\Domain\Media\Models\Media;
 use App\Domain\Media\Models\MediaFolder;
 use App\Domain\Media\Policies\MediaFolderPolicy;
 use App\Domain\Media\Policies\MediaPolicy;
+use App\Domain\Organisation\Models\Leader;
+use App\Domain\Organisation\Models\League;
+use App\Domain\Organisation\Models\Office;
+use App\Domain\Organisation\Policies\LeaderPolicy;
+use App\Domain\Organisation\Policies\LeaguePolicy;
+use App\Domain\Organisation\Policies\OfficePolicy;
 use App\Domain\Settings\Listeners\RecordSettingsChanges;
 use App\Domain\Translation\FallbackTranslator;
 use App\Domain\Translation\Support\Locales;
@@ -142,6 +148,9 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Redirect::class, RedirectPolicy::class);
         Gate::policy(Comment::class, CommentPolicy::class);
         Gate::policy(Webhook::class, WebhookPolicy::class);
+        Gate::policy(Office::class, OfficePolicy::class);
+        Gate::policy(Leader::class, LeaderPolicy::class);
+        Gate::policy(League::class, LeaguePolicy::class);
 
         // Super Admins hold every permission (PLAN.md §8). Only permission
         // names (`module.action`) are short-circuited, so policy rules such as

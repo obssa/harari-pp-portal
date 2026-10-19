@@ -506,3 +506,37 @@ or turned on.
 **Consequences.** This deviates from PLAN.md §7/§11 at the owner's request. A password alone protects
 the most powerful accounts while the switch is off; the recommendation stays to turn it on once the
 senior staff have set up the app. Login throttling, session sign-out and the audit log are unchanged.
+
+## ADR-0017 — Offices, leaders and leagues (2026-10-19)
+
+**Context.** PLAN.md §3, §4, §7 and §10 ask for an office directory (branch → woreda → kebele, sector
+offices, basic organisations, head, contacts, hours, map pin), a leadership directory grouped by body
+with profiles, leagues and forums with their own pages, an organisational chart, and posts linked to
+offices, leagues and the people who gave a speech or statement.
+
+**Decision.**
+
+- A new module `app/Domain/Organisation` holds `Office`, `Leader` and `League`, each with a
+  translations table (ADR-0011): names, slugs, summaries, block-editor text and, for offices, address
+  and working hours per language. Each language is a draft or published; publishing needs the module's
+  `manage` permission (editors and publishers by default, PLAN.md §8). There is no review workflow and
+  no version history for these records; the audit log keeps every change.
+- Offices form one tree at most four levels deep (branch → woreda → kebele → basic organisation),
+  never looping; an office with sub-offices cannot be deleted. Heads of offices and league chairs
+  point at leaders; leaders may belong to one office and one league.
+- Posts link to any number of offices, leagues and leaders (`office_post`, `league_post`,
+  `leader_post`); copies keep the links. Office, league and leader pages list their latest posts.
+- Public pages: `/{lang}/leaders`, `/{lang}/offices` (filter by kind, search by name),
+  `/{lang}/leagues`, each with a profile page at `/{slug}`, and `/{lang}/structure`, the org chart as
+  nested `<details>` lists (no JavaScript). Harari readers also see entries written only in Amharic,
+  marked with their language (as for news, ADR-0014). Profiles carry Person or Organization data.
+- Office map pins use OpenStreetMap's embed (an `<iframe>`, lazy-loaded, no script of ours) and a link
+  to the full map; the content security policy allows frames from `www.openstreetmap.org`. Staff enter
+  latitude and longitude as numbers. An interactive directory map with every office (Leaflet,
+  self-hosted) is left for later, as it would add about 40 KB of JavaScript.
+- Leaders' phone numbers, emails and social links are shown only when entered, and are meant for
+  official contacts; social links must be https.
+
+**Consequences.** Office-scoped staff roles (an office head editing their own office and its news)
+come with the scoped publishing rules later in Phase 2/3. No real names are seeded: the directory is
+filled by staff or by the content import (2.11).

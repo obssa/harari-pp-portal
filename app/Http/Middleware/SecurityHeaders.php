@@ -65,7 +65,7 @@ final class SecurityHeaders
             "font-src 'self'",
             "connect-src 'self'",
             "media-src 'self'",
-            "frame-src 'self' https://www.youtube-nocookie.com",
+            "frame-src 'self' https://www.youtube-nocookie.com https://www.openstreetmap.org",
             "object-src 'none'",
             "base-uri 'self'",
             "form-action 'self'",

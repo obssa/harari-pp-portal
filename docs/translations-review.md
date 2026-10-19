@@ -36,3 +36,5 @@ Harari translators.
 | `admin.redirects.*`, `access.module.redirects` | am, om | redirects manager | "redirect" (አቅጣጫ ማዞሪያ / Qajeelcha); old/new address wording |
 | `admin.pages.*`, `admin.menus.*`, `pages.*`, `footer.links` | am, om | page and menu screens, footer quick links | Template names (የጽሑፍ ገጽ, መግቢያ ገጽ / Fuula seensaa); menu (ማውጫ / Baafata) |
 | `admin.settings.security.*` | am, om | security settings page | "two-step sign-in" (ባለሁለት ደረጃ መግቢያ / Seensa sadarkaa lamaa); "authenticator app" (የማረጋገጫ መተግበሪያ / appii mirkaneessaa) |
+| `organisation.*`, `admin.offices.*`, `admin.leaders.*`, `admin.leagues.*` | am, om | office kinds, leadership bodies, directory screens | Official names of bodies (ሥራ አስፈጻሚ ኮሚቴ / Koree Hojii Raawwachiiftuu; ሴክሬታሪያት / Sekreteriyeetii); "sector office" (የዘርፍ ጽሕፈት ቤት / Waajjira seektaraa); Oromo keeps "Latitude"/"Longitude"; the hours example uses local (Ethiopian) time in am and om |
+| `directory.*`, `leaders.*`, `offices.*`, `leagues.*`, `structure.*` | am, om | public directory pages | Page titles and the short labels on profiles |

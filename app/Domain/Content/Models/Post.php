@@ -9,6 +9,9 @@ use App\Domain\Content\Contracts\TranslatableModel;
 use App\Domain\Content\Enums\ContentStatus;
 use App\Domain\Content\Enums\PostType;
 use App\Domain\Media\Models\Media;
+use App\Domain\Organisation\Models\Leader;
+use App\Domain\Organisation\Models\League;
+use App\Domain\Organisation\Models\Office;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
@@ -95,6 +98,32 @@ class Post extends Model implements TranslatableModel
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class);
+    }
+
+    /**
+     * @return BelongsToMany<Office, $this>
+     */
+    public function offices(): BelongsToMany
+    {
+        return $this->belongsToMany(Office::class);
+    }
+
+    /**
+     * @return BelongsToMany<League, $this>
+     */
+    public function leagues(): BelongsToMany
+    {
+        return $this->belongsToMany(League::class);
+    }
+
+    /**
+     * People this post is by or about (speeches, statements).
+     *
+     * @return BelongsToMany<Leader, $this>
+     */
+    public function leaders(): BelongsToMany
+    {
+        return $this->belongsToMany(Leader::class);
     }
 
     /**
