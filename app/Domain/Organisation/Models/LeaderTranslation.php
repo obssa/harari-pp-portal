@@ -4,7 +4,9 @@ namespace App\Domain\Organisation\Models;
 
 use App\Domain\Content\Enums\ContentStatus;
 use App\Domain\Content\Models\Translation;
+use App\Domain\Content\Support\BodyRenderer;
 use App\Domain\Organisation\Concerns\PublishedPerLanguage;
+use App\Domain\Search\Concerns\SearchableTranslation;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Activitylog\LogOptions;
@@ -27,6 +29,7 @@ class LeaderTranslation extends Translation
 {
     use LogsActivity;
     use PublishedPerLanguage;
+    use SearchableTranslation;
 
     protected string $sluggable = 'name';
 
@@ -39,6 +42,14 @@ class LeaderTranslation extends Translation
             'status' => ContentStatus::class,
             'published_at' => 'immutable_datetime',
         ];
+    }
+
+    /**
+     * @return list<?string>
+     */
+    public function searchableParts(): array
+    {
+        return [$this->name, $this->position, $this->summary, BodyRenderer::toText($this->body)];
     }
 
     public function getActivitylogOptions(): LogOptions

@@ -569,3 +569,38 @@ toggleable block with limits, curated picks and per-language overrides (§7), st
 
 **Consequences.** The holding page is gone; the homepage is built from content. The builder replaces
 the "feature on homepage" idea with two tools: the post's "featured" switch and hand-picked posts.
+
+## ADR-0020 — Site search (2026-10-19)
+
+**Context.** PLAN.md §4 asks for site-wide search in the reader's language with typo tolerance for
+Ethiopic and Latin script, §6 for Ethiopic-aware matching and Latin-typed Amharic, and §7 for search
+insights (top and zero-result queries). ADR-0002 runs Scout with its database driver on the shared
+host and Meilisearch later.
+
+**Decision.**
+
+- Laravel Scout on the five kinds of translation that have public pages: posts, pages, leaders,
+  offices and leagues. Each row keeps a `search_text` column built on save from its title or name,
+  summary and text, and the record's language; that column is what the database driver searches and
+  what Meilisearch would index.
+- Matching text is normalized the same way for stored text and queries: Ethiopic letters that sound
+  alike and are written either way are made one (ሐ ኀ → ሀ, ሠ → ሰ, ዐ → አ, ፀ → ጸ, ሃ → ሀ, ኣ → አ), Ethiopic
+  punctuation becomes a space, Latin letters lose case and accents. Text in Ethiopic script also
+  stores its Latin spelling (the slug transliteration), so "medemer" finds መደመር.
+- The `database` driver is replaced by a subclass that matches **every word** of the query in any
+  order (`LIKE` per word, at most six words of two letters or more). MySQL full-text search is not
+  used: it skips words shorter than three characters, which drops many Amharic words, and the shared
+  host cannot change that setting. Fine for thousands of records; Meilisearch is the step after that
+  and needs only `SCOUT_DRIVER=meilisearch` plus `scout:import`.
+- `/{lang}/search?q=` lists results by kind (news, pages, people, offices, leagues), up to five each
+  with a link to the rest, only from languages that are published, plus Amharic for Harari readers
+  (ADR-0014). A search box sits in the header of every page, and the site tells search engines about
+  it (WebSite + SearchAction). Answers are not cached at the edge or indexed, and each address may
+  search 30 times a minute.
+- Search insights: every search adds to a count per language and normalized words with the number of
+  results last time (`search_terms`); nothing about the visitor is stored. Staff who see analytics read
+  them under Content → Site searches, with a filter for searches that found nothing. Terms not searched
+  for in a year are removed. `php artisan portal:search-reindex` rebuilds the search text.
+
+**Consequences.** Typo tolerance beyond letter variants (missing letters, swapped vowels) waits for
+Meilisearch. Events, documents and projects join search with their modules.

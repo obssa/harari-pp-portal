@@ -38,6 +38,9 @@ use App\Domain\Organisation\Models\Office;
 use App\Domain\Organisation\Policies\LeaderPolicy;
 use App\Domain\Organisation\Policies\LeaguePolicy;
 use App\Domain\Organisation\Policies\OfficePolicy;
+use App\Domain\Search\Engines\WordMatchEngine;
+use App\Domain\Search\Models\SearchTerm;
+use App\Domain\Search\Policies\SearchTermPolicy;
 use App\Domain\Settings\Listeners\RecordSettingsChanges;
 use App\Domain\Translation\FallbackTranslator;
 use App\Domain\Translation\Support\Locales;
@@ -46,18 +49,22 @@ use App\Domain\Webhooks\Models\Webhook;
 use App\Domain\Webhooks\Policies\WebhookPolicy;
 use App\Models\User;
 use App\Settings\SiteSettings;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Translation\FileLoader;
 use Illuminate\Translation\TranslationServiceProvider;
 use Illuminate\Translation\Translator;
 use Illuminate\Validation\Rules\Password;
+use Laravel\Scout\EngineManager;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\LaravelSettings\Events\SavingSettings;
 use Spatie\TranslationLoader\TranslationLoaderManager;
@@ -95,6 +102,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->bootSearch();
         $this->bootAuthorization();
         $this->bootAuditing();
         $this->bootLocalization();
@@ -117,6 +125,14 @@ class AppServiceProvider extends ServiceProvider
                 'png', 'gif', 'jpg', 'jpeg', 'webp', 'mp4', 'webm', 'mp3', 'm4a',
             ],
         ]);
+    }
+
+    private function bootSearch(): void
+    {
+        // ADR-0020: the database driver matches every word (MySQL full-text skips short Amharic words).
+        $this->app->make(EngineManager::class)->extend('database', fn (): WordMatchEngine => new WordMatchEngine);
+
+        RateLimiter::for('search', fn (Request $request): Limit => Limit::perMinute(30)->by((string) $request->ip()));
     }
 
     private function bootLocalization(): void
@@ -154,6 +170,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Leader::class, LeaderPolicy::class);
         Gate::policy(League::class, LeaguePolicy::class);
         Gate::policy(HomepageSection::class, HomepageSectionPolicy::class);
+        Gate::policy(SearchTerm::class, SearchTermPolicy::class);
 
         // Super Admins hold every permission (PLAN.md §8). Only permission
         // names (`module.action`) are short-circuited, so policy rules such as

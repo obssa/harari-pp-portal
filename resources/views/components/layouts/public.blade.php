@@ -44,7 +44,15 @@
                     <span class="block text-sm text-ink-muted">{{ __('site.office') }}</span>
                 </span>
             </a>
-            <x-site-nav />
+            <div class="flex flex-wrap items-center gap-4">
+                <x-site-nav />
+                <form method="get" action="{{ route('search') }}" role="search" class="flex items-center">
+                    <label for="site-search" class="sr-only">{{ __('search.label') }}</label>
+                    <input id="site-search" type="search" name="q" maxlength="100" minlength="2" required placeholder="{{ __('search.placeholder_short') }}"
+                           class="w-36 rounded-s-control border border-line bg-surface px-3 py-1.5 text-sm sm:w-44">
+                    <button type="submit" class="rounded-e-control border border-s-0 border-line bg-surface-muted px-3 py-1.5 text-sm hover:bg-line">{{ __('search.button') }}</button>
+                </form>
+            </div>
         </div>
     </header>
 

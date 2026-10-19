@@ -4,6 +4,7 @@ namespace App\Domain\Content\Models;
 
 use App\Domain\Content\Enums\ContentStatus;
 use App\Domain\Content\Support\BodyRenderer;
+use App\Domain\Search\Concerns\SearchableTranslation;
 use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -32,6 +33,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
 class PostTranslation extends Translation
 {
     use LogsActivity;
+    use SearchableTranslation;
 
     /** Words a reader manages per minute, for the reading time. */
     public const WORDS_PER_MINUTE = 200;
@@ -80,6 +82,14 @@ class PostTranslation extends Translation
                 );
             }
         });
+    }
+
+    /**
+     * @return list<?string>
+     */
+    public function searchableParts(): array
+    {
+        return [$this->title, $this->kicker, $this->excerpt, BodyRenderer::toText($this->body)];
     }
 
     public function getActivitylogOptions(): LogOptions

@@ -45,7 +45,19 @@ final class Seo extends Component
         }
 
         $this->nonce = (string) Vite::cspNonce();
-        $this->graph = [self::organisation(), ...$jsonLd];
+        $this->graph = [self::organisation(), [
+            '@type' => 'WebSite',
+            '@id' => url('/').'#website',
+            'url' => route('home'),
+            'name' => __('site.name'),
+            'inLanguage' => $locale,
+            'publisher' => ['@id' => url('/').'#organization'],
+            'potentialAction' => [
+                '@type' => 'SearchAction',
+                'target' => ['@type' => 'EntryPoint', 'urlTemplate' => route('search').'?q={search_term_string}'],
+                'query-input' => 'required name=search_term_string',
+            ],
+        ], ...$jsonLd];
     }
 
     public function render(): View

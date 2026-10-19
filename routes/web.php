@@ -12,6 +12,7 @@ use App\Http\Controllers\Public\PageController;
 use App\Http\Controllers\Public\PreviewController;
 use App\Http\Controllers\Public\RedirectToPreferredLocale;
 use App\Http\Controllers\Public\RobotsController;
+use App\Http\Controllers\Public\SearchController;
 use App\Http\Controllers\Public\SitemapController;
 use App\Http\Controllers\Public\StructureController;
 use App\Http\Middleware\CachePublicPages;
@@ -83,6 +84,10 @@ Route::prefix('{locale}')
         Route::get('leagues', [LeagueController::class, 'index'])->name('leagues.index');
         Route::get('leagues/{slug}', [LeagueController::class, 'show'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('leagues.show');
         Route::get('structure', StructureController::class)->name('structure');
+        Route::get('search', SearchController::class)
+            ->withoutMiddleware(CachePublicPages::class)
+            ->middleware('throttle:search')
+            ->name('search');
 
         // Pages (about/history ...): last, so fixed sections such as news always win.
         Route::get('{path}', PageController::class)

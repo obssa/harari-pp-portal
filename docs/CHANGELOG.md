@@ -4,6 +4,17 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 2, step 2.9 — site search (2026-10-19)
+
+- A search box in the header of every page and a search page (`/{lang}/search`) finding news, pages,
+  people, offices and leagues published in the reader's language; Harari readers also find Amharic
+  items (ADR-0020).
+- Every word typed must appear, in any order; Amharic spelling variants match (ሐ/ሀ/ኀ, ሠ/ሰ, ዐ/አ,
+  ፀ/ጸ), and Amharic words typed in Latin letters work too ("medemer" finds መደመር).
+- Admin → Content → Site searches (staff who see analytics): what visitors searched for, how often,
+  and which searches found nothing.
+- Search engines are told about the site search; search answers are never cached or indexed.
+
 ### Phase 2, step 2.8 — homepage builder (2026-10-19)
 
 - The homepage is built from content: a hero with hand-picked or featured stories (or a welcome),

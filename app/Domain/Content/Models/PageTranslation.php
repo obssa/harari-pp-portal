@@ -5,6 +5,7 @@ namespace App\Domain\Content\Models;
 use App\Domain\Content\Enums\ContentStatus;
 use App\Domain\Content\Support\BodyRenderer;
 use App\Domain\Content\Support\Slugger;
+use App\Domain\Search\Concerns\SearchableTranslation;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Activitylog\LogOptions;
@@ -29,6 +30,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
 class PageTranslation extends Translation
 {
     use LogsActivity;
+    use SearchableTranslation;
 
     protected $attributes = ['status' => 'draft'];
 
@@ -86,6 +88,14 @@ class PageTranslation extends Translation
                 Redirect::moved("/{$translation->locale}/{$oldPath}", "/{$translation->locale}/{$path}");
             }
         });
+    }
+
+    /**
+     * @return list<?string>
+     */
+    public function searchableParts(): array
+    {
+        return [$this->title, $this->excerpt, BodyRenderer::toText($this->body)];
     }
 
     public function getActivitylogOptions(): LogOptions

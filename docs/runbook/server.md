@@ -150,3 +150,11 @@ Logs: `~/hararipp.orcamind.dev/storage/logs/laravel-*.log` (daily, 14 days).
   releases). Deleting the folder is safe: images are made again on the next visit. The fonts used
   are in `resources/fonts/og/` (rebuild with `python scripts/fonts/build_og_fonts.py`).
 - Redirects are checked only when a page is not found, so they never slow down normal pages.
+
+## Site search (ADR-0020)
+
+- Search reads the `search_text` column of each translation; it is rebuilt on every save. After a
+  change to the matching rules, run `php artisan portal:search-reindex` once.
+- Moving to Meilisearch later: set `SCOUT_DRIVER=meilisearch`, `MEILISEARCH_HOST` and
+  `MEILISEARCH_KEY` in `.env`, `composer require meilisearch/meilisearch-php`, then
+  `php artisan scout:import` for each of the five translation models.
