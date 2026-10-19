@@ -137,6 +137,18 @@ it('imports new stories as drafts with their source and photos, once', function 
     expect($again['hrprosperityparty']['imported'])->toBe(0)->and(Post::query()->count())->toBe(3);
 });
 
+it('skips a story the same channel posts again', function () {
+    fakeChannels(office: telegramPage('HarariGovernmentCommunication', [
+        ['id' => 601, 'at' => '2026-10-16T09:00:00+00:00', 'text' => "Sample health services story\n\nThe sample office reports progress on health services this year."],
+        ['id' => 602, 'at' => '2026-10-16T13:00:00+00:00', 'text' => "Sample health services story\n\nThe sample office reports progress on health services this year."],
+    ]));
+
+    $report = app(RunImport::class)->handle();
+
+    expect($report['HarariGovernmentCommunication'])->toMatchArray(['imported' => 1, 'duplicates' => 1])
+        ->and(ContentImport::query()->where('external_id', 'HarariGovernmentCommunication/602')->value('status'))->toBe(ContentImport::DUPLICATE);
+});
+
 it('keeps the error of a failing source without stopping the others', function () {
     Http::fake([
         't.me/s/hrprosperityparty*' => Http::response('down', 502),

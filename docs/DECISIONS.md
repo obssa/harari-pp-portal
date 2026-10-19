@@ -665,9 +665,9 @@ cannot be read without logging in; their Telegram channels have public preview p
   first is the featured photo, the rest a gallery.
 - Every post keeps its source: name, message link and original time. Editors see it in the post
   editor with a reminder to check names and facts; readers see "Source: …" under the story.
-- A story that matches one already imported from the same or a higher-priority source within three
-  days (sixty first words, 60 % in common after normalisation) is recorded as a duplicate, so the
-  office's reposts of branch stories are skipped. `content_imports` records every message read.
+- A story that matches one already imported from the same channel or a higher-priority source within
+  three days (sixty first words, 60 % in common after normalisation) is recorded as a duplicate, so
+  reposts and the office's copies of branch stories are skipped. `content_imports` records every message read.
 - Nothing is published automatically; machine translation is not used. Stories from the
   communication office are published only once the office's permission to republish is confirmed
   (PLAN.md §14 input; editors see the source on every imported draft).

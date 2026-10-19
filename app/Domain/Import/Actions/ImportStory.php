@@ -27,7 +27,8 @@ use Throwable;
  * Makes one draft post from a channel story (docs/content/sources.md rules):
  * text as written, the source and its link kept, photos downloaded once,
  * cleaned like any upload and credited, nothing published. A story already
- * imported from a higher-priority source is recorded as a duplicate.
+ * imported from the same channel or a higher-priority source is recorded as
+ * a duplicate.
  */
 final class ImportStory
 {
@@ -98,7 +99,8 @@ final class ImportStory
     }
 
     /**
-     * The import of the same story from a source of equal or higher priority.
+     * The import of the same story from this channel (a repost) or from a
+     * source of equal or higher priority.
      */
     private function duplicateOf(ContentSource $source, TelegramMessage $message, string $fingerprint): ?ContentImport
     {
@@ -109,7 +111,6 @@ final class ImportStory
         $candidates = ContentImport::query()
             ->with('source')
             ->where('status', ContentImport::IMPORTED)
-            ->where('content_source_id', '!=', $source->id)
             ->whereBetween('message_at', [$message->at->subDays(self::DUPLICATE_DAYS), $message->at->addDays(self::DUPLICATE_DAYS)])
             ->get();
 
