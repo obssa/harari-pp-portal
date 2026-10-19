@@ -483,3 +483,26 @@ and the block editor, and menus for the header, footer and utility bar with labe
 
 **Consequences.** Mega-menu panels with images and the utility bar items come with the homepage
 builder (2.8). Pages are added to the sitemaps in this step.
+
+## ADR-0018 — Two-step sign-in compulsory only by choice (2026-10-19)
+
+**Context.** PLAN.md §7 and §11 make two-step sign-in (authenticator app) compulsory for Super Admins,
+Admins and Publishers, and the panel enforced it from step 1.2. On 2026-10-19 the owner asked for it to
+be a switch: staff should be able to sign in with a password alone unless two-step sign-in is set up
+or turned on.
+
+**Decision.**
+
+- A Super Admin-only page, Administration → Security, holds one switch: "Make two-step sign-in
+  compulsory for senior roles". While it is on, the roles in `config('portal.mfa_required_roles')`
+  (Super Admin, Admin, Publisher) must set up an authenticator app before using the panel, as before.
+  While it is off, nobody is forced to.
+- The switch starts **off**, so nobody is locked out before they have set up the app; the page shows
+  how many people in those roles have not set it up yet.
+- Everyone can still turn the authenticator app on or off for their own account under Profile; a
+  person who has it on is always asked for the code. A Super Admin can reset someone's app from Users.
+- Changes to the switch are kept in the audit log like other settings.
+
+**Consequences.** This deviates from PLAN.md §7/§11 at the owner's request. A password alone protects
+the most powerful accounts while the switch is off; the recommendation stays to turn it on once the
+senior staff have set up the app. Login throttling, session sign-out and the audit log are unchanged.

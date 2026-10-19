@@ -10,9 +10,10 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Super Admins, Admins and Publishers must turn on an authenticator app
- * before using the panel (PLAN.md §7, config portal.mfa_required_roles).
- * Other staff may turn it on voluntarily from their profile.
+ * While a Super Admin has made two-step sign-in compulsory (Settings →
+ * Security, ADR-0018), Super Admins, Admins and Publishers must turn on an
+ * authenticator app before using the panel (config portal.mfa_required_roles).
+ * Anyone may turn it on for their own account from their profile.
  */
 final class RequireMfaForPrivilegedRoles
 {

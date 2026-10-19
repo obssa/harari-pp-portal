@@ -13,7 +13,10 @@ it('creates a Super Admin with a one-time password that works', function () {
     $user = User::query()->where('email', 'chair@example.org')->firstOrFail();
     expect($user->isSuperAdmin())->toBeTrue()
         ->and($user->email_verified_at)->not->toBeNull()
-        ->and($user->requiresMfa())->toBeTrue();
+        ->and($user->requiresMfa())->toBeFalse();
+
+    requireMfa();
+    expect($user->fresh()?->requiresMfa())->toBeTrue();
 });
 
 it('refuses to overwrite an existing account unless asked to promote it', function () {

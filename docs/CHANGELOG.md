@@ -4,6 +4,15 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Two-step sign-in made a switch (2026-10-19)
+
+- Administration → Security (Super Admins only): "Make two-step sign-in compulsory for senior roles".
+  Off at first: everyone can sign in with their password alone. When on, Super Admins, Admins and
+  Publishers must set up an authenticator app before using the admin, as before (ADR-0018).
+- The page shows how many people in those roles have not set up the app yet; changes to the switch are
+  in the audit log.
+- Anyone can still turn the authenticator app on or off for their own account under Profile.
+
 ### Phase 2, step 2.6 — pages and menus (2026-10-19)
 
 - Admin → Content → Pages: static pages (About, History, Vision …) with a tab per language, the block

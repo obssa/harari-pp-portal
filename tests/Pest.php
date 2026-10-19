@@ -2,6 +2,7 @@
 
 use App\Domain\Access\Enums\SystemRole;
 use App\Models\User;
+use App\Settings\SecuritySettings;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -19,6 +20,14 @@ pest()->extend(TestCase::class)->in('Unit');
  *
  * @param  array<string, mixed>  $attributes
  */
+/** Turns on Settings → Security "require two-step sign-in" (ADR-0018). */
+function requireMfa(bool $on = true): void
+{
+    $settings = app(SecuritySettings::class);
+    $settings->require_mfa = $on;
+    $settings->save();
+}
+
 function staff(SystemRole $role, ?bool $mfa = null, array $attributes = []): User
 {
     $user = User::factory()->create($attributes);

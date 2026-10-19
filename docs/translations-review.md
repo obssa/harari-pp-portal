@@ -35,3 +35,4 @@ Harari translators.
 | `news.*`, `nav.news`, `pagination.*` | am, om | public news pages and feeds | Reading-time plural forms; "also available in" phrasing; share/related labels |
 | `admin.redirects.*`, `access.module.redirects` | am, om | redirects manager | "redirect" (አቅጣጫ ማዞሪያ / Qajeelcha); old/new address wording |
 | `admin.pages.*`, `admin.menus.*`, `pages.*`, `footer.links` | am, om | page and menu screens, footer quick links | Template names (የጽሑፍ ገጽ, መግቢያ ገጽ / Fuula seensaa); menu (ማውጫ / Baafata) |
+| `admin.settings.security.*` | am, om | security settings page | "two-step sign-in" (ባለሁለት ደረጃ መግቢያ / Seensa sadarkaa lamaa); "authenticator app" (የማረጋገጫ መተግበሪያ / appii mirkaneessaa) |

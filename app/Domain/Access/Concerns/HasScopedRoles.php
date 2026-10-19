@@ -7,6 +7,7 @@ use App\Domain\Access\Enums\SystemRole;
 use App\Domain\Access\Models\Role;
 use App\Domain\Access\Models\RoleScope;
 use App\Models\User;
+use App\Settings\SecuritySettings;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 
@@ -97,8 +98,17 @@ trait HasScopedRoles
         return $this->hasRole(SystemRole::SuperAdmin->value);
     }
 
+    /**
+     * Whether this account must use two-step sign-in: only while a Super
+     * Admin has made it compulsory, and only for the roles that covers
+     * (ADR-0018).
+     */
     public function requiresMfa(): bool
     {
+        if (! SecuritySettings::mfaRequired()) {
+            return false;
+        }
+
         $this->loadMissing('roles');
 
         return $this->roles->contains(fn (mixed $role): bool => $role instanceof Role && (bool) $role->systemRole()?->requiresMfa());

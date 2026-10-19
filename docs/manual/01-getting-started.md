@@ -10,15 +10,18 @@ Admin address (test site): **https://hararipp.orcamind.dev/admin**
 1. Your administrator creates your account and gives you your email address and a first password, or
    sends you a "sign-in link" by email.
 2. Open the admin address, enter your email and password, and choose **Sign in**.
-3. If your role is Super Admin, Admin or Publisher, the admin asks you to set up **two-factor login**:
+3. If your role is Super Admin, Admin or Publisher and a Super Admin has made two-factor login
+   compulsory (**Administration → Security**), the admin asks you to set up **two-factor login**:
    - Install an authenticator app on your phone (Google Authenticator, Microsoft Authenticator or a
      similar app).
    - Scan the QR code shown on screen with the app, then type the 6-digit code the app shows.
    - **Write down the recovery codes** and keep them somewhere safe and private. Each code works once
      if you lose your phone.
-4. Every later sign-in asks for your password and the current 6-digit code from the app.
+4. Once it is set up, every later sign-in asks for your password and the current 6-digit code from
+   the app.
 
-Other staff may turn on two-factor login from their profile; it is strongly recommended.
+Anyone may turn two-factor login on (or off, while it is not compulsory) from their profile; it is
+strongly recommended for everyone.
 
 ## 2. Your profile
 
@@ -28,7 +31,7 @@ Click your name or picture at the top right, then **Profile**.
   lower case letters and a number).
 - The **language of the admin** (English, Amharic or Afaan Oromo) is set on your account by an Admin
   (**Users → your account → Preferred language**).
-- Turn two-factor login on, or create new recovery codes.
+- Turn two-factor login on or off, or create new recovery codes.
 
 If you lose your phone, ask an Admin to **Reset two-factor login** on your account; you then set it up
 again at your next sign-in.

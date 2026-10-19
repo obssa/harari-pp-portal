@@ -51,7 +51,8 @@ return [
 
     /*
     | Staff with these roles must turn on an authenticator app before they can
-    | use the admin panel (PLAN.md §7, §8).
+    | use the admin panel, while Settings → Security makes it compulsory
+    | (PLAN.md §7, §8, ADR-0018).
     */
     'mfa_required_roles' => ['super_admin', 'admin', 'publisher'],
 

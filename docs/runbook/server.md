@@ -58,8 +58,12 @@ cd ~/hararipp.orcamind.dev
 /opt/alt/php83/usr/bin/php artisan portal:create-super-admin <email> --name="<full name>"
 ```
 
-Then sign in at https://hararipp.orcamind.dev/admin, set up the authenticator app (save the recovery
-codes), and change the password under Profile. The email and name can also be corrected there.
+Then sign in at https://hararipp.orcamind.dev/admin, change the password under Profile (the email and
+name can also be corrected there) and set up the authenticator app (save the recovery codes).
+Two-step sign-in is optional until a Super Admin turns on **Administration → Security → Make two-step
+sign-in compulsory for senior roles** (ADR-0018); turn it on once the senior staff have set up the app.
+If a Super Admin is locked out with the switch on and no recovery codes, clear it on the server:
+`php artisan tinker --execute="\$s = app(App\Settings\SecuritySettings::class); \$s->require_mfa = false; \$s->save();"`.
 
 Optional sample accounts for testing each role (staging only): add `PORTAL_DEMO_ACCOUNTS=true` to the
 server `.env`, run `php artisan config:cache`, then `php artisan portal:demo-accounts`. Remove them with

@@ -47,7 +47,8 @@ with a modern CMS/CRM, role-based access, a social media hub, and manual-transla
    < 120 KB; no N+1 (preventLazyLoading on in non-prod); Cloudflare cache headers.
 7. Accessibility WCAG 2.2 AA; semantic HTML; keyboard operable; alt text required for featured images.
 8. Security: CSRF, CSP with nonces, security headers, rate limits, Turnstile, hardened uploads (re-encode
-   images, sanitise SVG), encrypted PII, 2FA for Super Admin/Admin/Publisher.
+   images, sanitise SVG), encrypted PII, 2FA for Super Admin/Admin/Publisher (compulsory only while the
+   Settings → Security switch is on, ADR-0018).
 9. Ethiopian calendar shown with Gregorian everywhere a date appears (andegna/calender).
 10. Ethiopic fonts (Noto Sans Ethiopic) subset and preloaded; line-height tuned for Ethiopic.
 11. Tests: Pest for domain logic and policies (target ≥ 80% on app/Domain, app/Services, app/Support).

@@ -4,6 +4,7 @@ use App\Domain\Access\Enums\SystemRole;
 use App\Domain\Access\Enums\UserStatus;
 use App\Filament\Support\InitialsAvatarProvider;
 use App\Models\User;
+use App\Settings\SecuritySettings;
 use Filament\Facades\Filament;
 use Spatie\Activitylog\Models\Activity;
 
@@ -34,17 +35,29 @@ it('blocks suspended and deleted accounts even with an open session', function (
     $this->actingAs($deleted)->get('/admin')->assertForbidden();
 });
 
-it('makes Super Admins, Admins and Publishers set up two-factor login first', function (SystemRole $role) {
+it('lets everyone in without two-factor login while it is optional', function (SystemRole $role) {
+    expect(app(SecuritySettings::class)->require_mfa)->toBeFalse();
+
+    $this->actingAs(staff($role, mfa: false))->get('/admin')->assertOk();
+})->with([SystemRole::SuperAdmin, SystemRole::Admin, SystemRole::Publisher]);
+
+it('makes Super Admins, Admins and Publishers set up two-factor login first once it is compulsory', function (SystemRole $role) {
+    requireMfa();
+
     $this->actingAs(staff($role, mfa: false))
         ->get('/admin')
         ->assertRedirect(Filament::getPanel('admin')->getSetUpRequiredMultiFactorAuthenticationUrl());
 })->with([SystemRole::SuperAdmin, SystemRole::Admin, SystemRole::Publisher]);
 
-it('lets other staff in without two-factor login', function (SystemRole $role) {
+it('lets other staff in without two-factor login even when it is compulsory', function (SystemRole $role) {
+    requireMfa();
+
     $this->actingAs(staff($role, mfa: false))->get('/admin')->assertOk();
 })->with([SystemRole::Editor, SystemRole::Author, SystemRole::Translator, SystemRole::Analyst]);
 
 it('lets privileged users in once two-factor login is on', function () {
+    requireMfa();
+
     $this->actingAs(staff(SystemRole::Admin, mfa: true))->get('/admin')->assertOk();
 });
 
