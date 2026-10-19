@@ -10,6 +10,7 @@ use App\Domain\Homepage\Enums\SectionKey;
 use App\Domain\Homepage\Models\HomepageSection;
 use App\Domain\Media\Models\Gallery;
 use App\Domain\Media\Models\GalleryItem;
+use App\Domain\Media\Models\Video;
 use App\Domain\Organisation\Models\Leader;
 use App\Domain\Organisation\Models\League;
 use App\Domain\Organisation\Queries\PublicDirectory;
@@ -121,6 +122,7 @@ final class HomepageLayout
             SectionKey::Values => $this->items($section, $locale, 'title', [], ['text']),
             SectionKey::Leagues => $this->leagues($locale, $limit),
             SectionKey::Gallery => $this->gallery($locale, $limit),
+            SectionKey::Video => $this->video($locale),
             SectionKey::Partners => $this->items($section, $locale, 'label', ['url']),
         };
     }
@@ -184,6 +186,24 @@ final class HomepageLayout
         }
 
         return $spotlight === [] ? null : $spotlight;
+    }
+
+    /**
+     * The featured video, otherwise the newest one.
+     *
+     * @return array{video: Video, translation: Translation}|null
+     */
+    private function video(string $locale): ?array
+    {
+        $video = PublicDirectory::visible(Video::query(), $locale)
+            ->with('thumbnail')
+            ->orderByDesc('is_featured')
+            ->orderByDesc('recorded_on')
+            ->orderByDesc('created_at')
+            ->first();
+        $translation = $video !== null ? PublicDirectory::shown($video, $locale) : null;
+
+        return $video !== null && $translation !== null ? ['video' => $video, 'translation' => $translation] : null;
     }
 
     /**

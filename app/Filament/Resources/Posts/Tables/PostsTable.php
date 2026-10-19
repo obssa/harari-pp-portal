@@ -84,7 +84,7 @@ class PostsTable
                         : $query),
                 SelectFilter::make('category')
                     ->label(__('admin.categories.singular'))
-                    ->options(fn (): array => Category::query()->with('translations')->get()
+                    ->options(fn (): array => Category::query()->where('type', Category::TYPE_POST)->with('translations')->get()
                         ->mapWithKeys(fn (Category $c): array => [$c->id => $c->name()])->all())
                     ->query(fn (Builder $query, array $data): Builder => filled($data['value'] ?? null)
                         ? $query->whereHas('categories', fn (Builder $q) => $q->whereKey($data['value']))

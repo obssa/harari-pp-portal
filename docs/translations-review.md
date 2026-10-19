@@ -43,3 +43,4 @@ Harari translators.
 | `dashboard.*` | am, om | admin dashboard, widgets and announcements | "widget" kept as a loanword in om (Widget) and as መግብር in am; fiscal-year wording (በጀት ዓመት / Bara baajataa) |
 | `import.*`, `news.source` | am, om | content sources screen, imported-post notes | "draft" (ረቂቅ / wixinee), "source" (ምንጭ / Madda); "Ethiopic script" (ግዕዝ ፊደል / qubee Saabaa) |
 | `gallery.*`, `homepage.section.gallery` | am, om | photo albums | "photo album" (የፎቶ ስብስብ / kuusaa suuraa); count forms for photos |
+| `video.*`, `homepage.section.video`, `admin.categories.type.*` | am, om | videos, live page | "live broadcast" (ቀጥታ ስርጭት / Tamsaasa kallattii); "playlist" (የቪዲዮ ዝርዝር / Tarree viidiyoo) |

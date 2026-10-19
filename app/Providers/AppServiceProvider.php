@@ -35,9 +35,11 @@ use App\Domain\Media\Enums\MediaKind;
 use App\Domain\Media\Models\Gallery;
 use App\Domain\Media\Models\Media;
 use App\Domain\Media\Models\MediaFolder;
+use App\Domain\Media\Models\Video;
 use App\Domain\Media\Policies\GalleryPolicy;
 use App\Domain\Media\Policies\MediaFolderPolicy;
 use App\Domain\Media\Policies\MediaPolicy;
+use App\Domain\Media\Policies\VideoPolicy;
 use App\Domain\Organisation\Models\Leader;
 use App\Domain\Organisation\Models\League;
 use App\Domain\Organisation\Models\Office;
@@ -180,6 +182,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Announcement::class, AnnouncementPolicy::class);
         Gate::policy(ContentSource::class, ContentSourcePolicy::class);
         Gate::policy(Gallery::class, GalleryPolicy::class);
+        Gate::policy(Video::class, VideoPolicy::class);
 
         // Super Admins hold every permission (PLAN.md §8). Only permission
         // names (`module.action`) are short-circuited, so policy rules such as

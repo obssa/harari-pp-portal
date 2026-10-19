@@ -4,6 +4,20 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 3, step 3.2 — videos and live (2026-10-20)
+
+- Admin → Content → Videos: paste a YouTube, Facebook or Telegram address, give a title and description
+  per language, a playlist, the date recorded, the office or league; mark the video of the week; mark a
+  live broadcast with its start (and end) time (ADR-0024).
+- `/{lang}/videos` with playlists; each video page plays YouTube with the privacy-enhanced player
+  (nothing from YouTube loads until the page is opened) and links to Facebook and Telegram videos.
+  YouTube pictures are copied into the library once, so listings load nothing from YouTube.
+- `/{lang}/live` shows the broadcast that is on now, the next one, and recent videos.
+- Homepage "Video of the week" section; video playlists are categories "used for video playlists";
+  menus can link to videos and the live page; videos are in the sitemaps.
+- Live broadcast times and dashboard announcement times are entered in Addis Ababa time, like
+  post schedules.
+
 ### Phase 3, step 3.1 — photo galleries (2026-10-20)
 
 - Admin → Content → Photo albums: albums of library photos in order, a caption per language for each

@@ -50,7 +50,12 @@ class CategoryResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Grid::make(2)->schema([
+            Grid::make(3)->schema([
+                Select::make('type')
+                    ->label(__('admin.categories.field.type'))
+                    ->options(collect(Category::TYPES)->mapWithKeys(fn (string $t): array => [$t => __("admin.categories.type.{$t}")])->all())
+                    ->default(Category::TYPE_POST)
+                    ->selectablePlaceholder(false),
                 Select::make('parent_id')
                     ->label(__('admin.categories.field.parent'))
                     ->options(fn (?Category $record): array => self::parentOptions($record))
@@ -86,6 +91,10 @@ class CategoryResource extends Resource
                     ->label(__('admin.taxonomy.field.languages'))
                     ->state(fn (Category $record): array => array_map('strtoupper', $record->translatedLocales()))
                     ->badge(),
+                TextColumn::make('type')
+                    ->label(__('admin.categories.field.type'))
+                    ->formatStateUsing(fn (string $state): string => __("admin.categories.type.{$state}"))
+                    ->badge(),
                 TextColumn::make('sort')
                     ->label(__('admin.categories.field.sort'))
                     ->sortable(),
@@ -113,6 +122,7 @@ class CategoryResource extends Resource
         Translatable::requireOne($translations, 'name');
 
         $record->fill([
+            'type' => in_array($data['type'] ?? null, Category::TYPES, true) ? $data['type'] : Category::TYPE_POST,
             'parent_id' => filled($data['parent_id'] ?? null) ? $data['parent_id'] : null,
             'sort' => (int) ($data['sort'] ?? 0),
         ])->save();

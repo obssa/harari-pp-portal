@@ -66,7 +66,7 @@ class PostForm
                         Select::make('categories')
                             ->label(__('admin.categories.plural'))
                             ->multiple()
-                            ->options(fn (): array => Category::query()->with('translations')->orderBy('sort')->get()
+                            ->options(fn (): array => Category::query()->where('type', Category::TYPE_POST)->with('translations')->orderBy('sort')->get()
                                 ->mapWithKeys(fn (Category $c): array => [$c->id => $c->name()])->all()),
                         Select::make('tags')
                             ->label(__('admin.tags.plural'))

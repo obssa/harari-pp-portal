@@ -701,3 +701,29 @@ of the original, and §10 for `galleries` and `gallery_items`.
 
 **Consequences.** Swiping between photos on phones and keyboard arrows wait for an optional small script
 later; the links work everywhere today.
+
+## ADR-0024 — Videos and live broadcasts (2026-10-20)
+
+**Context.** PLAN.md §4 asks for a video gallery of YouTube, Facebook and Telegram videos embedded in a
+privacy-friendly way, playlists, a Live page and a homepage "video of the week" (§10 `videos`).
+
+**Decision.**
+
+- A video is an address an editor pastes (YouTube watch, youtu.be, shorts, live or embed links; a
+  Facebook video; a Telegram post) with a title and description per language, published per language
+  (ADR-0017), a playlist, the date recorded and an optional office or league.
+- YouTube videos play on their own page in the `youtube-nocookie.com` player, which sets no cookies until
+  the visitor starts it; the frame is allowed by the content security policy since step 2.2. Facebook and
+  Telegram embeds load their own scripts and trackers, so those videos show a picture that links to the
+  original instead.
+- Listing pages never contact YouTube: when a YouTube video has no chosen picture, YouTube's picture is
+  copied into the media library once, cleaned like any upload and credited to YouTube.
+- Playlists are categories with the type "video" (ADR-0011); post screens only offer post categories.
+- A video marked as a live broadcast has a start and an optional end time; without an end it counts as
+  live for six hours. `/{lang}/live` shows the broadcast on now, the next one and recent videos; the
+  video list says when something is live.
+- The homepage section shows the video marked as video of the week, otherwise the newest, as a picture
+  linking to its page (no player on the homepage).
+
+**Consequences.** YouTube Live status is set by editors; reading it from the YouTube API comes with the
+social hub (Phase 4).

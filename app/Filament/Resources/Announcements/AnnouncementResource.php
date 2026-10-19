@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Announcements;
 use App\Domain\Dashboard\Models\Announcement;
 use App\Filament\Resources\Announcements\Pages\ManageAnnouncements;
 use App\Filament\Support\CalendarDate;
+use App\Services\Calendar\EthiopianCalendar;
 use BackedEnum;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -56,8 +57,8 @@ class AnnouncementResource extends Resource
                     ->options(collect(Announcement::TONES)->mapWithKeys(fn (string $t): array => [$t => __("dashboard.tone.{$t}")])->all())
                     ->default('info')
                     ->required(),
-                DateTimePicker::make('starts_at')->label(__('dashboard.announcements.field.starts_at'))->seconds(false),
-                DateTimePicker::make('ends_at')->label(__('dashboard.announcements.field.ends_at'))->seconds(false)->after('starts_at'),
+                DateTimePicker::make('starts_at')->label(__('dashboard.announcements.field.starts_at'))->seconds(false)->timezone(EthiopianCalendar::timezone()),
+                DateTimePicker::make('ends_at')->label(__('dashboard.announcements.field.ends_at'))->seconds(false)->timezone(EthiopianCalendar::timezone())->after('starts_at'),
             ]),
         ]);
     }

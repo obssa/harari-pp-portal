@@ -19,6 +19,7 @@ enum SectionKey: string
     case Leagues = 'leagues';
     case Partners = 'partners';
     case Gallery = 'gallery';
+    case Video = 'video';
 
     public function label(?string $locale = null): string
     {
@@ -41,7 +42,7 @@ enum SectionKey: string
             self::Leagues => 4,
             self::Partners => 12,
             self::Gallery => 8,
-            self::Leadership => 1,
+            self::Leadership, self::Video => 1,
         };
     }
 

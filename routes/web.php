@@ -16,6 +16,7 @@ use App\Http\Controllers\Public\RobotsController;
 use App\Http\Controllers\Public\SearchController;
 use App\Http\Controllers\Public\SitemapController;
 use App\Http\Controllers\Public\StructureController;
+use App\Http\Controllers\Public\VideoController;
 use App\Http\Middleware\CachePublicPages;
 use App\Http\Middleware\OutsideProductionOnly;
 use App\Http\Middleware\SetLocale;
@@ -86,6 +87,9 @@ Route::prefix('{locale}')
         Route::get('leagues/{slug}', [LeagueController::class, 'show'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('leagues.show');
         Route::get('structure', StructureController::class)->name('structure');
         Route::get('gallery', [GalleryController::class, 'index'])->name('gallery.index');
+        Route::get('videos', [VideoController::class, 'index'])->name('videos.index');
+        Route::get('videos/{slug}', [VideoController::class, 'show'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('videos.show');
+        Route::get('live', [VideoController::class, 'live'])->name('videos.live');
         Route::get('gallery/{slug}', [GalleryController::class, 'show'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('gallery.show');
         Route::get('search', SearchController::class)
             ->withoutMiddleware(CachePublicPages::class)

@@ -11,7 +11,7 @@ hand-off, as before.
 | Step | Content | Status |
 |---|---|---|
 | 3.1 | Photo galleries: albums of library photos with captions per language, cover, office/league/event links; public album list and album page with a lightweight lightbox (works without JavaScript), responsive WebP/AVIF, optional download of the original | done 2026-10-20 (with a homepage photo strip) |
-| 3.2 | Videos and live: YouTube (privacy-enhanced), Facebook and Telegram videos with title and description per language, categories and playlists; video list and page; Live page showing the current or next live stream; homepage "video of the week" section | |
+| 3.2 | Videos and live: YouTube (privacy-enhanced), Facebook and Telegram videos with title and description per language, categories and playlists; video list and page; Live page showing the current or next live stream; homepage "video of the week" section | done 2026-10-20 |
 | 3.3 | Events: events per language with start/end (both calendars), venue with map pin or online link, agenda, speakers (leaders), offices and leagues; public calendar (month and list), event page, iCal per event and a calendar feed; homepage "upcoming events" section; events in search and sitemaps | |
 | 3.4 | Event registration: form with capacity and waitlist (automatic promotion), confirmation by email and SMS through an `SmsGateway` interface (log driver until a provider is chosen), QR code and check-in screen for staff, reminders the day before, honeypot and Turnstile, CSV export; contact details encrypted | |
 | 3.5 | Documents library: programmes, bylaws, reports, policies, speeches, forms, vacancies and tenders (with deadlines); a file per language, year, office/league, versions with history, download counter, in-browser PDF viewer, related documents; public library with filters and a notices page for vacancies and tenders; documents in search | |
@@ -22,12 +22,13 @@ hand-off, as before.
 
 ## Main decisions to record
 
-- ADR-0023 galleries and videos (no third-party scripts; privacy-enhanced YouTube; lightbox approach).
-- ADR-0024 events and registrations (capacity and waitlist rules, QR check-in, reminders, SMS gateway
+- ADR-0023 photo galleries (lightbox approach).
+- ADR-0024 videos and live (no third-party scripts; privacy-enhanced YouTube; thumbnails copied).
+- ADR-0025 events and registrations (capacity and waitlist rules, QR check-in, reminders, SMS gateway
   interface, PII encryption and retention).
-- ADR-0025 documents library (files per language, versions, viewer, counters, notices).
-- ADR-0026 projects and statistics.
-- ADR-0027 forms builder, tickets and Turnstile.
+- ADR-0026 documents library (files per language, versions, viewer, counters, notices).
+- ADR-0027 projects and statistics.
+- ADR-0028 forms builder, tickets and Turnstile.
 
 ## New tables (draft)
 
