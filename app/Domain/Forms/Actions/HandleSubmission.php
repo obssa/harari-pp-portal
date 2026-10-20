@@ -6,7 +6,9 @@ use App\Domain\Forms\Enums\SubmissionStatus;
 use App\Domain\Forms\Mail\SubmissionReplyMail;
 use App\Domain\Forms\Models\FormSubmission;
 use App\Domain\Forms\Models\SubmissionNote;
+use App\Domain\Forms\Notifications\TicketAssignedNotice;
 use App\Domain\Forms\Support\InboxScope;
+use App\Domain\Notifications\Support\Recipients;
 use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Mail;
@@ -26,6 +28,7 @@ final class HandleSubmission
             throw ValidationException::withMessages(['assignee_id' => __('forms.inbox.validation.assignee')]);
         }
 
+        $changed = $submission->assignee_id !== $assignee?->id;
         $submission->assignee_id = $assignee?->id;
         if ($assignee !== null && $submission->status === SubmissionStatus::New) {
             $submission->status = SubmissionStatus::Assigned;
@@ -33,6 +36,10 @@ final class HandleSubmission
         $submission->save();
 
         $this->log($submission, $actor, SubmissionNote::ASSIGN, $assignee?->name);
+
+        if ($assignee !== null && $changed) {
+            Recipients::notify([$assignee], TicketAssignedNotice::for($submission, $actor), except: $actor);
+        }
     }
 
     public function status(FormSubmission $submission, SubmissionStatus $status, User $actor): void

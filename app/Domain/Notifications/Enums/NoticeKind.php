@@ -1,0 +1,75 @@
+<?php
+
+namespace App\Domain\Notifications\Enums;
+
+use App\Domain\Notifications\Support\NoticePreferences;
+use App\Models\User;
+
+/**
+ * The kinds of notice staff receive (PLAN.md §7, ADR-0036). Each person
+ * chooses in-app, email, both or neither per kind; a kind is only offered to
+ * people whose work it concerns.
+ */
+enum NoticeKind: string
+{
+    case Workflow = 'workflow';
+    case Tickets = 'tickets';
+    case Registrations = 'registrations';
+    case Imports = 'imports';
+    case Sources = 'sources';
+
+    public function label(): string
+    {
+        return match ($this) {
+            self::Workflow => __('notifications.kind.workflow'),
+            self::Tickets => __('notifications.kind.tickets'),
+            self::Registrations => __('notifications.kind.registrations'),
+            self::Imports => __('notifications.kind.imports'),
+            self::Sources => __('notifications.kind.sources'),
+        };
+    }
+
+    public function help(): string
+    {
+        return match ($this) {
+            self::Workflow => __('notifications.kind.workflow_help'),
+            self::Tickets => __('notifications.kind.tickets_help'),
+            self::Registrations => __('notifications.kind.registrations_help'),
+            self::Imports => __('notifications.kind.imports_help'),
+            self::Sources => __('notifications.kind.sources_help'),
+        };
+    }
+
+    /**
+     * Registrations can be many and imports are routine: in-app only unless
+     * the person asks for email too.
+     *
+     * @return list<string>
+     */
+    public function defaults(): array
+    {
+        return match ($this) {
+            self::Registrations, self::Imports => [NoticePreferences::IN_APP],
+            default => [NoticePreferences::IN_APP, NoticePreferences::EMAIL],
+        };
+    }
+
+    public function concerns(User $user): bool
+    {
+        return match ($this) {
+            self::Workflow => $user->can('posts.create') || $user->can('posts.update_own') || $user->can('posts.review') || $user->can('posts.publish'),
+            self::Tickets => $user->can('inbox.view'),
+            self::Registrations => $user->can('events.registrations'),
+            self::Imports => $user->can('posts.review') || $user->can('translations.view'),
+            self::Sources => $user->can('social.manage') || $user->can('settings.view'),
+        };
+    }
+
+    /**
+     * @return list<self>
+     */
+    public static function for(User $user): array
+    {
+        return array_values(array_filter(self::cases(), fn (self $kind): bool => $kind->concerns($user)));
+    }
+}

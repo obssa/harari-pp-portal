@@ -5,6 +5,8 @@ namespace App\Domain\Social\Actions;
 use App\Domain\Import\Support\TelegramChannelReader;
 use App\Domain\Media\Actions\UploadMedia;
 use App\Domain\Media\Models\Media;
+use App\Domain\Notifications\Notifications\SourceFailingNotice;
+use App\Domain\Notifications\Support\Recipients;
 use App\Domain\Social\Models\SocialPost;
 use App\Domain\Social\Models\SocialSource;
 use App\Domain\Social\Support\FetchedPost;
@@ -67,8 +69,12 @@ final class FetchSocialSource
             return ['added' => $added, 'updated' => $updated, 'error' => null];
         } catch (Throwable $e) {
             $error = Str::limit($e->getMessage(), 500);
+            $wasReadable = $source->last_error === null;
             $source->forceFill(['last_fetched_at' => CarbonImmutable::now(), 'last_error' => $error])->save();
             Log::warning('Social source failed', ['source' => $source->url(), 'error' => $error]);
+            if ($wasReadable) {
+                Recipients::notify(Recipients::withPermission('social.manage'), SourceFailingNotice::social($source, $error));
+            }
 
             return ['added' => $added, 'updated' => $updated, 'error' => $error];
         }

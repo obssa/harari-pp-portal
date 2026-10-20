@@ -36,6 +36,17 @@ Click your name or picture at the top right, then **Profile**.
 If you lose your phone, ask an Admin to **Reset two-factor login** on your account; you then set it up
 again at your next sign-in.
 
+### Notifications
+
+The bell at the top right and **Notifications** in the menu show what needs you: a post to review or
+publish, a message for your office or a ticket given to you, event registrations, new drafts from the
+public channels, a finished machine translation, an account or channel that can no longer be read. Use
+**Unread** to see what is new, **Open** to go to the item, and **Mark all as read** when you are done.
+
+**How I am notified** chooses, for each kind of notice, whether it reaches you in the portal, by email,
+both or neither. Registrations and imports come in the portal only unless you add email; unread notices
+about one event are combined into one with the latest numbers.
+
 ## 3. The four languages of the site
 
 The public site is published in English (`/en`), Amharic (`/am`), Afaan Oromo (`/om`) and Harari

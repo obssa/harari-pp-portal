@@ -1070,3 +1070,32 @@ null drivers; §14 leaves open whether it may be used at all and with which prov
 
 **Consequences.** LibreTranslate is left out until someone hosts it. Pages, events and the other content
 types get the same post action later; the review mark does not block publishing.
+
+## ADR-0036 — Staff notices and the notifications page (2026-10-20)
+
+**Context.** PLAN.md §7 asks for in-app and email notifications with per-person preferences. Until now
+only the editorial workflow notified staff (ADR-0013), always by both channels, and new tickets were only
+mailed to an office address.
+
+**Decision.**
+
+- Every staff notice extends `StaffNotice` and belongs to one kind: posts and reviews, messages and
+  tickets, event registrations, imports and background work, failing sources. Each person chooses per kind
+  "in the portal" (the bell and Notifications), "by email", both or neither; the choice is stored on the
+  user (`notification_preferences`). Defaults: both, except registrations and imports (in the portal
+  only). A kind is only offered to people whose permissions it concerns.
+- Recipients: new tickets go to active staff with `inbox.view` whose office scope covers the ticket
+  (ADR-0028); a ticket given to someone tells that person; registrations go to `events.registrations`;
+  stories imported as drafts to `posts.review`; a social account that starts failing to `social.manage`, an
+  import channel to `settings.view`; a finished machine translation to the person who started it. The
+  person who caused a notice never receives it.
+- Notices carry no personal details of the public (no names, phone numbers or email addresses), only
+  titles, references and counts; they are written in each person's admin language.
+- A notice may belong to a group (one event's registrations, one failing source): the person's unread
+  notice of the same group is replaced, so a busy event gives one up-to-date notice. Failing sources are
+  reported when they start failing, not on every attempt.
+- Notifications (`/admin/notifications`) lists the person's own notices with read and kind filters, open,
+  mark as read or unread, delete, mark all as read, and "How I am notified".
+
+**Consequences.** Notices are queued like other mail. Old notices are not deleted automatically yet; the
+retention rules of step 5.6 will cover them.

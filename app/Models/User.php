@@ -27,6 +27,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string $email
  * @property UserStatus $status
  * @property ?string $locale
+ * @property ?array<string, list<string>> $notification_preferences
  * @property ?Carbon $last_login_at
  * @property ?string $last_login_ip
  */
@@ -83,6 +84,7 @@ class User extends Authenticatable implements FilamentUser, HasAppAuthentication
             'last_login_at' => 'datetime',
             'password' => 'hashed',
             'status' => UserStatus::class,
+            'notification_preferences' => 'array',
         ];
     }
 

@@ -5,6 +5,8 @@ namespace App\Domain\Events\Actions;
 use App\Domain\Events\Enums\RegistrationStatus;
 use App\Domain\Events\Models\Event;
 use App\Domain\Events\Models\EventRegistration;
+use App\Domain\Events\Notifications\RegistrationNotice;
+use App\Domain\Notifications\Support\Recipients;
 use App\Support\PhoneNumber;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -89,6 +91,10 @@ final class RegisterForEvent
             $registration->status === RegistrationStatus::Waitlisted => SendRegistrationMessage::WAITLISTED,
             default => SendRegistrationMessage::CONFIRMED,
         });
+
+        if (! $result->existing) {
+            Recipients::notify(Recipients::withPermission('events.registrations'), RegistrationNotice::for($event));
+        }
 
         return $result;
     }

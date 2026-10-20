@@ -12,7 +12,7 @@ on the branch office (see "Open questions"); they are tracked in `docs/launch-re
 
 | Step | Content | Status |
 |---|---|---|
-| 5.1 | Notifications centre: an in-app inbox for staff (new tickets, registrations, posts to review, import results, failing sources) with read state, and per-person choices of email or in-app per kind of notice | |
+| 5.1 | Notifications centre: an in-app inbox for staff (new tickets, registrations, posts to review, import results, failing sources) with read state, and per-person choices of email or in-app per kind of notice | done |
 | 5.2 | Health and reliability: a health page for administrators (database, queue backlog and failures, scheduler heartbeat, disk and media quota, mail settings, last backup); `/up` stays the simple check; database and media backups to the server disk with rotation, and to an off-site store once one is configured; a documented restore drill | |
 | 5.3 | Security pass: `composer audit` and `npm audit` in CI, a review of rate limits, sessions, upload handling and headers against PLAN.md §11, the token-expiry alert for social sources, error reporting to Sentry once a DSN is saved | |
 | 5.4 | Performance and caching: Cloudflare cache purge on publish (when an API token is saved), cache headers reviewed per page type, the Lighthouse budget extended to listing, office and document pages | |

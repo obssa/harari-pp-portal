@@ -4,6 +4,15 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 5, step 5.1 — notifications centre (2026-10-20)
+
+- Notifications page in the admin: each person's notices with read and kind filters, open, mark as read or
+  unread, delete, mark all as read; the unread count in the menu (ADR-0036).
+- "How I am notified": in the portal, by email, both or neither, per kind of notice.
+- New notices: a message or ticket for an office you look after, a ticket given to you, event
+  registrations (one up-to-date notice per event), stories imported as drafts, a finished machine
+  translation, a social account or import channel that stops being readable.
+
 ## v0.4.0 — Phase 4 complete (2026-10-20)
 
 - The social hub is left empty on staging for administrators to add the branch's accounts; Phase 4 report

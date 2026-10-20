@@ -7,11 +7,15 @@ use App\Domain\Forms\Mail\NewSubmissionMail;
 use App\Domain\Forms\Mail\SubmissionReceivedMail;
 use App\Domain\Forms\Models\Form;
 use App\Domain\Forms\Models\FormSubmission;
+use App\Domain\Forms\Notifications\NewTicketNotice;
 use App\Domain\Forms\Support\FormField;
+use App\Domain\Forms\Support\InboxScope;
 use App\Domain\Forms\Support\WorkingDays;
 use App\Domain\Media\Enums\MediaKind;
 use App\Domain\Media\Exceptions\RejectedUpload;
 use App\Domain\Media\Support\UploadInspector;
+use App\Domain\Notifications\Support\Recipients;
+use App\Models\User;
 use App\Support\PhoneNumber;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\UploadedFile;
@@ -137,6 +141,10 @@ final class SubmitForm
         foreach ($this->staffAddresses($form) as $address) {
             Mail::to($address)->queue(new NewSubmissionMail($submission));
         }
+        Recipients::notify(
+            Recipients::withPermission('inbox.view')->filter(fn (User $user): bool => InboxScope::covers($user, $submission)),
+            NewTicketNotice::for($submission),
+        );
 
         return $submission;
     }

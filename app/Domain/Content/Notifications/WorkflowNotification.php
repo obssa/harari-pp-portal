@@ -3,25 +3,18 @@
 namespace App\Domain\Content\Notifications;
 
 use App\Domain\Content\Events\ContentTransitioned;
+use App\Domain\Notifications\Enums\NoticeKind;
+use App\Domain\Notifications\Notifications\StaffNotice;
 use App\Domain\Translation\Support\Locales;
 use App\Filament\Resources\Posts\PostResource;
-use App\Models\User;
-use Filament\Actions\Action;
-use Filament\Notifications\Notification as FilamentNotification;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 
 /**
  * Tells staff that a post needs them (submitted, sent back, reviewed) or
  * that their post went live (PLAN.md §7: in-app and email notifications),
  * in each person's admin language.
  */
-final class WorkflowNotification extends Notification implements ShouldQueue
+final class WorkflowNotification extends StaffNotice
 {
-    use Queueable;
-
     public function __construct(
         public readonly string $postId,
         public readonly string $title,
@@ -43,66 +36,43 @@ final class WorkflowNotification extends Notification implements ShouldQueue
         );
     }
 
-    /**
-     * @return list<string>
-     */
-    public function via(User $notifiable): array
+    public function kind(): NoticeKind
     {
-        return ['database', 'mail'];
+        return NoticeKind::Workflow;
     }
 
-    public function toMail(User $notifiable): MailMessage
-    {
-        $locale = $notifiable->locale ?? 'en';
-
-        $message = (new MailMessage)
-            ->subject($this->headline($locale))
-            ->line($this->summary($locale))
-            ->action(__('content.notification.open', [], $locale), $this->url());
-
-        if (filled($this->comment)) {
-            $message->line(__('content.notification.comment', ['comment' => $this->comment], $locale));
-        }
-
-        return $message;
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function toDatabase(User $notifiable): array
-    {
-        $locale = $notifiable->locale ?? 'en';
-
-        return FilamentNotification::make()
-            ->title($this->headline($locale))
-            ->body($this->summary($locale).(filled($this->comment) ? "\n".$this->comment : ''))
-            ->icon('heroicon-o-newspaper')
-            ->actions([
-                Action::make('open')
-                    ->label(__('content.notification.open', [], $locale))
-                    ->url($this->url())
-                    ->markAsRead(),
-            ])
-            ->getDatabaseMessage();
-    }
-
-    private function headline(string $locale): string
+    protected function title(string $locale): string
     {
         return __("content.notification.{$this->transition}", [], $locale);
     }
 
-    private function summary(string $locale): string
+    protected function lines(string $locale): array
     {
-        return __('content.notification.summary', [
+        $lines = [__('content.notification.summary', [
             'title' => $this->title,
             'language' => Locales::nativeName($this->language),
             'name' => $this->actorName ?? __('content.notification.system', [], $locale),
-        ], $locale);
+        ], $locale)];
+
+        if (filled($this->comment)) {
+            $lines[] = __('content.notification.comment', ['comment' => $this->comment], $locale);
+        }
+
+        return $lines;
     }
 
-    private function url(): string
+    protected function url(): string
     {
         return PostResource::getUrl('edit', ['record' => $this->postId], panel: 'admin');
+    }
+
+    protected function actionLabel(string $locale): string
+    {
+        return __('content.notification.open', [], $locale);
+    }
+
+    protected function icon(): string
+    {
+        return 'heroicon-o-newspaper';
     }
 }

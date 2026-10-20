@@ -4,9 +4,12 @@ namespace App\Domain\Import\Actions;
 
 use App\Domain\Import\Models\ContentImport;
 use App\Domain\Import\Models\ContentSource;
+use App\Domain\Import\Notifications\StoriesImportedNotice;
 use App\Domain\Import\Support\MessageGroups;
 use App\Domain\Import\Support\TelegramChannelReader;
 use App\Domain\Import\Support\TelegramMessage;
+use App\Domain\Notifications\Notifications\SourceFailingNotice;
+use App\Domain\Notifications\Support\Recipients;
 use Illuminate\Support\Str;
 use Throwable;
 
@@ -36,6 +39,11 @@ final class RunImport
         $report = [];
         foreach ($sources as $source) {
             $report[$source->handle] = $this->source($source, max(1, min(10, $pages)));
+        }
+
+        $imported = array_sum(array_column($report, 'imported'));
+        if ($imported > 0) {
+            Recipients::notify(Recipients::withPermission('posts.review'), new StoriesImportedNotice($imported));
         }
 
         return $report;
@@ -72,7 +80,11 @@ final class RunImport
             ])->save();
         } catch (Throwable $e) {
             $counts['error'] = Str::limit($e->getMessage(), 500);
+            $wasReadable = $source->last_error === null;
             $source->forceFill(['last_fetched_at' => now(), 'last_error' => $counts['error']])->save();
+            if ($wasReadable) {
+                Recipients::notify(Recipients::withPermission('settings.view'), SourceFailingNotice::import($source, $counts['error']));
+            }
         }
 
         return $counts;
