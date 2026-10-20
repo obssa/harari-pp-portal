@@ -4,6 +4,11 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+## v0.4.0 — Phase 4 complete (2026-10-20)
+
+- The social hub is left empty on staging for administrators to add the branch's accounts; Phase 4 report
+  in `docs/phases/04-social-translation.md`.
+
 ### Phase 4, step 4.8 — gate preparation (2026-10-20)
 
 - Manual chapter 4 "Translations and the social hub" in English and Amharic.
