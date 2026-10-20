@@ -15,6 +15,7 @@ use App\Domain\Organisation\Models\Leader;
 use App\Domain\Organisation\Models\League;
 use App\Domain\Organisation\Models\Office;
 use App\Domain\Organisation\Queries\PublicDirectory;
+use App\Domain\Projects\Models\Project;
 use App\Domain\Translation\Support\Locales;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
@@ -55,7 +56,7 @@ final class SitemapController extends Controller
     private function entries(string $language): array
     {
         $entries = [];
-        foreach (['home', 'news.index', 'leaders.index', 'offices.index', 'leagues.index', 'structure', 'gallery.index', 'videos.index', 'events.index', 'documents.index', 'documents.notices'] as $route) {
+        foreach (['home', 'news.index', 'leaders.index', 'offices.index', 'leagues.index', 'structure', 'gallery.index', 'videos.index', 'events.index', 'documents.index', 'documents.notices', 'projects.index', 'projects.achievements'] as $route) {
             $alternates = [];
             foreach (Locales::all() as $locale) {
                 $alternates[$locale] = route($route, ['locale' => $locale]);
@@ -118,6 +119,7 @@ final class SitemapController extends Controller
             ...PublicDirectory::sitemap(Video::query()->with('translations')->get(), $language, 'videos.show'),
             ...PublicDirectory::sitemap(Event::query()->with('translations')->get(), $language, 'events.show'),
             ...PublicDirectory::sitemap(Document::query()->publicAccess()->with('translations')->get(), $language, 'documents.show'),
+            ...PublicDirectory::sitemap(Project::query()->with('translations')->get(), $language, 'projects.show'),
         ];
 
         return $entries;

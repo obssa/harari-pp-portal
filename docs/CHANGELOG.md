@@ -4,6 +4,20 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 3, step 3.6 — projects, statistics and achievements (2026-10-20)
+
+- Admin → Content → Projects: sector, office or woreda, status and progress, dates, budget (shown only
+  when allowed), map pin, cover and photo album; title, summary, location and description per language
+  (ADR-0027). Sectors are categories "used for project sectors".
+- Admin → Content → Statistics: a number with label, unit and source per language, as-of date and
+  source link, for a sector, a project or the whole region. A new "Statistics" block shows chosen
+  numbers inside any page or post.
+- `/{lang}/projects` with filters by sector, status and office; project pages with progress, numbers,
+  photos and map.
+- `/{lang}/achievements`: projects by status, regional numbers, and per sector its numbers, recently
+  completed projects and a simple chart.
+- Homepage "Programmes and projects" section; projects in search, the sitemaps and the menus.
+
 ### Phase 3, step 3.5 — documents library and notices (2026-10-20)
 
 - Admin → Content → Documents: programmes, manifestos, bylaws, reports, policies, speeches, forms and

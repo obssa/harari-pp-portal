@@ -40,7 +40,10 @@ class Category extends Model implements TranslatableModel
     /** Video playlists (ADR-0024). */
     public const TYPE_VIDEO = 'video';
 
-    public const TYPES = [self::TYPE_POST, self::TYPE_VIDEO];
+    /** Project sectors for projects and achievements (ADR-0027). */
+    public const TYPE_SECTOR = 'sector';
+
+    public const TYPES = [self::TYPE_POST, self::TYPE_VIDEO, self::TYPE_SECTOR];
 
     protected $fillable = ['type', 'parent_id', 'sort'];
 

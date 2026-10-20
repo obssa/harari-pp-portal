@@ -6,6 +6,7 @@ use App\Domain\Content\Blocks\CalloutBlock;
 use App\Domain\Content\Blocks\FileBlock;
 use App\Domain\Content\Blocks\GalleryBlock;
 use App\Domain\Content\Blocks\ImageBlock;
+use App\Domain\Content\Blocks\StatisticsBlock;
 use App\Domain\Content\Blocks\VideoBlock;
 use Filament\Forms\Components\RichEditor\RichContentRenderer;
 use Illuminate\Support\Str;
@@ -24,6 +25,7 @@ final class BodyRenderer
         VideoBlock::class,
         CalloutBlock::class,
         FileBlock::class,
+        StatisticsBlock::class,
     ];
 
     /** Block id => config keys holding media ids. */

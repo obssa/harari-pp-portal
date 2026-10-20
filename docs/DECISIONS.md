@@ -824,3 +824,32 @@ documents) and for vacancies, tenders and notices with deadlines. §10 lists `do
 
 **Consequences.** Full-text search inside PDFs waits for Meilisearch (PLAN.md §16); search covers titles,
 summaries and descriptions.
+
+## ADR-0027 — Projects, statistics and achievements (2026-10-20)
+
+**Context.** PLAN.md §4 asks for project cards (sector, woreda, status, budget if public, dates, photos,
+progress; filter and map view), achievements by sector with statistics blocks (number, label, source,
+as-of date) and charts, and a homepage "programmes and projects" section. §7 wants statistics reusable in
+pages; §10 lists `projects` and `statistics` with translations.
+
+**Decision.**
+
+- Sectors are categories of the type "used for project sectors" (ADR-0011), so editors name and translate
+  them without code.
+- A project has a sector, an office or woreda, a status (planned, ongoing, completed, paused), progress
+  in per cent (100 once completed), start and end dates, a budget shown only when the editor allows it,
+  a map pin, a cover picture and a photo album from the gallery (ADR-0023). Title, summary, location and
+  description are written and published per language.
+- A statistic is a number with a label, unit and source per language, an as-of date and an optional
+  https source link. It belongs to a sector (achievements page), to a project (project page), to both or
+  to neither ("across the region"). Statistic languages have no publish switch: they are shown wherever
+  what shows them is shown. A "Statistics" block puts chosen numbers in any page or post.
+- `/{lang}/projects` lists projects with filters for sector, status and office; each project page shows
+  progress, numbers, photos, the map and Project JSON-LD. `/{lang}/achievements` shows projects by
+  status, the regional numbers, and per sector its numbers, recently completed projects and a bar chart
+  of its projects by status drawn in HTML and CSS (no chart script).
+- The homepage section shows highlighted projects first, then the latest updated (three by default).
+
+**Consequences.** A map of all projects together needs a map script with many pins (for example Leaflet
+with OpenStreetMap tiles); it is left out for now, and each project page has its own map. Budgets are in
+birr.

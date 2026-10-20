@@ -60,7 +60,7 @@ final class SaveHomepage
             'locales' => array_values(array_intersect(Locales::all(), (array) ($state['locales'] ?? []))),
         ];
 
-        if (in_array($key, [SectionKey::Ticker, SectionKey::Hero, SectionKey::LatestNews, SectionKey::Press, SectionKey::Leagues, SectionKey::Gallery, SectionKey::Events], true)
+        if (in_array($key, [SectionKey::Ticker, SectionKey::Hero, SectionKey::LatestNews, SectionKey::Press, SectionKey::Leagues, SectionKey::Gallery, SectionKey::Events, SectionKey::Projects], true)
             && filled($state['limit'] ?? null)) {
             $settings['limit'] = max(1, min($key->maxItems(), (int) $state['limit']));
         }

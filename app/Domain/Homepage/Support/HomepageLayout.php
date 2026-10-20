@@ -15,6 +15,7 @@ use App\Domain\Media\Models\Video;
 use App\Domain\Organisation\Models\Leader;
 use App\Domain\Organisation\Models\League;
 use App\Domain\Organisation\Queries\PublicDirectory;
+use App\Domain\Projects\Models\Project;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection as SupportCollection;
@@ -124,6 +125,8 @@ final class HomepageLayout
             SectionKey::Leagues => $this->leagues($locale, $limit),
             SectionKey::Gallery => $this->gallery($locale, $limit),
             SectionKey::Video => $this->video($locale),
+            SectionKey::Projects => $this->nonEmptyProjects(PublicDirectory::visible(Project::query(), $locale)->with(['cover', 'sector.translations'])
+                ->orderByDesc('featured')->orderByDesc('updated_at')->limit($limit)->get()),
             SectionKey::Events => $this->nonEmptyEvents(PublicDirectory::visible(Event::query(), $locale)->upcoming()->orderBy('starts_at')->limit($limit)->get()),
             SectionKey::Partners => $this->items($section, $locale, 'label', ['url']),
         };
@@ -188,6 +191,15 @@ final class HomepageLayout
         }
 
         return $spotlight === [] ? null : $spotlight;
+    }
+
+    /**
+     * @param  Collection<int, Project>  $projects
+     * @return Collection<int, Project>|null
+     */
+    private function nonEmptyProjects(Collection $projects): ?Collection
+    {
+        return $projects->isEmpty() ? null : $projects;
     }
 
     /**

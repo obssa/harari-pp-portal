@@ -54,6 +54,10 @@ use App\Domain\Organisation\Models\Office;
 use App\Domain\Organisation\Policies\LeaderPolicy;
 use App\Domain\Organisation\Policies\LeaguePolicy;
 use App\Domain\Organisation\Policies\OfficePolicy;
+use App\Domain\Projects\Models\Project;
+use App\Domain\Projects\Models\Statistic;
+use App\Domain\Projects\Policies\ProjectPolicy;
+use App\Domain\Projects\Policies\StatisticPolicy;
 use App\Domain\Search\Engines\WordMatchEngine;
 use App\Domain\Search\Models\SearchTerm;
 use App\Domain\Search\Policies\SearchTermPolicy;
@@ -206,6 +210,8 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(EventRegistration::class, EventRegistrationPolicy::class);
         Gate::policy(Document::class, DocumentPolicy::class);
         Gate::policy(DocumentVersion::class, DocumentVersionPolicy::class);
+        Gate::policy(Project::class, ProjectPolicy::class);
+        Gate::policy(Statistic::class, StatisticPolicy::class);
 
         // Super Admins hold every permission (PLAN.md §8). Only permission
         // names (`module.action`) are short-circuited, so policy rules such as

@@ -14,6 +14,7 @@ use App\Http\Controllers\Public\NewsController;
 use App\Http\Controllers\Public\OfficeController;
 use App\Http\Controllers\Public\PageController;
 use App\Http\Controllers\Public\PreviewController;
+use App\Http\Controllers\Public\ProjectController;
 use App\Http\Controllers\Public\RedirectToPreferredLocale;
 use App\Http\Controllers\Public\RobotsController;
 use App\Http\Controllers\Public\SearchController;
@@ -111,6 +112,9 @@ Route::prefix('{locale}')
         Route::get('documents/{slug}/download', [DocumentController::class, 'download'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')
             ->withoutMiddleware(CachePublicPages::class)->name('documents.download');
         Route::get('notices', [DocumentController::class, 'notices'])->name('documents.notices');
+        Route::get('projects', [ProjectController::class, 'index'])->name('projects.index');
+        Route::get('projects/{slug}', [ProjectController::class, 'show'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('projects.show');
+        Route::get('achievements', [ProjectController::class, 'achievements'])->name('projects.achievements');
         Route::get('gallery', [GalleryController::class, 'index'])->name('gallery.index');
         Route::get('videos', [VideoController::class, 'index'])->name('videos.index');
         Route::get('videos/{slug}', [VideoController::class, 'show'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('videos.show');
