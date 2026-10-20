@@ -4,6 +4,15 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 3, step 3.9 — gate preparation (2026-10-20)
+
+- `php artisan portal:sample-content` adds clearly labelled sample events (one with registration),
+  documents (programme with a PDF, report, vacancy), projects with a sector and statistics, and a
+  feedback form; `--remove` deletes exactly these; refused in production.
+- A test checks that every page Phase 3 adds renders in the four languages with that content.
+- Manual chapter 3 "Events, documents and forms" in English and Amharic.
+- Lighthouse also audits the events and documents pages.
+
 ### Phase 3, step 3.8 — press kit and Get involved (2026-10-20)
 
 - Admin → Content → Press kit: boilerplate and contact per language, contact email and phone, logo
