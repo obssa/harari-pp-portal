@@ -14,6 +14,7 @@ use App\Http\Controllers\Public\MediaFileController;
 use App\Http\Controllers\Public\NewsController;
 use App\Http\Controllers\Public\OfficeController;
 use App\Http\Controllers\Public\PageController;
+use App\Http\Controllers\Public\PressController;
 use App\Http\Controllers\Public\PreviewController;
 use App\Http\Controllers\Public\ProjectController;
 use App\Http\Controllers\Public\RedirectToPreferredLocale;
@@ -121,6 +122,8 @@ Route::prefix('{locale}')
         Route::get('projects', [ProjectController::class, 'index'])->name('projects.index');
         Route::get('projects/{slug}', [ProjectController::class, 'show'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('projects.show');
         Route::get('achievements', [ProjectController::class, 'achievements'])->name('projects.achievements');
+        Route::get('press', [PressController::class, 'press'])->name('press');
+        Route::get('get-involved', [PressController::class, 'getInvolved'])->name('get-involved');
         Route::get('gallery', [GalleryController::class, 'index'])->name('gallery.index');
         Route::get('videos', [VideoController::class, 'index'])->name('videos.index');
         Route::get('videos/{slug}', [VideoController::class, 'show'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('videos.show');

@@ -4,6 +4,16 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 3, step 3.8 — press kit and Get involved (2026-10-20)
+
+- Admin → Content → Press kit: boilerplate and contact per language, contact email and phone, logo
+  files and the press enquiry form (ADR-0029).
+- `/{lang}/press` with the boilerplate, logos to download, the colour palette, leadership portraits,
+  recent press releases and the media contact.
+- `/{lang}/get-involved` with events, feedback forms, contact and vacancies; membership, volunteering
+  and newsletters are marked as coming soon.
+- Both pages are in the sitemaps and can be added to menus.
+
 ### Phase 3, step 3.7 — forms builder, tickets and inbox (2026-10-20)
 
 - Admin → Inbox and forms → Forms: build contact, feedback, petition, press and job application forms

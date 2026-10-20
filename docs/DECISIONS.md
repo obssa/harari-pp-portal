@@ -889,3 +889,24 @@ assignee, internal notes and a response-time clock; §8 for support agents and o
 
 **Consequences.** Canned replies, satisfaction ratings and a retention period for tickets are left for
 later; the retention rules are a PLAN.md §14 question.
+
+## ADR-0029 — Press kit and "Get involved" (2026-10-20)
+
+**Context.** PLAN.md §4 asks for a press kit (logos, colour palette, leadership portraits, boilerplate,
+media contact form) and a "Get involved" page leading to membership, volunteering, events, feedback,
+newsletter, careers and tenders. Membership and volunteering arrive in Phase 6, newsletters in Phase 7.
+
+**Decision.**
+
+- The press kit is a settings page for staff with `press_kit.manage`: the boilerplate and the contact's
+  name per language, a contact email and phone, logo files from the media library, and the press
+  enquiry form (a form with the purpose "press enquiry", ADR-0028).
+- `/{lang}/press` shows them with the identity colours and their hex codes (the design tokens, PLAN.md
+  §12), downloadable portraits of the executive committee from the leadership directory, and the five
+  latest press releases. Missing languages fall back as UI strings do (har → am → en, om → en).
+- `/{lang}/get-involved` links the next events, the feedback and petition forms, the contact page and
+  the vacancies and tenders, and shows membership, volunteering and newsletters as coming soon, without
+  links, until their phases.
+- Both pages stay cacheable: they link to forms instead of embedding them.
+
+**Consequences.** Portraits are the library originals; a print-size crop per portrait is not offered.
