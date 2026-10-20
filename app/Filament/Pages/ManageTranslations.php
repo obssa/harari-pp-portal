@@ -6,6 +6,7 @@ use App\Domain\Translation\Actions\EditUiTranslation;
 use App\Domain\Translation\Actions\ImportTranslations;
 use App\Domain\Translation\Models\TranslationImport;
 use App\Domain\Translation\Models\UiTranslationRevision;
+use App\Domain\Translation\Support\Glossary;
 use App\Domain\Translation\Support\Locales;
 use App\Domain\Translation\Support\TranslationFile;
 use App\Domain\Translation\Support\TranslationRows;
@@ -172,7 +173,7 @@ class ManageTranslations extends Page implements HasTable
                     ->formatStateUsing(fn (string $state): string => __("translations.status.{$state}"))
                     ->color(fn (string $state): string => match ($state) {
                         TranslationRows::MISSING => 'danger',
-                        TranslationRows::CHANGED => 'warning',
+                        TranslationRows::CHANGED, TranslationRows::GLOSSARY => 'warning',
                         default => 'success',
                     }),
             ])
@@ -180,6 +181,7 @@ class ManageTranslations extends Page implements HasTable
                 SelectFilter::make('status')->label(__('translations.admin.status'))->options([
                     TranslationRows::MISSING => __('translations.status.missing'),
                     TranslationRows::CHANGED => __('translations.status.changed'),
+                    TranslationRows::GLOSSARY => __('translations.status.glossary'),
                     TranslationRows::TRANSLATED => __('translations.status.translated'),
                 ]),
                 SelectFilter::make('group')->label(__('translations.admin.group'))->searchable()
@@ -197,6 +199,8 @@ class ManageTranslations extends Page implements HasTable
                         TextEntry::make('context')->label(__('translations.admin.context'))->state($record['context'] ?? null)->placeholder('—')
                             ->url($record['screenshot'] ?? null, shouldOpenInNewTab: true),
                         TextEntry::make('placeholders')->label(__('translations.admin.placeholders'))->state(EditUiTranslation::placeholders($record['english'])),
+                        TextEntry::make('glossary')->label(__('translations.glossary.in_text'))->listWithLineBreaks()->placeholder('—')
+                            ->state(self::glossaryLines($record['english'], $record['text'], $this->language)),
                         Textarea::make('text')->label(Locales::nativeName($this->language))->rows(4)
                             ->disabled(! CurrentUser::get()->canEditTranslationsFor($this->language))
                             ->helperText(__('translations.admin.empty_help'))
@@ -240,6 +244,21 @@ class ManageTranslations extends Page implements HasTable
                 Notification::make()->success()->title(__('translations.import.applied', ['count' => $import->added + $import->changed + $import->removed]))->send();
                 $this->resetTable();
             });
+    }
+
+    /**
+     * The approved terms this English text uses, with the term for the language.
+     *
+     * @return list<string>
+     */
+    private static function glossaryLines(string $english, string $text, string $locale): array
+    {
+        $lines = [];
+        foreach (app(Glossary::class)->check($english, $text, $locale) as $use) {
+            $lines[] = ($use['followed'] ? '✓ ' : '✗ ').$use['en'].' → '.($use['term'] ?? '—').($use['notes'] ? ' ('.$use['notes'].')' : '');
+        }
+
+        return $lines;
     }
 
     /**

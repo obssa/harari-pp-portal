@@ -4,6 +4,12 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 4, step 4.6 — glossary (2026-10-20)
+
+- Administration → Languages → Glossary: approved terms in every language with notes (ADR-0034).
+- The translations editor shows the glossary terms in each English string and whether the translation
+  uses them; the grid can filter "Glossary term not used".
+
 ### Phase 4, step 4.5 — export, import and rollback of translations (2026-10-20)
 
 - Export a language from the translations grid as Excel, CSV or JSON, with English and the context beside

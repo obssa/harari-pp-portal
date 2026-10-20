@@ -19,7 +19,13 @@ final class TranslationRows
 
     public const CHANGED = 'changed';
 
-    public function __construct(private readonly TranslationCatalog $catalog) {}
+    /** Translated, but an approved glossary term is not used (ADR-0034). */
+    public const GLOSSARY = 'glossary';
+
+    public function __construct(
+        private readonly TranslationCatalog $catalog,
+        private readonly Glossary $glossary,
+    ) {}
 
     /**
      * @return Collection<string, array{key: string, group: string, english: string, text: string, status: string, context: ?string, screenshot: ?string}>
@@ -37,6 +43,7 @@ final class TranslationRows
             $status = match (true) {
                 $text === '' => self::MISSING,
                 isset($translatedFrom[$key]) && $translatedFrom[$key] !== ($english[$key] ?? '') => self::CHANGED,
+                $locale !== 'en' && $this->glossary->breaks((string) ($english[$key] ?? ''), $text, $locale) => self::GLOSSARY,
                 default => self::TRANSLATED,
             };
             $line = $lines->get($key);

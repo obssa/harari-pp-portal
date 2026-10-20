@@ -1024,3 +1024,21 @@ flagged when English changes until someone edits them once.
 - Importing needs `translations.import` and the right to edit that language; exporting needs
   `translations.export`. An automated test exports Harari to Excel, edits it as a translator would
   (a placeholder, a line break), imports it, and exports again with nothing lost.
+
+## ADR-0034 — Glossary (2026-10-20)
+
+**Context.** PLAN.md §6 asks for a glossary so that the party's names, bodies and ideas are translated
+the same way everywhere; §10 lists `glossary_terms` (term per locale, notes).
+
+**Decision.**
+
+- A glossary term holds the approved word in every language (English required) and notes on its use.
+  People with `translations.glossary` keep the glossary; everyone with `translations.view` reads it.
+- The translations editor lists the glossary terms an English string contains (whole words, case aside)
+  with the approved term for the language, marked as used or not.
+- A translated string that contains an English glossary term while its translation lacks the approved
+  term gets the status "Glossary term not used" and can be filtered. A language without an approved
+  term for an entry is not flagged. The glossary warns; it never blocks saving.
+
+**Consequences.** Matching is literal, so inflected forms in Amharic or Afaan Oromo may be flagged; the
+reviewer decides. Content translations (posts, pages) are not checked yet.

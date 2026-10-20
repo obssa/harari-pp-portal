@@ -73,7 +73,9 @@ use App\Domain\Social\Models\SocialSource;
 use App\Domain\Social\Policies\SocialPostPolicy;
 use App\Domain\Social\Policies\SocialSourcePolicy;
 use App\Domain\Translation\FallbackTranslator;
+use App\Domain\Translation\Models\GlossaryTerm;
 use App\Domain\Translation\Models\TranslationImport;
+use App\Domain\Translation\Policies\GlossaryTermPolicy;
 use App\Domain\Translation\Policies\TranslationImportPolicy;
 use App\Domain\Translation\Support\Locales;
 use App\Domain\Webhooks\Listeners\QueueWebhooks;
@@ -230,6 +232,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(SocialSource::class, SocialSourcePolicy::class);
         Gate::policy(SocialPost::class, SocialPostPolicy::class);
         Gate::policy(TranslationImport::class, TranslationImportPolicy::class);
+        Gate::policy(GlossaryTerm::class, GlossaryTermPolicy::class);
 
         // Super Admins hold every permission (PLAN.md §8). Only permission
         // names (`module.action`) are short-circuited, so policy rules such as
