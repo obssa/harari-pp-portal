@@ -110,3 +110,10 @@ and can follow the status at `/{language}/tickets`. That page never shows what t
   directory. The page is `/{language}/press`.
 - **Content → Photo albums** and **Content → Videos**: albums of library photos with captions per
   language, and YouTube, Facebook or Telegram videos with a live page at `/{language}/live`.
+
+## Screens
+
+Screenshots of the admin with sample content (English admin language).
+
+![Inbox of messages and tickets](images/en-inbox.png)
+

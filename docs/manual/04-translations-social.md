@@ -76,3 +76,12 @@ Who: media managers (**Social media** in the admin).
 The public hub is at `/{language}/social`; the homepage section "On social media" and the office and
 league pages show the latest posts. Pictures are copies kept on the portal, and every post links to the
 original.
+
+## Screens
+
+Screenshots of the admin with sample content (English admin language).
+
+![Interface translations](images/en-translations.png)
+
+![Social media accounts](images/en-social.png)
+

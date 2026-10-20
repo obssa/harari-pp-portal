@@ -15,6 +15,23 @@ trait IsDashboardWidget
 {
     use InteractsWithPageFilters;
 
+    /**
+     * The width chosen in the dashboard layout, in columns of 12 (ADR-0021).
+     * Public, so the layout can set it: Filament's own column span is
+     * protected and cannot be passed in.
+     *
+     * @var array<string, int>|null
+     */
+    public ?array $span = null;
+
+    /**
+     * @return int|string|array<string, int|string|null>
+     */
+    public function getColumnSpan(): int|string|array
+    {
+        return $this->span ?? $this->columnSpan;
+    }
+
     public static function canView(): bool
     {
         $user = Filament::auth()->user();

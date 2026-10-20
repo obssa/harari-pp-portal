@@ -123,7 +123,7 @@ final class DashboardRegistry
 
         return array_map(
             fn (array $item): WidgetConfiguration => $available[$item['key']]::make([
-                'columnSpan' => ['default' => 12, 'lg' => $item['size']],
+                'span' => ['default' => 12, 'lg' => $item['size']],
             ]),
             self::layoutFor($user),
         );

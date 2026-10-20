@@ -4,6 +4,18 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+## v0.5.0 — Phase 5 complete, ready for launch inputs (2026-10-20)
+
+- Launch report against the acceptance checklist (`docs/launch-report.md`) and the go-live runbook
+  (`docs/runbook/go-live.md`); editor training notes (`docs/training/editor-training.md`).
+- Admin manual chapters 1–4 in English and Amharic with screenshots of the admin.
+- Dashboard widgets take the width chosen in the layout again.
+
+### Phase 5, step 5.10 — launch preparation (2026-10-20)
+
+- Screenshots for the manual come from the browser test harness with sample content
+  (`MANUAL_SCREENSHOTS=1 vendor/bin/pest tests/Browser/ManualScreenshotsTest.php`).
+
 ### Phase 5, steps 5.7–5.9 — accessibility, browser tests, legal pages (2026-10-20)
 
 - Accessibility: axe runs on sixteen public pages in a real browser in CI and fails on serious or critical

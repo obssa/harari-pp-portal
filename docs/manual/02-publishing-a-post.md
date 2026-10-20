@@ -110,3 +110,12 @@ branch may republish its material; until then keep them as drafts or use them as
 
 Publishers arrange the homepage under **Content → Homepage**: drag sections into order, switch them on
 or off, and hand-pick the stories for the hero and the breaking-news ticker.
+
+## Screens
+
+Screenshots of the admin with sample content (English admin language).
+
+![Posts](images/en-posts.png)
+
+![Editing a post: language tabs and workflow buttons](images/en-post-edit.png)
+

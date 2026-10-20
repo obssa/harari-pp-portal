@@ -150,3 +150,18 @@ record is kept.
 - Report anything unexpected in the audit log to the Super Admin.
 
 Next chapter: [Publishing a post](02-publishing-a-post.md).
+
+## Screens
+
+Screenshots of the admin with sample content (English admin language).
+
+![Dashboard](images/en-dashboard.png)
+
+![Notifications](images/en-notifications.png)
+
+![System health](images/en-health.png)
+
+![Traffic reports](images/en-traffic.png)
+
+![Privacy](images/en-privacy.png)
+

@@ -17,6 +17,7 @@ use App\Filament\Widgets\KpiStrip;
 use App\Filament\Widgets\QueueHealth;
 use App\Filament\Widgets\TranslationCoverage;
 use Carbon\CarbonImmutable;
+use Filament\Widgets\WidgetConfiguration;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
@@ -163,4 +164,15 @@ it('shows current announcements to all staff, written by Super Admins only', fun
 
     $this->actingAs(staff(SystemRole::Admin))->get('/admin/announcements')->assertForbidden();
     $this->actingAs(staff(SystemRole::SuperAdmin))->get('/admin/announcements')->assertOk()->assertSee('Sample expired notice');
+});
+
+it('gives each widget the width of the layout', function () {
+    $admin = staff(SystemRole::Admin);
+    $widgets = DashboardRegistry::widgetsFor($admin);
+    $queues = collect($widgets)->first(fn (WidgetConfiguration $w): bool => $w->widget === QueueHealth::class);
+    $this->actingAs($admin);
+
+    expect($queues?->getProperties()['span'] ?? null)->toBe(['default' => 12, 'lg' => QueueHealth::defaultSize()])
+        ->and(Pest\Livewire\livewire(QueueHealth::class, ['span' => ['default' => 12, 'lg' => 4]])->instance()->getColumnSpan())
+        ->toBe(['default' => 12, 'lg' => 4]);
 });

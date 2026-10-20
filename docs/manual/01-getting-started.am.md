@@ -147,3 +147,18 @@
 - በኦዲት መዝገቡ ላይ ያልተጠበቀ ነገር ካዩ ለዋና አስተዳዳሪው ያሳውቁ።
 
 ቀጣዩ ምዕራፍ፦ [ጽሑፍ ማተም](02-publishing-a-post.am.md)።
+
+## ገጾቹ ምን እንደሚመስሉ
+
+የአስተዳደር ክፍሉ ምስሎች ከናሙና ይዘት ጋር (የአስተዳደር ቋንቋ፦ አማርኛ)።
+
+![ዳሽቦርድ](images/am-dashboard.png)
+
+![ማሳወቂያዎች](images/am-notifications.png)
+
+![የሥርዓቱ ጤንነት](images/am-health.png)
+
+![የጎብኚዎች ሪፖርቶች](images/am-traffic.png)
+
+![ግላዊነት](images/am-privacy.png)
+
