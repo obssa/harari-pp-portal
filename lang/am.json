@@ -1193,6 +1193,8 @@
     "leagues.people": "አመራር",
     "leagues.posts": "ዜናዎች",
     "leagues.title": "ሊጎችና ፎረሞች",
+    "maps.consent": "ካርታው ከOpenStreetMap የሚመጣ ሲሆን የሚጫነው ሲጠይቁ ብቻ ነው።",
+    "maps.show": "ካርታውን አሳይ",
     "media.rejected.contains_code": "ፋይሉ ኮድ ወይም ማክሮ ስላለው ተቀባይነት አላገኘም።",
     "media.rejected.corrupt": "ፋይሉ ተበላሽቷል ወይም ሊነበብ አይችልም።",
     "media.rejected.empty": "ፋይሉ ባዶ ነው።",

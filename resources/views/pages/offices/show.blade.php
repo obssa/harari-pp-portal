@@ -1,16 +1,6 @@
 @use('App\Domain\Organisation\Queries\PublicDirectory')
 @php
     $locale = app()->getLocale();
-    $map = null;
-    if ($office->hasMap()) {
-        $lat = (float) $office->latitude;
-        $lng = (float) $office->longitude;
-        $bbox = implode(',', [$lng - 0.006, $lat - 0.004, $lng + 0.006, $lat + 0.004]);
-        $map = [
-            'embed' => 'https://www.openstreetmap.org/export/embed.html?bbox='.urlencode($bbox).'&layer=mapnik&marker='.urlencode($lat.','.$lng),
-            'link' => "https://www.openstreetmap.org/?mlat={$lat}&mlon={$lng}#map=17/{$lat}/{$lng}",
-        ];
-    }
 @endphp
 <x-layouts.public
     :title="$translation->name"
@@ -50,12 +40,10 @@
                     <div class="prose-content max-w-prose">{!! $body !!}</div>
                 @endif
 
-                @if ($map)
+                @if ($office->hasMap())
                     <section aria-labelledby="office-map" class="mt-10">
                         <h2 id="office-map" class="heading-3">{{ __('offices.map') }}</h2>
-                        <iframe src="{{ $map['embed'] }}" title="{{ __('offices.map_of', ['office' => $translation->name]) }}" loading="lazy" referrerpolicy="no-referrer"
-                                class="mt-4 aspect-video w-full rounded-card border border-line"></iframe>
-                        <p class="mt-2 text-sm"><a href="{{ $map['link'] }}" rel="noopener" class="text-link underline-offset-4 hover:underline">{{ __('offices.larger_map') }}</a></p>
+                        <x-map-frame :latitude="$office->latitude" :longitude="$office->longitude" :title="__('offices.map_of', ['office' => $translation->name])" />
                     </section>
                 @endif
             </div>

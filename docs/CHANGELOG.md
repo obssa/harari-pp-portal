@@ -8,6 +8,8 @@ All notable changes. Dates are Gregorian.
 
 - Sample content is on staging; Lighthouse audits a sample event and a sample document page; Phase 3
   report in `docs/phases/03-media-events-documents.md`.
+- Maps on office, event and project pages load from OpenStreetMap only when the reader chooses "Show
+  map" (ADR-0030); before, they pulled in about 300 KB of OpenStreetMap scripts on every visit.
 
 ### Phase 3, step 3.9 — gate preparation (2026-10-20)
 

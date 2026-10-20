@@ -1,13 +1,4 @@
 @php
-    $map = null;
-    if ($project->hasMap()) {
-        $lat = (float) $project->latitude;
-        $lng = (float) $project->longitude;
-        $map = [
-            'embed' => 'https://www.openstreetmap.org/export/embed.html?bbox='.urlencode(implode(',', [$lng - 0.01, $lat - 0.007, $lng + 0.01, $lat + 0.007])).'&layer=mapnik&marker='.urlencode($lat.','.$lng),
-            'link' => "https://www.openstreetmap.org/?mlat={$lat}&mlon={$lng}#map=16/{$lat}/{$lng}",
-        ];
-    }
     $budget = $project->publicBudget();
 @endphp
 <x-layouts.public :title="$translation->title" :description="$translation->summary" :alternates="$alternates" :image="$image" :json-ld="$jsonLd">
@@ -70,12 +61,10 @@
                     </section>
                 @endif
 
-                @if ($map)
+                @if ($project->hasMap())
                     <section aria-labelledby="project-map" class="mt-10">
                         <h2 id="project-map" class="heading-3">{{ __('offices.map') }}</h2>
-                        <iframe src="{{ $map['embed'] }}" title="{{ __('offices.map_of', ['office' => $translation->title]) }}" loading="lazy" referrerpolicy="no-referrer"
-                                class="mt-4 aspect-video w-full rounded-card border border-line"></iframe>
-                        <p class="mt-2 text-sm"><a href="{{ $map['link'] }}" rel="noopener" class="text-link underline-offset-4 hover:underline">{{ __('offices.larger_map') }}</a></p>
+                        <x-map-frame :latitude="$project->latitude" :longitude="$project->longitude" :title="__('offices.map_of', ['office' => $translation->title])" />
                     </section>
                 @endif
             </div>

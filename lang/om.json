@@ -1193,6 +1193,8 @@
     "leagues.people": "Hoggansa",
     "leagues.posts": "Oduuwwan",
     "leagues.title": "Liigotaa fi waltajjiiwwan",
+    "maps.consent": "Kaartaan OpenStreetMap irraa dhufa; kan fe'amu yeroo gaafattan qofa.",
+    "maps.show": "Kaartaa agarsiisi",
     "media.rejected.contains_code": "Faayiliin koodii ykn maakroo waan qabuuf hin fudhatamne.",
     "media.rejected.corrupt": "Faayiliin miidhameera ykn dubbifamuu hin danda'u.",
     "media.rejected.empty": "Faayiliin duwwaa dha.",

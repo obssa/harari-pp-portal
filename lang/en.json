@@ -1193,6 +1193,8 @@
     "leagues.people": "Leadership",
     "leagues.posts": "News",
     "leagues.title": "Leagues and forums",
+    "maps.consent": "The map comes from OpenStreetMap and loads only when you ask for it.",
+    "maps.show": "Show map",
     "media.rejected.contains_code": "The file contains code or macros and was refused.",
     "media.rejected.corrupt": "The file is damaged or cannot be read.",
     "media.rejected.empty": "The file is empty.",

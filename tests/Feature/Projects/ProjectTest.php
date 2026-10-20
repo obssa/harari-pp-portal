@@ -120,6 +120,8 @@ it('shows a project with its progress, numbers, photos, map and the budget only 
         ->assertSee(__('projects.birr', ['amount' => '2,500,000'], 'en'))
         ->assertSee(route('gallery.show', ['locale' => 'en', 'slug' => 'sample-site-visit']), escape: false)
         ->assertSee('openstreetmap.org/export/embed.html', escape: false)
+        // The map loads only when the reader asks (ADR-0030).
+        ->assertSee('srcdoc=', escape: false)->assertDontSee('src="https://www.openstreetmap.org', escape: false)
         ->assertSee('"@type":"Project"', escape: false);
 
     app(SaveProject::class)->handle($project, ['status' => 'ongoing', 'budget' => 2500000, 'budget_public' => false, 'translations' => ['en' => ['title' => 'Sample school building', 'published' => true]]], staff(SystemRole::Publisher));

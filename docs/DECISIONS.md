@@ -910,3 +910,17 @@ newsletter, careers and tenders. Membership and volunteering arrive in Phase 6, 
 - Both pages stay cacheable: they link to forms instead of embedding them.
 
 **Consequences.** Portraits are the library originals; a print-size crop per portrait is not offered.
+
+## ADR-0030 — Maps load on request (2026-10-20)
+
+**Context.** Office, event and project pages embedded the OpenStreetMap frame directly. It loads about
+300 KB of OpenStreetMap's scripts as soon as it is near the screen, which broke the script budget of
+PLAN.md §11 on the first event page audited (ADR-0010) and told OpenStreetMap about every visit.
+
+**Decision.** The map frame starts with a small page written by the portal itself (`srcdoc`): a sentence
+saying the map comes from OpenStreetMap and a "Show map" link that loads the map inside the same frame.
+Nothing is fetched from OpenStreetMap until the reader chooses it, and no script is involved. The "Open a
+larger map" link stays below the frame.
+
+**Consequences.** Readers who want the map press once more. The same rule as for YouTube videos
+(ADR-0024): nothing from another site loads without the reader asking.
