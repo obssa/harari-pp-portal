@@ -26,6 +26,9 @@ mkdir -p storage/framework/cache/data storage/framework/sessions storage/framewo
          storage/backups
 # Backups hold personal data: only the account may read them.
 chmod 700 storage/backups
+# ADR-0038: logs and form attachments are for the account only (PHP runs as the account).
+mkdir -p storage/app/private
+chmod 750 storage/logs storage/app/private
 
 # Media library (ADR-0009): originals stay private; public uploads never run as code.
 chmod 750 storage/app/media storage/app/media-work

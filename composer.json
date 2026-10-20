@@ -21,6 +21,7 @@
         "laravel/scout": "^11.9",
         "laravel/tinker": "^3.0",
         "rhukster/dom-sanitizer": "^1.0.19",
+        "sentry/sentry-laravel": "^4.29",
         "spatie/laravel-activitylog": "^4.12",
         "spatie/laravel-backup": "^10.3",
         "spatie/laravel-health": "^1.40",

@@ -27,7 +27,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property string $name
  * @property ?string $office_id
  * @property ?string $league_id
- * @property ?array<string, string> $credentials
+ * @property ?array<string, mixed> $credentials
  * @property bool $enabled
  * @property int $interval_minutes
  * @property ?CarbonImmutable $last_fetched_at

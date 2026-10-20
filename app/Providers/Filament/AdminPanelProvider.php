@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use App\Filament\Pages\Dashboard;
 use App\Filament\Support\InitialsAvatarProvider;
 use App\Http\Middleware\RequireMfaForPrivilegedRoles;
+use App\Http\Middleware\RestrictAdminByIp;
 use App\Http\Middleware\SetAdminLocale;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Filament\Http\Middleware\Authenticate;
@@ -68,6 +69,8 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
+            // ADR-0038: optional allow-list of addresses, also for the sign-in page and Livewire requests.
+            ->middleware([RestrictAdminByIp::class], isPersistent: true)
             // Persistent: also applies to Livewire requests made from admin pages.
             ->authMiddleware([
                 Authenticate::class,

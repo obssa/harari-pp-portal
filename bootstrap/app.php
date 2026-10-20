@@ -9,6 +9,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Sentry\Laravel\Integration;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -26,6 +27,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->encryptCookies(except: [Locales::COOKIE]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
+        // ADR-0038: errors go to Sentry once SENTRY_LARAVEL_DSN is set; without it nothing is sent.
+        Integration::handles($exceptions);
+
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
         );

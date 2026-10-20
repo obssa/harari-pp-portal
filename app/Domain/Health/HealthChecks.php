@@ -3,6 +3,7 @@
 namespace App\Domain\Health;
 
 use App\Domain\Health\Backups\BackupArchive;
+use App\Domain\Health\Checks\ErrorLogCheck;
 use App\Domain\Health\Checks\FailedJobsCheck;
 use App\Domain\Health\Checks\MailCheck;
 use App\Domain\Health\Checks\QueueBacklogCheck;
@@ -28,7 +29,7 @@ final class HealthChecks
     /** Check names, in the order the health page shows them. */
     public const NAMES = [
         'database', 'cache', 'scheduler', 'queue', 'queue_backlog', 'failed_jobs',
-        'mail', 'storage', 'disk', 'backups', 'debug_mode', 'optimized',
+        'mail', 'storage', 'disk', 'backups', 'errors', 'debug_mode', 'optimized',
     ];
 
     public static function register(): void
@@ -52,6 +53,7 @@ final class HealthChecks
             // The nightly backup runs at 02:00 Addis Ababa time; a day and two hours gives it room.
             BackupsCheck::new()->name('backups')->onDisk(BackupArchive::DISK)->locatedAt((string) config('backup.backup.name'))
                 ->youngestBackShouldHaveBeenMadeBefore(now()->subHours(26)),
+            ErrorLogCheck::new()->name('errors'),
             DebugModeCheck::new()->name('debug_mode'),
             OptimizedAppCheck::new()->name('optimized')->unless(app()->environment('local', 'testing')),
         ]);
@@ -72,6 +74,7 @@ final class HealthChecks
             'debug_mode' => __('health.check.debug_mode'),
             'optimized' => __('health.check.optimized'),
             'backups' => __('health.check.backups'),
+            'errors' => __('health.check.errors'),
             default => $name,
         };
     }

@@ -6,6 +6,7 @@ use App\Domain\Health\Backups\BackupArchive;
 use App\Domain\Health\Backups\RestoreDrill;
 use App\Domain\Health\HealthChecks;
 use App\Domain\Health\Mail\TestMail;
+use App\Domain\Health\Support\RecentErrors;
 use App\Filament\Support\CalendarDate;
 use App\Filament\Support\CurrentUser;
 use App\Models\User;
@@ -42,8 +43,9 @@ use UnitEnum;
 /**
  * The state of the portal for administrators (PLAN.md §7 queue and system
  * health, backups, ADR-0037): the latest result of every health check, run
- * every five minutes; the backups on the server and the last restore drill.
- * Running a backup and downloading one need `backups.manage`.
+ * every five minutes; the newest errors in the log; the backups on the
+ * server and the last restore drill. Running a backup and downloading one
+ * need `backups.manage`.
  */
 class SystemHealth extends Page implements HasTable
 {
@@ -124,6 +126,11 @@ class SystemHealth extends Page implements HasTable
                 ->schema($results === null || $results->storedCheckResults->isEmpty()
                     ? [TextEntry::make('none')->hiddenLabel()->state(__('health.none'))]
                     : [Grid::make(['default' => 1, 'md' => 2, 'xl' => 3])->schema($this->entries($results))]),
+            Section::make(__('health.errors.title'))
+                ->icon(Heroicon::OutlinedBugAnt)
+                ->description(filled(config('sentry.dsn')) ? __('health.errors.sentry_on') : __('health.errors.sentry_off'))
+                ->collapsible()
+                ->schema($this->errors()),
             Section::make(__('health.drill.title'))
                 ->icon(Heroicon::OutlinedLifebuoy)
                 ->description(__('health.drill.help'))
@@ -203,6 +210,23 @@ class SystemHealth extends Page implements HasTable
                 ->belowContent(filled($result->notificationMessage) ? Str::limit((string) $result->notificationMessage, 300) : null))
             ->values()
             ->all();
+    }
+
+    /**
+     * @return list<TextEntry>
+     */
+    private function errors(): array
+    {
+        $errors = RecentErrors::read(10);
+        if ($errors === []) {
+            return [TextEntry::make('errors_none')->hiddenLabel()->state(__('health.errors.none'))];
+        }
+
+        return array_map(fn (array $error, int $i): TextEntry => TextEntry::make("error_{$i}")
+            ->label((string) CalendarDate::format(withTime: true)($error['at']).' · '.$error['level'])
+            ->state($error['message'])
+            ->fontFamily('mono')
+            ->size('xs'), $errors, array_keys($errors));
     }
 
     /**

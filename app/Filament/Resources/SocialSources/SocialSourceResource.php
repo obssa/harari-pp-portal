@@ -5,6 +5,7 @@ namespace App\Filament\Resources\SocialSources;
 use App\Domain\Organisation\Models\League;
 use App\Domain\Organisation\Models\Office;
 use App\Domain\Social\Actions\AddPostByAddress;
+use App\Domain\Social\Actions\CheckFacebookTokens;
 use App\Domain\Social\Actions\FetchSocialSource;
 use App\Domain\Social\Enums\Platform;
 use App\Domain\Social\Models\SocialSource;
@@ -141,15 +142,22 @@ class SocialSourceResource extends Resource
                     ->visible(fn (SocialSource $record): bool => $record->platform === Platform::Facebook)
                     ->modalDescription(__('social.source.token_help'))
                     ->schema([TextInput::make('token')->label(__('social.source.token'))->password()->maxLength(500)
-                        ->helperText(fn (SocialSource $record): string => filled($record->credentials['token'] ?? null) ? __('social.source.token_saved') : __('social.source.token_none'))])
+                        ->helperText(fn (SocialSource $record): string => filled($record->credentials['token'] ?? null)
+                            ? __('social.source.token_saved').' '.CheckFacebookTokens::describe($record)
+                            : __('social.source.token_none'))])
                     ->action(function (SocialSource $record, array $data): void {
                         $credentials = $record->credentials ?? [];
+                        unset($credentials['token_valid'], $credentials['token_expires_at'], $credentials['token_checked_at'], $credentials['token_warned']);
                         if (filled($data['token'] ?? null)) {
                             $credentials['token'] = trim((string) $data['token']);
                         } else {
                             unset($credentials['token']);
                         }
                         $record->forceFill(['credentials' => $credentials])->save();
+                        // ADR-0038: Meta says at once how long the new token lasts.
+                        if (filled($credentials['token'] ?? null) && ($state = CheckFacebookTokens::inspect($credentials['token'])) !== null) {
+                            app(CheckFacebookTokens::class)->record($record, $state);
+                        }
                         Notification::make()->success()->title(__('social.source.token_stored'))->send();
                     }),
                 EditAction::make(),

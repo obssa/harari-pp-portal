@@ -4,6 +4,16 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 5, step 5.3 — security pass (2026-10-20)
+
+- Security review against PLAN.md §11 with a penetration test checklist: `docs/security-review.md`.
+- "New sign-in to your account" alerts in the portal and by email for a sign-in from a new network and
+  browser (ADR-0038).
+- Optional admin address allow-list (`PORTAL_ADMIN_ALLOWED_IPS`).
+- Facebook page tokens: expiry shown when saved, checked every morning, managers warned before they end.
+- Error reports to Sentry once a DSN is set, without personal data; the newest log errors on the health page.
+- Weekly dependency audit; logs and form attachments readable by the account only.
+
 ### Phase 5, step 5.2 — health and backups (2026-10-20)
 
 - Administration → System health: database, cache, scheduler, background jobs, waiting and failed jobs,

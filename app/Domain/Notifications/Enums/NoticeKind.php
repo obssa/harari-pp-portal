@@ -18,6 +18,7 @@ enum NoticeKind: string
     case Imports = 'imports';
     case Sources = 'sources';
     case Health = 'health';
+    case Security = 'security';
 
     public function label(): string
     {
@@ -28,6 +29,7 @@ enum NoticeKind: string
             self::Imports => __('notifications.kind.imports'),
             self::Sources => __('notifications.kind.sources'),
             self::Health => __('notifications.kind.health'),
+            self::Security => __('notifications.kind.security'),
         };
     }
 
@@ -40,6 +42,7 @@ enum NoticeKind: string
             self::Imports => __('notifications.kind.imports_help'),
             self::Sources => __('notifications.kind.sources_help'),
             self::Health => __('notifications.kind.health_help'),
+            self::Security => __('notifications.kind.security_help'),
         };
     }
 
@@ -66,6 +69,8 @@ enum NoticeKind: string
             self::Imports => $user->can('posts.review') || $user->can('translations.view'),
             self::Sources => $user->can('social.manage') || $user->can('settings.view'),
             self::Health => $user->can('settings.view'),
+            // Security alerts always arrive in the portal and by email: there is no choice to offer.
+            self::Security => false,
         };
     }
 

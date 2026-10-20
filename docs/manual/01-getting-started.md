@@ -36,6 +36,10 @@ Click your name or picture at the top right, then **Profile**.
 If you lose your phone, ask an Admin to **Reset two-factor login** on your account; you then set it up
 again at your next sign-in.
 
+When your account is used from a network and a browser it has not seen for 90 days, you get **New
+sign-in to your account** in the portal and by email. If it was you, nothing needs doing; if not, change
+your password at once and tell an Admin.
+
 ### Notifications
 
 The bell at the top right and **Notifications** in the menu show what needs you: a post to review or

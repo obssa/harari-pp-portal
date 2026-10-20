@@ -50,6 +50,9 @@ Schedule::command(DispatchQueueCheckJobsCommand::class)->everyMinute();
 Schedule::command('backup:clean --disable-notifications')->dailyAt('22:40')->withoutOverlapping();
 Schedule::command('backup:run --disable-notifications')->dailyAt('23:00')->withoutOverlapping();
 Schedule::command('backup:monitor')->dailyAt('05:00');
+
+// ADR-0038: Facebook page tokens are checked every morning (09:00 Addis Ababa time).
+Schedule::command('social:check-tokens')->dailyAt('06:00');
 Schedule::command('backup:run --disable-notifications')->everyMinute()->name('backup-requested')->withoutOverlapping()
     ->when(fn (): bool => (bool) Cache::pull(SystemHealth::BACKUP_REQUESTED));
 Schedule::command('portal:restore-drill')->monthlyOn(1, '01:00')->withoutOverlapping()

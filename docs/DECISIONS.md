@@ -1137,3 +1137,32 @@ until an error tracker is chosen (step 5.3).
 password; the password must also be kept outside the server. The off-site store and the drill database on
 staging wait for the owner (open questions 2 and the restore runbook). The test image gains the MariaDB
 client, and CI creates a `harari_drill` database for the restore tests.
+
+## ADR-0038 — Security pass: sign-in alerts, admin allow-list, token expiry, error reporting (2026-10-20)
+
+**Context.** PLAN.md §11 lists login and IP alerts, an optional admin IP allow-list, dependency scanning,
+token expiry warnings for social sources (§5) and an error tracker. The review is in
+`docs/security-review.md`.
+
+**Decision.**
+
+- A sign-in from a network (the /24 of an IPv4 address, the /48 of an IPv6 one) and a browser both unseen
+  among the person's sign-ins of the last 90 days sends them a "New sign-in to your account" notice in the
+  portal and by email, with the time, the browser and system, and the address. It is a "Security" notice
+  that cannot be switched off; the first sign-in of an account sends none. The queued copy is encrypted.
+- `PORTAL_ADMIN_ALLOWED_IPS` (addresses or CIDR ranges) closes the whole admin, sign-in page and Livewire
+  requests included, to other addresses with 403; empty by default. The client address is the one
+  LiteSpeed takes from Cloudflare.
+- Facebook page tokens: Meta's `debug_token` gives the end of the token and of its data access; the earlier
+  counts. It is asked when a token is saved and every morning; social media managers are warned at 14, 7 and
+  1 days before and when Meta refuses the token, once per stage; the token dialog shows the date.
+- `sentry/sentry-laravel` reports errors once `SENTRY_LARAVEL_DSN` is set in the server `.env`, never with
+  personal data or request bodies. Without it, the health page lists the newest errors from the log and
+  fails its "Errors in the log" check at 50 a day (any error warns).
+- Dependencies are audited in every CI run and every Monday by a workflow that only reports; Dependabot pull
+  requests are not used because the repository takes no bot-authored commits.
+- Logs and form attachments on the server are mode 750, backups 700.
+
+**Consequences.** People on changing mobile networks who also change browsers may get an alert that was
+them; the text says nothing needs doing then. The DSN lives in `.env`, not under Integrations, because the
+SDK starts before settings are read.

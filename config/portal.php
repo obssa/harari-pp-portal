@@ -69,6 +69,12 @@ return [
     'storage_quota_mb' => env('PORTAL_STORAGE_QUOTA_MB'),
 
     /*
+    | Addresses or CIDR ranges allowed to open the admin, comma-separated
+    | (ADR-0038). Empty: every address, as before.
+    */
+    'admin_allowed_ips' => env('PORTAL_ADMIN_ALLOWED_IPS', ''),
+
+    /*
     | Days after an event that registrations (names and contact details) are
     | kept before they are deleted (ADR-0025).
     */

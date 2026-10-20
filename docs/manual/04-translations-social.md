@@ -68,6 +68,8 @@ Who: media managers (**Social media** in the admin).
   its address**.
 - **Read now** reads an account at once; otherwise they are read every hour. Errors show next to the
   account.
+- A Facebook page token runs out: **Page access token** shows until when Meta accepts it, and media
+  managers are warned 14, 7 and 1 days before and when it stops working. Save a new token in the same place.
 - **Social posts**: every post read, newest first. **Hide** keeps one off the site; **Pin to the top**
   keeps one first.
 

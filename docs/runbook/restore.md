@@ -83,3 +83,4 @@ local tests against a test database (`tests/Feature/Health/BackupsTest.php`).
 | Date | Where | Backup | Result |
 |---|---|---|---|
 | 2026-10-20 | local test stack (MySQL 8) | test backup | passed: all tables and migrations restored, drill database emptied |
+| 2026-10-20 | staging | `2026-10-20-12-19-14.zip` (13.6 MB, database and files) | archive opened with the password and the dump read back; the full drill waits for the drill database |

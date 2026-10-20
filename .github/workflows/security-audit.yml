@@ -1,0 +1,31 @@
+name: Security audit
+
+# ADR-0038: known vulnerabilities in the PHP and JavaScript dependencies, every Monday as well as in
+# every CI run, so a new advisory is seen even when nothing is pushed. It only reports: no pull
+# requests or commits are made (the repository takes no bot-authored commits).
+
+on:
+  schedule:
+    - cron: "17 4 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    name: audit
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/setup-php
+      - name: Composer security audit
+        run: composer audit --no-interaction --locked
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: npm security audit
+        run: npm audit --audit-level=moderate
