@@ -16,6 +16,7 @@ use App\Domain\Organisation\Models\Leader;
 use App\Domain\Organisation\Models\League;
 use App\Domain\Organisation\Queries\PublicDirectory;
 use App\Domain\Projects\Models\Project;
+use App\Domain\Social\Queries\SocialFeed;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection as SupportCollection;
@@ -127,6 +128,7 @@ final class HomepageLayout
             SectionKey::Video => $this->video($locale),
             SectionKey::Projects => $this->nonEmptyProjects(PublicDirectory::visible(Project::query(), $locale)->with(['cover', 'sector.translations'])
                 ->orderByDesc('featured')->orderByDesc('updated_at')->limit($limit)->get()),
+            SectionKey::Social => ($social = SocialFeed::latest($limit))->isEmpty() ? null : $social,
             SectionKey::Events => $this->nonEmptyEvents(PublicDirectory::visible(Event::query(), $locale)->upcoming()->orderBy('starts_at')->limit($limit)->get()),
             SectionKey::Partners => $this->items($section, $locale, 'label', ['url']),
         };

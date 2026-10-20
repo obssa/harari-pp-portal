@@ -22,6 +22,7 @@ enum SectionKey: string
     case Video = 'video';
     case Events = 'events';
     case Projects = 'projects';
+    case Social = 'social';
 
     public function label(?string $locale = null): string
     {
@@ -44,6 +45,7 @@ enum SectionKey: string
             self::Leagues => 4,
             self::Events => 6,
             self::Projects => 6,
+            self::Social => 12,
             self::Partners => 12,
             self::Gallery => 8,
             self::Leadership, self::Video => 1,
@@ -58,6 +60,7 @@ enum SectionKey: string
             self::Leagues => 2,
             self::Events => 3,
             self::Projects => 3,
+            self::Social => 6,
             default => $this->maxItems(),
         };
     }

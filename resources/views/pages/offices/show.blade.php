@@ -89,5 +89,6 @@
         @endif
 
         <x-directory.posts :posts="$posts" :heading="__('offices.posts')" />
+        <x-directory.social :posts="$social" />
     </article>
 </x-layouts.public>

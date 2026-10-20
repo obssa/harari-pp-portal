@@ -27,7 +27,7 @@ class Menu extends Model
 
     public const LOCATIONS = ['header', 'footer', 'utility'];
 
-    public const TYPES = ['page', 'post', 'news', 'leaders', 'offices', 'leagues', 'structure', 'gallery', 'videos', 'live', 'events', 'documents', 'notices', 'projects', 'achievements', 'contact', 'press', 'get_involved', 'url'];
+    public const TYPES = ['page', 'post', 'news', 'leaders', 'offices', 'leagues', 'structure', 'gallery', 'videos', 'live', 'events', 'documents', 'notices', 'projects', 'achievements', 'contact', 'press', 'get_involved', 'social', 'url'];
 
     /** Items per level, so menus stay usable on phones. */
     public const MAX_ITEMS = 12;
@@ -143,6 +143,7 @@ class Menu extends Model
             'achievements' => ['url' => route('projects.achievements', ['locale' => $locale]), 'external' => false, 'route' => 'projects.achievements'],
             'contact' => ['url' => route('contact', ['locale' => $locale]), 'external' => false, 'route' => 'contact'],
             'press' => ['url' => route('press', ['locale' => $locale]), 'external' => false, 'route' => 'press'],
+            'social' => ['url' => route('social', ['locale' => $locale]), 'external' => false, 'route' => 'social'],
             'get_involved' => ['url' => route('get-involved', ['locale' => $locale]), 'external' => false, 'route' => 'get-involved'],
             'page' => self::pageTarget((string) ($item['page_id'] ?? ''), $locale),
             'post' => self::postTarget((string) ($item['post_id'] ?? ''), $locale),

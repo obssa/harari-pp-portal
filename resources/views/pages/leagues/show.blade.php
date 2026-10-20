@@ -64,5 +64,6 @@
         @endif
 
         <x-directory.posts :posts="$posts" :heading="__('leagues.posts')" />
+        <x-directory.social :posts="$social" />
     </article>
 </x-layouts.public>

@@ -21,6 +21,7 @@ use App\Http\Controllers\Public\RedirectToPreferredLocale;
 use App\Http\Controllers\Public\RobotsController;
 use App\Http\Controllers\Public\SearchController;
 use App\Http\Controllers\Public\SitemapController;
+use App\Http\Controllers\Public\SocialController;
 use App\Http\Controllers\Public\StructureController;
 use App\Http\Controllers\Public\VideoController;
 use App\Http\Middleware\CachePublicPages;
@@ -124,6 +125,7 @@ Route::prefix('{locale}')
         Route::get('achievements', [ProjectController::class, 'achievements'])->name('projects.achievements');
         Route::get('press', [PressController::class, 'press'])->name('press');
         Route::get('get-involved', [PressController::class, 'getInvolved'])->name('get-involved');
+        Route::get('social', [SocialController::class, 'index'])->name('social');
         Route::get('gallery', [GalleryController::class, 'index'])->name('gallery.index');
         Route::get('videos', [VideoController::class, 'index'])->name('videos.index');
         Route::get('videos/{slug}', [VideoController::class, 'show'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('videos.show');

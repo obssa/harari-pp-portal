@@ -9,6 +9,7 @@ use App\Domain\Organisation\Models\Leader;
 use App\Domain\Organisation\Models\Office;
 use App\Domain\Organisation\Models\OfficeTranslation;
 use App\Domain\Organisation\Queries\PublicDirectory;
+use App\Domain\Social\Queries\SocialFeed;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
@@ -63,6 +64,7 @@ final class OfficeController extends Controller
             'children' => $children,
             'people' => $people,
             'posts' => $posts->linkedTo($locale, 'offices', $office->id),
+            'social' => SocialFeed::latest(3, officeId: $office->id),
             'alternates' => PublicDirectory::alternates($office, 'offices.show', 'offices.index'),
             'image' => PublicDirectory::shareImage($office->coverImage, 'photo', "office-{$office->id}-{$locale}", $translation->name, $office->type->label()),
             'jsonLd' => [array_filter([

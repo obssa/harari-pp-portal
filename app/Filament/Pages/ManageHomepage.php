@@ -127,7 +127,7 @@ class ManageHomepage extends Page
                         ->numeric()->integer()->minValue(1)
                         ->maxValue(fn (Get $get): int => SectionKey::tryFrom((string) $get('key'))?->maxItems() ?? 12)
                         ->placeholder(fn (Get $get): string => (string) (SectionKey::tryFrom((string) $get('key'))?->defaultLimit() ?? ''))
-                        ->visible($is(SectionKey::Ticker, SectionKey::Hero, SectionKey::LatestNews, SectionKey::Press, SectionKey::Leagues, SectionKey::Gallery, SectionKey::Events, SectionKey::Projects)),
+                        ->visible($is(SectionKey::Ticker, SectionKey::Hero, SectionKey::LatestNews, SectionKey::Press, SectionKey::Leagues, SectionKey::Gallery, SectionKey::Events, SectionKey::Projects, SectionKey::Social)),
                     Select::make('curated_ids')
                         ->label(__('homepage.admin.curated'))
                         ->helperText(fn (Get $get): string => SectionKey::tryFrom((string) $get('key')) === SectionKey::Hero

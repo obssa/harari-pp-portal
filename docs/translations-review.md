@@ -51,3 +51,4 @@ Harari translators.
 | `forms.*`, `admin.menus.type.contact` | am, om | forms, contact page, tickets, inbox | "reference" (የመከታተያ ቁጥር / Lakkoofsa hordoffii); "petition" (አቤቱታ / Iyyannoo) and "job application" (የሥራ ማመልከቻ / Iyyannoo hojii) share a word in om; "hotline" uses the footer's wording |
 | `press.*`, `involved.*`, `admin.menus.type.press`, `admin.menus.type.get_involved` | am, om | press kit, Get involved | "press kit" (የሚዲያ መረጃ ጥቅል / Kuusaa miidiyaa); colour names ("Harar ochre" የሐረር ቡናማ / Daalacha Harar); "volunteer" (በጎ ፈቃደኛ / Tola ooltuu) |
 | `social.*` | am, om | social accounts and posts in the admin | "post" (ልጥፍ / Maxxansa); "account" (መለያ / Akkaawuntii, loanword); network names kept in Latin in om |
+| `social.hub.*`, `homepage.section.social`, `admin.menus.type.social` | am, om | social media hub | "social media" (ማኅበራዊ ሚዲያ / Miidiyaa hawaasaa); "follow" (ይከተሉ / Hordofaa) |

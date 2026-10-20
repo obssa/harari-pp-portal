@@ -4,6 +4,14 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 4, step 4.3 — the social media hub (2026-10-20)
+
+- `/{lang}/social`: the latest posts of the branch, office and league accounts, pinned ones first, with
+  filters by network, office and league; follow links for every account and a QR code for each
+  Telegram channel (ADR-0032). Nothing loads from the networks.
+- Homepage section "On social media"; office and league pages show their own accounts' latest posts;
+  the hub is in the sitemaps and can be added to menus.
+
 ### Phase 4, step 4.2 — YouTube, Facebook and posts by address (2026-10-20)
 
 - YouTube channels are read from their public feed; an @name is turned into the channel id once with

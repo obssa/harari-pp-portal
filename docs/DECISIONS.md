@@ -963,3 +963,24 @@ counts are as of the last fetch.
 - TikTok, Instagram and X are not read on their own: staff add a post by its address. Its words and
   picture come from the network's public oEmbed answer (TikTok, X, YouTube; Instagram only with the Meta
   token), otherwise from what the editor types. Addresses must be https on the network's own hosts.
+
+## ADR-0032 — The public social hub (2026-10-20)
+
+**Context.** PLAN.md §4 asks for a social media hub with filters, follow buttons for every account and QR
+codes for the Telegram channels, a homepage teaser and the posts of offices and leagues on their pages,
+within the privacy and performance rules of ADR-0010 and ADR-0024.
+
+**Decision.**
+
+- `/{lang}/social` shows the visible posts (from enabled accounts, not hidden), pinned ones first, then
+  newest, 24 per page, with filters by network, office and league. Text is shown as the account wrote
+  it (up to 420 characters, then "Open on …"), so it is not translated; `dir="auto"` keeps scripts right.
+- Nothing loads from the networks: pictures are the library copies (ADR-0031), no network script,
+  frame or widget is used, and every post links out to the original.
+- The side column lists every account with a follow link; Telegram channels also get a QR code drawn on
+  the server (`App\Support\QrCode`, shared with event tickets).
+- A homepage section "On social media" (six posts by default, up to twelve) appears once there are
+  posts; office and league pages show the three latest posts of their own accounts.
+
+**Consequences.** Posts appear in the language they were written in for every reader; filters by
+language are left for when accounts in several languages exist.

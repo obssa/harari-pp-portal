@@ -2,10 +2,7 @@
 
 namespace App\Domain\Events\Support;
 
-use chillerlan\QRCode\Common\EccLevel;
-use chillerlan\QRCode\Output\QROutputInterface;
-use chillerlan\QRCode\QRCode;
-use chillerlan\QRCode\QROptions;
+use App\Support\QrCode;
 
 /**
  * The QR code on a ticket (ADR-0025). It opens the staff check-in screen
@@ -21,15 +18,6 @@ final class TicketCode
     /** The QR code as an SVG data address for an <img>. */
     public static function image(string $token): string
     {
-        $options = new QROptions([
-            'outputType' => QROutputInterface::MARKUP_SVG,
-            'outputBase64' => true,
-            'eccLevel' => EccLevel::M,
-            'addQuietzone' => true,
-            'svgAddXmlHeader' => false,
-            'drawLightModules' => false,
-        ]);
-
-        return (new QRCode($options))->render(self::checkInUrl($token));
+        return QrCode::dataUri(self::checkInUrl($token));
     }
 }

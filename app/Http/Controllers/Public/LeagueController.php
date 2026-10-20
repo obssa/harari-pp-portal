@@ -8,6 +8,7 @@ use App\Domain\Organisation\Models\Leader;
 use App\Domain\Organisation\Models\League;
 use App\Domain\Organisation\Models\LeagueTranslation;
 use App\Domain\Organisation\Queries\PublicDirectory;
+use App\Domain\Social\Queries\SocialFeed;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\View\View;
 
@@ -49,6 +50,7 @@ final class LeagueController extends Controller
             'head' => $league->head !== null ? PublicDirectory::shown($league->head, $locale) : null,
             'people' => $people,
             'posts' => $posts->linkedTo($locale, 'leagues', $league->id),
+            'social' => SocialFeed::latest(3, leagueId: $league->id),
             'alternates' => PublicDirectory::alternates($league, 'leagues.show', 'leagues.index'),
             'image' => PublicDirectory::shareImage($league->coverImage, 'landscape', "league-{$league->id}-{$locale}", $translation->name, __('leagues.title')),
             'jsonLd' => [array_filter([
