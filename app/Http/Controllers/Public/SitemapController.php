@@ -56,7 +56,7 @@ final class SitemapController extends Controller
     private function entries(string $language): array
     {
         $entries = [];
-        foreach (['home', 'news.index', 'leaders.index', 'offices.index', 'leagues.index', 'structure', 'gallery.index', 'videos.index', 'events.index', 'documents.index', 'documents.notices', 'projects.index', 'projects.achievements'] as $route) {
+        foreach (['home', 'news.index', 'leaders.index', 'offices.index', 'leagues.index', 'structure', 'gallery.index', 'videos.index', 'events.index', 'documents.index', 'documents.notices', 'projects.index', 'projects.achievements', 'contact'] as $route) {
             $alternates = [];
             foreach (Locales::all() as $locale) {
                 $alternates[$locale] = route($route, ['locale' => $locale]);

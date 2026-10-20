@@ -27,7 +27,7 @@ class Menu extends Model
 
     public const LOCATIONS = ['header', 'footer', 'utility'];
 
-    public const TYPES = ['page', 'post', 'news', 'leaders', 'offices', 'leagues', 'structure', 'gallery', 'videos', 'live', 'events', 'documents', 'notices', 'projects', 'achievements', 'url'];
+    public const TYPES = ['page', 'post', 'news', 'leaders', 'offices', 'leagues', 'structure', 'gallery', 'videos', 'live', 'events', 'documents', 'notices', 'projects', 'achievements', 'contact', 'url'];
 
     /** Items per level, so menus stay usable on phones. */
     public const MAX_ITEMS = 12;
@@ -141,6 +141,7 @@ class Menu extends Model
             'notices' => ['url' => route('documents.notices', ['locale' => $locale]), 'external' => false, 'route' => 'documents.notices'],
             'projects' => ['url' => route('projects.index', ['locale' => $locale]), 'external' => false, 'route' => 'projects.index'],
             'achievements' => ['url' => route('projects.achievements', ['locale' => $locale]), 'external' => false, 'route' => 'projects.achievements'],
+            'contact' => ['url' => route('contact', ['locale' => $locale]), 'external' => false, 'route' => 'contact'],
             'page' => self::pageTarget((string) ($item['page_id'] ?? ''), $locale),
             'post' => self::postTarget((string) ($item['post_id'] ?? ''), $locale),
             'url' => self::urlTarget((string) ($item['url'] ?? '')),

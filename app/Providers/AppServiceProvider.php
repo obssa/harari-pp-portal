@@ -35,6 +35,12 @@ use App\Domain\Events\Models\Event as PortalEvent;
 use App\Domain\Events\Models\EventRegistration;
 use App\Domain\Events\Policies\EventPolicy;
 use App\Domain\Events\Policies\EventRegistrationPolicy;
+use App\Domain\Forms\Models\Form;
+use App\Domain\Forms\Models\FormSubmission;
+use App\Domain\Forms\Models\SubmissionNote;
+use App\Domain\Forms\Policies\FormPolicy;
+use App\Domain\Forms\Policies\FormSubmissionPolicy;
+use App\Domain\Forms\Policies\SubmissionNotePolicy;
 use App\Domain\Homepage\Models\HomepageSection;
 use App\Domain\Homepage\Policies\HomepageSectionPolicy;
 use App\Domain\Import\Models\ContentSource;
@@ -212,6 +218,9 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(DocumentVersion::class, DocumentVersionPolicy::class);
         Gate::policy(Project::class, ProjectPolicy::class);
         Gate::policy(Statistic::class, StatisticPolicy::class);
+        Gate::policy(Form::class, FormPolicy::class);
+        Gate::policy(FormSubmission::class, FormSubmissionPolicy::class);
+        Gate::policy(SubmissionNote::class, SubmissionNotePolicy::class);
 
         // Super Admins hold every permission (PLAN.md §8). Only permission
         // names (`module.action`) are short-circuited, so policy rules such as

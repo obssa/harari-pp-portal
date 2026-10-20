@@ -78,7 +78,8 @@ enum SystemRole: string
                 'posts.view', 'posts.create', 'posts.update', 'posts.translate', 'posts.review',
                 'posts.publish', 'posts.feature', 'posts.delete',
                 'pages.view', 'pages.create', 'pages.update', 'pages.translate', 'pages.publish', 'pages.delete',
-                'homepage.manage', 'menus.manage', 'taxonomies.manage', 'redirects.manage',
+                'homepage.manage', 'menus.manage', 'taxonomies.manage', 'redirects.manage', 'forms.manage',
+                'inbox.view', 'inbox.reply', 'inbox.assign',
                 'media.view', 'media.upload', 'media.update',
                 'galleries.manage', 'videos.manage',
                 'leaders.view', 'leaders.manage', 'offices.view', 'offices.manage',
@@ -124,7 +125,7 @@ enum SystemRole: string
             self::CommunicationsOfficer => [
                 ...$staff,
                 'posts.view', 'posts.create', 'posts.update',
-                'press_kit.manage', 'media_contacts.manage',
+                'press_kit.manage', 'media_contacts.manage', 'forms.manage', 'inbox.view', 'inbox.reply',
                 'campaigns.view', 'campaigns.manage', 'campaigns.send',
                 'subscribers.view', 'subscribers.manage',
                 'media.view', 'media.upload', 'analytics.view',
@@ -137,7 +138,7 @@ enum SystemRole: string
                 'volunteers.view', 'volunteers.manage', 'campaigns.send', 'events.view', 'events.registrations',
             ],
 
-            self::SupportAgent => [...$staff, 'inbox.view', 'inbox.reply'],
+            self::SupportAgent => [...$staff, 'inbox.view', 'inbox.reply', 'inbox.assign'],
 
             self::Analyst => [...$staff, 'analytics.view', 'analytics.export'],
 

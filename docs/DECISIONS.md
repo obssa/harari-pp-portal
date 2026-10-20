@@ -853,3 +853,39 @@ pages; §10 lists `projects` and `statistics` with translations.
 **Consequences.** A map of all projects together needs a map script with many pins (for example Leaflet
 with OpenStreetMap tiles); it is left out for now, and each project page has its own map. Budgets are in
 birr.
+
+## ADR-0028 — Forms builder, tickets and the inbox (2026-10-20)
+
+**Context.** PLAN.md §4 asks for a contact page and forms (contact, feedback and petition, press
+enquiries, vacancy applications) with spam protection, routing to an office, an automatic reply in the
+person's language, a ticket number and a status lookup; §7 for a forms builder and an inbox with status,
+assignee, internal notes and a response-time clock; §8 for support agents and office heads per office.
+
+**Decision.**
+
+- A form has a purpose, the office it routes to, an optional address to notify, the working days within
+  which it should be answered, whether name and contact details are optional, and whether it is the one
+  on the contact page. Title, introduction, thank-you text and automatic reply are written and published
+  per language.
+- Name, email and phone are always asked first (at least an email or a phone unless the form allows
+  anonymous use). The form's own questions follow: short and long text, email, phone, number, date, a
+  list, one choice, several choices, an agreement box or a file. Each question keeps a random key for
+  life and stores its label, help and choices for every language with it, so they cannot drift apart;
+  choices are matched by position. Answers keep the position and the words the person saw.
+- Files (PDF, Word, OpenDocument text, JPEG or PNG up to 5 MB, checked by their bytes like library
+  uploads) go to the private disk and are downloaded only from the inbox, which is logged.
+- A ticket gets a random reference such as `HPP-7K3D-9Q2M` (no 0/O or 1/I). `/{lang}/tickets` finds a
+  ticket by its reference and shows only its status and dates, never what was written. Lookups are rate
+  limited.
+- Everything a person writes is encrypted at rest, and so are queued emails that carry it. The notice to
+  the office carries no personal details, only the reference and a link to the inbox.
+- The inbox shows each person the tickets of the offices their role covers (a role without an office
+  scope covers all offices and the tickets of no office). Staff assign tickets, change their status,
+  write internal notes and reply; a reply is emailed in the person's language when they gave an address
+  and stops the response clock. The answer-by date counts working days, Monday to Friday, in Addis Ababa
+  time; public holidays are not counted out yet.
+- Forms keep a session and CSRF protection and use the protection of ADR-0025 (hidden field, time check,
+  rate limit, Turnstile).
+
+**Consequences.** Canned replies, satisfaction ratings and a retention period for tickets are left for
+later; the retention rules are a PLAN.md §14 question.

@@ -4,6 +4,19 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 3, step 3.7 — forms builder, tickets and inbox (2026-10-20)
+
+- Admin → Inbox and forms → Forms: build contact, feedback, petition, press and job application forms
+  with questions in every language (text, choices, dates, agreement, files), the office they go to, an
+  address to notify, the answer-within time and the automatic reply per language (ADR-0028).
+- Public forms at `/{lang}/forms/{slug}` and the contact page `/{lang}/contact` with the chosen form,
+  hotline, address, opening hours, office cards and social links; protected like event registration.
+- Each message gets a reference (`HPP-XXXX-XXXX`) and an automatic reply; `/{lang}/tickets` shows its
+  status to whoever has the reference, never its content.
+- Admin → Inbox: tickets of one's offices with status, assignee, the response clock (answer by, overdue,
+  answered after), internal notes, replies by email, attachments and the history of each ticket.
+- Everything people write is encrypted at rest.
+
 ### Phase 3, step 3.6 — projects, statistics and achievements (2026-10-20)
 
 - Admin → Content → Projects: sector, office or woreda, status and progress, dates, budget (shown only
