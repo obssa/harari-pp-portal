@@ -4,6 +4,12 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 4, step 4.8 — gate preparation (2026-10-20)
+
+- Manual chapter 4 "Translations and the social hub" in English and Amharic.
+- The Harari round-trip checked on staging: all 1569 strings export and re-import as Excel and JSON with
+  no change and nothing refused.
+
 ### Phase 4, step 4.7 — machine translation for Amharic and Afaan Oromo (2026-10-20)
 
 - Administration → Integrations: machine translation (off by default) with Google Cloud Translation or an

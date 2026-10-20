@@ -43,3 +43,13 @@ round-trips (export → edit in Excel → import) without loss.
 4. Whether machine translation may be used at all, and with which provider (Google or an LLM); both send
    text to the provider [off until a key is saved and a Super Admin switches it on].
 5. Native speakers to review Harari, Amharic and Afaan Oromo strings (Phase 5) [`docs/translations-review.md`].
+
+## Gate status (2026-10-20)
+
+| Criterion | Status | Evidence |
+|---|---|---|
+| The Harari JSON round-trips (export → edit in Excel → import) without loss | met | `TranslationImportTest` exports Harari to Excel, edits it as a translator would (a placeholder, a line break), imports it and exports again with every row identical; on staging an unedited export of all 1569 strings re-imports as Excel and as JSON with 0 added, 0 changed, 0 removed and 0 refused |
+| The hub shows live posts from at least three platforms | open | Telegram is live on staging (the branch channel, 8 posts read). No official YouTube channel, Facebook page or TikTok/Instagram/X account of the branch could be found in public sources, so they wait for the handles (and the Facebook page token) from the branch office |
+
+Quality after step 4.7: 723 Pest tests passing in CI, 88.9% line coverage, Larastan level 6 clean, English,
+Amharic and Afaan Oromo complete. Manual chapter `docs/manual/04-translations-social.md` (en, am).
