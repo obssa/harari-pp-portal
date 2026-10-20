@@ -4,6 +4,11 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+## v0.3.0 — Phase 3 complete (2026-10-20)
+
+- Sample content is on staging; Lighthouse audits a sample event and a sample document page; Phase 3
+  report in `docs/phases/03-media-events-documents.md`.
+
 ### Phase 3, step 3.9 — gate preparation (2026-10-20)
 
 - `php artisan portal:sample-content` adds clearly labelled sample events (one with registration),
