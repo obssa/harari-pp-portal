@@ -3,7 +3,9 @@
 use App\Domain\Access\Enums\SystemRole;
 use App\Models\User;
 use App\Settings\SecuritySettings;
+use Illuminate\Foundation\Testing\DatabaseTruncation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\BrowserTestCase;
 use Tests\TestCase;
 
 /*
@@ -12,6 +14,11 @@ use Tests\TestCase;
 | can resolve config and translations, but never touch the database.
 */
 pest()->extend(TestCase::class)->use(RefreshDatabase::class)->in('Feature');
+// ADR-0042: browser tests run only in CI's browser job (they need Playwright and the built assets).
+// The browser's requests reach the app on another database connection, so rows must be committed:
+// tables are emptied after each test instead of rolling a transaction back.
+pest()->extend(BrowserTestCase::class)->use(DatabaseTruncation::class)->in('Browser');
+pest()->browser()->timeout(15_000);
 pest()->extend(TestCase::class)->in('Unit');
 
 /**

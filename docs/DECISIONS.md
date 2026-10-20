@@ -1248,3 +1248,44 @@ ADR-0028), so they cannot be searched directly.
 
 **Consequences.** Searching by an address typed inside a form answer (rather than the contact fields) finds
 nothing; the person's contact email or phone is needed.
+
+## ADR-0042 — Browser tests: accessibility and smoke (2026-10-20)
+
+**Context.** PLAN.md §11 asks for WCAG 2.2 AA with automated checks, and §13 for confidence in the main
+paths before launch. Lighthouse already scores accessibility after each deploy, but only on a few pages
+and without failing on individual serious problems. The test container has no browser.
+
+**Decision.**
+
+- `pestphp/pest-plugin-browser` with Playwright (Chromium, `playwright` pinned in `package.json`) runs
+  `tests/Browser` in a separate CI job `browser`, after `npm run build`, so pages carry their real styles.
+  The normal test suites stay browser-free.
+- `AccessibilityTest` runs axe on sixteen public pages (both homepages, lists and detail pages, forms,
+  search, hub, press, structure) and fails on any serious or critical violation or JavaScript error; it
+  also checks that the first Tab reaches "Skip to content" and that it leads to the content.
+- `SmokeTest` clicks through the language switcher, the search form, the contact form (the message is
+  stored) and publishing a post from the admin, which then appears on the site.
+- Browser requests reach the app through another database connection, so these tests empty the tables
+  before each test (keeping the rows migrations write) instead of rolling back a transaction. Each test
+  therefore costs about half a minute; checks are grouped into few tests.
+- The test image gains the `sockets` extension the plugin needs; screenshots of failures are kept as a CI
+  artefact for a week. The audit and the manual checks still to do are in `docs/accessibility.md`.
+
+**Consequences.** The `browser` job is the slowest in CI (several minutes). Selectors in browser tests
+must be explicit CSS (`#id`, `html > body`) or a field name: a bare word is read as text or a name.
+
+## ADR-0043 — Draft legal pages (2026-10-20)
+
+**Context.** PLAN.md §11 needs a privacy policy aligned with Proclamation No. 1321/2024 and an
+accessibility statement; terms of use are usual. The branch office has not supplied legal texts or a
+privacy contact (open question 6).
+
+**Decision.** `portal:legal-pages` creates three ordinary pages (`/{language}/privacy`, `/terms`,
+`/accessibility`) in English, Amharic and Afaan Oromo, written to match what the portal does (data kept,
+retention, cookieless counting, Cloudflare, rights and how to use them), each opening with a warning
+callout "Draft for legal review" until the branch office approves the text and an editor removes the
+callout. The pages are linked in the footer. The command never overwrites an existing page. Harari is left
+to its translator; until then the Harari footer does not list them.
+
+**Consequences.** The drafts are not legal advice; doubtful wording is listed in
+`docs/translations-review.md` for the reviewers.

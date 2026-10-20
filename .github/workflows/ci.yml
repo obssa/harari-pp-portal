@@ -80,6 +80,50 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
+  browser:
+    # ADR-0042: axe accessibility checks and smoke tests in a real browser, with the built assets.
+    name: browser
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: harari_test
+          MYSQL_USER: harari
+          MYSQL_PASSWORD: secret
+        ports: ["3306:3306"]
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval=5s --health-timeout=5s --health-retries=30
+    env:
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_USERNAME: harari
+      DB_PASSWORD: secret
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/setup-php
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Chromium for Playwright
+        run: npx playwright install --with-deps chromium
+      - name: Browser tests (accessibility and smoke)
+        run: vendor/bin/pest tests/Browser --colors=never
+      - name: Keep the screenshots of failures
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: browser-screenshots
+          path: tests/Browser/Screenshots
+          if-no-files-found: ignore
+          retention-days: 7
+
   assets:
     name: assets
     runs-on: ubuntu-24.04

@@ -56,3 +56,16 @@ Harari translators.
 | `translations.export.*`, `translations.import.*` | am, om | export, import and rollback | "import" (ከፋይል አስገባ / Faayilii irraa galchi); "roll back" (መልስ / Deebisi) |
 | `translations.glossary.*`, `translations.status.glossary` | am, om | glossary | "glossary" (የቃላት መፍቻ / Galmee jechootaa) |
 | `translations.machine.*`, `dashboard.widget.translation_queue` | am, om | machine translation | "machine translation" (የማሽን ትርጉም / Hiikkaa maashinii); "AI model" (የሰው ሰራሽ አስተውሎት ሞዴል / Moodeela AI) |
+
+## Legal pages (step 5.9, `app/Domain/Content/Support/LegalPagesAm.php`, `LegalPagesOm.php`)
+
+Drafts for the branch office's legal reviewers; the English text is the reference.
+
+| Term | Amharic | Afaan Oromo | Doubt |
+|---|---|---|---|
+| Personal Data Protection Proclamation No. 1321/2024 | የግል መረጃ ጥበቃ አዋጅ ቁጥር 1321/2024 | Labsii Eegumsa Odeeffannoo Dhuunfaa Lakk. 1321/2024 | use the official title as published in the Negarit Gazeta |
+| privacy-enhanced mode (YouTube) | በግላዊነት በተጠናከረ ሁነታ | haala dhuunfaa cimsateen | technical; may stay in English in brackets |
+| two-step sign-in | ባለሁለት ደረጃ መግቢያ | seensa sadarkaa lamaa | same wording as the admin |
+| draft for legal review | ለሕግ ግምገማ የቀረበ ረቂቅ | wixinee gamaaggama seeraaf dhiyaate | |
+| accessibility statement | የተደራሽነት መግለጫ | ibsa dhaqqabummaa | |
+

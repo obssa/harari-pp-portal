@@ -18,9 +18,9 @@ on the branch office (see "Open questions"); they are tracked in `docs/launch-re
 | 5.4 | Performance and caching: Cloudflare cache purge on publish (when an API token is saved), cache headers reviewed per page type, the Lighthouse budget extended to listing, office and document pages | done; the Cloudflare Cache Rule and API token wait for the owner |
 | 5.5 | Analytics without cookies: server-side page view counts per page and language (no personal data, no third-party script), daily rollups, the dashboard's traffic widgets and a report builder with scheduled delivery by email | done |
 | 5.6 | Governance: a privacy area for administrators (find and export or erase what the portal holds about a person: registrations, tickets), retention rules per data set shown and enforced, the audit-log retention | done |
-| 5.7 | Accessibility: an automated axe check of the main pages in CI, keyboard and screen-reader pass with fixes, the accessibility statement | |
-| 5.8 | Browser smoke tests for publish, search, forms and the language switch (Pest browser testing in CI) | |
-| 5.9 | Legal pages: privacy policy, terms of use and accessibility statement as pages in four languages, marked "draft for legal review" until the branch office approves them | |
+| 5.7 | Accessibility: an automated axe check of the main pages in CI, keyboard and screen-reader pass with fixes, the accessibility statement | done; the screen-reader pass in Amharic, Afaan Oromo and Harari needs testers who read them (`docs/accessibility.md`) |
+| 5.8 | Browser smoke tests for publish, search, forms and the language switch (Pest browser testing in CI) | done |
+| 5.9 | Legal pages: privacy policy, terms of use and accessibility statement as pages in four languages, marked "draft for legal review" until the branch office approves them | done; approval and Harari text wait for the branch office |
 | 5.10 | Launch: admin manual with screenshots (en, am), editor training notes, `docs/launch-report.md` walking the acceptance checklist, go-live runbook for the production host | |
 
 ## Open questions (do not block the build; defaults in brackets)

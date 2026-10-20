@@ -4,6 +4,16 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 5, steps 5.7–5.9 — accessibility, browser tests, legal pages (2026-10-20)
+
+- Accessibility: axe runs on sixteen public pages in a real browser in CI and fails on serious or critical
+  problems; keyboard check of the skip link; audit and remaining manual checks in `docs/accessibility.md`
+  (ADR-0042).
+- Browser smoke tests for the language switch, search, the contact form and publishing a post.
+- Privacy policy, terms of use and accessibility statement as draft pages in English, Amharic and Afaan
+  Oromo, marked "Draft for legal review" and linked in the footer (`php artisan portal:legal-pages`,
+  ADR-0043).
+
 ### Phase 5, step 5.6 — governance (2026-10-20)
 
 - Administration → Privacy: find what the portal holds about a person by email or phone, download a copy or

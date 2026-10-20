@@ -37,3 +37,6 @@ Thumbs.db
 /public/fonts/filament
 /.lighthouseci
 /lighthouse-reports
+
+# Browser test screenshots (ADR-0042)
+/tests/Browser/Screenshots

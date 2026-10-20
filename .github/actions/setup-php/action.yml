@@ -16,7 +16,7 @@ runs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: "8.3"
-        extensions: mbstring, intl, pdo_mysql, gd, zip, bcmath, exif, fileinfo, dom, curl, calendar
+        extensions: mbstring, intl, pdo_mysql, gd, zip, bcmath, exif, fileinfo, dom, curl, calendar, sockets
         tools: composer:v2
         coverage: ${{ inputs.coverage }}
         ini-values: memory_limit=1G
