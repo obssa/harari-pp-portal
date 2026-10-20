@@ -58,15 +58,7 @@ final class FetchSocialSource
                     continue;
                 }
 
-                $source->posts()->create([
-                    'external_id' => $fetched->externalId,
-                    'posted_at' => $fetched->postedAt,
-                    'text' => $fetched->text,
-                    'permalink' => $fetched->permalink,
-                    'image_id' => $this->image($source, $fetched)?->id,
-                    'has_video' => $fetched->hasVideo,
-                    'metrics' => $fetched->metrics ?: null,
-                ]);
+                $this->store($source, $fetched);
                 $added++;
             }
 
@@ -80,6 +72,21 @@ final class FetchSocialSource
 
             return ['added' => $added, 'updated' => $updated, 'error' => $error];
         }
+    }
+
+    /** Adds a new post with a library copy of its first picture. */
+    public function store(SocialSource $source, FetchedPost $fetched): SocialPost
+    {
+        /** @var SocialPost */
+        return $source->posts()->create([
+            'external_id' => $fetched->externalId,
+            'posted_at' => $fetched->postedAt,
+            'text' => $fetched->text,
+            'permalink' => $fetched->permalink,
+            'image_id' => $this->image($source, $fetched)?->id,
+            'has_video' => $fetched->hasVideo,
+            'metrics' => $fetched->metrics ?: null,
+        ]);
     }
 
     /** The first picture, copied and cleaned like any upload, credited to the account. */

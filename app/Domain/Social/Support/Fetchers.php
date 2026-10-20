@@ -3,18 +3,22 @@
 namespace App\Domain\Social\Support;
 
 use App\Domain\Social\Enums\Platform;
+use App\Domain\Social\Fetchers\FacebookFetcher;
 use App\Domain\Social\Fetchers\SocialFetcher;
 use App\Domain\Social\Fetchers\TelegramFetcher;
+use App\Domain\Social\Fetchers\YouTubeFetcher;
 
 /**
- * Which fetcher reads which network (ADR-0031). A network without one is
- * listed in the admin but not read yet.
+ * Which fetcher reads which network (ADR-0031). Networks without one
+ * (TikTok, Instagram, X) get their posts added by address.
  */
 final class Fetchers
 {
     /** @var array<string, class-string<SocialFetcher>> */
     private const DRIVERS = [
         'telegram' => TelegramFetcher::class,
+        'youtube' => YouTubeFetcher::class,
+        'facebook' => FacebookFetcher::class,
     ];
 
     public function for(Platform $platform): ?SocialFetcher

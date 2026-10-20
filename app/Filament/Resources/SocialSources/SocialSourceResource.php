@@ -4,18 +4,22 @@ namespace App\Filament\Resources\SocialSources;
 
 use App\Domain\Organisation\Models\League;
 use App\Domain\Organisation\Models\Office;
+use App\Domain\Social\Actions\AddPostByAddress;
 use App\Domain\Social\Actions\FetchSocialSource;
 use App\Domain\Social\Enums\Platform;
 use App\Domain\Social\Models\SocialSource;
 use App\Domain\Social\Support\Fetchers;
 use App\Filament\Resources\SocialSources\Pages\ManageSocialSources;
 use App\Filament\Support\CalendarDate;
+use App\Services\Calendar\EthiopianCalendar;
 use BackedEnum;
 use Closure;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
@@ -113,6 +117,40 @@ class SocialSourceResource extends Resource
                         $result = app(FetchSocialSource::class)->handle($record);
                         $notification = Notification::make()->title(__('social.source.fetched', ['added' => $result['added'], 'updated' => $result['updated']]));
                         $result['error'] !== null ? $notification->danger()->body($result['error'])->send() : $notification->success()->send();
+                    }),
+                Action::make('addPost')
+                    ->label(__('social.post.add_by_address'))
+                    ->icon(Heroicon::OutlinedLink)
+                    ->color('gray')
+                    ->authorize('update')
+                    ->modalDescription(__('social.post.add_help'))
+                    ->schema([
+                        TextInput::make('url')->label(__('social.post.field.url'))->url()->required()->maxLength(500),
+                        Textarea::make('text')->label(__('social.post.field.text'))->helperText(__('social.post.help.text'))->rows(3)->maxLength(5000),
+                        DateTimePicker::make('posted_at')->label(__('social.post.field.posted_at'))->seconds(false)->timezone(EthiopianCalendar::timezone()),
+                    ])
+                    ->action(function (SocialSource $record, array $data): void {
+                        app(AddPostByAddress::class)->handle($record, (string) $data['url'], $data['text'] ?? null, $data['posted_at'] ?? null);
+                        Notification::make()->success()->title(__('social.post.added'))->send();
+                    }),
+                Action::make('token')
+                    ->label(__('social.source.token'))
+                    ->icon(Heroicon::OutlinedKey)
+                    ->color('gray')
+                    ->authorize('update')
+                    ->visible(fn (SocialSource $record): bool => $record->platform === Platform::Facebook)
+                    ->modalDescription(__('social.source.token_help'))
+                    ->schema([TextInput::make('token')->label(__('social.source.token'))->password()->maxLength(500)
+                        ->helperText(fn (SocialSource $record): string => filled($record->credentials['token'] ?? null) ? __('social.source.token_saved') : __('social.source.token_none'))])
+                    ->action(function (SocialSource $record, array $data): void {
+                        $credentials = $record->credentials ?? [];
+                        if (filled($data['token'] ?? null)) {
+                            $credentials['token'] = trim((string) $data['token']);
+                        } else {
+                            unset($credentials['token']);
+                        }
+                        $record->forceFill(['credentials' => $credentials])->save();
+                        Notification::make()->success()->title(__('social.source.token_stored'))->send();
                     }),
                 EditAction::make(),
                 DeleteAction::make(),

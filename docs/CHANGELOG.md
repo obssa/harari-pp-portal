@@ -4,6 +4,15 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 4, step 4.2 — YouTube, Facebook and posts by address (2026-10-20)
+
+- YouTube channels are read from their public feed; an @name is turned into the channel id once with
+  the YouTube key (ADR-0031).
+- Facebook pages are read through the Graph API with the page's access token, set per account
+  ("Page access token") or under Integrations.
+- "Add a post by its address" for TikTok, Instagram and X (and any post the reading missed), with the
+  title and picture the network publishes for it.
+
 ### Phase 4, step 4.1 — social sources and posts (2026-10-20)
 
 - Admin → Social media → Accounts: the Telegram, YouTube, Facebook, TikTok, Instagram and X accounts of

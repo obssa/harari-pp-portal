@@ -952,3 +952,14 @@ drafts; the hub is a different use of the same accounts: showing posts as they a
 
 **Consequences.** Deleting a post on the network does not remove it from the hub until staff hide it;
 counts are as of the last fetch.
+
+**Networks (step 4.2).**
+
+- YouTube channels are read from their public feed (the latest fifteen videos with title, description,
+  picture and views; no key). A channel given by its @name needs the YouTube Data API key once to find
+  its id, which is then kept on the source.
+- Facebook pages are read through the Graph API (v21.0) with the page's own access token, saved on the
+  source (encrypted) or under Integrations. Without a token the source shows that it needs one.
+- TikTok, Instagram and X are not read on their own: staff add a post by its address. Its words and
+  picture come from the network's public oEmbed answer (TikTok, X, YouTube; Instagram only with the Meta
+  token), otherwise from what the editor types. Addresses must be https on the network's own hosts.
