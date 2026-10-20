@@ -7,13 +7,14 @@ use App\Models\User;
 
 /**
  * Events (PLAN.md §8): `events.view` to see them in the admin,
- * `events.manage` to create, publish and remove them.
+ * `events.manage` to create, publish and remove them; `events.registrations`
+ * also opens them, for the registrations (ADR-0025).
  */
 final class EventPolicy
 {
     public function viewAny(User $actor): bool
     {
-        return $actor->can('events.view') || $actor->can('events.manage');
+        return $actor->can('events.view') || $actor->can('events.manage') || $actor->can('events.registrations');
     }
 
     public function view(User $actor, Event $event): bool

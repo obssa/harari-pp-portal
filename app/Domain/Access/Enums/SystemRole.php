@@ -82,7 +82,7 @@ enum SystemRole: string
                 'media.view', 'media.upload', 'media.update',
                 'galleries.manage', 'videos.manage',
                 'leaders.view', 'leaders.manage', 'offices.view', 'offices.manage',
-                'leagues.view', 'leagues.manage', 'events.view', 'events.manage',
+                'leagues.view', 'leagues.manage', 'events.view', 'events.manage', 'events.registrations',
                 'documents.view', 'documents.manage', 'projects.view', 'projects.manage',
                 'translations.view', 'analytics.view',
             ],
@@ -134,7 +134,7 @@ enum SystemRole: string
                 ...$staff,
                 'applications.view', 'applications.review', 'applications.export',
                 'members.view', 'members.create', 'members.update', 'members.import', 'members.export',
-                'volunteers.view', 'volunteers.manage', 'campaigns.send',
+                'volunteers.view', 'volunteers.manage', 'campaigns.send', 'events.view', 'events.registrations',
             ],
 
             self::SupportAgent => [...$staff, 'inbox.view', 'inbox.reply'],

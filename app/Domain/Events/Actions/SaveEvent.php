@@ -26,6 +26,7 @@ final class SaveEvent
     public function __construct(
         private readonly WriteTranslations $translations,
         private readonly SyncMediaUsage $usage,
+        private readonly FillFromWaitlist $waitlist,
     ) {}
 
     /**
@@ -54,7 +55,7 @@ final class SaveEvent
         [$latitude, $longitude] = $this->coordinates($data['latitude'] ?? null, $data['longitude'] ?? null);
         $capacity = filled($data['capacity'] ?? null) ? max(1, (int) $data['capacity']) : null;
 
-        return DB::transaction(function () use ($event, $data, $translations, $actor, $starts, $ends, $online, $latitude, $longitude, $capacity): Event {
+        $saved = DB::transaction(function () use ($event, $data, $translations, $actor, $starts, $ends, $online, $latitude, $longitude, $capacity): Event {
             $event->fill([
                 'starts_at' => $starts,
                 'ends_at' => $ends,
@@ -95,6 +96,10 @@ final class SaveEvent
 
             return $event->refresh();
         });
+
+        $this->waitlist->handle($saved);
+
+        return $saved;
     }
 
     /**

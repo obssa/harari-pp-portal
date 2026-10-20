@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Events;
 
+use App\Domain\Events\Enums\RegistrationStatus;
 use App\Domain\Events\Models\Event;
 use App\Domain\Media\Enums\MediaKind;
 use App\Domain\Organisation\Models\League;
@@ -9,8 +10,11 @@ use App\Domain\Organisation\Models\Office;
 use App\Filament\Resources\Events\Pages\CreateEvent;
 use App\Filament\Resources\Events\Pages\EditEvent;
 use App\Filament\Resources\Events\Pages\ListEvents;
+use App\Filament\Resources\Events\Pages\ViewEvent;
+use App\Filament\Resources\Events\RelationManagers\RegistrationsRelationManager;
 use App\Filament\Resources\Offices\OfficeResource;
 use App\Filament\Support\CalendarDate;
+use App\Filament\Support\CurrentUser;
 use App\Filament\Support\DirectoryFields;
 use App\Filament\Support\MediaPicker;
 use App\Filament\Support\Translatable;
@@ -19,6 +23,7 @@ use BackedEnum;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\RestoreAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -130,12 +135,17 @@ class EventResource extends Resource
     {
         return $table
             ->defaultSort('starts_at', 'desc')
-            ->modifyQueryUsing(fn (Builder $query) => $query->with('translations'))
+            ->modifyQueryUsing(fn (Builder $query) => $query->with('translations')
+                ->withCount(['registrations as registered_count' => fn (Builder $q) => $q->where('status', RegistrationStatus::Registered->value)]))
             ->columns([
                 TextColumn::make('title')->label(__('admin.posts.field.title'))
                     ->state(fn (Event $record): string => $record->title()),
                 TextColumn::make('starts_at')->label(__('events.admin.field.starts_at'))
                     ->formatStateUsing(CalendarDate::format(withTime: true))->sortable(),
+                TextColumn::make('registered_count')->label(__('events.registration.admin.registered'))
+                    ->state(fn (Event $record): string => $record->registration_enabled
+                        ? $record->getAttribute('registered_count').($record->capacity !== null ? ' / '.$record->capacity : '')
+                        : '—'),
                 DirectoryFields::languagesColumn(),
             ])
             ->filters([
@@ -146,7 +156,15 @@ class EventResource extends Resource
                     ),
                 TrashedFilter::make(),
             ])
-            ->recordActions([EditAction::make(), DeleteAction::make(), RestoreAction::make()]);
+            ->recordActions([
+                ViewAction::make()->hidden(fn (Event $record): bool => CurrentUser::get()->can('update', $record)),
+                EditAction::make(), DeleteAction::make(), RestoreAction::make(),
+            ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [RegistrationsRelationManager::class];
     }
 
     public static function getPages(): array
@@ -154,6 +172,7 @@ class EventResource extends Resource
         return [
             'index' => ListEvents::route('/'),
             'create' => CreateEvent::route('/create'),
+            'view' => ViewEvent::route('/{record}'),
             'edit' => EditEvent::route('/{record}/edit'),
         ];
     }

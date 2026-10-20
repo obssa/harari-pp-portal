@@ -63,6 +63,12 @@ return [
     'queues' => ['default', 'media'],
 
     /*
+    | Days after an event that registrations (names and contact details) are
+    | kept before they are deleted (ADR-0025).
+    */
+    'registration_retention_days' => (int) env('PORTAL_REGISTRATION_RETENTION_DAYS', 180),
+
+    /*
     | Media library (PLAN.md §7, §11; ADR-0009). Files are identified by their
     | content, never by their name; only these kinds are accepted.
     */

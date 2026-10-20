@@ -25,5 +25,9 @@ Schedule::call(fn () => Cache::forever(QueueHealth::HEARTBEAT, now()->toIso8601S
     ->everyMinute()
     ->name('heartbeat');
 
+// ADR-0025: reminders the day before an event; registrations deleted after the retention period.
+Schedule::command('events:send-reminders')->hourly()->withoutOverlapping();
+Schedule::command('events:purge-registrations')->dailyAt('03:30');
+
 // ADR-0020: search terms nobody searched for in a year are removed.
 Schedule::command('model:prune', ['--model' => [SearchTerm::class]])->dailyAt('03:10');

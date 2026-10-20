@@ -2,6 +2,7 @@
 
 use App\Domain\Translation\Support\Locales;
 use App\Http\Controllers\Public\EventController;
+use App\Http\Controllers\Public\EventRegistrationController;
 use App\Http\Controllers\Public\FeedController;
 use App\Http\Controllers\Public\GalleryController;
 use App\Http\Controllers\Public\HomeController;
@@ -65,6 +66,18 @@ Route::get('/sitemaps/{language}.xml', [SitemapController::class, 'language'])
     ->whereIn('language', Locales::all())
     ->withoutMiddleware($stateless)
     ->name('sitemap.language');
+
+// Forms (ADR-0025): these pages keep the session for CSRF protection and are
+// never cached. Registered before the pages below so {path} cannot catch them.
+Route::prefix('{locale}')
+    ->where(['locale' => implode('|', Locales::all())])
+    ->middleware(SetLocale::class)
+    ->group(function (): void {
+        Route::get('events/{slug}/register', [EventRegistrationController::class, 'create'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('events.register');
+        Route::post('events/{slug}/register', [EventRegistrationController::class, 'store'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->middleware('throttle:forms')->name('events.register.store');
+        Route::get('events/ticket/{token}', [EventRegistrationController::class, 'ticket'])->where('token', '[A-Za-z0-9]{40}')->name('events.ticket');
+        Route::post('events/ticket/{token}/cancel', [EventRegistrationController::class, 'cancel'])->where('token', '[A-Za-z0-9]{40}')->middleware('throttle:forms')->name('events.ticket.cancel');
+    });
 
 // Every public page lives under its language: /en, /am, /om, /har (PLAN.md §3).
 Route::prefix('{locale}')

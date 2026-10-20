@@ -57,7 +57,8 @@ final class SecurityHeaders
     {
         return implode('; ', [
             "default-src 'self'",
-            "script-src 'self' 'nonce-{$nonce}'",
+            // Cloudflare Turnstile on public forms (ADR-0025).
+            "script-src 'self' 'nonce-{$nonce}' https://challenges.cloudflare.com",
             "style-src 'self' 'nonce-{$nonce}'",
             // Focal points and similar one-off positions are inline style attributes.
             "style-src-attr 'unsafe-inline'",
@@ -65,7 +66,7 @@ final class SecurityHeaders
             "font-src 'self'",
             "connect-src 'self'",
             "media-src 'self'",
-            "frame-src 'self' https://www.youtube-nocookie.com https://www.openstreetmap.org",
+            "frame-src 'self' https://www.youtube-nocookie.com https://www.openstreetmap.org https://challenges.cloudflare.com",
             "object-src 'none'",
             "base-uri 'self'",
             "form-action 'self'",

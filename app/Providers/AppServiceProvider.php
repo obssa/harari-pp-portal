@@ -28,7 +28,9 @@ use App\Domain\Content\Policies\TaxonomyPolicy;
 use App\Domain\Dashboard\Models\Announcement;
 use App\Domain\Dashboard\Policies\AnnouncementPolicy;
 use App\Domain\Events\Models\Event as PortalEvent;
+use App\Domain\Events\Models\EventRegistration;
 use App\Domain\Events\Policies\EventPolicy;
+use App\Domain\Events\Policies\EventRegistrationPolicy;
 use App\Domain\Homepage\Models\HomepageSection;
 use App\Domain\Homepage\Policies\HomepageSectionPolicy;
 use App\Domain\Import\Models\ContentSource;
@@ -58,6 +60,8 @@ use App\Domain\Webhooks\Listeners\QueueWebhooks;
 use App\Domain\Webhooks\Models\Webhook;
 use App\Domain\Webhooks\Policies\WebhookPolicy;
 use App\Models\User;
+use App\Services\Sms\LogSmsGateway;
+use App\Services\Sms\SmsGateway;
 use App\Settings\SiteSettings;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Contracts\Foundation\Application;
@@ -87,6 +91,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        // ADR-0025: text messages go to the log until an SMS provider is chosen.
+        $this->app->bind(SmsGateway::class, fn (): SmsGateway => new LogSmsGateway);
+
         // spatie/laravel-translation-loader builds its loader from lang/ only, which
         // drops Laravel's built-in English framework strings (validation, auth,
         // passwords, pagination). Rebuild it with both paths, framework first, as
@@ -143,6 +150,12 @@ class AppServiceProvider extends ServiceProvider
         $this->app->make(EngineManager::class)->extend('database', fn (): WordMatchEngine => new WordMatchEngine);
 
         RateLimiter::for('search', fn (Request $request): Limit => Limit::perMinute(30)->by((string) $request->ip()));
+
+        // Public forms (PLAN.md §11): a few tries a minute, a few dozen an hour, per address.
+        RateLimiter::for('forms', fn (Request $request): array => [
+            Limit::perMinute(5)->by('forms-minute:'.$request->ip()),
+            Limit::perHour(30)->by('forms-hour:'.$request->ip()),
+        ]);
     }
 
     private function bootLocalization(): void
@@ -186,6 +199,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Gallery::class, GalleryPolicy::class);
         Gate::policy(Video::class, VideoPolicy::class);
         Gate::policy(PortalEvent::class, EventPolicy::class);
+        Gate::policy(EventRegistration::class, EventRegistrationPolicy::class);
 
         // Super Admins hold every permission (PLAN.md §8). Only permission
         // names (`module.action`) are short-circuited, so policy rules such as

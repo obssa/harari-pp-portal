@@ -128,6 +128,19 @@
                     @endif
                 </dl>
 
+                @if ($event->registration_enabled && ! $event->isPast())
+                    <div class="rounded-card border border-line bg-surface p-4">
+                        <h2 class="font-semibold">{{ __('events.registration.heading') }}</h2>
+                        @if ($event->registrationClosesAt()->isPast())
+                            <p class="mt-1 text-sm text-ink-muted">{{ __('events.registration.closed') }}</p>
+                        @else
+                            <p class="mt-1 text-sm text-ink-muted">{{ $event->capacity !== null ? __('events.registration.limited') : __('events.registration.free') }}
+                                {{ __('events.registration.closes', ['date' => app(\App\Services\Calendar\EthiopianCalendar::class)->format($event->registrationClosesAt(), withTime: true)]) }}</p>
+                            <a href="{{ route('events.register', ['slug' => $translation->slug]) }}" class="mt-3 inline-flex rounded-control bg-primary-600 px-4 py-2 font-semibold text-white hover:bg-primary-700">{{ __('events.registration.cta') }}</a>
+                        @endif
+                    </div>
+                @endif
+
                 @if (! $event->isPast())
                     <div class="flex flex-wrap gap-2 text-sm">
                         <a href="{{ route('events.ics', ['slug' => $translation->slug]) }}" class="rounded-control border border-line px-3 py-1.5 hover:bg-surface-muted">{{ __('events.add_to_calendar') }}</a>

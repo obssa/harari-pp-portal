@@ -755,3 +755,37 @@ agenda, speakers, a map and "add to calendar", and a homepage "upcoming events" 
 
 **Consequences.** Recurring events are not modelled; an editor copies the event instead. The map is the
 same OpenStreetMap frame as on office pages.
+
+**Registration (step 3.4).**
+
+- An editor turns registration on per event, with an optional number of places, a waiting list (on by
+  default) and a closing time (otherwise the start). People register at `/{lang}/events/{slug}/register`
+  with their name and a phone number or email address (at least one; Ethiopian numbers are accepted as
+  typed and stored as +251…) and agree to how the details are used.
+- Places are given under a row lock on the event, so the last place is never given twice. When the
+  event is full, people join the waiting list if it is on. A place given back, by the person from their
+  ticket or by staff, goes to the first person waiting; raising the number of places does the same.
+- The same phone number or email address registers once per event; trying again sends the existing
+  ticket again to the details given the first time, and the page only says so.
+- Each registration has a ticket page with a random 40-character code in its address, a QR code and a
+  cancel button. The QR code opens Admin → Check-in for that ticket, where staff with
+  `events.registrations` let the person in with one tap; scanners that type the code also work. A ticket
+  is used once.
+- Messages go by email (queued, with the event as a calendar file) and by text message through an
+  `SmsGateway` interface. Until a provider is chosen (PLAN.md §14), the log driver records each text
+  with the number partly hidden. Reminders go once, within the 24 hours before the event (hourly job).
+- Personal details are encrypted at rest (name, phone, email and ticket code); keyed hashes find
+  duplicates and tickets. Queued messages are encrypted too. The audit log records status changes only.
+  Registrations are deleted 180 days after the event (`PORTAL_REGISTRATION_RETENTION_DAYS`); the real
+  retention period is an open legal question (PLAN.md §14).
+- Forms are protected by a hidden field, a minimum and maximum time to fill them in, a rate limit (5 a
+  minute, 30 an hour per address) and Cloudflare Turnstile once its keys are saved under Integrations.
+  Turnstile fails closed. Form pages keep a session for CSRF and are never cached; the event page stays
+  cacheable and only links to the form.
+- `events.registrations` (see the list, check in, cancel, download CSV) is granted to Publishers and
+  Membership Officers by default; a read-only event page lets those who cannot edit events reach the
+  list.
+
+**Consequences.** Changing the app key makes old tickets unreadable, as for all encrypted data. Custom
+questions on the form come with the forms builder (step 3.7). On existing installs a Super Admin grants
+`events.registrations` to further roles under Roles.

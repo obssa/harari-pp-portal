@@ -6,6 +6,7 @@ use App\Domain\Content\Concerns\BelongsToSite;
 use App\Domain\Content\Concerns\HasTranslations;
 use App\Domain\Content\Concerns\TracksEditors;
 use App\Domain\Content\Contracts\TranslatableModel;
+use App\Domain\Events\Enums\RegistrationStatus;
 use App\Domain\Media\Models\Media;
 use App\Domain\Organisation\Models\Leader;
 use App\Domain\Organisation\Models\League;
@@ -17,6 +18,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -60,6 +62,17 @@ class Event extends Model implements TranslatableModel
         'starts_at', 'ends_at', 'all_day', 'latitude', 'longitude', 'online_url', 'cover_id', 'office_id', 'league_id',
         'registration_enabled', 'capacity', 'waitlist', 'registration_closes_at',
     ];
+
+    public const REGISTRATION_OFF = 'off';
+
+    public const REGISTRATION_OPEN = 'open';
+
+    /** Full, but people can join the waiting list. */
+    public const REGISTRATION_WAITLIST = 'waitlist';
+
+    public const REGISTRATION_FULL = 'full';
+
+    public const REGISTRATION_CLOSED = 'closed';
 
     protected $attributes = ['all_day' => false, 'registration_enabled' => false, 'waitlist' => true];
 
@@ -143,6 +156,43 @@ class Event extends Model implements TranslatableModel
     public function isPast(): bool
     {
         return $this->endsAt()->isPast();
+    }
+
+    /**
+     * @return HasMany<EventRegistration, $this>
+     */
+    public function registrations(): HasMany
+    {
+        return $this->hasMany(EventRegistration::class);
+    }
+
+    public function registeredCount(): int
+    {
+        return $this->registrations()->where('status', RegistrationStatus::Registered->value)->count();
+    }
+
+    /** Places still free, or null without a limit. */
+    public function placesLeft(): ?int
+    {
+        return $this->capacity === null ? null : max(0, $this->capacity - $this->registeredCount());
+    }
+
+    /** When registration stops: the chosen time, otherwise the start. */
+    public function registrationClosesAt(): CarbonImmutable
+    {
+        return $this->registration_closes_at ?? $this->starts_at;
+    }
+
+    /** Whether people can register now (ADR-0025), counted live. */
+    public function registrationState(): string
+    {
+        return match (true) {
+            ! $this->registration_enabled => self::REGISTRATION_OFF,
+            $this->registrationClosesAt()->isPast() => self::REGISTRATION_CLOSED,
+            $this->capacity === null || $this->registeredCount() < $this->capacity => self::REGISTRATION_OPEN,
+            $this->waitlist => self::REGISTRATION_WAITLIST,
+            default => self::REGISTRATION_FULL,
+        };
     }
 
     public function hasMap(): bool

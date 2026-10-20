@@ -4,6 +4,20 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 3, step 3.4 — event registration (2026-10-20)
+
+- Events can take registrations: places, a waiting list that moves up by itself, and a closing time.
+  Visitors register with a name and a phone number or email address; Ethiopian numbers are accepted
+  as typed (ADR-0025).
+- Each registration gets a ticket page with a QR code, an "Add to calendar" link and a way to give the
+  place back. Staff scan the code into Admin → Check-in and let people in with one tap.
+- Confirmation, waiting-list, moved-up, cancellation and day-before reminder messages by email and by
+  text message (written to the log until an SMS provider is chosen).
+- Admin: a Registrations tab on each event with check-in, cancel and CSV download, for staff with the
+  registrations permission (Publishers and Membership Officers by default).
+- Names, phone numbers and email addresses are encrypted and deleted 180 days after the event. Forms
+  are protected by a hidden field, a time check, rate limits and Cloudflare Turnstile once configured.
+
 ### Phase 3, step 3.3 — events and calendars (2026-10-20)
 
 - Admin → Content → Events: start and end in Addis Ababa time (or all day), venue and address, map pin
