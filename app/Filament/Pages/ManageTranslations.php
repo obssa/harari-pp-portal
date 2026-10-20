@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Domain\Translation\Actions\EditUiTranslation;
 use App\Domain\Translation\Actions\ImportTranslations;
+use App\Domain\Translation\Jobs\TranslateMissingStrings;
 use App\Domain\Translation\Models\TranslationImport;
 use App\Domain\Translation\Models\UiTranslationRevision;
 use App\Domain\Translation\Support\Glossary;
@@ -13,6 +14,7 @@ use App\Domain\Translation\Support\TranslationRows;
 use App\Filament\Support\CalendarDate;
 use App\Filament\Support\CurrentUser;
 use App\Models\User;
+use App\Services\Translation\MachineTranslator;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Facades\Filament;
@@ -152,6 +154,17 @@ class ManageTranslations extends Page implements HasTable
                         }
                         $this->replaceMountedAction('applyImport', ['import' => $import->id], context: []);
                     }),
+                Action::make('translateMissing')
+                    ->label(__('translations.machine.translate_missing'))
+                    ->icon(Heroicon::OutlinedSparkles)
+                    ->color('gray')
+                    ->visible(fn (): bool => app(MachineTranslator::class)->enabledFor($this->language) && CurrentUser::get()->canEditTranslationsFor($this->language))
+                    ->requiresConfirmation()
+                    ->modalDescription(fn (): string => __('translations.machine.translate_missing_help', ['language' => Locales::nativeName($this->language)]))
+                    ->action(function (): void {
+                        TranslateMissingStrings::dispatch($this->language, CurrentUser::get()->id);
+                        Notification::make()->success()->title(__('translations.machine.queued'))->send();
+                    }),
                 Action::make('language')
                     ->label(__('translations.admin.change_language'))
                     ->icon(Heroicon::OutlinedLanguage)
@@ -174,6 +187,7 @@ class ManageTranslations extends Page implements HasTable
                     ->color(fn (string $state): string => match ($state) {
                         TranslationRows::MISSING => 'danger',
                         TranslationRows::CHANGED, TranslationRows::GLOSSARY => 'warning',
+                        TranslationRows::MACHINE => 'info',
                         default => 'success',
                     }),
             ])
@@ -181,6 +195,7 @@ class ManageTranslations extends Page implements HasTable
                 SelectFilter::make('status')->label(__('translations.admin.status'))->options([
                     TranslationRows::MISSING => __('translations.status.missing'),
                     TranslationRows::CHANGED => __('translations.status.changed'),
+                    TranslationRows::MACHINE => __('translations.status.machine'),
                     TranslationRows::GLOSSARY => __('translations.status.glossary'),
                     TranslationRows::TRANSLATED => __('translations.status.translated'),
                 ]),
@@ -188,6 +203,31 @@ class ManageTranslations extends Page implements HasTable
                     ->options(fn (): array => app(TranslationRows::class)->for('en')->pluck('group', 'group')->unique()->sort()->all()),
             ])
             ->recordActions([
+                Action::make('machine')
+                    ->label(__('translations.machine.translate'))
+                    ->icon(Heroicon::OutlinedSparkles)
+                    ->color('gray')
+                    ->visible(fn (array $record): bool => app(MachineTranslator::class)->enabledFor($this->language) && CurrentUser::get()->canEditTranslationsFor($this->language))
+                    ->action(function (array $record): void {
+                        $translation = app(MachineTranslator::class)->translate([$record['english']], 'en', $this->language)[0] ?? null;
+                        if ($translation === null) {
+                            Notification::make()->danger()->title(__('translations.machine.unusable'))->send();
+
+                            return;
+                        }
+                        app(EditUiTranslation::class)->handle($record['key'], $this->language, $translation, CurrentUser::get(), 'machine');
+                        Notification::make()->success()->title(__('translations.machine.done'))->send();
+                        $this->resetTable();
+                    }),
+                Action::make('review')
+                    ->label(__('translations.machine.mark_reviewed'))
+                    ->icon(Heroicon::OutlinedCheckBadge)
+                    ->color('success')
+                    ->visible(fn (array $record): bool => $record['status'] === TranslationRows::MACHINE && CurrentUser::get()->canEditTranslationsFor($this->language))
+                    ->action(function (array $record): void {
+                        app(EditUiTranslation::class)->markReviewed($record['key'], $this->language, CurrentUser::get());
+                        $this->resetTable();
+                    }),
                 Action::make('edit')
                     ->label(fn (): string => CurrentUser::get()->canEditTranslationsFor($this->language) ? __('translations.admin.edit') : __('translations.admin.view'))
                     ->icon(Heroicon::OutlinedPencilSquare)

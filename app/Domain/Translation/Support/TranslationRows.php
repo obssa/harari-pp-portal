@@ -19,6 +19,9 @@ final class TranslationRows
 
     public const CHANGED = 'changed';
 
+    /** Translated by a machine and not yet checked by a person (ADR-0035). */
+    public const MACHINE = 'machine';
+
     /** Translated, but an approved glossary term is not used (ADR-0034). */
     public const GLOSSARY = 'glossary';
 
@@ -35,7 +38,7 @@ final class TranslationRows
         $english = $this->catalog->values('en');
         $values = $this->catalog->values($locale);
         $lines = UiTranslation::query()->where('group', '*')->get(['key', 'context', 'screenshot_url'])->keyBy('key');
-        $translatedFrom = $this->translatedFrom($locale);
+        [$translatedFrom, $origins] = $this->latestRevisions($locale);
 
         $rows = collect();
         foreach ($this->catalog->sourceKeys() as $key) {
@@ -43,6 +46,7 @@ final class TranslationRows
             $status = match (true) {
                 $text === '' => self::MISSING,
                 isset($translatedFrom[$key]) && $translatedFrom[$key] !== ($english[$key] ?? '') => self::CHANGED,
+                ($origins[$key] ?? null) === 'machine' => self::MACHINE,
                 $locale !== 'en' && $this->glossary->breaks((string) ($english[$key] ?? ''), $text, $locale) => self::GLOSSARY,
                 default => self::TRANSLATED,
             };
@@ -68,14 +72,16 @@ final class TranslationRows
     }
 
     /**
-     * The English text each key had when this language was last changed.
+     * The English text each key had when this language was last changed, and
+     * how that change was made.
      *
-     * @return array<string, ?string>
+     * @return array{0: array<string, ?string>, 1: array<string, string>}
      */
-    private function translatedFrom(string $locale): array
+    private function latestRevisions(string $locale): array
     {
         $latest = UiTranslationRevision::query()->where('locale', $locale)->selectRaw('max(id)')->groupBy('key');
+        $rows = UiTranslationRevision::query()->whereIn('id', $latest)->get(['key', 'source_text', 'origin']);
 
-        return UiTranslationRevision::query()->whereIn('id', $latest)->pluck('source_text', 'key')->all();
+        return [$rows->pluck('source_text', 'key')->all(), $rows->pluck('origin', 'key')->all()];
     }
 }

@@ -75,6 +75,26 @@ final class EditUiTranslation
         });
     }
 
+    /** A person checked a machine translation and kept it as it is. */
+    public function markReviewed(string $key, string $locale, User $actor): void
+    {
+        abort_unless(in_array($locale, Locales::all(), true) && $actor->canEditTranslationsFor($locale), 403);
+        $text = $this->catalog->values($locale)[$key] ?? null;
+        if ($text === null || $text === '') {
+            return;
+        }
+
+        UiTranslationRevision::query()->create([
+            'key' => $key,
+            'locale' => $locale,
+            'old_text' => $text,
+            'new_text' => $text,
+            'source_text' => $this->catalog->values('en')[$key] ?? null,
+            'origin' => 'editor',
+            'user_id' => $actor->id,
+        ]);
+    }
+
     /** The placeholders of a text, for the error message. */
     public static function placeholders(string $text): string
     {

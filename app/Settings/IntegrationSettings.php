@@ -24,6 +24,12 @@ class IntegrationSettings extends Settings
 
     public ?string $llm_api_key;
 
+    /** Machine translation (ADR-0035): "none", "google" or "llm". */
+    public string $mt_driver;
+
+    /** The LLM model; empty for the provider's default. */
+    public ?string $llm_model;
+
     public ?string $meta_page_access_token;
 
     public ?string $youtube_api_key;

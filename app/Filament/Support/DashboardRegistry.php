@@ -14,6 +14,7 @@ use App\Filament\Widgets\QueueHealth;
 use App\Filament\Widgets\QuickActions;
 use App\Filament\Widgets\SearchInsights;
 use App\Filament\Widgets\TranslationCoverage;
+use App\Filament\Widgets\TranslationQueue;
 use App\Models\User;
 use Filament\Widgets\Widget;
 use Filament\Widgets\WidgetConfiguration;
@@ -40,6 +41,7 @@ final class DashboardRegistry
         QuickActions::class,
         EditorialPipeline::class,
         TranslationCoverage::class,
+        TranslationQueue::class,
         SearchInsights::class,
         MediaStorage::class,
         QueueHealth::class,

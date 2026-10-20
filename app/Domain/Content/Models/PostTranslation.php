@@ -24,6 +24,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property bool $noindex
  * @property ContentStatus $status
  * @property ?CarbonImmutable $published_at
+ * @property ?CarbonImmutable $machine_translated_at
  * @property int $word_count
  * @property int $reading_time
  * @property bool $machine_translated
@@ -46,6 +47,7 @@ class PostTranslation extends Translation
             'body' => 'array',
             'status' => ContentStatus::class,
             'published_at' => 'immutable_datetime',
+            'machine_translated_at' => 'immutable_datetime',
             'reviewed_at' => 'immutable_datetime',
             'noindex' => 'boolean',
             'machine_translated' => 'boolean',

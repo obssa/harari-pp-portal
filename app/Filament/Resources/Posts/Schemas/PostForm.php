@@ -17,18 +17,26 @@ use App\Filament\Support\CurrentUser;
 use App\Filament\Support\MediaPicker;
 use App\Filament\Support\Translatable;
 use App\Services\Calendar\EthiopianCalendar;
+use App\Services\Translation\MachineTranslator;
+use Filament\Actions\Action;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Field;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Notifications\Notification;
+use Filament\Schemas\Components\Actions;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 
 class PostForm
 {
@@ -146,6 +154,7 @@ class PostForm
                     ->seconds(false)
                     ->visible(fn (): bool => $canPublish()),
             ]),
+            ...self::machineFields($locale),
             WorkflowActions::make($locale),
             Section::make(__('admin.posts.section.seo'))
                 ->collapsed()
@@ -161,6 +170,62 @@ class PostForm
                     Toggle::make("translations.{$locale}.noindex")
                         ->label(__('admin.posts.field.noindex')),
                 ]),
+        ];
+    }
+
+    /**
+     * "Translate from …" for Amharic and Afaan Oromo when machine translation
+     * is on, and the review mark that stays until a person ticks it (ADR-0035).
+     *
+     * @return array<Component|Field>
+     */
+    private static function machineFields(string $locale): array
+    {
+        $marked = fn (Get $get, ?Post $record): bool => (bool) $get("translations.{$locale}.machine_translated")
+            || $record?->translation($locale, fallback: false)?->getAttribute('machine_translated_at') !== null;
+
+        return [
+            Hidden::make("translations.{$locale}.machine_translated")->default(false),
+            Actions::make([
+                Action::make("machineTranslate_{$locale}")
+                    ->label(__('translations.machine.translate_post'))
+                    ->icon(Heroicon::OutlinedSparkles)
+                    ->color('gray')
+                    ->visible(fn (): bool => app(MachineTranslator::class)->enabledFor($locale))
+                    ->requiresConfirmation()
+                    ->modalDescription(__('translations.machine.translate_post_help'))
+                    ->action(function (Get $get, Set $set) use ($locale): void {
+                        $source = collect([$get('source_locale'), 'en', 'am', 'om'])
+                            ->first(fn (mixed $l): bool => is_string($l) && $l !== $locale && filled($get("translations.{$l}.title")));
+                        if (! is_string($source)) {
+                            Notification::make()->danger()->title(__('translations.machine.no_source'))->send();
+
+                            return;
+                        }
+                        $translator = app(MachineTranslator::class);
+                        $fields = [];
+                        foreach (['title', 'kicker', 'excerpt', 'seo_title', 'seo_description'] as $field) {
+                            $value = $get("translations.{$source}.{$field}");
+                            if (is_string($value) && trim($value) !== '') {
+                                $fields[$field] = $value;
+                            }
+                        }
+                        foreach ($translator->translate($fields, $source, $locale) as $field => $text) {
+                            if ($text !== null) {
+                                $set("translations.{$locale}.{$field}", $text);
+                            }
+                        }
+                        $body = $get("translations.{$source}.body");
+                        if (is_array($body)) {
+                            $set("translations.{$locale}.body", $translator->translateBody($body, $source, $locale));
+                        }
+                        $set("translations.{$locale}.machine_translated", true);
+                        Notification::make()->success()->title(__('translations.machine.post_done'))->send();
+                    }),
+            ]),
+            TextEntry::make("machine_badge_{$locale}")->hiddenLabel()->state(__('translations.machine.needs_review'))
+                ->badge()->color('warning')->visible($marked),
+            Toggle::make("translations.{$locale}.machine_reviewed")->label(__('translations.machine.reviewed'))->visible($marked),
         ];
     }
 }

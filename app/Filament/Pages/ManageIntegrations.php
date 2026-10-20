@@ -81,13 +81,27 @@ class ManageIntegrations extends SettingsPage
                     ]),
                 Section::make(__('admin.settings.integrations.section.translation'))
                     ->columns(3)
+                    ->description(__('translations.machine.settings_help'))
                     ->schema([
+                        Select::make('mt_driver')
+                            ->label(__('translations.machine.driver'))
+                            ->options([
+                                'none' => __('translations.machine.driver_none'),
+                                'google' => 'Google Cloud Translation',
+                                'llm' => __('translations.machine.driver_llm'),
+                            ])
+                            ->required()
+                            ->columnSpanFull(),
                         $this->secret('google_translate_api_key', $settings),
                         Select::make('llm_provider')
                             ->label(__('admin.settings.integrations.field.llm_provider'))
                             ->options(['anthropic' => 'Anthropic', 'openai' => 'OpenAI'])
                             ->required(),
                         $this->secret('llm_api_key', $settings),
+                        TextInput::make('llm_model')
+                            ->label(__('translations.machine.model'))
+                            ->helperText(__('translations.machine.model_help'))
+                            ->maxLength(100),
                     ]),
                 Section::make(__('admin.settings.integrations.section.social'))
                     ->columns(3)

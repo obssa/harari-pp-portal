@@ -4,6 +4,16 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 4, step 4.7 — machine translation for Amharic and Afaan Oromo (2026-10-20)
+
+- Administration → Integrations: machine translation (off by default) with Google Cloud Translation or an
+  AI model; only for Amharic and Afaan Oromo, never Harari (ADR-0035).
+- Translations grid: machine-translate one string or every missing string of a language; results are
+  marked "Machine translated" until a person checks them.
+- Posts: "Translate from another language by machine" fills an Amharic or Afaan Oromo tab, marked for a
+  person's check.
+- Dashboard widget "Translation queue".
+
 ### Phase 4, step 4.6 — glossary (2026-10-20)
 
 - Administration → Languages → Glossary: approved terms in every language with notes (ADR-0034).

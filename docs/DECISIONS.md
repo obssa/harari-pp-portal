@@ -1042,3 +1042,31 @@ the same way everywhere; §10 lists `glossary_terms` (term per locale, notes).
 
 **Consequences.** Matching is literal, so inflected forms in Amharic or Afaan Oromo may be flagged; the
 reviewer decides. Content translations (posts, pages) are not checked yet.
+
+## ADR-0035 — Machine translation for Amharic and Afaan Oromo (2026-10-20)
+
+**Context.** PLAN.md §6 allows machine translation as a first draft for Amharic and Afaan Oromo, reviewed
+by people, and never for Harari; §9 lists a `TranslationProvider` with Google, LLM, LibreTranslate and
+null drivers; §14 leaves open whether it may be used at all and with which provider.
+
+**Decision.**
+
+- `MachineTranslator` is off until a Super Admin chooses a driver under Integrations (Google Cloud
+  Translation, or an AI model from Anthropic or OpenAI with an optional model name) and its key is saved.
+  The settings page says that text is sent to that service.
+- It only translates into Amharic and Afaan Oromo; Harari is refused in code, not only in the screens.
+- Placeholders such as `:date` are replaced by tokens before sending and must come back exactly once;
+  otherwise the text is dropped. The AI model is asked for a formal register suitable for the party and
+  given the approved glossary terms (ADR-0034); it must answer with a list of the same length.
+- Interface strings: "Machine translate" per string and "Translate missing strings by machine" for a
+  language (in the queue) write with origin "machine"; such strings show "Machine translated" until a
+  person edits them or chooses "Mark as checked".
+- Posts: "Translate from another language by machine" fills an Amharic or Afaan Oromo tab from the
+  language the post was written in (title, kicker, summary, SEO texts and the words of the body, keeping
+  its structure and blocks). The language is marked "Machine translated: needs a person's check" until
+  someone ticks "Checked by a person".
+- The dashboard's "Translation queue" shows per language the missing, changed and machine translated
+  strings and the post languages still to check.
+
+**Consequences.** LibreTranslate is left out until someone hosts it. Pages, events and the other content
+types get the same post action later; the review mark does not block publishing.

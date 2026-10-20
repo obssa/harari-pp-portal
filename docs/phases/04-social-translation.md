@@ -17,7 +17,7 @@ round-trips (export → edit in Excel → import) without loss.
 | 4.4 | Translations module, editing: a grid of interface strings with filters (missing, changed since English changed, by group), context and screenshot links, per-language edit rights (`translations.{lang}.edit`), history of every change | done 2026-10-20 |
 | 4.5 | Export and import: JSON, CSV and Excel per language; import with a preview of what changes, placeholder checks and refusal of unknown keys; every import kept for rollback (`translation_imports`); the Harari round-trip proven by an automated test | done 2026-10-20 |
 | 4.6 | Glossary: approved terms per language with notes, shown next to strings that use them, and a check that flags strings not using an approved term | done 2026-10-20 |
-| 4.7 | Machine translation for Amharic and Afaan Oromo (never Harari, PLAN.md §6): a `TranslationProvider` interface with null, Google and LLM drivers; "Translate" in the grid and in content language tabs, marked "machine translated — needs review" until a person confirms; a translation queue dashboard widget | |
+| 4.7 | Machine translation for Amharic and Afaan Oromo (never Harari, PLAN.md §6): a `TranslationProvider` interface with null, Google and LLM drivers; "Translate" in the grid and in content language tabs, marked "machine translated — needs review" until a person confirms; a translation queue dashboard widget | done 2026-10-20 (posts first; other content later) |
 | 4.8 | Phase 4 gate: hub live with three platforms, the Harari round-trip on staging, manual chapter "Translations and the social hub", report, tag `v0.4.0` | |
 
 ## Main decisions to record

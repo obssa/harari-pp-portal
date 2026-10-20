@@ -10,6 +10,7 @@ use App\Domain\Media\Actions\SyncMediaUsage;
 use App\Domain\Media\Models\Media;
 use App\Domain\Translation\Support\Locales;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -130,6 +131,12 @@ final class SavePost
                 'seo_title' => self::nullable($values['seo_title'] ?? null),
                 'seo_description' => self::nullable($values['seo_description'] ?? null),
                 'noindex' => (bool) ($values['noindex'] ?? false),
+                // ADR-0035: marked when a machine filled the language in, until a person ticks "Reviewed".
+                'machine_translated_at' => match (true) {
+                    (bool) ($values['machine_reviewed'] ?? false) => null,
+                    (bool) ($values['machine_translated'] ?? false) => $current->machine_translated_at ?? CarbonImmutable::now(),
+                    default => $current?->machine_translated_at,
+                },
                 'status' => $status,
                 'published_at' => $canPublish
                     ? (filled($values['published_at'] ?? null) ? $values['published_at'] : $current?->published_at)

@@ -55,3 +55,4 @@ Harari translators.
 | `translations.*` | am, om | translations grid | "interface translations" (የገጽ ጽሑፎች ትርጉም / Hiikkaa barreeffamoota fuulaa); "placeholder" (ምልክት / Mallattoo) |
 | `translations.export.*`, `translations.import.*` | am, om | export, import and rollback | "import" (ከፋይል አስገባ / Faayilii irraa galchi); "roll back" (መልስ / Deebisi) |
 | `translations.glossary.*`, `translations.status.glossary` | am, om | glossary | "glossary" (የቃላት መፍቻ / Galmee jechootaa) |
+| `translations.machine.*`, `dashboard.widget.translation_queue` | am, om | machine translation | "machine translation" (የማሽን ትርጉም / Hiikkaa maashinii); "AI model" (የሰው ሰራሽ አስተውሎት ሞዴል / Moodeela AI) |
