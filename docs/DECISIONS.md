@@ -1219,3 +1219,32 @@ every page Cloudflare serves from its cache (ADR-0039).
 
 **Consequences.** Visitors with scripts off or with tracking protection are not counted, so figures are a
 lower bound. Days are Addis Ababa days.
+
+## ADR-0041 — Privacy requests and retention rules (2026-10-20)
+
+**Context.** PLAN.md §11 asks for data export and deletion requests through the admin, in line with
+Ethiopia's Personal Data Protection Proclamation No. 1321/2024, and retention that is shown and enforced.
+The public's personal data lives in event registrations and in messages and tickets (with notes and
+attachments); failed sign-ins keep the email that was tried. Names and contacts are encrypted (ADR-0025,
+ADR-0028), so they cannot be searched directly.
+
+**Decision.**
+
+- Tickets get the same keyed hashes of email and phone as registrations (HMAC with the app key; existing
+  tickets filled in by the migration). Administration → Privacy (`privacy.manage`, Admins and Super Admins)
+  finds a person by email or phone, shows what was found, downloads a JSON copy (registrations, tickets with
+  answers, replies and notes, attachment names, failed sign-ins) or erases it.
+- Erasure keeps anonymous records so event numbers and inbox statistics still add up: names, contacts,
+  hashes, answers and the text of replies and notes are removed, attachments deleted, ticket links stop
+  working, failed sign-ins forget the email. Staff accounts are only reported; they are handled under
+  Users. Copies in backups age out with the backups (30 days).
+- Every request is logged with its kind, what was found, who handled it and when, and a keyed hash of what
+  was searched instead of the email or phone; the audit log records it without personal data.
+- Retention, shown on the same page and enforced every night: registrations 180 days after the event;
+  resolved tickets 730 days after resolution (`PORTAL_SUBMISSION_RETENTION_DAYS`), open ones kept; audit log
+  two years; staff notifications 90 days after being read and a year at most; failed jobs 30 days; backups
+  30 days with fewer older copies; page view counts two years; search words a year; health results a week;
+  sessions after two hours without activity.
+
+**Consequences.** Searching by an address typed inside a form answer (rather than the contact fields) finds
+nothing; the person's contact email or phone is needed.

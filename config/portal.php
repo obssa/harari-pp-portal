@@ -81,6 +81,12 @@ return [
     'registration_retention_days' => (int) env('PORTAL_REGISTRATION_RETENTION_DAYS', 180),
 
     /*
+    | Days after a message or ticket was resolved that it is kept, with its
+    | attachments and notes, before it is deleted (ADR-0041).
+    */
+    'submission_retention_days' => (int) env('PORTAL_SUBMISSION_RETENTION_DAYS', 730),
+
+    /*
     | Media library (PLAN.md §7, §11; ADR-0009). Files are identified by their
     | content, never by their name; only these kinds are accepted.
     */

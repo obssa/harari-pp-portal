@@ -65,6 +65,8 @@ use App\Domain\Organisation\Models\Office;
 use App\Domain\Organisation\Policies\LeaderPolicy;
 use App\Domain\Organisation\Policies\LeaguePolicy;
 use App\Domain\Organisation\Policies\OfficePolicy;
+use App\Domain\Privacy\Models\PrivacyRequest;
+use App\Domain\Privacy\Policies\PrivacyRequestPolicy;
 use App\Domain\Projects\Models\Project;
 use App\Domain\Projects\Models\Statistic;
 use App\Domain\Projects\Policies\ProjectPolicy;
@@ -262,6 +264,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(TranslationImport::class, TranslationImportPolicy::class);
         Gate::policy(GlossaryTerm::class, GlossaryTermPolicy::class);
         Gate::policy(AnalyticsReport::class, AnalyticsReportPolicy::class);
+        Gate::policy(PrivacyRequest::class, PrivacyRequestPolicy::class);
 
         // Super Admins hold every permission (PLAN.md §8). Only permission
         // names (`module.action`) are short-circuited, so policy rules such as

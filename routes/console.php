@@ -36,6 +36,11 @@ Schedule::call(fn () => Cache::forever(QueueHealth::HEARTBEAT, now()->toIso8601S
 Schedule::command('events:send-reminders')->hourly()->withoutOverlapping();
 Schedule::command('events:purge-registrations')->dailyAt('03:30');
 
+// ADR-0041: resolved tickets, old notices and failed jobs are removed after their retention period.
+Schedule::command('forms:purge-submissions')->dailyAt('03:40');
+Schedule::command('notifications:prune')->dailyAt('03:45');
+Schedule::command('queue:prune-failed', ['--hours' => 720])->dailyAt('03:50');
+
 // ADR-0031: social sources are read when their interval has passed.
 Schedule::command('social:fetch')->everyFifteenMinutes()->withoutOverlapping();
 

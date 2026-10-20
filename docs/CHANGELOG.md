@@ -4,6 +4,13 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 5, step 5.6 — governance (2026-10-20)
+
+- Administration → Privacy: find what the portal holds about a person by email or phone, download a copy or
+  erase it; every request logged without the person's details (ADR-0041).
+- Retention rules shown and enforced: resolved tickets after two years, old staff notifications, failed jobs,
+  alongside the existing rules for registrations, the audit log, backups and counts.
+
 ### Phase 5, step 5.5 — analytics without cookies (2026-10-20)
 
 - Page views counted by a tiny first-party script without cookies or personal data, as daily totals per

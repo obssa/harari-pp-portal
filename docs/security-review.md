@@ -27,7 +27,7 @@ staging site. "Met" means in place and covered by tests or checked on staging; o
 | | sign-in alerts | met | a sign-in from a network and a browser both unseen in 90 days alerts the person in the portal and by email (ADR-0038) |
 | | admin IP allow-list | met (optional) | `PORTAL_ADMIN_ALLOWED_IPS`: addresses or CIDR ranges; empty by default |
 | Audit | audit log kept 2 years | met | `activitylog:clean` daily, `config/activitylog.php` |
-| Privacy | consent, purpose, export and deletion | partly | consent and purpose on every form and registration; export and erasure in step 5.6 |
+| Privacy | consent, purpose, export and deletion | met | consent and purpose on every form and registration; Administration → Privacy finds, exports and erases a person's data, with a request log and retention rules (ADR-0041) |
 | Errors | error reporting | met | Sentry once `SENTRY_LARAVEL_DSN` is set, without personal data or request bodies; until then the health page shows the newest errors from the log |
 | Social | token expiry warnings | met | Facebook page tokens checked every morning; managers warned 14, 7 and 1 days before and when Meta refuses a token (ADR-0038) |
 | Server | debug off, files private | met | `APP_DEBUG=false`; `/.env` answers 403; logs and private uploads 750, backups 700 |

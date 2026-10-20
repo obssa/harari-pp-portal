@@ -2,6 +2,7 @@
 
 namespace App\Domain\Forms\Actions;
 
+use App\Domain\Events\Models\EventRegistration;
 use App\Domain\Forms\Enums\SubmissionStatus;
 use App\Domain\Forms\Mail\NewSubmissionMail;
 use App\Domain\Forms\Mail\SubmissionReceivedMail;
@@ -110,6 +111,9 @@ final class SubmitForm
             'name' => $name !== '' ? $name : null,
             'email' => $email !== '' ? $email : null,
             'phone' => $phone,
+            // ADR-0041: keyed hashes so a person's tickets can be found for a privacy request.
+            'email_hash' => $email !== '' ? EventRegistration::hash($email) : null,
+            'phone_hash' => $phone !== null ? EventRegistration::hash($phone) : null,
             'answers' => $answers,
             'status' => SubmissionStatus::New,
             'due_at' => WorkingDays::after(CarbonImmutable::now(), $form->response_days),

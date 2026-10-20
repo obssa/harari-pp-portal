@@ -47,6 +47,7 @@ final class PermissionRegistry
         'applications' => ['view', 'review', 'export'],
         'volunteers' => ['view', 'manage'],
         'analytics' => ['view', 'export'],
+        'privacy' => ['manage'],
         'portal' => ['access'],
     ];
 

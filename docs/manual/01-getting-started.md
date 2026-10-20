@@ -132,6 +132,15 @@ tracking is not counted. **Download as CSV** opens in Excel; **Email this report
 Monday or on the 1st of each month to up to ten addresses (staff with the export right). The dashboard's
 **Visits** and **Most read pages** show the same figures for the dashboard's range.
 
+### Privacy requests (Admins)
+
+When someone asks what the portal holds about them, or asks for it to be deleted, open **Administration →
+Privacy** and search by the email address or phone number they used. You see how many event registrations
+and messages or tickets were found. **Download a copy (JSON)** gives you a file to send to the person;
+**Erase this person's data** removes their name, contact details, answers, attachments and notes and cannot
+be undone. Check who is asking before you send or erase anything. The page also lists how long each kind of
+record is kept.
+
 ## 8. Good practice
 
 - Never share your password, your 6-digit codes or your recovery codes, and never sign in on a shared

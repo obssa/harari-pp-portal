@@ -33,6 +33,9 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property SubmissionStatus $status
  * @property ?int $assignee_id
  * @property ?CarbonImmutable $due_at
+ * @property ?string $email_hash
+ * @property ?string $phone_hash
+ * @property ?CarbonImmutable $erased_at
  * @property ?CarbonImmutable $first_response_at
  * @property ?CarbonImmutable $resolved_at
  * @property CarbonImmutable $created_at
@@ -50,7 +53,7 @@ class FormSubmission extends Model
     /** Letters and digits that cannot be mistaken for each other. */
     public const REFERENCE_ALPHABET = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
 
-    protected $fillable = ['form_id', 'office_id', 'locale', 'reference', 'name', 'email', 'phone', 'answers', 'files', 'status', 'due_at'];
+    protected $fillable = ['form_id', 'office_id', 'locale', 'reference', 'name', 'email', 'phone', 'email_hash', 'phone_hash', 'answers', 'files', 'status', 'due_at'];
 
     protected $hidden = ['name', 'email', 'phone', 'answers'];
 
