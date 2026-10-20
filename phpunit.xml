@@ -39,6 +39,8 @@
         <env name="DB_USERNAME" value="harari"/>
         <env name="DB_PASSWORD" value="secret"/>
         <env name="DB_URL" value=""/>
+        <env name="DB_DRILL_DATABASE" value="harari_drill" force="true"/>
+        <env name="BACKUP_ARCHIVE_PASSWORD" value="sample-backup-password" force="true"/>
         <env name="MAIL_MAILER" value="array" force="true"/>
         <env name="QUEUE_CONNECTION" value="sync" force="true"/>
         <env name="SESSION_DRIVER" value="array" force="true"/>

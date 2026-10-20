@@ -108,6 +108,17 @@ social media services. A saved key is never shown again; leave the field empty t
 including sign-ins, failed sign-ins and refused requests. Entries are kept for two years and cannot be
 edited.
 
+### System health and backups (Admins and Super Admins)
+
+**Administration → System health** shows whether the portal is working: the database, background jobs,
+the scheduler, outgoing mail, storage and backups, checked every five minutes. **Run the checks now**
+checks again; **Send a test email** sends you a short message to prove mail leaves the portal. If a check
+starts failing you get a notice.
+
+The page also lists the backups (made every night at 02:00 and kept for 30 days) and the last restore
+drill. A Super Admin can choose **Back up now** or **Download** a backup. Backups contain personal data:
+download one only when it is needed and delete the copy afterwards.
+
 ## 8. Good practice
 
 - Never share your password, your 6-digit codes or your recovery codes, and never sign in on a shared

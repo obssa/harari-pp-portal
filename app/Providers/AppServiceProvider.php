@@ -41,6 +41,9 @@ use App\Domain\Forms\Models\SubmissionNote;
 use App\Domain\Forms\Policies\FormPolicy;
 use App\Domain\Forms\Policies\FormSubmissionPolicy;
 use App\Domain\Forms\Policies\SubmissionNotePolicy;
+use App\Domain\Health\HealthChecks;
+use App\Domain\Health\Listeners\NotifyAboutBackupProblems;
+use App\Domain\Health\Listeners\NotifyAboutFailingCheck;
 use App\Domain\Homepage\Models\HomepageSection;
 use App\Domain\Homepage\Policies\HomepageSectionPolicy;
 use App\Domain\Import\Models\ContentSource;
@@ -102,6 +105,7 @@ use Illuminate\Translation\Translator;
 use Illuminate\Validation\Rules\Password;
 use Laravel\Scout\EngineManager;
 use Spatie\Activitylog\Models\Activity;
+use Spatie\Health\Events\CheckEndedEvent;
 use Spatie\LaravelSettings\Events\SavingSettings;
 use Spatie\TranslationLoader\TranslationLoaderManager;
 use Throwable;
@@ -147,6 +151,15 @@ class AppServiceProvider extends ServiceProvider
         $this->bootLocalization();
         $this->bootMedia();
         $this->bootSafetyNets();
+        $this->bootHealth();
+    }
+
+    /** ADR-0037: the health checks, and notices when a check or a backup fails. */
+    private function bootHealth(): void
+    {
+        HealthChecks::register();
+        Event::listen(CheckEndedEvent::class, NotifyAboutFailingCheck::class);
+        Event::subscribe(NotifyAboutBackupProblems::class);
     }
 
     private function bootMedia(): void

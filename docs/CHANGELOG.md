@@ -4,6 +4,17 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 5, step 5.2 — health and backups (2026-10-20)
+
+- Administration → System health: database, cache, scheduler, background jobs, waiting and failed jobs,
+  mail, storage, disk, backups, debug mode and cached configuration, checked every five minutes; run now;
+  send a test email; a notice to administrators when a check starts failing (ADR-0037).
+- Nightly encrypted backups of the database and uploaded files to the server disk, kept 30 days with fewer
+  older copies; an off-site copy once a second disk is configured; a database backup before every deploy
+  with migrations.
+- `portal:restore-database` (one-command restore) and `portal:restore-drill`; `docs/runbook/restore.md`.
+- Super Admins can start a backup and download one from the health page.
+
 ### Phase 5, step 5.1 — notifications centre (2026-10-20)
 
 - Notifications page in the admin: each person's notices with read and kind filters, open, mark as read or

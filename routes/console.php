@@ -1,11 +1,16 @@
 <?php
 
 use App\Domain\Search\Models\SearchTerm;
+use App\Filament\Pages\SystemHealth;
 use App\Filament\Widgets\QueueHealth;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schedule;
+use Spatie\Health\Commands\DispatchQueueCheckJobsCommand;
+use Spatie\Health\Commands\RunHealthChecksCommand;
+use Spatie\Health\Commands\ScheduleCheckHeartbeatCommand;
+use Spatie\Health\Models\HealthCheckResultHistoryItem;
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
@@ -32,5 +37,20 @@ Schedule::command('events:purge-registrations')->dailyAt('03:30');
 // ADR-0031: social sources are read when their interval has passed.
 Schedule::command('social:fetch')->everyFifteenMinutes()->withoutOverlapping();
 
-// ADR-0020: search terms nobody searched for in a year are removed.
-Schedule::command('model:prune', ['--model' => [SearchTerm::class]])->dailyAt('03:10');
+// ADR-0020, ADR-0037: search terms nobody searched for in a year and health results older than a week are removed.
+Schedule::command('model:prune', ['--model' => [SearchTerm::class, HealthCheckResultHistoryItem::class]])->dailyAt('03:10');
+
+// ADR-0037: health checks every five minutes; the scheduler and queue checks need their heartbeats.
+Schedule::command(RunHealthChecksCommand::class)->everyFiveMinutes()->withoutOverlapping();
+Schedule::command(ScheduleCheckHeartbeatCommand::class)->everyMinute();
+Schedule::command(DispatchQueueCheckJobsCommand::class)->everyMinute();
+
+// ADR-0037: backups at 02:00 Addis Ababa time (23:00 UTC), old ones removed before, a check every
+// morning; "Back up now" on the health page runs one within a minute; a monthly restore drill.
+Schedule::command('backup:clean --disable-notifications')->dailyAt('22:40')->withoutOverlapping();
+Schedule::command('backup:run --disable-notifications')->dailyAt('23:00')->withoutOverlapping();
+Schedule::command('backup:monitor')->dailyAt('05:00');
+Schedule::command('backup:run --disable-notifications')->everyMinute()->name('backup-requested')->withoutOverlapping()
+    ->when(fn (): bool => (bool) Cache::pull(SystemHealth::BACKUP_REQUESTED));
+Schedule::command('portal:restore-drill')->monthlyOn(1, '01:00')->withoutOverlapping()
+    ->when(fn (): bool => filled(config('database.connections.drill.database')));

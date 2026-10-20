@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     COMPOSER_ALLOW_SUPERUSER=1 \
     COMPOSER_HOME=/tmp/composer
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        git unzip ca-certificates rsync \
+        git unzip ca-certificates rsync mariadb-client \
         libzip-dev libicu-dev libpng-dev libjpeg-dev libfreetype6-dev \
         libwebp-dev libavif-dev libonig-dev libxml2-dev \
  && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp --with-avif \

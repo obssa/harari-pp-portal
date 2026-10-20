@@ -30,6 +30,15 @@ return [
 
     'disks' => [
 
+        // Backups (ADR-0037): outside storage/app, so a backup never contains the previous ones.
+        'backups' => [
+            'driver' => 'local',
+            'root' => storage_path('backups'),
+            'serve' => false,
+            'throw' => false,
+            'report' => false,
+        ],
+
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app/private'),

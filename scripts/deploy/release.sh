@@ -22,7 +22,10 @@ for f in .env.production .env.staging .env.local .env.testing; do
 done
 
 mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views \
-         storage/logs storage/app/public storage/app/media storage/app/media-work bootstrap/cache
+         storage/logs storage/app/public storage/app/media storage/app/media-work bootstrap/cache \
+         storage/backups
+# Backups hold personal data: only the account may read them.
+chmod 700 storage/backups
 
 # Media library (ADR-0009): originals stay private; public uploads never run as code.
 chmod 750 storage/app/media storage/app/media-work
@@ -49,6 +52,8 @@ fi
 "$PHP_BIN" artisan down --render="errors::503" --retry=15 || true
 trap '"$PHP_BIN" artisan up >/dev/null 2>&1 || true' EXIT
 
+# ADR-0037: a database backup first whenever migrations are waiting; a failed backup stops here.
+"$PHP_BIN" artisan portal:backup-before-migrate --no-interaction
 "$PHP_BIN" artisan migrate --force --no-interaction
 "$PHP_BIN" artisan portal:sync-permissions --no-interaction
 "$PHP_BIN" artisan optimize

@@ -17,6 +17,7 @@ enum NoticeKind: string
     case Registrations = 'registrations';
     case Imports = 'imports';
     case Sources = 'sources';
+    case Health = 'health';
 
     public function label(): string
     {
@@ -26,6 +27,7 @@ enum NoticeKind: string
             self::Registrations => __('notifications.kind.registrations'),
             self::Imports => __('notifications.kind.imports'),
             self::Sources => __('notifications.kind.sources'),
+            self::Health => __('notifications.kind.health'),
         };
     }
 
@@ -37,6 +39,7 @@ enum NoticeKind: string
             self::Registrations => __('notifications.kind.registrations_help'),
             self::Imports => __('notifications.kind.imports_help'),
             self::Sources => __('notifications.kind.sources_help'),
+            self::Health => __('notifications.kind.health_help'),
         };
     }
 
@@ -62,6 +65,7 @@ enum NoticeKind: string
             self::Registrations => $user->can('events.registrations'),
             self::Imports => $user->can('posts.review') || $user->can('translations.view'),
             self::Sources => $user->can('social.manage') || $user->can('settings.view'),
+            self::Health => $user->can('settings.view'),
         };
     }
 

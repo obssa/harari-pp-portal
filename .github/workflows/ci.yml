@@ -62,6 +62,11 @@ jobs:
       - uses: ./.github/actions/setup-php
         with:
           coverage: pcov
+      - name: Drill database for the restore tests (ADR-0037)
+        run: >-
+          mysql -h 127.0.0.1 -P 3306 -uroot -proot -e
+          "CREATE DATABASE IF NOT EXISTS harari_drill CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+          GRANT ALL PRIVILEGES ON harari_drill.* TO 'harari'@'%'; FLUSH PRIVILEGES;"
       - name: Pest with coverage (minimum 80%)
         run: vendor/bin/pest --colors=never --coverage --min=80 --coverage-clover=coverage.xml
       - name: Domain code coverage (minimum 80% each)

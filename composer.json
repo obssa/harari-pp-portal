@@ -22,6 +22,8 @@
         "laravel/tinker": "^3.0",
         "rhukster/dom-sanitizer": "^1.0.19",
         "spatie/laravel-activitylog": "^4.12",
+        "spatie/laravel-backup": "^10.3",
+        "spatie/laravel-health": "^1.40",
         "spatie/laravel-medialibrary": "^11.23",
         "spatie/laravel-permission": "^8.3",
         "spatie/laravel-settings": "^3.9",

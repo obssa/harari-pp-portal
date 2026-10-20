@@ -63,6 +63,12 @@ return [
     'queues' => ['default', 'media'],
 
     /*
+    | The hosting quota in megabytes, if the host sets one: the health page
+    | warns at 80% and fails at 95% of it (ADR-0037). Empty: size only.
+    */
+    'storage_quota_mb' => env('PORTAL_STORAGE_QUOTA_MB'),
+
+    /*
     | Days after an event that registrations (names and contact details) are
     | kept before they are deleted (ADR-0025).
     */

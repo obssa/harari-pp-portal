@@ -62,6 +62,31 @@ return [
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
+            // Backups (ADR-0037): a consistent dump without locking tables; the
+            // shared host's user has no PROCESS privilege for tablespaces.
+            'dump' => [
+                'use_single_transaction' => true,
+                'add_extra_option' => '--no-tablespaces',
+                'timeout' => 60 * 10,
+            ],
+        ],
+
+        // The restore drill (ADR-0037) restores the newest backup into this
+        // second, empty database and checks it. Unset: no drill.
+        'drill' => [
+            'driver' => 'mysql',
+            'host' => env('DB_DRILL_HOST', env('DB_HOST', '127.0.0.1')),
+            'port' => env('DB_DRILL_PORT', env('DB_PORT', '3306')),
+            'database' => env('DB_DRILL_DATABASE'),
+            'username' => env('DB_DRILL_USERNAME', env('DB_USERNAME', 'root')),
+            'password' => env('DB_DRILL_PASSWORD', env('DB_PASSWORD', '')),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => env('DB_CHARSET', 'utf8mb4'),
+            'collation' => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
         ],
 
         'mariadb' => [

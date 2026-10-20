@@ -1099,3 +1099,41 @@ mailed to an office address.
 
 **Consequences.** Notices are queued like other mail. Old notices are not deleted automatically yet; the
 retention rules of step 5.6 will cover them.
+
+## ADR-0037 — Health checks, backups and the restore drill (2026-10-20)
+
+**Context.** PLAN.md §11 asks for daily database and media backups with 30-day retention, migrations run
+after a backup, a tested one-command restore and a restore drill, and §7/§9 name `spatie/laravel-health`
+and `spatie/laravel-backup`. The shared host has no monitoring of its own; errors stay in the server log
+until an error tracker is chosen (step 5.3).
+
+**Decision.**
+
+- `spatie/laravel-health` runs the checks every five minutes from the scheduler and keeps a week of
+  results: database, cache, scheduler heartbeat, background jobs (a test job per queue), jobs waiting
+  (oldest over 15 minutes warns, over an hour fails), failed jobs (1 warns, 10 fail), outgoing mail
+  (mailer and sender), media and uploads against `PORTAL_STORAGE_QUOTA_MB` when set, the server disk,
+  backups (newest older than 26 hours fails), debug mode off and cached configuration. `/up` stays the
+  plain boot check for uptime monitors.
+- Administration → System health (`settings.view`) shows the latest results, runs them on request and
+  sends a test email to the person asking. When a check turns from passing to failing, staff with
+  `settings.view` get a "System health" notice (ADR-0036); the package's own mail is off.
+- `spatie/laravel-backup` writes one AES-256 encrypted zip (`BACKUP_ARCHIVE_PASSWORD`) every night at 02:00
+  Addis Ababa time to the `backups` disk (`storage/backups`, mode 700, outside `storage/app` so backups
+  never contain backups): the database dump and the media library, public uploads and form attachments.
+  Not the code (git) nor `.env`. Kept 7 days in full, then daily to 30 days, weekly to 8 weeks, monthly to
+  6 months, yearly, under 5 GB. A second disk named in `BACKUP_OFFSITE_DISK` receives a copy; a failing
+  off-site copy keeps the local one.
+- The deploy runs `portal:backup-before-migrate` before `migrate`: when migrations are pending, the
+  database is backed up first and a failed backup stops the release.
+- `portal:restore-database` is the one-command restore (newest backup by default, asks first, writes the
+  audit log); `portal:restore-drill` restores into the separate `drill` connection, checks tables and
+  migrations, counts rows, empties it again and records the result, monthly once `DB_DRILL_DATABASE` is
+  set. Super Admins (`backups.manage`) can start a backup ("Back up now" runs it from the scheduler within a
+  minute, so a long backup is not cut off by the queue's retry time) and download one; downloads are
+  audited.
+
+**Consequences.** Backups hold personal data and are only as safe as the server account and the archive
+password; the password must also be kept outside the server. The off-site store and the drill database on
+staging wait for the owner (open questions 2 and the restore runbook). The test image gains the MariaDB
+client, and CI creates a `harari_drill` database for the restore tests.

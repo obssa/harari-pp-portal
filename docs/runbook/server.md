@@ -18,6 +18,7 @@ repository is public); they are in the server `.env`, GitHub secrets, and the ow
 | Deploy key | ed25519 key used only by this repository's GitHub Actions, authorised with the `restrict` option (commands and rsync only; no forwarding, no terminal) |
 | Host key | pinned in the GitHub secret `DEPLOY_KNOWN_HOSTS`; fingerprints checked against the keys the owner's PC already trusted |
 | Rollback snapshot | `~/releases/hararipp/prev.tar.gz` (code only, written before every deploy) |
+| Backups | `storage/backups/harari-pp-portal/` (mode 700): nightly database and uploads, encrypted with `BACKUP_ARCHIVE_PASSWORD` (set in `.env` on 2026-10-20; the `.env` before that change is in `~/backups/`); see `restore.md` |
 | Leftover | `~/public_html/hararipp.orcamind.dev` (cPanel's original folder) is no longer served and can be removed |
 
 Status: **provisioned 2026-10-18**; first release `502124372d0f` deployed by GitHub Actions.
