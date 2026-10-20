@@ -27,6 +27,10 @@ use App\Domain\Content\Policies\RevisionPolicy;
 use App\Domain\Content\Policies\TaxonomyPolicy;
 use App\Domain\Dashboard\Models\Announcement;
 use App\Domain\Dashboard\Policies\AnnouncementPolicy;
+use App\Domain\Documents\Models\Document;
+use App\Domain\Documents\Models\DocumentVersion;
+use App\Domain\Documents\Policies\DocumentPolicy;
+use App\Domain\Documents\Policies\DocumentVersionPolicy;
 use App\Domain\Events\Models\Event as PortalEvent;
 use App\Domain\Events\Models\EventRegistration;
 use App\Domain\Events\Policies\EventPolicy;
@@ -200,6 +204,8 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Video::class, VideoPolicy::class);
         Gate::policy(PortalEvent::class, EventPolicy::class);
         Gate::policy(EventRegistration::class, EventRegistrationPolicy::class);
+        Gate::policy(Document::class, DocumentPolicy::class);
+        Gate::policy(DocumentVersion::class, DocumentVersionPolicy::class);
 
         // Super Admins hold every permission (PLAN.md §8). Only permission
         // names (`module.action`) are short-circuited, so policy rules such as

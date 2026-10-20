@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Domain\Content\Models\PageTranslation;
 use App\Domain\Content\Models\PostTranslation;
+use App\Domain\Documents\Models\DocumentTranslation;
 use App\Domain\Events\Models\EventTranslation;
 use App\Domain\Organisation\Models\LeaderTranslation;
 use App\Domain\Organisation\Models\LeagueTranslation;
@@ -39,7 +40,7 @@ final class SearchReindexCommand extends Command
             $count = 0;
             $model::query()->chunkById(200, function (Collection $translations) use (&$count): void {
                 foreach ($translations as $translation) {
-                    /** @var PostTranslation|PageTranslation|LeaderTranslation|OfficeTranslation|LeagueTranslation|EventTranslation $translation */
+                    /** @var PostTranslation|PageTranslation|LeaderTranslation|OfficeTranslation|LeagueTranslation|EventTranslation|DocumentTranslation $translation */
                     $translation->forceFill(['search_text' => SearchText::build($translation->searchableParts())])->saveQuietly();
                     $count++;
                 }

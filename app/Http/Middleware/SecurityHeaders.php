@@ -36,7 +36,9 @@ final class SecurityHeaders
         }
 
         $headers->set('X-Content-Type-Options', 'nosniff');
-        $headers->set('X-Frame-Options', 'DENY');
+        if (! $headers->has('X-Frame-Options')) {
+            $headers->set('X-Frame-Options', 'DENY');
+        }
         $headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
         $headers->set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()');
         $headers->set('Cross-Origin-Opener-Policy', 'same-origin');

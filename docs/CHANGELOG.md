@@ -4,6 +4,20 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 3, step 3.5 — documents library and notices (2026-10-20)
+
+- Admin → Content → Documents: programmes, manifestos, bylaws, reports, policies, speeches, forms and
+  publications, plus vacancies, tenders and notices with a deadline; a file per language, year, date
+  issued, office or league and related documents (ADR-0026).
+- A new file keeps the old one as an earlier version with a note; earlier versions can be downloaded
+  and made current again.
+- `/{lang}/documents` with filters by type, year and office; each document page shows PDFs in the
+  page, the download button with type, size and version, earlier versions and related documents.
+  Readers of a language without its own file get another language's file, with a note.
+- `/{lang}/notices` lists open vacancies, tenders and notices by deadline and the recently closed ones.
+- Downloads are counted (once an hour per visitor, robots left out); documents are in search, the
+  sitemaps and the menus.
+
 ### Phase 3, step 3.4 — event registration (2026-10-20)
 
 - Events can take registrations: places, a waiting list that moves up by itself, and a closing time.

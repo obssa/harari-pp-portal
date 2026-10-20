@@ -7,6 +7,7 @@ use App\Domain\Content\Models\Page;
 use App\Domain\Content\Models\PageTranslation;
 use App\Domain\Content\Models\Post;
 use App\Domain\Content\Models\PostTranslation;
+use App\Domain\Documents\Models\Document;
 use App\Domain\Events\Models\Event;
 use App\Domain\Media\Models\Gallery;
 use App\Domain\Media\Models\Video;
@@ -54,7 +55,7 @@ final class SitemapController extends Controller
     private function entries(string $language): array
     {
         $entries = [];
-        foreach (['home', 'news.index', 'leaders.index', 'offices.index', 'leagues.index', 'structure', 'gallery.index', 'videos.index', 'events.index'] as $route) {
+        foreach (['home', 'news.index', 'leaders.index', 'offices.index', 'leagues.index', 'structure', 'gallery.index', 'videos.index', 'events.index', 'documents.index', 'documents.notices'] as $route) {
             $alternates = [];
             foreach (Locales::all() as $locale) {
                 $alternates[$locale] = route($route, ['locale' => $locale]);
@@ -116,6 +117,7 @@ final class SitemapController extends Controller
             ...PublicDirectory::sitemap(Gallery::query()->with('translations')->get(), $language, 'gallery.show'),
             ...PublicDirectory::sitemap(Video::query()->with('translations')->get(), $language, 'videos.show'),
             ...PublicDirectory::sitemap(Event::query()->with('translations')->get(), $language, 'events.show'),
+            ...PublicDirectory::sitemap(Document::query()->publicAccess()->with('translations')->get(), $language, 'documents.show'),
         ];
 
         return $entries;

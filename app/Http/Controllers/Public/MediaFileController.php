@@ -43,6 +43,12 @@ final class MediaFileController extends Controller
             'Cross-Origin-Resource-Policy' => 'same-site',
         ];
 
+        if ($mime === 'application/pdf') {
+            // The document page shows PDFs in a frame (ADR-0026); no other site may.
+            $headers['Content-Security-Policy'] = "frame-ancestors 'self'";
+            $headers['X-Frame-Options'] = 'SAMEORIGIN';
+        }
+
         if ($media->kind === MediaKind::Vector || str_starts_with($mime, 'text/')) {
             $headers['Content-Security-Policy'] = "default-src 'none'; style-src 'unsafe-inline'; img-src data:; sandbox";
         }

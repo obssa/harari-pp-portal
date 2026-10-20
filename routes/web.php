@@ -1,6 +1,7 @@
 <?php
 
 use App\Domain\Translation\Support\Locales;
+use App\Http\Controllers\Public\DocumentController;
 use App\Http\Controllers\Public\EventController;
 use App\Http\Controllers\Public\EventRegistrationController;
 use App\Http\Controllers\Public\FeedController;
@@ -104,6 +105,12 @@ Route::prefix('{locale}')
         Route::get('events/feed.ics', [EventController::class, 'feed'])->name('events.feed');
         Route::get('events/{slug}.ics', [EventController::class, 'ics'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('events.ics');
         Route::get('events/{slug}', [EventController::class, 'show'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('events.show');
+        Route::get('documents', [DocumentController::class, 'index'])->name('documents.index');
+        Route::get('documents/{slug}', [DocumentController::class, 'show'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('documents.show');
+        // Counted, so never answered from the cache.
+        Route::get('documents/{slug}/download', [DocumentController::class, 'download'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')
+            ->withoutMiddleware(CachePublicPages::class)->name('documents.download');
+        Route::get('notices', [DocumentController::class, 'notices'])->name('documents.notices');
         Route::get('gallery', [GalleryController::class, 'index'])->name('gallery.index');
         Route::get('videos', [VideoController::class, 'index'])->name('videos.index');
         Route::get('videos/{slug}', [VideoController::class, 'show'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('videos.show');

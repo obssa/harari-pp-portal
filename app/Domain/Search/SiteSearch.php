@@ -6,6 +6,7 @@ use App\Domain\Content\Enums\ContentStatus;
 use App\Domain\Content\Models\PageTranslation;
 use App\Domain\Content\Models\PostTranslation;
 use App\Domain\Content\Queries\PublicPosts;
+use App\Domain\Documents\Models\DocumentTranslation;
 use App\Domain\Events\Models\EventTranslation;
 use App\Domain\Organisation\Models\LeaderTranslation;
 use App\Domain\Organisation\Models\LeagueTranslation;
@@ -22,7 +23,7 @@ use Illuminate\Support\Collection;
  */
 final class SiteSearch
 {
-    /** @var array<string, array{model: class-string<PostTranslation|PageTranslation|LeaderTranslation|OfficeTranslation|LeagueTranslation|EventTranslation>, parent: string, order: string}> */
+    /** @var array<string, array{model: class-string<PostTranslation|PageTranslation|LeaderTranslation|OfficeTranslation|LeagueTranslation|EventTranslation|DocumentTranslation>, parent: string, order: string, public_access?: bool}> */
     public const KINDS = [
         'news' => ['model' => PostTranslation::class, 'parent' => 'post', 'order' => 'published_at'],
         'pages' => ['model' => PageTranslation::class, 'parent' => 'page', 'order' => 'title'],
@@ -30,6 +31,7 @@ final class SiteSearch
         'offices' => ['model' => OfficeTranslation::class, 'parent' => 'office', 'order' => 'name'],
         'leagues' => ['model' => LeagueTranslation::class, 'parent' => 'league', 'order' => 'name'],
         'events' => ['model' => EventTranslation::class, 'parent' => 'event', 'order' => 'title'],
+        'documents' => ['model' => DocumentTranslation::class, 'parent' => 'document', 'order' => 'title', 'public_access' => true],
     ];
 
     /** Results per kind on the overview; one kind alone shows more. */
@@ -67,7 +69,8 @@ final class SiteSearch
                     ->where('status', ContentStatus::Published->value)
                     ->whereNotNull('published_at')
                     ->where('published_at', '<=', now())
-                    ->whereHas($spec['parent'])
+                    // Members-only documents never show up for the public (PLAN.md §10).
+                    ->whereHas($spec['parent'], fn (Builder $parent): Builder => ($spec['public_access'] ?? false) ? $parent->where('access', 'public') : $parent)
                     ->with($spec['parent'])
                     ->orderBy($spec['order'], $spec['order'] === 'published_at' ? 'desc' : 'asc'))
                 ->take($kind === null ? self::PER_KIND + 1 : self::PER_KIND_ALONE)
@@ -116,6 +119,13 @@ final class SiteSearch
                 'title' => $translation->name,
                 'summary' => $translation->summary,
                 'label' => $translation->office->type->label(),
+                'locale' => $locale,
+            ],
+            $translation instanceof DocumentTranslation => [
+                'url' => route('documents.show', ['locale' => $locale, 'slug' => $slug]),
+                'title' => $translation->title,
+                'summary' => $translation->summary,
+                'label' => $translation->document->type->label(),
                 'locale' => $locale,
             ],
             $translation instanceof EventTranslation => [

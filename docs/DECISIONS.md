@@ -789,3 +789,38 @@ same OpenStreetMap frame as on office pages.
 **Consequences.** Changing the app key makes old tickets unreadable, as for all encrypted data. Custom
 questions on the form come with the forms builder (step 3.7). On existing installs a Super Admin grants
 `events.registrations` to further roles under Roles.
+
+## ADR-0026 — Documents library and notices (2026-10-20)
+
+**Context.** PLAN.md §4 asks for a library of programmes, bylaws, reports, policies, speeches and forms
+(type, language, year, office; in-browser PDF viewer; download counter; version history; related
+documents) and for vacancies, tenders and notices with deadlines. §10 lists `documents` and
+`document_translations` and requires that members-only documents are never served without sign-in.
+
+**Decision.**
+
+- A document has a type, a year, the date issued, an optional office or league, related documents (up to
+  eight) and, for vacancies, tenders and notices only, a deadline in Addis Ababa time. Each language has
+  its own title, summary, description and file from the media library (PDF or office formats), and is
+  published per language (ADR-0017).
+- A language without its own file offers the file of another published language (Amharic first) and
+  says which language it is in.
+- Choosing a new file for a language keeps the old one as an earlier version with its number, note and
+  date; the document page lists earlier versions for download, and an editor can make one current
+  again (the file it replaces becomes a version too, so history only grows). Old files stay marked as
+  used in the media library.
+- `/{lang}/documents` lists library types with filters for type, year and office; `/{lang}/notices` shows
+  open vacancies, tenders and notices by the nearest deadline, then the recently closed ones.
+- PDFs open inside the document page in the browser's own viewer: PDF files may be framed by this site
+  only (`frame-ancestors 'self'`, `X-Frame-Options: SAMEORIGIN`), everything else stays unframeable. No
+  PDF.js: it would add about 700 KB to document pages; the download button is always there for phones
+  that do not show PDFs in a page.
+- Downloads go through `/{lang}/documents/{slug}/download`, which is never cached, counts once an hour per
+  visitor (address and browser hashed), ignores robots, and sends the file. Reading in the viewer is not
+  counted.
+- The `access` column exists, but the admin offers public documents only. Members-only documents are left
+  out of the library, the pages, search and sitemaps; the member portal (Phase 6) will add access to them
+  and protect their files.
+
+**Consequences.** Full-text search inside PDFs waits for Meilisearch (PLAN.md §16); search covers titles,
+summaries and descriptions.
