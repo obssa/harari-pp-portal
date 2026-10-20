@@ -924,3 +924,31 @@ larger map" link stays below the frame.
 
 **Consequences.** Readers who want the map press once more. The same rule as for YouTube videos
 (ADR-0024): nothing from another site loads without the reader asking.
+
+## ADR-0031 — Social sources, fetching and moderation (2026-10-20)
+
+**Context.** PLAN.md §4 asks for a social media hub with the posts of the branch, its offices and its
+leagues; §9 for a fetcher per platform; §10 for `social_sources` and `social_posts` with a unique
+`external_id` per source. Story import (ADR-0022) already reads the public Telegram channels for news
+drafts; the hub is a different use of the same accounts: showing posts as they are, linking out.
+
+**Decision.**
+
+- A source is an account on one network (Telegram, YouTube, Facebook, TikTok, Instagram, X) with the name
+  it is shown under, an optional office or league, how often it is read (15 minutes to a day, an hour by
+  default) and whether it is read and shown. Credentials, when a network needs them, are stored
+  encrypted on the source and never logged.
+- A post keeps its text as published, the date, the link to the original, whether it has a video, its
+  counts when the network gives them, and a copy of its first picture in the media library (cleaned like
+  any upload, credited to the account), so the hub never loads pictures from the networks.
+- Fetchers only read what the network publishes for everyone or what its API allows with the account's
+  own token. Telegram is read from the public channel pages, as for story import; other networks follow
+  in step 4.2. A network without a fetcher is listed but not read.
+- `social:fetch` runs every fifteen minutes and reads the sources whose interval has passed; "Read now"
+  reads one at once. Each fetch reads at most thirty posts. A failure is written on the source and never
+  stops the others.
+- Staff with `social.manage` hide a post or pin it to the top; fetching again never undoes that. Text is
+  never edited: it is the account's own post.
+
+**Consequences.** Deleting a post on the network does not remove it from the hub until staff hide it;
+counts are as of the last fetch.

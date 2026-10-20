@@ -29,5 +29,8 @@ Schedule::call(fn () => Cache::forever(QueueHealth::HEARTBEAT, now()->toIso8601S
 Schedule::command('events:send-reminders')->hourly()->withoutOverlapping();
 Schedule::command('events:purge-registrations')->dailyAt('03:30');
 
+// ADR-0031: social sources are read when their interval has passed.
+Schedule::command('social:fetch')->everyFifteenMinutes()->withoutOverlapping();
+
 // ADR-0020: search terms nobody searched for in a year are removed.
 Schedule::command('model:prune', ['--model' => [SearchTerm::class]])->dailyAt('03:10');

@@ -68,6 +68,10 @@ use App\Domain\Search\Engines\WordMatchEngine;
 use App\Domain\Search\Models\SearchTerm;
 use App\Domain\Search\Policies\SearchTermPolicy;
 use App\Domain\Settings\Listeners\RecordSettingsChanges;
+use App\Domain\Social\Models\SocialPost;
+use App\Domain\Social\Models\SocialSource;
+use App\Domain\Social\Policies\SocialPostPolicy;
+use App\Domain\Social\Policies\SocialSourcePolicy;
 use App\Domain\Translation\FallbackTranslator;
 use App\Domain\Translation\Support\Locales;
 use App\Domain\Webhooks\Listeners\QueueWebhooks;
@@ -221,6 +225,8 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Form::class, FormPolicy::class);
         Gate::policy(FormSubmission::class, FormSubmissionPolicy::class);
         Gate::policy(SubmissionNote::class, SubmissionNotePolicy::class);
+        Gate::policy(SocialSource::class, SocialSourcePolicy::class);
+        Gate::policy(SocialPost::class, SocialPostPolicy::class);
 
         // Super Admins hold every permission (PLAN.md §8). Only permission
         // names (`module.action`) are short-circuited, so policy rules such as

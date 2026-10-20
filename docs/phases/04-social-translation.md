@@ -11,7 +11,7 @@ round-trips (export → edit in Excel → import) without loss.
 
 | Step | Content | Status |
 |---|---|---|
-| 4.1 | Social sources and posts: sources per platform owned by the branch, an office or a league; `social_posts` with text, media, permalink and metrics; a `SocialFetcher` interface; the Telegram fetcher on public channel pages (as the story import, ADR-0022); scheduled fetching with errors kept per source; moderation in the admin (hide, pin) | |
+| 4.1 | Social sources and posts: sources per platform owned by the branch, an office or a league; `social_posts` with text, media, permalink and metrics; a `SocialFetcher` interface; the Telegram fetcher on public channel pages (as the story import, ADR-0022); scheduled fetching with errors kept per source; moderation in the admin (hide, pin) | done 2026-10-20 |
 | 4.2 | More platforms: YouTube from the channel's public feed (the Data API when a key is saved, for counts and live status); Facebook through the Graph API with a page token (no scraping behind the login); TikTok and Instagram posts added by address through oEmbed | |
 | 4.3 | The public hub `/{lang}/social` with platform and owner filters, follow buttons and QR codes for the Telegram channels; a homepage teaser section; the latest posts on office and league pages; images copied into the library so the hub loads nothing from the platforms | |
 | 4.4 | Translations module, editing: a grid of interface strings with filters (missing, changed since English changed, by group), context and screenshot links, per-language edit rights (`translations.{lang}.edit`), history of every change | |

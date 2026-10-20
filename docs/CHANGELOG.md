@@ -4,6 +4,15 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 4, step 4.1 — social sources and posts (2026-10-20)
+
+- Admin → Social media → Accounts: the Telegram, YouTube, Facebook, TikTok, Instagram and X accounts of
+  the branch, its offices and leagues, read every so often (ADR-0031). Telegram channels are read from
+  their public pages; "Read now" reads one at once; errors are shown per account.
+- Admin → Social media → Social posts: every post read, with its first picture copied into the library;
+  hide a post or pin it to the top.
+- Phase 4 plan in `docs/phases/04-social-translation.md`.
+
 ## v0.3.0 — Phase 3 complete (2026-10-20)
 
 - Sample content is on staging; Lighthouse audits a sample event and a sample document page; Phase 3
