@@ -18,7 +18,8 @@
     @endif
     <x-locale-meta :alternates="$alternates" />
     <x-seo :title="$title ?? __('site.name')" :description="$description ?? __('site.description')" :image="$image ?? app(\App\Domain\Content\Support\OgImage::class)->url('site-'.app()->getLocale(), __('site.name'), __('site.office'))" :type="$type" :json-ld="$jsonLd" />
-    @vite(['resources/css/app.css'])
+    {{-- ADR-0040: the only script on public pages, a cookieless page view count. --}}
+    @vite(['resources/css/app.css', 'resources/js/beacon.js'])
 </head>
 <body class="flex min-h-screen flex-col bg-canvas text-ink antialiased">
     <a href="#content" class="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-50 focus:rounded-control focus:bg-primary-700 focus:px-4 focus:py-2 focus:text-white">

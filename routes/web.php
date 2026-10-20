@@ -14,6 +14,7 @@ use App\Http\Controllers\Public\MediaFileController;
 use App\Http\Controllers\Public\NewsController;
 use App\Http\Controllers\Public\OfficeController;
 use App\Http\Controllers\Public\PageController;
+use App\Http\Controllers\Public\PageViewController;
 use App\Http\Controllers\Public\PressController;
 use App\Http\Controllers\Public\PreviewController;
 use App\Http\Controllers\Public\ProjectController;
@@ -64,6 +65,12 @@ Route::get('/preview/posts/{post}/{language}', PreviewController::class)
     ->middleware('signed')
     ->withoutMiddleware($stateless)
     ->name('preview.post');
+
+// Cookieless page view counts (ADR-0040): no session, no cookies, nothing about the visitor stored.
+Route::post('/pv', PageViewController::class)
+    ->withoutMiddleware([...$stateless, EncryptCookies::class, AddQueuedCookiesToResponse::class])
+    ->middleware('throttle:beacon')
+    ->name('pageview');
 
 // Search engines (ADR-0015).
 Route::get('/robots.txt', RobotsController::class)->withoutMiddleware($stateless)->name('robots');

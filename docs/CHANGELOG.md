@@ -4,6 +4,14 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 5, step 5.5 — analytics without cookies (2026-10-20)
+
+- Page views counted by a tiny first-party script without cookies or personal data, as daily totals per
+  page and language, referring site, device and country (ADR-0040).
+- Dashboard widgets "Visits" and "Most read pages".
+- Insights → Traffic reports: by page, section, language, referrer, device or country, with CSV export and
+  weekly or monthly reports by email.
+
 ### Phase 5, step 5.4 — performance and caching (2026-10-20)
 
 - Cloudflare cache purge of this site's pages after every public change, once a zone id and an API token are

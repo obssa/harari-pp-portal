@@ -1192,3 +1192,30 @@ sites of the same owner.
 
 **Consequences.** Until the owner adds the Cache Rule (`docs/runbook/server.md`), Cloudflare passes HTML
 through and the origin answers every request; the headers are ready for the day it is added.
+
+## ADR-0040 — Cookieless page view counts and traffic reports (2026-10-20)
+
+**Context.** PLAN.md §7 and §11 ask for privacy-friendly analytics per language and content type, traffic
+widgets on the dashboard and reports, with no third-party trackers. Counting on the server alone misses
+every page Cloudflare serves from its cache (ADR-0039).
+
+**Decision.**
+
+- Public pages load one small first-party script (`resources/js/beacon.js`, the only script on them). It
+  sends the page's address, the host of the referring site and the window width to `POST /pv`, without
+  cookies, and sends nothing when the browser asks not to be tracked (Do Not Track, Global Privacy Control)
+  or is automated. Cloudflare's country header is read on the way in.
+- The server keeps daily totals only: views per day, language and page (with its section), and per day and
+  language by referring site, kind of device (from the width) and country. No address, user agent,
+  identifier or visit sequence is stored, so there is no personal data and no consent banner; unique
+  visitors are not counted for the same reason. Bots, other sites' addresses and malformed beacons are
+  ignored; the endpoint has its own rate limit and answers 204. Counts older than two years are removed.
+- Dashboard widgets "Visits" (total against the previous range, a bar per day, languages and devices) and
+  "Most read pages" (`analytics.view`). Insights → Traffic reports: views by page, section, language,
+  referring site, device or country, for a period and a language; CSV export and scheduled reports
+  (`analytics.export`). Scheduled reports go out at 07:00 Addis Ababa time, weekly on Mondays for the last
+  seven days or monthly on the 1st for the month before, a separate email to each of up to ten recipients,
+  with the top rows and all rows as CSV.
+
+**Consequences.** Visitors with scripts off or with tracking protection are not counted, so figures are a
+lower bound. Days are Addis Ababa days.

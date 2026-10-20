@@ -123,6 +123,15 @@ The page also lists the backups (made every night at 02:00 and kept for 30 days)
 drill. A Super Admin can choose **Back up now** or **Download** a backup. Backups contain personal data:
 download one only when it is needed and delete the copy afterwards.
 
+### Traffic reports
+
+**Insights → Traffic reports** shows how often the public site was opened: by page, section, language,
+referring site, device or country, for the last week, month, quarter or year, for one language or all.
+Visits are counted without cookies and without anything about the visitor, so a person who blocks
+tracking is not counted. **Download as CSV** opens in Excel; **Email this report regularly** sends it every
+Monday or on the 1st of each month to up to ten addresses (staff with the export right). The dashboard's
+**Visits** and **Most read pages** show the same figures for the dashboard's range.
+
 ## 8. Good practice
 
 - Never share your password, your 6-digit codes or your recovery codes, and never sign in on a shared

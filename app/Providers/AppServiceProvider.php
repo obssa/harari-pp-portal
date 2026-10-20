@@ -8,6 +8,8 @@ use App\Domain\Access\Models\Role;
 use App\Domain\Access\Policies\ActivityPolicy;
 use App\Domain\Access\Policies\RolePolicy;
 use App\Domain\Access\Policies\UserPolicy;
+use App\Domain\Analytics\Models\AnalyticsReport;
+use App\Domain\Analytics\Policies\AnalyticsReportPolicy;
 use App\Domain\Content\Events\ContentTransitioned;
 use App\Domain\Content\Listeners\NotifyAboutTransition;
 use App\Domain\Content\Models\Category;
@@ -196,6 +198,9 @@ class AppServiceProvider extends ServiceProvider
 
         RateLimiter::for('search', fn (Request $request): Limit => Limit::perMinute(30)->by((string) $request->ip()));
 
+        // ADR-0040: page view beacons, generous but bounded per address.
+        RateLimiter::for('beacon', fn (Request $request): Limit => Limit::perMinute(120)->by('beacon:'.$request->ip()));
+
         // Public forms (PLAN.md §11): a few tries a minute, a few dozen an hour, per address.
         RateLimiter::for('forms', fn (Request $request): array => [
             Limit::perMinute(5)->by('forms-minute:'.$request->ip()),
@@ -256,6 +261,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(SocialPost::class, SocialPostPolicy::class);
         Gate::policy(TranslationImport::class, TranslationImportPolicy::class);
         Gate::policy(GlossaryTerm::class, GlossaryTermPolicy::class);
+        Gate::policy(AnalyticsReport::class, AnalyticsReportPolicy::class);
 
         // Super Admins hold every permission (PLAN.md §8). Only permission
         // names (`module.action`) are short-circuited, so policy rules such as

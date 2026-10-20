@@ -1,5 +1,7 @@
 <?php
 
+use App\Domain\Analytics\Models\PageViewDay;
+use App\Domain\Analytics\Models\TrafficDay;
 use App\Domain\Search\Models\SearchTerm;
 use App\Filament\Pages\SystemHealth;
 use App\Filament\Widgets\QueueHealth;
@@ -37,8 +39,12 @@ Schedule::command('events:purge-registrations')->dailyAt('03:30');
 // ADR-0031: social sources are read when their interval has passed.
 Schedule::command('social:fetch')->everyFifteenMinutes()->withoutOverlapping();
 
-// ADR-0020, ADR-0037: search terms nobody searched for in a year and health results older than a week are removed.
-Schedule::command('model:prune', ['--model' => [SearchTerm::class, HealthCheckResultHistoryItem::class]])->dailyAt('03:10');
+// ADR-0020, ADR-0037, ADR-0040: search terms unused for a year, health results older than a week and page view
+// counts older than two years are removed.
+Schedule::command('model:prune', ['--model' => [SearchTerm::class, HealthCheckResultHistoryItem::class, PageViewDay::class, TrafficDay::class]])->dailyAt('03:10');
+
+// ADR-0040: scheduled traffic reports leave at 07:00 Addis Ababa time.
+Schedule::command('analytics:send-reports')->dailyAt('04:00')->withoutOverlapping();
 
 // ADR-0037: health checks every five minutes; the scheduler and queue checks need their heartbeats.
 Schedule::command(RunHealthChecksCommand::class)->everyFiveMinutes()->withoutOverlapping();

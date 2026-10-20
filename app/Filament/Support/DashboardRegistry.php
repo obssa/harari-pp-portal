@@ -13,6 +13,8 @@ use App\Filament\Widgets\MediaStorage;
 use App\Filament\Widgets\QueueHealth;
 use App\Filament\Widgets\QuickActions;
 use App\Filament\Widgets\SearchInsights;
+use App\Filament\Widgets\TopPages;
+use App\Filament\Widgets\TrafficOverview;
 use App\Filament\Widgets\TranslationCoverage;
 use App\Filament\Widgets\TranslationQueue;
 use App\Models\User;
@@ -43,6 +45,8 @@ final class DashboardRegistry
         TranslationCoverage::class,
         TranslationQueue::class,
         SearchInsights::class,
+        TrafficOverview::class,
+        TopPages::class,
         MediaStorage::class,
         QueueHealth::class,
         ActivityFeed::class,
