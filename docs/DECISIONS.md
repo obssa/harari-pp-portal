@@ -984,3 +984,28 @@ within the privacy and performance rules of ADR-0010 and ADR-0024.
 
 **Consequences.** Posts appear in the language they were written in for every reader; filters by
 language are left for when accounts in several languages exist.
+
+## ADR-0033 — Translating the interface in the admin (2026-10-20)
+
+**Context.** PLAN.md §6 and §7 ask for a translations module: a grid of interface strings with filters
+(missing, changed), context, per-language rights, history, and export and import with a Harari
+round-trip. Since ADR-0007 the strings live in `lang/*.json` with admin overrides in `ui_translations`.
+
+**Decision.**
+
+- Administration → Languages → Interface translations shows every English key in one language at a time:
+  the key, the English text, the text in that language and its status. Filters: missing, "English
+  changed" (the English text differs from the one it was translated from), translated, and the part of
+  the site (the first part of the key); search covers keys and both texts.
+- People see the grid with `translations.view`; they change a language only with
+  `translations.{language}.edit` (a Translator can be limited to one language, ADR-0006). The text must
+  keep the English placeholders exactly; an empty text removes the admin's version so the shipped text,
+  or the fallback language, shows again.
+- Every change is kept in `ui_translation_revisions` with the old and new text, the English it was made
+  from, who made it and how (editor, import, machine). The last five show in the editor; the status
+  "English changed" comes from the latest revision.
+- Changes take effect at once (the translation cache of the key is cleared) and `php artisan lang:export`
+  still writes them back into `lang/*.json` for the repository.
+
+**Consequences.** Strings translated in the files before this module have no revision, so they are not
+flagged when English changes until someone edits them once.

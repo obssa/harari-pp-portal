@@ -4,6 +4,15 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 4, step 4.4 — translating the interface in the admin (2026-10-20)
+
+- Administration → Languages → Interface translations: all interface strings in one language at a time
+  with English beside them; filters for missing, "English changed" and translated, by part of the site,
+  and search (ADR-0033).
+- Translators edit only the languages they are allowed to; placeholders are checked; every change is kept
+  with the English it was made from and shown in the editor's history.
+- The branch's Telegram channel is on the staging social hub (8 posts read).
+
 ### Phase 4, step 4.3 — the social media hub (2026-10-20)
 
 - `/{lang}/social`: the latest posts of the branch, office and league accounts, pinned ones first, with
