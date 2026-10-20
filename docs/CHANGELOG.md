@@ -4,6 +4,15 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 4, step 4.5 — export, import and rollback of translations (2026-10-20)
+
+- Export a language from the translations grid as Excel, CSV or JSON, with English and the context beside
+  each string (ADR-0033).
+- Import a translated file: a preview shows what is new, changed or removed and what is refused (unknown
+  keys, changed placeholders, files not in UTF-8) before anything is saved.
+- Administration → Languages → Translation imports lists every import with who made it and rolls one back.
+- The Harari round-trip (export → edit in Excel → import) is proven by an automated test.
+
 ### Phase 4, step 4.4 — translating the interface in the admin (2026-10-20)
 
 - Administration → Languages → Interface translations: all interface strings in one language at a time

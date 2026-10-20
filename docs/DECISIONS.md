@@ -1009,3 +1009,18 @@ round-trip. Since ADR-0007 the strings live in `lang/*.json` with admin override
 
 **Consequences.** Strings translated in the files before this module have no revision, so they are not
 flagged when English changes until someone edits them once.
+
+**Export and import (step 4.5).**
+
+- A language can be exported as Excel (recommended), CSV (UTF-8 with a byte-order mark, so spreadsheet
+  programs read Ethiopic) or JSON in the repository's layout. Sheets have the columns key, en, the
+  language and context; every cell is text.
+- Importing reads the key and language columns (or the JSON pairs) and first shows a preview: what would
+  be added, changed or removed, and what is refused (keys English does not have, placeholders that differ
+  from English, texts over 5000 characters, files not in UTF-8). Nothing is saved until the importer
+  confirms. Empty cells leave a text as it is unless "Empty cells remove the translation" is chosen.
+- Applying writes each change through the same rules as the grid (origin "import") and keeps the admin's
+  earlier value of every key; Administration → Languages → Translation imports rolls a whole import back.
+- Importing needs `translations.import` and the right to edit that language; exporting needs
+  `translations.export`. An automated test exports Harari to Excel, edits it as a translator would
+  (a placeholder, a line break), imports it, and exports again with nothing lost.

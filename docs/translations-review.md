@@ -53,3 +53,4 @@ Harari translators.
 | `social.*` | am, om | social accounts and posts in the admin | "post" (ልጥፍ / Maxxansa); "account" (መለያ / Akkaawuntii, loanword); network names kept in Latin in om |
 | `social.hub.*`, `homepage.section.social`, `admin.menus.type.social` | am, om | social media hub | "social media" (ማኅበራዊ ሚዲያ / Miidiyaa hawaasaa); "follow" (ይከተሉ / Hordofaa) |
 | `translations.*` | am, om | translations grid | "interface translations" (የገጽ ጽሑፎች ትርጉም / Hiikkaa barreeffamoota fuulaa); "placeholder" (ምልክት / Mallattoo) |
+| `translations.export.*`, `translations.import.*` | am, om | export, import and rollback | "import" (ከፋይል አስገባ / Faayilii irraa galchi); "roll back" (መልስ / Deebisi) |

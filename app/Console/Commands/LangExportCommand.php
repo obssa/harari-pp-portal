@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Domain\Translation\Support\Locales;
 use App\Domain\Translation\Support\TranslationCatalog;
+use App\Domain\Translation\Support\TranslationFile;
 use Illuminate\Console\Command;
 
 /**
@@ -76,8 +77,6 @@ final class LangExportCommand extends Command
      */
     public static function encode(array $values): string
     {
-        ksort($values);
-
-        return json_encode($values, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR)."\n";
+        return TranslationFile::encode($values);
     }
 }

@@ -3,8 +3,11 @@
 namespace App\Filament\Pages;
 
 use App\Domain\Translation\Actions\EditUiTranslation;
+use App\Domain\Translation\Actions\ImportTranslations;
+use App\Domain\Translation\Models\TranslationImport;
 use App\Domain\Translation\Models\UiTranslationRevision;
 use App\Domain\Translation\Support\Locales;
+use App\Domain\Translation\Support\TranslationFile;
 use App\Domain\Translation\Support\TranslationRows;
 use App\Filament\Support\CalendarDate;
 use App\Filament\Support\CurrentUser;
@@ -12,8 +15,10 @@ use App\Models\User;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Facades\Filament;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Toggle;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
@@ -26,8 +31,10 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Url;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use UnitEnum;
 
 /**
@@ -108,6 +115,42 @@ class ManageTranslations extends Page implements HasTable
             ->searchable()
             ->heading(fn (): string => __('translations.admin.heading', ['language' => Locales::nativeName($this->language)]))
             ->headerActions([
+                Action::make('export')
+                    ->label(__('translations.export.action'))
+                    ->icon(Heroicon::OutlinedArrowDownTray)
+                    ->color('gray')
+                    ->visible(fn (): bool => CurrentUser::get()->can('translations.export'))
+                    ->modalDescription(fn (): string => __('translations.export.help', ['language' => Locales::nativeName($this->language)]))
+                    ->schema([Select::make('format')->label(__('translations.export.format'))->required()->default('xlsx')
+                        ->options(['xlsx' => __('translations.export.xlsx'), 'csv' => __('translations.export.csv'), 'json' => __('translations.export.json')])])
+                    ->action(function (array $data): BinaryFileResponse {
+                        abort_unless(CurrentUser::get()->can('translations.export'), 403);
+                        $path = app(TranslationFile::class)->export($this->language, (string) $data['format']);
+
+                        return response()->download($path, basename($path))->deleteFileAfterSend();
+                    }),
+                Action::make('import')
+                    ->label(__('translations.import.action'))
+                    ->icon(Heroicon::OutlinedArrowUpTray)
+                    ->color('gray')
+                    ->visible(fn (): bool => CurrentUser::get()->can('translations.import') && CurrentUser::get()->canEditTranslationsFor($this->language))
+                    ->modalDescription(fn (): string => __('translations.import.help', ['language' => Locales::nativeName($this->language)]))
+                    ->schema([
+                        FileUpload::make('file')->label(__('translations.import.file'))->required()
+                            ->disk('local')->directory('translations/imports')->storeFileNamesIn('file_name')
+                            ->maxSize(TranslationFile::MAX_BYTES / 1024),
+                        Toggle::make('clear_empty')->label(__('translations.import.clear_empty'))->helperText(__('translations.import.clear_empty_help')),
+                    ])
+                    ->action(function (array $data): void {
+                        $stored = (string) $data['file'];
+                        try {
+                            $import = app(ImportTranslations::class)->preview(Storage::disk('local')->path($stored), (string) ($data['file_name'] ?? $stored),
+                                $this->language, CurrentUser::get(), (bool) ($data['clear_empty'] ?? false));
+                        } finally {
+                            Storage::disk('local')->delete($stored);
+                        }
+                        $this->replaceMountedAction('applyImport', ['import' => $import->id], context: []);
+                    }),
                 Action::make('language')
                     ->label(__('translations.admin.change_language'))
                     ->icon(Heroicon::OutlinedLanguage)
@@ -170,5 +213,58 @@ class ManageTranslations extends Page implements HasTable
                         $this->resetTable();
                     }),
             ]);
+    }
+
+    /** The second step of an import: what would change, then save (ADR-0033). */
+    public function applyImportAction(): Action
+    {
+        return Action::make('applyImport')
+            ->modalHeading(__('translations.import.preview'))
+            ->modalSubmitActionLabel(__('translations.import.apply'))
+            ->schema(function (array $arguments): array {
+                $import = TranslationImport::query()->findOrFail($arguments['import'] ?? 0);
+
+                return [
+                    TextEntry::make('summary')->hiddenLabel()->state(__('translations.import.summary', [
+                        'added' => $import->added, 'changed' => $import->changed, 'removed' => $import->removed, 'problems' => count($import->problems ?? []),
+                    ])),
+                    TextEntry::make('changes')->label(__('translations.import.changes'))->listWithLineBreaks()->limitList(20)->placeholder('—')
+                        ->state(self::changeLines($import)),
+                    TextEntry::make('problems')->label(__('translations.import.problems'))->listWithLineBreaks()->limitList(20)->placeholder('—')->color('danger')
+                        ->state(self::problemLines($import)),
+                ];
+            })
+            ->action(function (array $arguments): void {
+                $import = TranslationImport::query()->findOrFail($arguments['import'] ?? 0);
+                app(ImportTranslations::class)->apply($import, CurrentUser::get());
+                Notification::make()->success()->title(__('translations.import.applied', ['count' => $import->added + $import->changed + $import->removed]))->send();
+                $this->resetTable();
+            });
+    }
+
+    /**
+     * @return list<string>
+     */
+    private static function changeLines(TranslationImport $import): array
+    {
+        $lines = [];
+        foreach ($import->changes ?? [] as $key => $change) {
+            $lines[] = $key.': '.Str::limit($change['new'] !== '' ? $change['new'] : '—', 70);
+        }
+
+        return $lines;
+    }
+
+    /**
+     * @return list<string>
+     */
+    private static function problemLines(TranslationImport $import): array
+    {
+        $lines = [];
+        foreach ($import->problems ?? [] as $problem) {
+            $lines[] = $problem['key'].': '.__("translations.import.problem.{$problem['problem']}");
+        }
+
+        return $lines;
     }
 }
