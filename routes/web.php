@@ -25,6 +25,7 @@ use App\Http\Controllers\Public\SocialController;
 use App\Http\Controllers\Public\StructureController;
 use App\Http\Controllers\Public\VideoController;
 use App\Http\Middleware\CachePublicPages;
+use App\Http\Middleware\NoStore;
 use App\Http\Middleware\OutsideProductionOnly;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -80,13 +81,13 @@ Route::prefix('{locale}')
     ->group(function (): void {
         Route::get('events/{slug}/register', [EventRegistrationController::class, 'create'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('events.register');
         Route::post('events/{slug}/register', [EventRegistrationController::class, 'store'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->middleware('throttle:forms')->name('events.register.store');
-        Route::get('events/ticket/{token}', [EventRegistrationController::class, 'ticket'])->where('token', '[A-Za-z0-9]{40}')->name('events.ticket');
+        Route::get('events/ticket/{token}', [EventRegistrationController::class, 'ticket'])->where('token', '[A-Za-z0-9]{40}')->middleware(NoStore::class)->name('events.ticket');
         Route::post('events/ticket/{token}/cancel', [EventRegistrationController::class, 'cancel'])->where('token', '[A-Za-z0-9]{40}')->middleware('throttle:forms')->name('events.ticket.cancel');
         Route::get('contact', [FormController::class, 'contact'])->name('contact');
         Route::get('forms/{slug}', [FormController::class, 'show'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('forms.show');
         Route::post('forms/{slug}', [FormController::class, 'submit'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->middleware('throttle:forms')->name('forms.submit');
-        Route::get('tickets', [FormController::class, 'lookup'])->middleware('throttle:search')->name('tickets.lookup');
-        Route::get('tickets/{reference}', [FormController::class, 'ticket'])->where('reference', 'HPP-[2-9A-HJ-NP-Z]{4}-[2-9A-HJ-NP-Z]{4}')->middleware('throttle:search')->name('tickets.show');
+        Route::get('tickets', [FormController::class, 'lookup'])->middleware(['throttle:search', NoStore::class])->name('tickets.lookup');
+        Route::get('tickets/{reference}', [FormController::class, 'ticket'])->where('reference', 'HPP-[2-9A-HJ-NP-Z]{4}-[2-9A-HJ-NP-Z]{4}')->middleware(['throttle:search', NoStore::class])->name('tickets.show');
     });
 
 // Every public page lives under its language: /en, /am, /om, /har (PLAN.md §3).

@@ -4,6 +4,14 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 5, step 5.4 — performance and caching (2026-10-20)
+
+- Cloudflare cache purge of this site's pages after every public change, once a zone id and an API token are
+  saved under Integrations; its state on the health page (ADR-0039).
+- Event tickets and ticket pages are never stored by browsers or caches; HEAD answers can be cached like
+  GET; pictures and documents in public uploads are kept a day.
+- Lighthouse budget extended to the news list, the documents list and the office directory.
+
 ### Phase 5, step 5.3 — security pass (2026-10-20)
 
 - Security review against PLAN.md §11 with a penetration test checklist: `docs/security-review.md`.

@@ -3,6 +3,7 @@
 namespace App\Domain\Health;
 
 use App\Domain\Health\Backups\BackupArchive;
+use App\Domain\Health\Checks\EdgeCacheCheck;
 use App\Domain\Health\Checks\ErrorLogCheck;
 use App\Domain\Health\Checks\FailedJobsCheck;
 use App\Domain\Health\Checks\MailCheck;
@@ -29,7 +30,7 @@ final class HealthChecks
     /** Check names, in the order the health page shows them. */
     public const NAMES = [
         'database', 'cache', 'scheduler', 'queue', 'queue_backlog', 'failed_jobs',
-        'mail', 'storage', 'disk', 'backups', 'errors', 'debug_mode', 'optimized',
+        'mail', 'storage', 'disk', 'backups', 'errors', 'edge_cache', 'debug_mode', 'optimized',
     ];
 
     public static function register(): void
@@ -54,6 +55,7 @@ final class HealthChecks
             BackupsCheck::new()->name('backups')->onDisk(BackupArchive::DISK)->locatedAt((string) config('backup.backup.name'))
                 ->youngestBackShouldHaveBeenMadeBefore(now()->subHours(26)),
             ErrorLogCheck::new()->name('errors'),
+            EdgeCacheCheck::new()->name('edge_cache'),
             DebugModeCheck::new()->name('debug_mode'),
             OptimizedAppCheck::new()->name('optimized')->unless(app()->environment('local', 'testing')),
         ]);
@@ -75,6 +77,7 @@ final class HealthChecks
             'optimized' => __('health.check.optimized'),
             'backups' => __('health.check.backups'),
             'errors' => __('health.check.errors'),
+            'edge_cache' => __('health.check.edge_cache'),
             default => $name,
         };
     }

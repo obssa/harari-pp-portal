@@ -1166,3 +1166,29 @@ token expiry warnings for social sources (§5) and an error tracker. The review 
 **Consequences.** People on changing mobile networks who also change browsers may get an alert that was
 them; the text says nothing needs doing then. The DSN lives in `.env`, not under Integrations, because the
 SDK starts before settings are read.
+
+## ADR-0039 — Edge cache purges and cache headers per page type (2026-10-20)
+
+**Context.** PLAN.md §9 and §11 want pages served from Cloudflare's edge and changes visible at once.
+Public pages already allow ten minutes at the edge (ADR-0010), but checked on staging Cloudflare answers
+`DYNAMIC`: it does not keep HTML unless a Cache Rule says so. The Cloudflare zone is shared with other
+sites of the same owner.
+
+**Decision.**
+
+- Under Integrations a Super Admin saves the zone id and an API token limited to "Cache Purge". A save or
+  delete of anything public (posts, pages, events, documents, projects, offices, leagues, leaders, media,
+  galleries, videos, categories, tags, menus, redirects, forms, homepage sections, social posts and
+  accounts, interface strings) or of the site and press-kit settings queues one purge half a minute later;
+  while one waits, no other is queued. Only this site's host is purged, never the whole zone. The health
+  page shows whether purges are on and whether the last one was accepted. Without a token, pages refresh
+  within ten minutes by their headers.
+- Cache headers per page type: public pages `public, max-age=0, s-maxage=600, stale-while-revalidate=60`
+  (GET and HEAD, no cookie set); pages with a person's own details (event tickets, ticket look-up and
+  status) `no-store, private`; pages with forms `private, no-cache`; the sitemap its own edge time; built
+  CSS, JS and fonts a year, immutable (hashed names); pictures, PDFs and videos in public uploads a day,
+  because a regenerated picture keeps its address; the admin never cached.
+- Lighthouse in CI also audits the news list, the documents list and the office directory.
+
+**Consequences.** Until the owner adds the Cache Rule (`docs/runbook/server.md`), Cloudflare passes HTML
+through and the origin answers every request; the headers are ready for the day it is added.

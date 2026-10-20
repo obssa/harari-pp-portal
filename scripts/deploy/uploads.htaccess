@@ -4,6 +4,13 @@
 <FilesMatch "(?i)\.(php[0-9]?|phtml|phar|pht|phps|cgi|pl|py|sh|asp|aspx|jsp)$">
     Require all denied
 </FilesMatch>
+# ADR-0039: pictures and documents are kept a day by browsers and Cloudflare; a regenerated
+# picture keeps its address, so "immutable" would show the old one for too long.
+<IfModule mod_headers.c>
+    <FilesMatch "(?i)\.(avif|webp|jpe?g|png|gif|svg|pdf|mp4|webm)$">
+        Header set Cache-Control "public, max-age=86400, stale-while-revalidate=604800"
+    </FilesMatch>
+</IfModule>
 <IfModule mod_mime.c>
     RemoveHandler .php .php3 .php4 .php5 .php7 .php8 .phtml .phar .pht
     RemoveType .php .php3 .php4 .php5 .php7 .php8 .phtml .phar .pht

@@ -6,7 +6,10 @@
                 "https://hararipp.orcamind.dev/am",
                 "https://hararipp.orcamind.dev/am/news/ameraru-yehizib-ageligay-bemehon-yetetalebetin-adera-liweta-yigebal-ato-oridin-bediri",
                 "https://hararipp.orcamind.dev/en/events/sample-community-consultation-meeting",
-                "https://hararipp.orcamind.dev/en/documents/sample-party-programme"
+                "https://hararipp.orcamind.dev/en/documents/sample-party-programme",
+                "https://hararipp.orcamind.dev/en/news",
+                "https://hararipp.orcamind.dev/en/documents",
+                "https://hararipp.orcamind.dev/en/offices"
             ],
             "numberOfRuns": 3,
             "settings": {

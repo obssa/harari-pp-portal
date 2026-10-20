@@ -85,6 +85,7 @@ use App\Domain\Webhooks\Listeners\QueueWebhooks;
 use App\Domain\Webhooks\Models\Webhook;
 use App\Domain\Webhooks\Policies\WebhookPolicy;
 use App\Models\User;
+use App\Services\Cdn\PublicContentChanges;
 use App\Services\Sms\LogSmsGateway;
 use App\Services\Sms\SmsGateway;
 use App\Settings\SiteSettings;
@@ -107,6 +108,7 @@ use Laravel\Scout\EngineManager;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Health\Events\CheckEndedEvent;
 use Spatie\LaravelSettings\Events\SavingSettings;
+use Spatie\LaravelSettings\Events\SettingsSaved;
 use Spatie\TranslationLoader\TranslationLoaderManager;
 use Throwable;
 
@@ -152,6 +154,14 @@ class AppServiceProvider extends ServiceProvider
         $this->bootMedia();
         $this->bootSafetyNets();
         $this->bootHealth();
+        $this->bootEdgeCache();
+    }
+
+    /** ADR-0039: a change to anything public asks Cloudflare to drop this site's cached pages. */
+    private function bootEdgeCache(): void
+    {
+        Event::listen(['eloquent.saved: *', 'eloquent.deleted: *'], [PublicContentChanges::class, 'model']);
+        Event::listen(SettingsSaved::class, [PublicContentChanges::class, 'settings']);
     }
 
     /** ADR-0037: the health checks, and notices when a check or a backup fails. */

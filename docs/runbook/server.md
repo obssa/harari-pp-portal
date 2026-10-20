@@ -48,6 +48,21 @@ Status: **provisioned 2026-10-18**; first release `502124372d0f` deployed by Git
 `portal:work-queues` drains every queue in `config('portal.queues')` (default, media) and stops when
 they are empty or after 50 seconds, so runs never overlap. Adding a queue in code needs no cron change.
 
+## Cloudflare caching (owner, ADR-0039)
+
+The portal sends cache headers for every page type, but Cloudflare keeps HTML only when a Cache Rule
+allows it. In the Cloudflare dashboard of the zone:
+
+1. **Caching → Cache Rules → Create rule** "Portal public pages":
+   - When: hostname equals the portal's host, and the path does not start with `/admin`, `/livewire` or
+     `/up`, and the cookie does not contain the portal's session cookie name (`SESSION_COOKIE`).
+   - Then: **Eligible for cache**; Edge TTL **Use cache-control header if present, bypass cache if not**;
+     Browser TTL **Respect origin**.
+2. **My Profile → API Tokens → Create token** (custom): permission **Zone → Cache Purge → Purge**, for
+   this zone only. Save it and the zone id (zone **Overview**) under Administration → Integrations →
+   Cache (Cloudflare). The health page then shows "Cloudflare cache: on".
+3. Keep **SSL/TLS → Edge Certificates → Minimum TLS Version** at 1.2 or higher.
+
 ## First Super Admin (one time)
 
 Done on 2026-10-19. For another Super Admin, run this in the cPanel terminal (or over SSH), replacing

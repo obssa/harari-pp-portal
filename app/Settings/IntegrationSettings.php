@@ -40,6 +40,11 @@ class IntegrationSettings extends Settings
 
     public ?string $turnstile_secret_key;
 
+    /** ADR-0039: the Cloudflare zone of the site and a token allowed to purge its cache. */
+    public ?string $cloudflare_zone_id;
+
+    public ?string $cloudflare_api_token;
+
     public static function group(): string
     {
         return 'integrations';
@@ -66,6 +71,7 @@ class IntegrationSettings extends Settings
             'youtube_api_key',
             'telegram_bot_token',
             'turnstile_secret_key',
+            'cloudflare_api_token',
         ];
     }
 

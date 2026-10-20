@@ -118,6 +118,16 @@ class ManageIntegrations extends SettingsPage
                             ->maxLength(255),
                         $this->secret('turnstile_secret_key', $settings),
                     ]),
+                Section::make(__('admin.settings.integrations.section.cdn'))
+                    ->description(__('admin.settings.integrations.cdn_help'))
+                    ->columns(2)
+                    ->schema([
+                        TextInput::make('cloudflare_zone_id')
+                            ->label(__('admin.settings.integrations.field.cloudflare_zone_id'))
+                            ->maxLength(64)
+                            ->regex('/^[a-f0-9]{32}$/'),
+                        $this->secret('cloudflare_api_token', $settings),
+                    ]),
                 Section::make(__('admin.settings.integrations.section.remove'))
                     ->collapsed()
                     ->schema([

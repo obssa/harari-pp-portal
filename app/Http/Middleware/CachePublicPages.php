@@ -9,8 +9,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Lets Cloudflare keep public pages for a few minutes (PLAN.md §9 caching,
- * ADR-0010). Only anonymous, successful GET responses that set no cookie are
- * shared; browsers always revalidate. Public pages run without a session, so
+ * ADR-0010, ADR-0039). Only anonymous, successful GET and HEAD responses that
+ * set no cookie are shared; browsers always revalidate. Public pages run without a session, so
  * the usual answer is cacheable; the first visit in a new language sets the
  * language cookie and stays private.
  */
@@ -23,7 +23,7 @@ final class CachePublicPages
         /** @var Response $response */
         $response = $next($request);
 
-        $shareable = $request->isMethod('GET')
+        $shareable = $request->isMethodCacheable()
             && $response->getStatusCode() === 200
             && $response->headers->getCookies() === []
             && Cookie::getQueuedCookies() === []
