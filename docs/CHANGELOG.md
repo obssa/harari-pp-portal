@@ -4,6 +4,12 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+## v0.8.0 — Phase 8 complete: extensions (2026-10-21)
+
+- Admin manual chapter 7, extensions, in English and Amharic with screenshots.
+- Phase 8 report in `docs/phases/08-extensions.md`.
+- The integrations settings page is now called "Integrations", beside the new "API keys" page.
+
 ### Phase 8, step 8.6 — performance and Octane readiness (2026-10-21)
 
 - The current site lives for one request or job, so long-running workers start each request afresh;

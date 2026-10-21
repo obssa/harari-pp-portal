@@ -433,7 +433,7 @@
     "admin.settings.integrations.section.social": "የማህበራዊ ሚዲያ ማዕከል",
     "admin.settings.integrations.section.spam": "የአይፈለጌ መልዕክት መከላከያ (Cloudflare Turnstile)",
     "admin.settings.integrations.section.translation": "የማሽን ትርጉም (አማርኛ፣ አፋን ኦሮሞ)",
-    "admin.settings.integrations.title": "ውህደቶች እና የኤፒአይ ቁልፎች",
+    "admin.settings.integrations.title": "ውህደቶች",
     "admin.settings.security.field.require_mfa": "ባለሁለት ደረጃ መግቢያን ለከፍተኛ ሚናዎች ግዴታ አድርግ",
     "admin.settings.security.field.without_app": "የማረጋገጫ መተግበሪያ ያላዘጋጁ በእነዚህ ሚናዎች ያሉ ሰዎች",
     "admin.settings.security.help.mfa": "ባለሁለት ደረጃ መግቢያ ከይለፍ ቃሉ በኋላ ከማረጋገጫ መተግበሪያ የሚገኝ ኮድ ይጠይቃል። ማንኛውም ሰው በመገለጫው ውስጥ ለራሱ መለያ ሊያበራው ወይም ሊያጠፋው ይችላል፤ ያበሩት ሁልጊዜ ኮዱ ይጠየቃሉ።",

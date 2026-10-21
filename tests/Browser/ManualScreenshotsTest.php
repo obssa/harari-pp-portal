@@ -2,8 +2,11 @@
 
 use App\Domain\Access\Enums\SystemRole;
 use App\Domain\Analytics\Actions\RecordPageView;
+use App\Domain\Api\Actions\IssueApiKey;
 use App\Domain\Content\Actions\SavePost;
 use App\Domain\Content\Models\Post;
+use App\Domain\Donations\Actions\PledgeDonation;
+use App\Domain\Donations\Actions\RecordDonation;
 use App\Domain\Engagement\Actions\SaveCampaign;
 use App\Domain\Engagement\Actions\SendCampaign;
 use App\Domain\Engagement\Models\Campaign;
@@ -24,7 +27,9 @@ use App\Filament\Pages\NotificationCentre;
 use App\Filament\Pages\PrivacyRequests;
 use App\Filament\Pages\SystemHealth;
 use App\Filament\Pages\TrafficReports;
+use App\Filament\Resources\ApiKeys\ApiKeyResource;
 use App\Filament\Resources\Campaigns\CampaignResource;
+use App\Filament\Resources\Donations\DonationResource;
 use App\Filament\Resources\MediaContacts\MediaContactResource;
 use App\Filament\Resources\MemberImports\MemberImportResource;
 use App\Filament\Resources\Members\MemberResource;
@@ -34,7 +39,10 @@ use App\Filament\Resources\SocialSources\SocialSourceResource;
 use App\Filament\Resources\Submissions\SubmissionResource;
 use App\Filament\Resources\Subscribers\SubscriberResource;
 use App\Filament\Resources\Volunteers\VolunteerResource;
+use App\Services\Sms\SendSms;
+use App\Settings\DonationSettings;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Mail;
 
 /*
@@ -157,6 +165,35 @@ it('captures the communication screens for the manual', function (string $locale
         visit($url)->resize(1440, 900)->wait(1)->screenshot(fullPage: false, filename: "manual-{$locale}-{$name}");
     }
     visit("/{$locale}/newsletter")->resize(1280, 800)->wait(1)->screenshot(fullPage: false, filename: "manual-{$locale}-newsletter-form");
+
+    expect(true)->toBeTrue();
+})->with(['en', 'am']);
+
+it('captures the extension screens for the manual', function (string $locale) {
+    $admin = staff(SystemRole::SuperAdmin, mfa: false, attributes: ['name' => 'Sample Administrator', 'locale' => $locale]);
+    app(IssueApiKey::class)->handle(['name' => 'Sample mobile app', 'scopes' => ['content', 'events', 'members'], 'rate_per_minute' => 120], $admin);
+    app(IssueApiKey::class)->handle(['name' => 'Sample office kiosk', 'scopes' => ['events', 'documents'], 'rate_per_minute' => 60], $admin);
+
+    $settings = app(DonationSettings::class);
+    $settings->enabled = true;
+    $settings->accounts = [['bank' => 'Sample Bank', 'name' => 'Sample party account', 'number' => '1000000000000']];
+    $settings->save();
+    Bus::fake([SendSms::class]);
+    $first = app(PledgeDonation::class)->handle(['name' => 'Sample Donor One', 'phone' => '0911000101', 'amount' => '1000', 'purpose' => 'Sample: youth programme', 'consent' => '1'], $locale);
+    app(PledgeDonation::class)->handle(['name' => 'Sample Donor Two', 'email' => 'donor.two@example.org', 'amount' => '250', 'consent' => '1'], $locale);
+    app(RecordDonation::class)->receive($first, '1000', now()->toDateString(), 'FT-SAMPLE-001', $admin);
+
+    $this->actingAs($admin);
+    $path = fn (string $url): string => (string) parse_url($url, PHP_URL_PATH);
+    $screens = [
+        'api-keys' => $path(ApiKeyResource::getUrl('index')),
+        'donations' => $path(DonationResource::getUrl('index')),
+        'donation' => $path(DonationResource::getUrl('view', ['record' => $first])),
+    ];
+    foreach ($screens as $name => $url) {
+        visit($url)->resize(1440, 900)->wait(1)->screenshot(fullPage: false, filename: "manual-{$locale}-{$name}");
+    }
+    visit("/{$locale}/donate")->resize(1280, 800)->wait(1)->screenshot(fullPage: false, filename: "manual-{$locale}-donate-form");
 
     expect(true)->toBeTrue();
 })->with(['en', 'am']);

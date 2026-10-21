@@ -103,7 +103,7 @@ Filters on the list help with the work left: **Missing alt text**, **Not used an
 language, which calendar comes first, contact email, phone and hotline, address and office hours in
 each language, and the links to the branch's social media pages. The public footer shows these.
 
-**Administration → Integrations and API keys** (Super Admin only): keys for SMS, translation and
+**Administration → Integrations** (Super Admin only): keys for SMS, translation and
 social media services. A saved key is never shown again; leave the field empty to keep it.
 
 ## 7. Audit log

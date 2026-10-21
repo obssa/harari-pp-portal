@@ -433,7 +433,7 @@
     "admin.settings.integrations.section.social": "Social media hub",
     "admin.settings.integrations.section.spam": "Spam protection (Cloudflare Turnstile)",
     "admin.settings.integrations.section.translation": "Machine translation (Amharic, Afaan Oromo)",
-    "admin.settings.integrations.title": "Integrations and API keys",
+    "admin.settings.integrations.title": "Integrations",
     "admin.settings.security.field.require_mfa": "Make two-step sign-in compulsory for senior roles",
     "admin.settings.security.field.without_app": "People in these roles without an authenticator app",
     "admin.settings.security.help.mfa": "Two-step sign-in asks for a code from an authenticator app after the password. Anyone can turn it on or off for their own account under Profile, and people who have turned it on are always asked for the code.",
