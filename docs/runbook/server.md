@@ -121,6 +121,10 @@ Logs: `~/hararipp.orcamind.dev/storage/logs/laravel-*.log` (daily, 14 days).
 
 ## Known behaviour
 
+- The cron line waits a random 0–59 seconds before `schedule:run`, so two runs can fall in the same
+  minute. Every scheduled task is locked per due minute in the cache (`onOneServer`), so it still starts
+  only once (fixed 2026-10-21 after the nightly backup ran twice).
+
 - Many SSH logins from one address in a few minutes can make the host's firewall drop that address for
   a while (seen from the owner's PC on 2026-10-18). Deploys come from GitHub's runners and are not
   affected; wait or ask the host to lift the block.

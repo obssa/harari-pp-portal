@@ -68,3 +68,10 @@ Schedule::command('backup:run --disable-notifications')->everyMinute()->name('ba
     ->when(fn (): bool => (bool) Cache::pull(SystemHealth::BACKUP_REQUESTED));
 Schedule::command('portal:restore-drill')->monthlyOn(1, '01:00')->withoutOverlapping()
     ->when(fn (): bool => filled(config('database.connections.drill.database')));
+
+// The cron line starts the scheduler after a random pause, so two runs can fall in the same minute
+// (the nightly backup ran twice on 2026-10-20): every task starts at most once per due minute. The lock
+// lives in the cache, which all runs share.
+foreach (Schedule::events() as $event) {
+    $event->onOneServer();
+}

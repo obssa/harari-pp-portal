@@ -4,6 +4,9 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+- Fix: a scheduled task could start twice when two scheduler runs fell in the same minute (the nightly
+  backup ran twice); every task now starts at most once per due minute.
+
 ## v0.5.0 — Phase 5 complete, ready for launch inputs (2026-10-20)
 
 - Launch report against the acceptance checklist (`docs/launch-report.md`) and the go-live runbook
