@@ -1317,3 +1317,36 @@ calendar.
 
 **Consequences.** Without an SMS gateway (staging) codes go to the server log, so only staff can finish an
 application there. Applicants must be 18 or over.
+
+## ADR-0045 — Review queue, members and office scopes (2026-10-21)
+
+**Context.** PLAN.md §5 asks for a review queue where Membership Officers approve or reject applications,
+see duplicates, assign them to a woreda, keep notes and export; §8 scopes Membership Officers to offices;
+§11 asks for personal data masked in lists and exports that are permissioned and logged.
+
+**Decision.**
+
+- Admin → Members and volunteers → Membership applications lists sent applications (not unfinished ones),
+  newest first, filtered to "received" by default. Names show as first name and initials, phones with the
+  middle digits hidden; the application's page shows the full details except the ID number, which shows its
+  last four digits until "Show ID number" is used, and each such look is written to the history and the
+  audit log.
+- Officers see the applications of the woredas their role is scoped to (`OfficeScope`, now shared with the
+  inbox); a role without a scope covers every woreda and the applications without one. Only those with
+  `applications.review` for the woreda decide; anyone who sees an application may add a note.
+- Possible duplicates among the other applications and the members: the same ID number, phone or email
+  (compared by keyed hash) or the same name and date of birth (decrypted only for people with the same
+  birth year and sex). They are shown on the page and in the approval prompt; the officer decides.
+- Approving creates the member in the same transaction: number `HPP-` and six digits in order, never
+  reused, without the office code the phase plan suggested, so a member keeps the number when moving to
+  another woreda; status active; renewal due after 12 months (defaults from the phase plan). Rejecting needs a reason, which
+  the applicant sees on the status page. The applicant hears the decision by SMS, and by email when given.
+- Handing an application to another woreda moves it to that woreda's queue; the history (notes, decisions,
+  hand-overs, ID looks) is encrypted and never edited.
+- Officers of the woreda get a notice per new application (kind "Membership applications", unread notices
+  per woreda combined); the notice carries only the reference and the woreda.
+- Download CSV exports what the screen shows, without ID numbers, and is logged with the number of rows.
+
+**Consequences.** A member number reveals roughly how many members joined before; acceptable for a party
+card. Members are not deleted from the admin: leaving, death or erasure go through statuses and privacy
+requests (step 6.3).

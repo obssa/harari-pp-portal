@@ -4,6 +4,14 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 6, step 6.2 — review queue (2026-10-21)
+
+- Admin → Members and volunteers → Membership applications: the queue per woreda with masked names and
+  phones, the full profile, possible duplicates, approve (the member gets a number `HPP-000001` …),
+  reject with a reason, hand to another woreda, notes and history, CSV download (ADR-0045).
+- The applicant hears the decision by SMS and email; officers get a notice for each new application.
+- The inbox and the review queue share one office-scope rule.
+
 ### Phase 6, step 6.1 — membership application (2026-10-21)
 
 - `/{language}/membership/apply`: a three-step application (about you, where you live and how to reach you,

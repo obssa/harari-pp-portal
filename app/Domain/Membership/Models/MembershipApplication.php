@@ -11,6 +11,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -155,6 +156,14 @@ class MembershipApplication extends Model
     public function basicOrganisation(): BelongsTo
     {
         return $this->belongsTo(Office::class, 'basic_org_id');
+    }
+
+    /**
+     * @return MorphMany<PersonNote, $this>
+     */
+    public function notes(): MorphMany
+    {
+        return $this->morphMany(PersonNote::class, 'notable')->latest('id');
     }
 
     /**

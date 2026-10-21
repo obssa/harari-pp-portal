@@ -15,6 +15,7 @@ enum NoticeKind: string
     case Workflow = 'workflow';
     case Tickets = 'tickets';
     case Registrations = 'registrations';
+    case Applications = 'applications';
     case Imports = 'imports';
     case Sources = 'sources';
     case Health = 'health';
@@ -26,6 +27,7 @@ enum NoticeKind: string
             self::Workflow => __('notifications.kind.workflow'),
             self::Tickets => __('notifications.kind.tickets'),
             self::Registrations => __('notifications.kind.registrations'),
+            self::Applications => __('notifications.kind.applications'),
             self::Imports => __('notifications.kind.imports'),
             self::Sources => __('notifications.kind.sources'),
             self::Health => __('notifications.kind.health'),
@@ -39,6 +41,7 @@ enum NoticeKind: string
             self::Workflow => __('notifications.kind.workflow_help'),
             self::Tickets => __('notifications.kind.tickets_help'),
             self::Registrations => __('notifications.kind.registrations_help'),
+            self::Applications => __('notifications.kind.applications_help'),
             self::Imports => __('notifications.kind.imports_help'),
             self::Sources => __('notifications.kind.sources_help'),
             self::Health => __('notifications.kind.health_help'),
@@ -66,6 +69,7 @@ enum NoticeKind: string
             self::Workflow => $user->can('posts.create') || $user->can('posts.update_own') || $user->can('posts.review') || $user->can('posts.publish'),
             self::Tickets => $user->can('inbox.view'),
             self::Registrations => $user->can('events.registrations'),
+            self::Applications => $user->can('applications.view'),
             self::Imports => $user->can('posts.review') || $user->can('translations.view'),
             self::Sources => $user->can('social.manage') || $user->can('settings.view'),
             self::Health => $user->can('settings.view'),

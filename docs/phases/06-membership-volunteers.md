@@ -14,7 +14,7 @@ applications (clearly labelled); real ones need the branch office and an SMS gat
 | Step | Content | Status |
 |---|---|---|
 | 6.1 | Membership application: a multi-step public form (personal details, ID, woreda/kebele and basic organisation, contact, education and occupation, consent), the phone verified by a one-time code by SMS, a reference number and a status page; personal data encrypted, ID and phone also as keyed hashes | done |
-| 6.2 | Review queue for Membership Officers: filters, masked applicant profile, duplicate detection (ID, phone, name and birth date), approve (creates the member with a member number) or reject with a reason, assign to a woreda office, notes and history, SMS/email to the applicant, notices to officers, export | |
+| 6.2 | Review queue for Membership Officers: filters, masked applicant profile, duplicate detection (ID, phone, name and birth date), approve (creates the member with a member number) or reject with a reason, assign to a woreda office, notes and history, SMS/email to the applicant, notices to officers, export | done |
 | 6.3 | Members directory: member number, office, basic organisation, status, joined and renewed dates, renewal due and reminders, notes and timeline, masked lists, export with `members.export`; privacy search, export and erasure (ADR-0041) extended to applications, members and volunteers | |
 | 6.4 | Import of existing membership rolls from Excel or CSV: column mapping, dry run with errors and duplicates, apply, roll back | |
 | 6.5 | Volunteers: public sign-up with skills, availability and languages; admin list, assignments to events, hours log | |
@@ -27,6 +27,8 @@ applications (clearly labelled); real ones need the branch office and an SMS gat
 1. ID documents accepted [Fayda national ID, kebele ID, passport, none yet; the number is optional].
 2. Who may apply [Ethiopian residents of the Harari Region aged 18 or over].
 3. Member number format [`HPP-` + office code + sequence, e.g. `HPP-W01-000123`; editable later].
+   Decided in step 6.2 (ADR-0045): `HPP-` + six digits in order, without the office code, so the number
+   stays the same when a member moves to another woreda; the office is shown next to it.
 4. Renewal period and fees [renewal every 12 months, no fee in the portal; fees only if legally permitted,
    Phase 8].
 5. SMS gateway for codes and messages [the log driver on staging; Ethio Telecom or Africa's Talking once

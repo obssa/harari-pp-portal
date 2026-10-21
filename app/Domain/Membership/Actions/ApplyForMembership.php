@@ -2,11 +2,15 @@
 
 namespace App\Domain\Membership\Actions;
 
+use App\Domain\Access\Support\OfficeScope;
 use App\Domain\Membership\Enums\ApplicationStatus;
 use App\Domain\Membership\Models\MembershipApplication;
+use App\Domain\Membership\Notifications\NewApplicationNotice;
 use App\Domain\Membership\Support\ApplicationOptions;
+use App\Domain\Notifications\Support\Recipients;
 use App\Domain\Organisation\Enums\OfficeType;
 use App\Domain\Organisation\Models\Office;
+use App\Models\User;
 use App\Services\Calendar\EthiopianCalendar;
 use App\Services\Sms\SendSms;
 use App\Support\PhoneNumber;
@@ -220,6 +224,7 @@ final class ApplyForMembership
         ])->save();
 
         $this->confirm($application);
+        $this->tellOfficers($application);
 
         return $application;
     }
@@ -228,6 +233,17 @@ final class ApplyForMembership
     {
         try {
             SendSms::dispatch((string) $application->phone, __('membership.sms.received', ['reference' => $application->reference], $application->locale));
+        } catch (Throwable $e) {
+            report($e);
+        }
+    }
+
+    private function tellOfficers(MembershipApplication $application): void
+    {
+        try {
+            $officers = Recipients::withPermission('applications.view')
+                ->filter(fn (User $user): bool => OfficeScope::covers($user, $application->woreda_id, 'applications.view'));
+            Recipients::notify($officers, NewApplicationNotice::for($application));
         } catch (Throwable $e) {
             report($e);
         }
