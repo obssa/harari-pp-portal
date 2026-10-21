@@ -100,6 +100,13 @@ return [
     'membership_grace_days' => (int) env('PORTAL_MEMBERSHIP_GRACE_DAYS', 90),
 
     /*
+    | Campaign sending limits per minute (ADR-0052), to stay within what the mail
+    | and SMS accounts accept.
+    */
+    'campaign_email_per_minute' => (int) env('PORTAL_CAMPAIGN_EMAIL_PER_MINUTE', 200),
+    'campaign_sms_per_minute' => (int) env('PORTAL_CAMPAIGN_SMS_PER_MINUTE', 30),
+
+    /*
     | Media library (PLAN.md §7, §11; ADR-0009). Files are identified by their
     | content, never by their name; only these kinds are accepted.
     */

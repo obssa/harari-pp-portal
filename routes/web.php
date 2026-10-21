@@ -1,6 +1,7 @@
 <?php
 
 use App\Domain\Translation\Support\Locales;
+use App\Http\Controllers\Public\CampaignLinkController;
 use App\Http\Controllers\Public\DocumentController;
 use App\Http\Controllers\Public\EventController;
 use App\Http\Controllers\Public\EventRegistrationController;
@@ -77,6 +78,18 @@ Route::post('/{locale}/newsletter/unsubscribe/{token}', [NewsletterController::c
     ->middleware([SetLocale::class, 'throttle:forms', NoStore::class])
     ->withoutMiddleware($stateless)
     ->name('newsletter.unsubscribe');
+
+// ADR-0052: the unsubscribe link of campaign messages; mail apps post to it without a session.
+Route::get('/{locale}/u/{token}', [CampaignLinkController::class, 'show'])
+    ->where(['locale' => implode('|', Locales::all()), 'token' => '[A-Za-z0-9]{12}'])
+    ->middleware([SetLocale::class, 'throttle:forms', NoStore::class])
+    ->withoutMiddleware($stateless)
+    ->name('campaigns.unsubscribe');
+Route::post('/{locale}/u/{token}', [CampaignLinkController::class, 'unsubscribe'])
+    ->where(['locale' => implode('|', Locales::all()), 'token' => '[A-Za-z0-9]{12}'])
+    ->middleware([SetLocale::class, 'throttle:forms', NoStore::class])
+    ->withoutMiddleware($stateless)
+    ->name('campaigns.unsubscribe.post');
 
 // Cookieless page view counts (ADR-0040): no session, no cookies, nothing about the visitor stored.
 Route::post('/pv', PageViewController::class)

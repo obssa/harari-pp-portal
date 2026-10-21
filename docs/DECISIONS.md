@@ -1528,3 +1528,35 @@ SMS-first), §4 for a preference centre (topics, language, channel) and a sign-u
 
 **Consequences.** Email confirmation works with any mail account; until the branch office's SMTP account is
 set, confirmation emails go to the mail log on staging and codes to the SMS log.
+
+## ADR-0052 — Email and SMS campaigns (2026-10-21)
+
+**Context.** PLAN.md §5 asks for email and SMS broadcasts to segments, templates per language, send-time
+scheduling and delivery reports; §10 for `campaigns` and `campaign_deliveries`. Party notices also go to
+members and volunteers, who did not subscribe to a newsletter.
+
+**Decision.**
+
+- Admin → Communication → Campaigns. `campaigns.manage` writes drafts: a name for staff, the channel (email or
+  SMS), the audience and the text per language (email: subject and Markdown text without raw HTML; SMS: text,
+  with its length in characters and parts, the stop link included, at most four parts). A campaign that has
+  started is never changed or deleted.
+- Audiences: confirmed subscribers of the channel, by topic and language; or members (by woreda and status,
+  active by default) or active volunteers who have an address for the channel and did not opt out. Member and
+  volunteer audiences need `members.view` or `volunteers.view` and cover only the sender's woredas, so a
+  Communications Officer reaches subscribers only. Each address receives a campaign once.
+- `campaigns.send` sends a test to oneself (email to one's own address, SMS to a number typed in), sends now
+  after showing how many people it reaches, or schedules it (`campaigns:dispatch` every minute; a campaign that
+  can no longer go returns to draft). Sending builds one delivery per recipient, holding only the keyed hash
+  of the address and a private token, then a queued job sends one minute's worth at a time
+  (`PORTAL_CAMPAIGN_EMAIL_PER_MINUTE`, `PORTAL_CAMPAIGN_SMS_PER_MINUTE`). Each person is checked again just
+  before their message. A scheduled campaign can go back to draft; one being sent can be stopped.
+- Each recipient gets the text in their language, else its fallbacks (Harari → Amharic → English), else any
+  written language.
+- Every email says why it was received and has an unsubscribe link plus `List-Unsubscribe` and
+  `List-Unsubscribe-Post` headers; every SMS ends with "Stop: <link>". The link (`/{language}/u/{token}`,
+  session-free) asks first; confirming, or a mail app's one-click POST, unsubscribes a subscriber or opts a
+  member or volunteer out of campaigns (they still get messages about their own membership).
+
+**Consequences.** Until the branch office's mail and SMS accounts are set, campaign emails go to the mail log
+and SMS to the SMS log on staging. Delivery reports and click counts follow in step 7.3.

@@ -4,6 +4,13 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 7, step 7.2 — campaigns (2026-10-21)
+
+- Admin → Communication → Campaigns: email and SMS campaigns written per language, to subscribers by topic and
+  language, to members by woreda and status, or to active volunteers; test to oneself, send now or at a set
+  time, sent in batches within limits, stop or unschedule (ADR-0052).
+- Every message carries a stop link; mail apps get one-click unsubscribe headers.
+
 ### Phase 7, step 7.1 — subscribers (2026-10-21)
 
 - `/{language}/newsletter`: news by email and/or SMS with topics, confirmed by a link or a code; a preference

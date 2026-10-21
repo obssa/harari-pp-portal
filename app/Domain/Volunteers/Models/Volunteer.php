@@ -38,6 +38,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property ?string $member_id
  * @property ?CarbonImmutable $consented_at
  * @property ?CarbonImmutable $erased_at
+ * @property ?CarbonImmutable $campaigns_opt_out_at
  * @property CarbonImmutable $created_at
  * @property-read ?Office $woreda
  * @property-read ?Member $member
@@ -70,6 +71,7 @@ class Volunteer extends Model
             'languages' => 'array',
             'consented_at' => 'immutable_datetime',
             'erased_at' => 'immutable_datetime',
+            'campaigns_opt_out_at' => 'immutable_datetime',
             'created_at' => 'immutable_datetime',
             'updated_at' => 'immutable_datetime',
         ];

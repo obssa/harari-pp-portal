@@ -49,6 +49,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property ?CarbonImmutable $renewal_due_on
  * @property ?CarbonImmutable $renewal_reminded_on
  * @property ?CarbonImmutable $erased_at
+ * @property ?CarbonImmutable $campaigns_opt_out_at
  * @property CarbonImmutable $created_at
  * @property-read ?Office $woreda
  * @property-read ?Office $kebele
@@ -98,6 +99,7 @@ class Member extends Model implements AuthenticatableContract
             'renewal_due_on' => 'immutable_date',
             'renewal_reminded_on' => 'immutable_date',
             'erased_at' => 'immutable_datetime',
+            'campaigns_opt_out_at' => 'immutable_datetime',
             'created_at' => 'immutable_datetime',
             'updated_at' => 'immutable_datetime',
         ];
