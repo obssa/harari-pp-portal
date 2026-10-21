@@ -163,6 +163,9 @@ class CampaignResource extends Resource
                 ]), $record->languages() !== [] ? $record->languages() : ['en'])),
             ]),
             Grid::make(1)->columnSpan(['default' => 3, 'lg' => 1])->schema([
+                Section::make(__('campaigns.report.title'))
+                    ->visible(fn (Campaign $record): bool => in_array($record->status, [CampaignStatus::Sending, CampaignStatus::Sent, CampaignStatus::Cancelled], true))
+                    ->schema(fn (?Campaign $record): array => $record === null ? [] : self::reportEntries($record)),
                 Section::make(__('campaigns.admin.section.campaign'))->schema([
                     TextEntry::make('status')->label(__('membership.admin.status'))->badge()
                         ->formatStateUsing(fn (CampaignStatus $state): string => $state->label())->color(fn (CampaignStatus $state): string => $state->color()),
@@ -179,9 +182,6 @@ class CampaignResource extends Resource
                     TextEntry::make('finished_at')->label(__('campaigns.field.finished_at'))->formatStateUsing(CalendarDate::format(withTime: true))->placeholder('—'),
                     TextEntry::make('sender.name')->label(__('campaigns.field.sent_by'))->placeholder('—'),
                 ]),
-                Section::make(__('campaigns.report.title'))
-                    ->visible(fn (Campaign $record): bool => in_array($record->status, [CampaignStatus::Sending, CampaignStatus::Sent, CampaignStatus::Cancelled], true))
-                    ->schema(fn (?Campaign $record): array => $record === null ? [] : self::reportEntries($record)),
             ]),
         ]);
     }

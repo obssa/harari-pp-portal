@@ -4,6 +4,13 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+## v0.7.0 — Phase 7 complete: campaigns and engagement (2026-10-21)
+
+- Admin manual chapter 6, communication, in English and Amharic with screenshots.
+- A sample campaign on staging with its delivery report; Phase 7 report in
+  `docs/phases/07-campaigns-engagement.md`.
+- The delivery report now shows first on a sent campaign's page.
+
 ### Phase 7, step 7.5 — notices by Telegram (2026-10-21)
 
 - Staff link their Telegram account from the notifications page and choose Telegram per kind of notice, once
