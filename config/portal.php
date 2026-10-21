@@ -149,6 +149,18 @@ return [
     ],
 
     /*
+    | Public API (ADR-0056): items per page, requests per minute a new key
+    | gets and the most a key may get, and how long apps may keep an answer.
+    */
+    'api' => [
+        'per_page' => 20,
+        'max_per_page' => 50,
+        'default_rate' => (int) env('PORTAL_API_DEFAULT_RATE', 60),
+        'max_rate' => 600,
+        'max_age' => 60,
+    ],
+
+    /*
     | Allows `php artisan portal:demo-accounts` (one sample account per role).
     | Only ever true on staging.
     */

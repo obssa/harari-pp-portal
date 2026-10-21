@@ -4,6 +4,13 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 8, step 8.1 — public API (2026-10-21)
+
+- Read-only `/api/v1` for news, pages, events, documents, offices, leaders, projects and search, per
+  language, with filters, pages, ETags and the OpenAPI description at `/api/v1/openapi.json` (ADR-0056).
+- API keys with scopes, a rate limit, expiry and last use, issued and revoked by Super Admins under
+  Administration → API keys.
+
 ## v0.7.0 — Phase 7 complete: campaigns and engagement (2026-10-21)
 
 - Admin manual chapter 6, communication, in English and Amharic with screenshots.

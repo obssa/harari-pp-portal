@@ -1629,3 +1629,35 @@ Telegram more than email.
 
 **Consequences.** Until the branch office creates the bot with BotFather and saves its token, Telegram stays
 hidden; nothing else changes.
+
+## ADR-0056 — Public API with keys (2026-10-21)
+
+**Context.** PLAN.md §9 and §13 (Phase 8) ask for a versioned public API, first for the branch office's mobile
+app; the open question in the Phase 8 plan settled on one key per app (the mobile app, office kiosks) and no
+open access.
+
+**Decision.**
+
+- `/api/v1` is read-only JSON for what the public site publishes: posts and pages, events, documents
+  (public ones only), offices and leaders, projects and search. Each item has the same fields the public page
+  shows, the address of that page and, on a single record, the rendered text (`body_html`) and its other
+  languages. Records are found by id (ULID) or slug.
+- The language comes from `?lang=`, then Accept-Language, then the site's default; content falls back as on
+  the site (Harari → Amharic → English) and every item says which language it is in. Unknown languages and
+  kinds get 422.
+- Every request needs a key in the `X-Api-Key` header. Keys are issued by Super Admins under Administration →
+  API keys (`integrations.manage`), each with scopes (`content`, `events`, `documents`, `directory`,
+  `projects`, `search`), a requests-per-minute limit (60 by default, at most 600), an optional expiry and
+  notes. The key (`hpp_` and 40 random characters) is shown once; only an HMAC of it with the app key is
+  stored, with its first 12 characters to tell keys apart. Keys are revoked, not deleted; changes are in the
+  audit log; the last use is noted at most once a minute.
+- Over the limit the API answers 429 with Retry-After; an address that sends 20 wrong keys in a minute is
+  refused for the rest of it.
+- Answers carry an ETag (304 on If-None-Match), `Cache-Control: private, max-age=60` and `Vary: X-Api-Key`,
+  so Cloudflare does not keep them. No session or cookies. Errors are JSON `{"message": ...}` in the
+  language asked for.
+- The OpenAPI 3.1 description is at `/api/v1/openapi.json` without a key; a test checks it lists every route.
+- API searches are not counted in the search insights.
+
+**Consequences.** Nothing is open until a Super Admin issues a key. Breaking changes need `/api/v2`; new
+fields may be added to v1. Changing `APP_KEY` invalidates every API key, as it does the other keyed hashes.

@@ -10,6 +10,8 @@ use App\Domain\Access\Policies\RolePolicy;
 use App\Domain\Access\Policies\UserPolicy;
 use App\Domain\Analytics\Models\AnalyticsReport;
 use App\Domain\Analytics\Policies\AnalyticsReportPolicy;
+use App\Domain\Api\Models\ApiKey;
+use App\Domain\Api\Policies\ApiKeyPolicy;
 use App\Domain\Content\Events\ContentTransitioned;
 use App\Domain\Content\Listeners\NotifyAboutTransition;
 use App\Domain\Content\Models\Category;
@@ -265,6 +267,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Redirect::class, RedirectPolicy::class);
         Gate::policy(Comment::class, CommentPolicy::class);
         Gate::policy(Webhook::class, WebhookPolicy::class);
+        Gate::policy(ApiKey::class, ApiKeyPolicy::class);
         Gate::policy(Office::class, OfficePolicy::class);
         Gate::policy(Leader::class, LeaderPolicy::class);
         Gate::policy(League::class, LeaguePolicy::class);
