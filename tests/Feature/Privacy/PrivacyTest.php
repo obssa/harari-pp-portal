@@ -178,7 +178,7 @@ it('lets administrators search, export and erase from the privacy page', functio
         ->callAction('export')
         ->assertFileDownloaded('personal-data-'.now()->format('Y-m-d').'.json')
         ->callAction('erase')
-        ->assertNotified(__('privacy.erased', ['registrations' => 1, 'submissions' => 1, 'applications' => 0, 'members' => 0]));
+        ->assertNotified(__('privacy.erased', ['registrations' => 1, 'submissions' => 1, 'applications' => 0, 'members' => 0, 'volunteers' => 0]));
 
     expect(PrivacyRequest::query()->count())->toBe(2);
 });

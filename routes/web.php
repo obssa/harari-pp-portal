@@ -26,6 +26,7 @@ use App\Http\Controllers\Public\SitemapController;
 use App\Http\Controllers\Public\SocialController;
 use App\Http\Controllers\Public\StructureController;
 use App\Http\Controllers\Public\VideoController;
+use App\Http\Controllers\Public\VolunteerController;
 use App\Http\Middleware\CachePublicPages;
 use App\Http\Middleware\NoStore;
 use App\Http\Middleware\OutsideProductionOnly;
@@ -105,6 +106,11 @@ Route::prefix('{locale}')
         Route::post('membership/apply/verify', [MembershipController::class, 'verify'])->middleware('throttle:membership')->name('membership.verify');
         Route::get('membership/done', [MembershipController::class, 'done'])->middleware(NoStore::class)->name('membership.done');
         Route::match(['get', 'post'], 'membership/status', [MembershipController::class, 'status'])->middleware(['throttle:search', NoStore::class])->name('membership.status');
+
+        // ADR-0048: volunteers sign up.
+        Route::get('volunteer', [VolunteerController::class, 'create'])->middleware(NoStore::class)->name('volunteer.create');
+        Route::post('volunteer', [VolunteerController::class, 'store'])->middleware('throttle:forms')->name('volunteer.store');
+        Route::get('volunteer/thanks', [VolunteerController::class, 'thanks'])->middleware(NoStore::class)->name('volunteer.thanks');
     });
 
 // Every public page lives under its language: /en, /am, /om, /har (PLAN.md §3).

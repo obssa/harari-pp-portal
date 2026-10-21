@@ -197,7 +197,7 @@ class PrivacyRequests extends Page implements HasTable
      * The numbers for the summary sentences; requests logged before ADR-0046 have no membership counts.
      *
      * @param  array<string, mixed>  $counts
-     * @return array{registrations: int, submissions: int, applications: int, members: int}
+     * @return array{registrations: int, submissions: int, applications: int, members: int, volunteers: int}
      */
     private function summary(array $counts): array
     {
@@ -206,6 +206,7 @@ class PrivacyRequests extends Page implements HasTable
             'submissions' => (int) ($counts['submissions'] ?? 0),
             'applications' => (int) ($counts['applications'] ?? 0),
             'members' => (int) ($counts['members'] ?? 0),
+            'volunteers' => (int) ($counts['volunteers'] ?? 0),
         ];
     }
 
@@ -229,6 +230,7 @@ class PrivacyRequests extends Page implements HasTable
                 TextEntry::make('submissions')->label(__('privacy.found.submissions'))->state($counts['submissions']),
                 TextEntry::make('applications')->label(__('privacy.found.applications'))->state($counts['applications']),
                 TextEntry::make('members')->label(__('privacy.found.members'))->state($counts['members']),
+                TextEntry::make('volunteers')->label(__('privacy.found.volunteers'))->state($counts['volunteers']),
                 TextEntry::make('failed')->label(__('privacy.found.failed_sign_ins'))->state($counts['failed_sign_ins']),
                 TextEntry::make('staff')->label(__('privacy.found.staff_account'))
                     ->state($counts['staff_account'] > 0 ? __('privacy.found.staff_yes') : __('privacy.found.staff_no')),

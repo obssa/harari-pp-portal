@@ -12,6 +12,8 @@ use App\Domain\Membership\Models\MembershipApplication;
 use App\Domain\Membership\Models\PersonNote;
 use App\Domain\Privacy\Models\PrivacyRequest;
 use App\Domain\Privacy\Support\PersonalDataSearch;
+use App\Domain\Volunteers\Enums\VolunteerStatus;
+use App\Domain\Volunteers\Models\Volunteer;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -24,7 +26,8 @@ use Illuminate\Support\Str;
  * details, answers, attachments and the text of notes are removed, and
  * ticket links stop working. Membership applications and member records keep
  * only their reference or number, status, woreda and dates (ADR-0046); an
- * active member becomes resigned. Failed sign-ins forget the email tried.
+ * active member becomes resigned. Volunteers keep their woreda, status
+ * (inactive) and the hours of their tasks. Failed sign-ins forget the email tried.
  * Staff accounts are not touched here. Backups age out within their retention.
  */
 final class ErasePersonalData
@@ -32,7 +35,7 @@ final class ErasePersonalData
     public const ERASED = '—';
 
     /**
-     * @return array{registrations: int, submissions: int, applications: int, members: int, failed_sign_ins: int, staff_account: int}
+     * @return array{registrations: int, submissions: int, applications: int, members: int, volunteers: int, failed_sign_ins: int, staff_account: int}
      */
     public function handle(PersonalDataSearch $search, User $actor): array
     {
@@ -42,8 +45,9 @@ final class ErasePersonalData
         $failed = $search->failedSignIns();
         $applications = $search->applications();
         $members = $search->members();
+        $volunteers = $search->volunteers();
 
-        DB::transaction(function () use ($registrations, $submissions, $failed, $applications, $members): void {
+        DB::transaction(function () use ($registrations, $submissions, $failed, $applications, $members, $volunteers): void {
             foreach ($registrations as $registration) {
                 $this->registration($registration);
             }
@@ -55,6 +59,9 @@ final class ErasePersonalData
             }
             foreach ($members as $member) {
                 $this->person($member);
+            }
+            foreach ($volunteers as $volunteer) {
+                $this->volunteer($volunteer);
             }
             foreach ($failed as $activity) {
                 $activity->properties = $activity->properties->except('email');
@@ -118,6 +125,24 @@ final class ErasePersonalData
             $person->forceFill(['status' => MemberStatus::Resigned]);
         }
         $person->saveQuietly();
+    }
+
+    private function volunteer(Volunteer $volunteer): void
+    {
+        $volunteer->notes()->whereNotNull('body')->each(
+            fn (PersonNote $note) => $note->forceFill(['body' => self::ERASED])->saveQuietly(),
+        );
+        $volunteer->forceFill([
+            'name' => self::ERASED,
+            'phone' => null,
+            'phone_hash' => null,
+            'email' => null,
+            'email_hash' => null,
+            'message' => null,
+            'member_id' => null,
+            'status' => VolunteerStatus::Inactive,
+            'erased_at' => now(),
+        ])->saveQuietly();
     }
 
     private function submission(FormSubmission $submission): void

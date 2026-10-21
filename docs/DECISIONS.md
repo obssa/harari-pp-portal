@@ -1414,3 +1414,31 @@ Amharic, Afaan Oromo and English, and often give dates in the Ethiopian calendar
 **Consequences.** Officers fix problems in their file and import the remaining rows again; duplicates
 protect against importing a roll twice. Name and date-of-birth duplicates are not checked in imports (that
 would mean decrypting every member); the review queue still checks them for applications.
+
+## ADR-0048 — Volunteers (2026-10-21)
+
+**Context.** PLAN.md §4 offers volunteering on the Get Involved page; §5 asks for volunteers with skills,
+availability and languages, assignments to events and an hours log.
+
+**Decision.**
+
+- `/{language}/volunteer`: name, mobile number (required, so a coordinator can call), email, woreda, how the
+  person can help (12 skills), when (weekdays, evenings, weekends, events only), languages (Harari, Amharic,
+  Afaan Oromo, Somali, English, Arabic), an optional message and consent; spam guard, Turnstile and the forms
+  rate limit. No code by SMS: a sign-up is an offer, not a record that confers anything. A sign-up from a
+  phone that is a member's is linked to that member.
+- Contact details and the message are encrypted with keyed hashes for the phone and email; the audit log
+  records status, woreda and the member link only.
+- Admin → Members and volunteers → Volunteers, for `volunteers.view` (office-scoped as in ADR-0045), names and
+  phones masked in the list, filters by status, skill, availability, language and woreda, a badge for new
+  sign-ups. `volunteers.manage` adds and corrects volunteers, sets the status (new, active, inactive) with an
+  optional note, and plans tasks: at an event (the task defaults to the event's name and date) or on their
+  own, planned, done with the hours given, or cancelled. The first task makes a new volunteer active; the
+  hours of tasks done are summed on the list and the page. Tasks are cancelled, never deleted.
+- Coordinators of the woreda get a notice per sign-up (kind "Volunteers", unread notices per woreda combined).
+- Privacy requests find, copy (tasks and history included) and erase volunteer sign-ups; erasure keeps the
+  woreda, an inactive status and the tasks with their hours. Sign-ups still "new" after a year, which nobody
+  followed up, are deleted.
+
+**Consequences.** Sign-ups are not verified; coordinators confirm by calling. The same person can sign up
+twice; the member link and the phone column show it.

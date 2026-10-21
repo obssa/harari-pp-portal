@@ -18,6 +18,7 @@ final class RetentionRules
             ['data' => __('privacy.retention.registrations'), 'kept' => __('privacy.retention.days_after_event', ['days' => (int) config('portal.registration_retention_days')]), 'enforced' => 'events:purge-registrations'],
             ['data' => __('privacy.retention.submissions'), 'kept' => __('privacy.retention.days_after_resolved', ['days' => (int) config('portal.submission_retention_days')]), 'enforced' => 'forms:purge-submissions'],
             ['data' => __('privacy.retention.members'), 'kept' => __('privacy.retention.members_rule'), 'enforced' => __('privacy.retention.on_request')],
+            ['data' => __('privacy.retention.volunteers'), 'kept' => __('privacy.retention.volunteers_rule'), 'enforced' => 'membership:purge-applications'],
             ['data' => __('privacy.retention.applications'), 'kept' => __('privacy.retention.applications_rule', ['days' => (int) config('portal.closed_application_retention_days')]), 'enforced' => 'membership:purge-applications'],
             ['data' => __('privacy.retention.audit'), 'kept' => __('privacy.retention.days', ['days' => (int) config('activitylog.delete_records_older_than_days')]), 'enforced' => 'activitylog:clean'],
             ['data' => __('privacy.retention.notifications'), 'kept' => __('privacy.retention.notifications_rule'), 'enforced' => 'notifications:prune'],

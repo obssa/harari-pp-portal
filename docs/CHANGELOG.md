@@ -4,6 +4,14 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 6, step 6.5 — volunteers (2026-10-21)
+
+- `/{language}/volunteer`: sign up with skills, availability and languages; the Get Involved page links to it
+  (ADR-0048).
+- Admin → Members and volunteers → Volunteers: masked list with filters, tasks at events or on their own,
+  hours given, status and notes; coordinators get a notice for each sign-up.
+- Privacy requests also cover volunteers; sign-ups nobody followed up go after a year.
+
 ### Phase 6, step 6.4 — importing membership rolls (2026-10-21)
 
 - Admin → Members and volunteers → Roll imports: upload an Excel or CSV roll, match the columns, see the

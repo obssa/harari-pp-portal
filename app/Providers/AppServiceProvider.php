@@ -93,6 +93,10 @@ use App\Domain\Translation\Models\TranslationImport;
 use App\Domain\Translation\Policies\GlossaryTermPolicy;
 use App\Domain\Translation\Policies\TranslationImportPolicy;
 use App\Domain\Translation\Support\Locales;
+use App\Domain\Volunteers\Models\Volunteer;
+use App\Domain\Volunteers\Models\VolunteerAssignment;
+use App\Domain\Volunteers\Policies\VolunteerAssignmentPolicy;
+use App\Domain\Volunteers\Policies\VolunteerPolicy;
 use App\Domain\Webhooks\Listeners\QueueWebhooks;
 use App\Domain\Webhooks\Models\Webhook;
 use App\Domain\Webhooks\Policies\WebhookPolicy;
@@ -283,6 +287,8 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Member::class, MemberPolicy::class);
         Gate::policy(PersonNote::class, PersonNotePolicy::class);
         Gate::policy(MemberImport::class, MemberImportPolicy::class);
+        Gate::policy(Volunteer::class, VolunteerPolicy::class);
+        Gate::policy(VolunteerAssignment::class, VolunteerAssignmentPolicy::class);
 
         // Super Admins hold every permission (PLAN.md §8). Only permission
         // names (`module.action`) are short-circuited, so policy rules such as

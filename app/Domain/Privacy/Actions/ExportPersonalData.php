@@ -10,6 +10,8 @@ use App\Domain\Membership\Models\MembershipApplication;
 use App\Domain\Membership\Models\PersonNote;
 use App\Domain\Privacy\Models\PrivacyRequest;
 use App\Domain\Privacy\Support\PersonalDataSearch;
+use App\Domain\Volunteers\Models\Volunteer;
+use App\Domain\Volunteers\Models\VolunteerAssignment;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Spatie\Activitylog\Models\Activity;
@@ -31,6 +33,7 @@ final class ExportPersonalData
         $failed = $search->failedSignIns();
         $applications = $search->applications();
         $members = $search->members();
+        $volunteers = $search->volunteers();
 
         $export = [
             'exported_at' => now()->toIso8601String(),
@@ -80,6 +83,22 @@ final class ExportPersonalData
                 'renewal_due_on' => $m->renewal_due_on?->toDateString(),
                 ...self::person($m),
                 'history' => self::history($m->notes),
+            ])->values()->all(),
+            'volunteering' => $volunteers->map(fn (Volunteer $v): array => [
+                'signed_up_at' => $v->created_at->toIso8601String(),
+                'status' => $v->status->value,
+                'name' => $v->name,
+                'phone' => $v->phone,
+                'email' => $v->email,
+                'woreda' => $v->woreda?->name(),
+                'skills' => $v->skills,
+                'availability' => $v->availability,
+                'languages' => $v->languages,
+                'message' => $v->message,
+                'assignments' => $v->assignments->map(fn (VolunteerAssignment $a): array => [
+                    'task' => $a->task, 'event' => $a->event?->title(), 'on' => $a->on_date?->toDateString(), 'status' => $a->status->value, 'hours' => $a->hours,
+                ])->values()->all(),
+                'history' => self::history($v->notes),
             ])->values()->all(),
             'failed_sign_ins' => $failed->map(fn (Activity $a): array => ['at' => $a->created_at?->toIso8601String()])->values()->all(),
             'staff_account' => $search->staffAccount() !== null,

@@ -2,6 +2,7 @@
 
 namespace App\Domain\Membership\Models;
 
+use App\Domain\Volunteers\Models\Volunteer;
 use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
@@ -21,7 +22,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property ?string $body
  * @property CarbonImmutable $created_at
  * @property-read ?User $user
- * @property-read MembershipApplication|Member|null $notable
+ * @property-read MembershipApplication|Member|Volunteer|null $notable
  */
 class PersonNote extends Model
 {
