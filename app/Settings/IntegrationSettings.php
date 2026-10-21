@@ -45,6 +45,19 @@ class IntegrationSettings extends Settings
 
     public ?string $cloudflare_api_token;
 
+    /** ADR-0058: sign-in with Fayda through eSignet, off until the branch office is registered. */
+    public bool $fayda_enabled;
+
+    /** The eSignet address; its OpenID configuration is read from /.well-known/openid-configuration. */
+    public ?string $fayda_issuer;
+
+    public ?string $fayda_client_id;
+
+    public ?string $fayda_acr_values;
+
+    /** The portal's RSA key (PEM), made in the admin; only its public half leaves the portal. */
+    public ?string $fayda_private_key;
+
     public static function group(): string
     {
         return 'integrations';
@@ -72,6 +85,7 @@ class IntegrationSettings extends Settings
             'telegram_bot_token',
             'turnstile_secret_key',
             'cloudflare_api_token',
+            'fayda_private_key',
         ];
     }
 

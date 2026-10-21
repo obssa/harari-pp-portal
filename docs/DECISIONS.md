@@ -1690,3 +1690,34 @@ event registrations and members-only documents.
 
 **Consequences.** The portal and the app share the sign-in code, the registrations query and the
 members-only file handling. Publishing the app itself (stores, developer accounts) is for the branch office.
+
+## ADR-0058 — Sign-in with Fayda through eSignet (2026-10-21)
+
+**Context.** PLAN.md §11 and §13 (Phase 8) ask for Fayda/eSignet login for members. eSignet is the National ID
+Program's OpenID Connect provider; the branch office must be registered with it as a relying party, which it
+is not yet. The plan says a member is matched by their Fayda number, but eSignet gives each relying party its
+own identifier for a person (`sub`), not the Fayda number.
+
+**Decision.**
+
+- OpenID Connect with the authorization code, PKCE (S256) and `private_key_jwt`: the portal signs its client
+  assertion with its own RSA key, made on the server by a Super Admin under Settings → Integrations
+  ("Create the Fayda signing key") and stored encrypted; the page shows only the public key as a JWK (its
+  `kid` is the RFC 7638 thumbprint) and the one return address, `/member/fayda/callback`, to register.
+- The eSignet address, the client id and the `acr_values` (default `mosip:idp:acr:generated-code`) are
+  saved there too; sign-in is offered only when it is switched on and all of them and the key are saved. The
+  OpenID configuration and keys are read from eSignet's well-known addresses and kept for an hour; a token
+  signed with a key not seen before makes the portal read the keys again once.
+- The id_token is checked (signature, issuer, audience, nonce, expiry with a minute's leeway) and the userinfo
+  answer, signed by eSignet, must be for the same `sub`. State, nonce and verifier live in the session for
+  ten minutes; the language travels with them.
+- Deviation from PLAN.md: a member is matched by the Fayda `sub`, linked once, not by the Fayda number. The
+  link is made from the member portal while signed in ("Link my Fayda ID"), or on the first Fayda sign-in
+  when the phone Fayda holds is the phone of exactly one member who may use the portal. Only a keyed hash of
+  `sub` is stored; one Fayda identity belongs to one member. Linking and unlinking are in the member's
+  history and the audit log; erasure removes the link.
+- Fayda sign-in is for the member portal; the member app keeps the SMS code (ADR-0057) until the app adds
+  its own eSignet flow.
+
+**Consequences.** Until the branch office is registered, nothing changes for members. Replacing the key stops
+Fayda sign-in until the new public key is registered.

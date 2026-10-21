@@ -47,6 +47,8 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property ?string $phone_hash
  * @property ?string $email
  * @property ?string $email_hash
+ * @property ?string $fayda_sub_hash
+ * @property ?CarbonImmutable $fayda_linked_at
  * @property CarbonImmutable $joined_on
  * @property ?CarbonImmutable $renewed_on
  * @property ?CarbonImmutable $renewal_due_on
@@ -84,7 +86,7 @@ class Member extends Model implements AuthenticatableContract
         'phone', 'phone_hash', 'email', 'email_hash', 'joined_on', 'renewed_on', 'renewal_due_on',
     ];
 
-    protected $hidden = ['name', 'birth_date', 'id_number', 'phone', 'email', 'address_note'];
+    protected $hidden = ['name', 'birth_date', 'id_number', 'phone', 'email', 'address_note', 'fayda_sub_hash'];
 
     protected function casts(): array
     {
@@ -102,6 +104,7 @@ class Member extends Model implements AuthenticatableContract
             'renewal_due_on' => 'immutable_date',
             'renewal_reminded_on' => 'immutable_date',
             'erased_at' => 'immutable_datetime',
+            'fayda_linked_at' => 'immutable_datetime',
             'campaigns_opt_out_at' => 'immutable_datetime',
             'created_at' => 'immutable_datetime',
             'updated_at' => 'immutable_datetime',

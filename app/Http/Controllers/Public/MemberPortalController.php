@@ -15,6 +15,7 @@ use App\Domain\Organisation\Enums\OfficeType;
 use App\Domain\Organisation\Models\Office;
 use App\Domain\Organisation\Queries\PublicDirectory;
 use App\Http\Controllers\Controller;
+use App\Services\Fayda\FaydaClient;
 use App\Support\PhoneNumber;
 use App\Support\QrCode;
 use App\Support\SpamGuard;
@@ -43,7 +44,7 @@ final class MemberPortalController extends Controller
             return redirect()->route('member.home');
         }
 
-        return view('pages.member.sign-in', ['turnstileKey' => $turnstile->siteKey()]);
+        return view('pages.member.sign-in', ['turnstileKey' => $turnstile->siteKey(), 'fayda' => app(FaydaClient::class)->isConfigured()]);
     }
 
     public function sendCode(Request $request, SignInMember $signIn, Turnstile $turnstile): RedirectResponse
@@ -94,6 +95,7 @@ final class MemberPortalController extends Controller
 
         return view('pages.member.home', [
             'member' => $member,
+            'fayda' => app(FaydaClient::class)->isConfigured(),
             'dueSoon' => $member->renewal_due_on !== null && $member->renewal_due_on->lessThanOrEqualTo(now()->addDays((int) config('portal.membership_reminder_days'))),
         ]);
     }

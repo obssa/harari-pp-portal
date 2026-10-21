@@ -3,12 +3,17 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Support\CurrentUser;
+use App\Services\Fayda\FaydaClient;
 use App\Settings\IntegrationSettings;
 use BackedEnum;
+use Filament\Actions\Action;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Notifications\Notification;
 use Filament\Pages\SettingsPage;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -128,6 +133,42 @@ class ManageIntegrations extends SettingsPage
                             ->regex('/^[a-f0-9]{32}$/'),
                         $this->secret('cloudflare_api_token', $settings),
                     ]),
+                Section::make(__('admin.settings.integrations.section.fayda'))
+                    ->description(__('admin.settings.integrations.fayda_help'))
+                    ->columns(2)
+                    ->schema([
+                        Toggle::make('fayda_enabled')
+                            ->label(__('admin.settings.integrations.field.fayda_enabled'))
+                            ->helperText(__('admin.settings.integrations.fayda_enabled_help'))
+                            ->columnSpanFull(),
+                        TextInput::make('fayda_issuer')
+                            ->label(__('admin.settings.integrations.field.fayda_issuer'))
+                            ->helperText(__('admin.settings.integrations.fayda_issuer_help'))
+                            ->url()
+                            ->maxLength(255)
+                            ->requiredIfAccepted('fayda_enabled'),
+                        TextInput::make('fayda_client_id')
+                            ->label(__('admin.settings.integrations.field.fayda_client_id'))
+                            ->maxLength(255)
+                            ->requiredIfAccepted('fayda_enabled'),
+                        TextInput::make('fayda_acr_values')
+                            ->label(__('admin.settings.integrations.field.fayda_acr_values'))
+                            ->helperText(__('admin.settings.integrations.fayda_acr_help'))
+                            ->maxLength(255),
+                        TextEntry::make('fayda_redirect')
+                            ->label(__('admin.settings.integrations.field.fayda_redirect'))
+                            ->state(FaydaClient::redirectUri())
+                            ->copyable(),
+                        TextEntry::make('fayda_public_key')
+                            ->label(__('admin.settings.integrations.field.fayda_public_key'))
+                            ->helperText(__('admin.settings.integrations.fayda_public_key_help'))
+                            ->state(fn (): string => ($jwk = app(FaydaClient::class)->publicJwk()) !== null
+                                ? (string) json_encode($jwk, JSON_UNESCAPED_SLASHES)
+                                : __('admin.settings.integrations.fayda_no_key'))
+                            ->fontFamily('mono')
+                            ->copyable()
+                            ->columnSpanFull(),
+                    ]),
                 Section::make(__('admin.settings.integrations.section.remove'))
                     ->collapsed()
                     ->schema([
@@ -140,6 +181,30 @@ class ManageIntegrations extends SettingsPage
                             ->dehydrated(false),
                     ]),
             ]);
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('faydaKey')
+                ->label(fn (): string => filled(app(IntegrationSettings::class)->fayda_private_key)
+                    ? __('admin.settings.integrations.fayda_replace_key')
+                    : __('admin.settings.integrations.fayda_make_key'))
+                ->icon(Heroicon::OutlinedFingerPrint)
+                ->color('gray')
+                ->visible(fn (): bool => $this->canEdit())
+                ->requiresConfirmation()
+                ->modalDescription(__('admin.settings.integrations.fayda_key_confirm'))
+                ->action(function (): void {
+                    // Made on the server and kept encrypted; only the public half is shown.
+                    $settings = app(IntegrationSettings::class);
+                    $settings->fayda_private_key = FaydaClient::newKey();
+                    $settings->save();
+                    activity('integrations')->causedBy(CurrentUser::get())->event('fayda_key')->log('Fayda signing key created');
+                    Notification::make()->success()->title(__('admin.settings.integrations.fayda_key_made'))->send();
+                    $this->redirect(static::getUrl());
+                }),
+        ];
     }
 
     /**

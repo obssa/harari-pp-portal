@@ -205,3 +205,17 @@ php artisan telegram:webhook
 
 It tells Telegram to deliver the bot's messages to `/telegram/webhook` with the secret header. Staff then link
 their accounts from Notifications → "Connect Telegram".
+
+## Fayda sign-in (ADR-0058)
+
+Off until the branch office is registered with the National ID Program as an eSignet relying party.
+
+1. In **Settings → Integrations**, a Super Admin chooses **Create the Fayda signing key**. The page then shows
+   the portal's public key (JWK) and the return address `https://<site>/member/fayda/callback`.
+2. The branch office registers the portal with the National ID Program with that public key and return
+   address, asking for the scopes `openid profile phone` and the claims `name` and `phone_number`.
+3. Enter the eSignet address and the client id received, check the authentication methods (`acr_values`),
+   switch **Offer sign-in with Fayda** on and save. The member sign-in page then shows **Sign in with Fayda**.
+
+Replacing the key stops Fayda sign-in until the new public key is registered. Errors from eSignet go to the log
+(and Sentry once it is set up); members are told to sign in with an SMS code instead.

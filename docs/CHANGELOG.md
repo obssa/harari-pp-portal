@@ -4,6 +4,13 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 8, step 8.3 — sign-in with Fayda (2026-10-21)
+
+- Members can sign in to the member portal with Fayda through eSignet once the branch office is
+  registered; a member links their Fayda ID once (ADR-0058). Off by default.
+- Settings → Integrations makes the portal's signing key and shows the public key and return address
+  to register with the National ID Program.
+
 ### Phase 8, step 8.2 — member API (2026-10-21)
 
 - The member app signs members in with the portal's SMS code and a revocable token, and reads the card,

@@ -5,6 +5,7 @@ use App\Http\Controllers\Public\CampaignLinkController;
 use App\Http\Controllers\Public\DocumentController;
 use App\Http\Controllers\Public\EventController;
 use App\Http\Controllers\Public\EventRegistrationController;
+use App\Http\Controllers\Public\FaydaController;
 use App\Http\Controllers\Public\FeedController;
 use App\Http\Controllers\Public\FormController;
 use App\Http\Controllers\Public\GalleryController;
@@ -115,6 +116,11 @@ Route::post('/{locale}/press/opt-out/{token}', [PressOptOutController::class, 's
     ->withoutMiddleware($stateless)
     ->name('press.opt-out.store');
 
+// ADR-0058: eSignet sends members back here after signing in with Fayda; one address for every language.
+Route::get('/member/fayda/callback', [FaydaController::class, 'callback'])
+    ->middleware(['throttle:membership', NoStore::class])
+    ->name('member.fayda.callback');
+
 // ADR-0055: Telegram delivers messages for the bot here, with the secret header it was given.
 Route::post('/telegram/webhook', TelegramWebhookController::class)
     ->middleware('throttle:beacon')
@@ -180,6 +186,7 @@ Route::prefix('{locale}')
         Route::get('member/code', [MemberPortalController::class, 'code'])->middleware(NoStore::class)->name('member.code');
         Route::post('member/code', [MemberPortalController::class, 'verify'])->middleware('throttle:membership')->name('member.verify-code');
         Route::post('member/sign-out', [MemberPortalController::class, 'signOut'])->name('member.sign-out');
+        Route::get('member/fayda', [FaydaController::class, 'start'])->middleware(['throttle:membership', NoStore::class])->name('member.fayda');
         Route::middleware([EnsureMemberSignedIn::class, NoStore::class])->group(function (): void {
             Route::get('member', [MemberPortalController::class, 'home'])->name('member.home');
             Route::get('member/card', [MemberPortalController::class, 'card'])->name('member.card');
@@ -187,6 +194,8 @@ Route::prefix('{locale}')
             Route::post('member/profile', [MemberPortalController::class, 'requestChange'])->middleware('throttle:forms')->name('member.request');
             Route::get('member/events', [MemberPortalController::class, 'events'])->name('member.events');
             Route::get('member/documents', [MemberPortalController::class, 'documents'])->name('member.documents');
+            Route::get('member/fayda/link', [FaydaController::class, 'start'])->middleware('throttle:membership')->name('member.fayda.link');
+            Route::post('member/fayda/unlink', [FaydaController::class, 'unlink'])->name('member.fayda.unlink');
             Route::get('member/documents/{slug}/download', [MemberPortalController::class, 'download'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('member.download');
         });
         Route::get('verify/{number}/{check}', [MemberPortalController::class, 'verifyCard'])

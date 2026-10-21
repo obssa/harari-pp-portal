@@ -130,8 +130,9 @@ final class ErasePersonalData
         if ($person instanceof MembershipApplication) {
             $person->forceFill(['reason' => null]);
         } else {
-            // Signed out of the member app on every device (ADR-0057).
+            // Signed out of the member app on every device (ADR-0057), Fayda unlinked (ADR-0058).
             $person->appTokens()->delete();
+            $person->forceFill(['fayda_sub_hash' => null, 'fayda_linked_at' => null]);
             if ($person->status === MemberStatus::Active || $person->status === MemberStatus::Lapsed) {
                 $person->forceFill(['status' => MemberStatus::Resigned]);
             }

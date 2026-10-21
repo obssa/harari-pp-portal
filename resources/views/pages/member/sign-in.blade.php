@@ -21,6 +21,13 @@
                 <x-forms.protection :turnstile-key="$turnstileKey" />
                 <button type="submit" class="{{ $button }}">{{ __('membership.send_code') }}</button>
             </form>
+            @if ($fayda)
+                <div class="mt-8 border-t border-line pt-8">
+                    <p class="text-ink-muted">{{ __('members.fayda.or') }}</p>
+                    <a href="{{ route('member.fayda') }}" class="mt-3 inline-flex items-center rounded-control border border-primary-600 px-5 py-2.5 font-semibold text-primary-700 hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 dark:text-primary-200 dark:hover:bg-primary-950">{{ __('members.fayda.sign_in') }}</a>
+                    <p class="mt-2 text-sm text-ink-muted">{{ __('members.fayda.sign_in_help') }}</p>
+                </div>
+            @endif
             <p class="mt-8 text-ink-muted">{{ __('members.portal.not_member') }}
                 <a href="{{ route('membership.apply') }}" class="font-semibold text-link underline underline-offset-4">{{ __('membership.apply.link') }}</a></p>
         </div>
