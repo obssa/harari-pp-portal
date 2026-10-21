@@ -60,13 +60,11 @@
                 <a href="{{ route('volunteer.create') }}" class="mt-auto pt-4 text-sm font-semibold text-link underline-offset-4 hover:underline">{{ __('volunteers.form.link') }}</a>
             </li>
 
-            @foreach (['newsletter'] as $soon)
-                <li class="{{ $card }} border-dashed">
-                    <p><x-ui.badge>{{ __('involved.coming_soon') }}</x-ui.badge></p>
-                    <h2 class="heading-3 mt-3">{{ __("involved.{$soon}.title") }}</h2>
-                    <p class="mt-2 text-ink-muted">{{ __("involved.{$soon}.text") }}</p>
-                </li>
-            @endforeach
+            <li class="{{ $card }}">
+                <h2 class="heading-3">{{ __('involved.newsletter.title') }}</h2>
+                <p class="mt-2 text-ink-muted">{{ __('involved.newsletter.text') }}</p>
+                <a href="{{ route('newsletter.create') }}" class="mt-auto pt-4 text-sm font-semibold text-link underline-offset-4 hover:underline">{{ __('newsletter.link') }}</a>
+            </li>
         </ul>
     </div>
 </x-layouts.public>

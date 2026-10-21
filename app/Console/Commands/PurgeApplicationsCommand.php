@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Domain\Engagement\Actions\Subscribe;
 use App\Domain\Membership\Actions\ImportMembers;
 use App\Domain\Membership\Actions\SignInMember;
 use App\Domain\Membership\Enums\ApplicationStatus;
@@ -17,7 +18,8 @@ use Illuminate\Console\Command;
  * rejected and withdrawn ones some months after the decision (ADR-0044).
  * Approved applications stay with the member record. Checked roll imports
  * nobody applied within a week lose their rows (ADR-0047). Volunteer
- * sign-ups nobody followed up within a year are deleted (ADR-0048).
+ * sign-ups nobody followed up within a year are deleted (ADR-0048), and
+ * newsletter sign-ups never confirmed after a week (ADR-0051).
  */
 final class PurgeApplicationsCommand extends Command
 {
@@ -44,8 +46,9 @@ final class PurgeApplicationsCommand extends Command
         $imports = ImportMembers::purgeStale();
         $volunteers = $this->purgeVolunteers($now);
         SignInMember::purge();
+        $subscribers = Subscribe::purge();
 
-        $this->components->info("Unfinished applications deleted: {$unfinished}; closed applications deleted: {$closed}; stale roll imports discarded: {$imports}; old volunteer sign-ups deleted: {$volunteers}");
+        $this->components->info("Unfinished applications deleted: {$unfinished}; closed applications deleted: {$closed}; stale roll imports discarded: {$imports}; old volunteer sign-ups deleted: {$volunteers}; unconfirmed subscribers deleted: {$subscribers}");
 
         return self::SUCCESS;
     }

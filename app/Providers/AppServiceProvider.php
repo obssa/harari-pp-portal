@@ -33,6 +33,8 @@ use App\Domain\Documents\Models\Document;
 use App\Domain\Documents\Models\DocumentVersion;
 use App\Domain\Documents\Policies\DocumentPolicy;
 use App\Domain\Documents\Policies\DocumentVersionPolicy;
+use App\Domain\Engagement\Models\Subscriber;
+use App\Domain\Engagement\Policies\SubscriberPolicy;
 use App\Domain\Events\Models\Event as PortalEvent;
 use App\Domain\Events\Models\EventRegistration;
 use App\Domain\Events\Policies\EventPolicy;
@@ -289,6 +291,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(MemberImport::class, MemberImportPolicy::class);
         Gate::policy(Volunteer::class, VolunteerPolicy::class);
         Gate::policy(VolunteerAssignment::class, VolunteerAssignmentPolicy::class);
+        Gate::policy(Subscriber::class, SubscriberPolicy::class);
 
         // Super Admins hold every permission (PLAN.md §8). Only permission
         // names (`module.action`) are short-circuited, so policy rules such as

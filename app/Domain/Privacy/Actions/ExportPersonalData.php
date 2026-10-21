@@ -2,6 +2,7 @@
 
 namespace App\Domain\Privacy\Actions;
 
+use App\Domain\Engagement\Models\Subscriber;
 use App\Domain\Events\Models\EventRegistration;
 use App\Domain\Forms\Models\FormSubmission;
 use App\Domain\Forms\Models\SubmissionNote;
@@ -34,6 +35,7 @@ final class ExportPersonalData
         $applications = $search->applications();
         $members = $search->members();
         $volunteers = $search->volunteers();
+        $subscribers = $search->subscribers();
 
         $export = [
             'exported_at' => now()->toIso8601String(),
@@ -99,6 +101,17 @@ final class ExportPersonalData
                     'task' => $a->task, 'event' => $a->event?->title(), 'on' => $a->on_date?->toDateString(), 'status' => $a->status->value, 'hours' => $a->hours,
                 ])->values()->all(),
                 'history' => self::history($v->notes),
+            ])->values()->all(),
+            'newsletter' => $subscribers->map(fn (Subscriber $s): array => [
+                'email' => $s->email,
+                'phone' => $s->phone,
+                'channels' => $s->channels,
+                'topics' => $s->topics,
+                'language' => $s->locale,
+                'signed_up_at' => $s->created_at->toIso8601String(),
+                'email_confirmed_at' => $s->email_confirmed_at?->toIso8601String(),
+                'phone_confirmed_at' => $s->phone_confirmed_at?->toIso8601String(),
+                'unsubscribed_at' => $s->unsubscribed_at?->toIso8601String(),
             ])->values()->all(),
             'failed_sign_ins' => $failed->map(fn (Activity $a): array => ['at' => $a->created_at?->toIso8601String()])->values()->all(),
             'staff_account' => $search->staffAccount() !== null,

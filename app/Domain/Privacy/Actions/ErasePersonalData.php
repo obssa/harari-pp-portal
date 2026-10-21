@@ -2,6 +2,7 @@
 
 namespace App\Domain\Privacy\Actions;
 
+use App\Domain\Engagement\Models\Subscriber;
 use App\Domain\Events\Models\EventRegistration;
 use App\Domain\Forms\Actions\SubmitForm;
 use App\Domain\Forms\Models\FormSubmission;
@@ -27,7 +28,8 @@ use Illuminate\Support\Str;
  * ticket links stop working. Membership applications and member records keep
  * only their reference or number, status, woreda and dates (ADR-0046); an
  * active member becomes resigned. Volunteers keep their woreda, status
- * (inactive) and the hours of their tasks. Failed sign-ins forget the email tried.
+ * (inactive) and the hours of their tasks. Newsletter subscriptions are
+ * deleted. Failed sign-ins forget the email tried.
  * Staff accounts are not touched here. Backups age out within their retention.
  */
 final class ErasePersonalData
@@ -35,7 +37,7 @@ final class ErasePersonalData
     public const ERASED = '—';
 
     /**
-     * @return array{registrations: int, submissions: int, applications: int, members: int, volunteers: int, failed_sign_ins: int, staff_account: int}
+     * @return array{registrations: int, submissions: int, applications: int, members: int, volunteers: int, subscribers: int, failed_sign_ins: int, staff_account: int}
      */
     public function handle(PersonalDataSearch $search, User $actor): array
     {
@@ -46,8 +48,9 @@ final class ErasePersonalData
         $applications = $search->applications();
         $members = $search->members();
         $volunteers = $search->volunteers();
+        $subscribers = $search->subscribers();
 
-        DB::transaction(function () use ($registrations, $submissions, $failed, $applications, $members, $volunteers): void {
+        DB::transaction(function () use ($registrations, $submissions, $failed, $applications, $members, $volunteers, $subscribers): void {
             foreach ($registrations as $registration) {
                 $this->registration($registration);
             }
@@ -63,6 +66,8 @@ final class ErasePersonalData
             foreach ($volunteers as $volunteer) {
                 $this->volunteer($volunteer);
             }
+            // Subscriptions are not records anyone counts: they go entirely.
+            $subscribers->each(fn (Subscriber $subscriber) => $subscriber->delete());
             foreach ($failed as $activity) {
                 $activity->properties = $activity->properties->except('email');
                 $activity->save();

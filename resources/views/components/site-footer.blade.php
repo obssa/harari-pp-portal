@@ -4,6 +4,16 @@
             <h2 id="footer-about" class="text-base font-semibold">{{ __('site.name') }}</h2>
             <p class="mt-1 text-ink-muted">{{ __('site.office') }}</p>
             <p class="mt-4 max-w-prose text-ink-muted">{{ __('site.description') }}</p>
+            {{-- ADR-0051: a plain GET form, so cached pages need no session; the newsletter page completes it. --}}
+            <form method="get" action="{{ route('newsletter.create') }}" class="mt-6 max-w-md">
+                <label for="footer-newsletter" class="font-semibold">{{ __('newsletter.footer_title') }}</label>
+                <div class="mt-2 flex gap-2">
+                    <input id="footer-newsletter" name="email" type="email" autocomplete="email" dir="ltr" placeholder="{{ __('newsletter.footer_placeholder') }}"
+                           class="min-w-0 flex-1 rounded-control border border-line bg-surface px-3 py-2 focus:border-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-600/30">
+                    <button type="submit" class="rounded-control bg-primary-600 px-4 py-2 font-semibold text-white hover:bg-primary-700">{{ __('newsletter.footer_button') }}</button>
+                </div>
+                <p class="mt-2 text-xs text-ink-muted">{{ __('newsletter.footer_help') }}</p>
+            </form>
         </section>
 
         @if ($links !== [])

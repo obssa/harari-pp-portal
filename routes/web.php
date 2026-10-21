@@ -14,6 +14,7 @@ use App\Http\Controllers\Public\MediaFileController;
 use App\Http\Controllers\Public\MemberPortalController;
 use App\Http\Controllers\Public\MembershipController;
 use App\Http\Controllers\Public\NewsController;
+use App\Http\Controllers\Public\NewsletterController;
 use App\Http\Controllers\Public\OfficeController;
 use App\Http\Controllers\Public\PageController;
 use App\Http\Controllers\Public\PageViewController;
@@ -70,6 +71,13 @@ Route::get('/preview/posts/{post}/{language}', PreviewController::class)
     ->withoutMiddleware($stateless)
     ->name('preview.post');
 
+// ADR-0051: the mail app's one-click unsubscribe (RFC 8058) posts without a session or form token.
+Route::post('/{locale}/newsletter/unsubscribe/{token}', [NewsletterController::class, 'unsubscribe'])
+    ->where(['locale' => implode('|', Locales::all()), 'token' => '[A-Za-z0-9]{40}'])
+    ->middleware([SetLocale::class, 'throttle:forms', NoStore::class])
+    ->withoutMiddleware($stateless)
+    ->name('newsletter.unsubscribe');
+
 // Cookieless page view counts (ADR-0040): no session, no cookies, nothing about the visitor stored.
 Route::post('/pv', PageViewController::class)
     ->withoutMiddleware([...$stateless, EncryptCookies::class, AddQueuedCookiesToResponse::class])
@@ -113,6 +121,15 @@ Route::prefix('{locale}')
         Route::get('volunteer', [VolunteerController::class, 'create'])->middleware(NoStore::class)->name('volunteer.create');
         Route::post('volunteer', [VolunteerController::class, 'store'])->middleware('throttle:forms')->name('volunteer.store');
         Route::get('volunteer/thanks', [VolunteerController::class, 'thanks'])->middleware(NoStore::class)->name('volunteer.thanks');
+
+        // ADR-0051: newsletter and SMS sign-up with double opt-in, and the preference centre.
+        Route::get('newsletter', [NewsletterController::class, 'create'])->middleware(NoStore::class)->name('newsletter.create');
+        Route::post('newsletter', [NewsletterController::class, 'store'])->middleware('throttle:forms')->name('newsletter.store');
+        Route::get('newsletter/check', [NewsletterController::class, 'check'])->middleware(NoStore::class)->name('newsletter.check');
+        Route::post('newsletter/check', [NewsletterController::class, 'verify'])->middleware('throttle:membership')->name('newsletter.verify');
+        Route::get('newsletter/confirm/{token}', [NewsletterController::class, 'confirm'])->where('token', '[A-Za-z0-9]{40}')->middleware(NoStore::class)->name('newsletter.confirm');
+        Route::get('newsletter/preferences/{token}', [NewsletterController::class, 'preferences'])->where('token', '[A-Za-z0-9]{40}')->middleware(NoStore::class)->name('newsletter.preferences');
+        Route::post('newsletter/preferences/{token}', [NewsletterController::class, 'update'])->where('token', '[A-Za-z0-9]{40}')->middleware('throttle:forms')->name('newsletter.update');
 
         // ADR-0049: the member portal, signed in with a code by SMS; the card check is public.
         Route::get('member/sign-in', [MemberPortalController::class, 'signIn'])->middleware(NoStore::class)->name('member.sign-in');

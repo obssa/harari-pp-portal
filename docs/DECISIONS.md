@@ -1499,3 +1499,32 @@ builder.
 
 **Consequences.** Age bands come from the year of birth, so a member counts one band early until their
 birthday in the year. Members without a year of birth are "not known".
+
+## ADR-0051 — Newsletter and SMS subscribers with double opt-in (2026-10-21)
+
+**Context.** PLAN.md §2 asks for a newsletter with double opt-in and an SMS option (Ethiopian users are
+SMS-first), §4 for a preference centre (topics, language, channel) and a sign-up in the footer, §10 for
+`subscribers`.
+
+**Decision.**
+
+- `/{language}/newsletter`: email, mobile number or both, four topics (news; statements and press releases;
+  events; vacancies, tenders and notices), consent. Spam guard, Turnstile and the forms rate limit, plus five
+  sign-ups a day for the same details. The footer of every page has a plain GET form with an email field
+  that opens this page filled in, so cached pages stay without a session.
+- Double opt-in per channel: an email address is confirmed by a private link, a phone by a six-digit code
+  (ten minutes, five tries). News goes only to channels chosen, confirmed and not unsubscribed. Someone
+  already on the list is never told so: they get the same link or code, which leads to their preferences;
+  their choices change only there.
+- The preference centre (`/{language}/newsletter/preferences/{token}`, never indexed) changes topics,
+  language and channels; no channel, or "Stop all news", unsubscribes, and choosing a channel again
+  resubscribes. Mail apps' one-click unsubscribe (RFC 8058) posts to a session-free route; links in emails
+  lead to the preference centre, so link scanners never unsubscribe anyone.
+- Contact details are encrypted with keyed hashes; the private token is kept encrypted and hashed.
+- Admin → Communication → Subscribers for `subscribers.view`: masked list with status, channel, topic and
+  language filters; staff with `subscribers.manage` can unsubscribe someone who asked by phone or letter;
+  CSV download for `subscribers.export`, logged. Staff never add subscribers.
+- Privacy requests find, copy and delete subscriptions. Sign-ups never confirmed are deleted after a week.
+
+**Consequences.** Email confirmation works with any mail account; until the branch office's SMTP account is
+set, confirmation emails go to the mail log on staging and codes to the SMS log.

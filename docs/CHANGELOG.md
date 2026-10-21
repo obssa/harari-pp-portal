@@ -4,6 +4,14 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 7, step 7.1 — subscribers (2026-10-21)
+
+- `/{language}/newsletter`: news by email and/or SMS with topics, confirmed by a link or a code; a preference
+  centre and one-click unsubscribe; a sign-up field in the footer of every page; Get Involved links to it
+  (ADR-0051).
+- Admin → Communication → Subscribers: masked list with filters and CSV download.
+- Privacy requests also cover subscriptions; unconfirmed sign-ups go after a week.
+
 ## v0.6.0 — Phase 6 complete: membership and volunteers (2026-10-21)
 
 - Admin manual chapter 5, members and volunteers, in English and Amharic with screenshots.
