@@ -41,6 +41,7 @@ final class PermissionRegistry
         'social' => ['view', 'manage', 'share'],
         'press_kit' => ['manage'],
         'media_contacts' => ['manage'],
+        'donations' => ['view', 'manage'],
         'campaigns' => ['view', 'manage', 'send'],
         'subscribers' => ['view', 'manage', 'export'],
         'members' => ['view', 'create', 'update', 'delete', 'import', 'export'],

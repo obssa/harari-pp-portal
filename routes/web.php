@@ -1,8 +1,10 @@
 <?php
 
 use App\Domain\Translation\Support\Locales;
+use App\Http\Controllers\DonationReceiptController;
 use App\Http\Controllers\Public\CampaignLinkController;
 use App\Http\Controllers\Public\DocumentController;
+use App\Http\Controllers\Public\DonationController;
 use App\Http\Controllers\Public\EventController;
 use App\Http\Controllers\Public\EventRegistrationController;
 use App\Http\Controllers\Public\FaydaController;
@@ -37,6 +39,7 @@ use App\Http\Middleware\CachePublicPages;
 use App\Http\Middleware\EnsureMemberSignedIn;
 use App\Http\Middleware\NoStore;
 use App\Http\Middleware\OutsideProductionOnly;
+use App\Http\Middleware\RestrictAdminByIp;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -121,6 +124,11 @@ Route::get('/member/fayda/callback', [FaydaController::class, 'callback'])
     ->middleware(['throttle:membership', NoStore::class])
     ->name('member.fayda.callback');
 
+// ADR-0060: the printable receipt of a recorded donation, for staff who may see donations.
+Route::get('/admin/donation-receipts/{donation}', DonationReceiptController::class)
+    ->middleware([RestrictAdminByIp::class, NoStore::class])
+    ->name('donations.receipt');
+
 // ADR-0055: Telegram delivers messages for the bot here, with the secret header it was given.
 Route::post('/telegram/webhook', TelegramWebhookController::class)
     ->middleware('throttle:beacon')
@@ -186,6 +194,10 @@ Route::prefix('{locale}')
         Route::get('member/code', [MemberPortalController::class, 'code'])->middleware(NoStore::class)->name('member.code');
         Route::post('member/code', [MemberPortalController::class, 'verify'])->middleware('throttle:membership')->name('member.verify-code');
         Route::post('member/sign-out', [MemberPortalController::class, 'signOut'])->name('member.sign-out');
+        // ADR-0060: the donate page, only while donations are switched on.
+        Route::get('donate', [DonationController::class, 'create'])->middleware(NoStore::class)->name('donations.create');
+        Route::post('donate', [DonationController::class, 'store'])->middleware('throttle:forms')->name('donations.store');
+        Route::get('donate/thanks', [DonationController::class, 'thanks'])->middleware(NoStore::class)->name('donations.thanks');
         Route::get('member/fayda', [FaydaController::class, 'start'])->middleware(['throttle:membership', NoStore::class])->name('member.fayda');
         Route::middleware([EnsureMemberSignedIn::class, NoStore::class])->group(function (): void {
             Route::get('member', [MemberPortalController::class, 'home'])->name('member.home');

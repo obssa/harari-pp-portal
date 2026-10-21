@@ -2,6 +2,7 @@
 
 namespace App\Domain\Privacy\Actions;
 
+use App\Domain\Donations\Models\Donation;
 use App\Domain\Engagement\Models\Subscriber;
 use App\Domain\Events\Models\EventRegistration;
 use App\Domain\Forms\Actions\SubmitForm;
@@ -37,7 +38,7 @@ final class ErasePersonalData
     public const ERASED = '—';
 
     /**
-     * @return array{registrations: int, submissions: int, applications: int, members: int, volunteers: int, subscribers: int, media_contacts: int, failed_sign_ins: int, staff_account: int}
+     * @return array{registrations: int, submissions: int, applications: int, members: int, volunteers: int, subscribers: int, media_contacts: int, donations: int, failed_sign_ins: int, staff_account: int}
      */
     public function handle(PersonalDataSearch $search, User $actor): array
     {
@@ -50,8 +51,9 @@ final class ErasePersonalData
         $volunteers = $search->volunteers();
         $subscribers = $search->subscribers();
         $mediaContacts = $search->mediaContacts();
+        $donations = $search->donations();
 
-        DB::transaction(function () use ($registrations, $submissions, $failed, $applications, $members, $volunteers, $subscribers, $mediaContacts): void {
+        DB::transaction(function () use ($registrations, $submissions, $failed, $applications, $members, $volunteers, $subscribers, $mediaContacts, $donations): void {
             foreach ($registrations as $registration) {
                 $this->registration($registration);
             }
@@ -71,6 +73,10 @@ final class ErasePersonalData
             $subscribers->each(fn (Subscriber $subscriber) => $subscriber->delete());
             // Media contacts are business contacts: removed with the record of what they were sent.
             $mediaContacts->each(fn ($contact) => $contact->delete());
+            // Donations stay in the accounts with their amounts and receipts; who gave is erased (ADR-0060).
+            $donations->each(fn (Donation $donation) => $donation->forceFill([
+                'name' => self::ERASED, 'phone' => null, 'phone_hash' => null, 'email' => null, 'email_hash' => null, 'erased_at' => now(),
+            ])->saveQuietly());
             foreach ($failed as $activity) {
                 $activity->properties = $activity->properties->except('email');
                 $activity->save();

@@ -1744,3 +1744,35 @@ the Facebook page and the Telegram channel; X/Twitter needs a paid API and is le
 
 **Consequences.** Until the branch office gives a page token allowed to publish and makes the bot an
 administrator of the channel, shares fail with the platform's reason shown in the tab; nothing else changes.
+
+## ADR-0060 — Donations module, off by default (2026-10-21)
+
+**Context.** PLAN.md §13 (Phase 8) lists a donations module "if permitted". Ethiopian political-finance rules
+and the party's own decision govern whether and how a party branch may receive gifts; the branch office has
+no online payment (Telebirr, CBE Birr) merchant account.
+
+**Decision.**
+
+- **Settings → Donations** (Super Admin only, `settings.manage`) holds the switch, off by default, with the
+  currency, the smallest pledge, the party's bank accounts and the texts per language. While off, `/donate`
+  answers 404 and nothing is shown anywhere.
+- The donate page takes a pledge: name, phone and/or email, amount, an optional purpose, "do not name me in
+  public lists", and consent, with the spam checks of the other public forms. The donor gets a reference
+  (`DON-XXXX-XXXX`, letters and digits that cannot be confused) to write on the bank transfer, on the page
+  with the accounts and instructions, and by SMS when they gave a phone.
+- Names and contacts are encrypted and found by keyed hashes; the audit log keeps amounts, status and
+  receipts only. **Communication → Donations** (`donations.view` / `donations.manage`, Admins by default)
+  lists pledges with this year's totals; staff record the payment the bank shows (amount, day, bank
+  reference), which gives the next receipt number (`RCPT-000001`, never reused) and thanks the donor by SMS,
+  or cancel a pledge with a reason. Pledges are never deleted.
+- A printable receipt, in the donor's language, opens from the donation's page at
+  `/admin/donation-receipts/{id}` for staff who may see donations, behind the admin address restriction, and
+  each print is in the audit log.
+- Payments go through a `PaymentGateway` interface; bank transfer is the only driver. A Telebirr or CBE Birr
+  driver later returns the provider's payment page from `start()` and records payments from the provider's
+  callback with the same action.
+- Privacy requests find and copy donations; erasure removes the donor's name and contacts but keeps the
+  amounts and receipt numbers the accounts need.
+
+**Consequences.** The module is complete but closed. Before switching it on, the branch office needs the
+party's and its legal advisers' approval, the bank accounts, and the texts in each language.

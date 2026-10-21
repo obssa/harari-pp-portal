@@ -4,6 +4,13 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 8, step 8.5 — donations module, off by default (2026-10-21)
+
+- Pledges on `/{language}/donate` with bank-transfer instructions and a reference, once a Super Admin
+  switches donations on after legal approval (ADR-0060).
+- Communication → Donations: totals, recorded payments with numbered receipts, cancelled pledges and a
+  printable receipt; a payment driver interface for a later online provider.
+
 ### Phase 8, step 8.4 — sharing to Facebook and Telegram (2026-10-21)
 
 - "Share" on a published post posts it, with its link, to the chosen Facebook pages and Telegram

@@ -35,6 +35,8 @@ use App\Domain\Documents\Models\Document;
 use App\Domain\Documents\Models\DocumentVersion;
 use App\Domain\Documents\Policies\DocumentPolicy;
 use App\Domain\Documents\Policies\DocumentVersionPolicy;
+use App\Domain\Donations\Models\Donation;
+use App\Domain\Donations\Policies\DonationPolicy;
 use App\Domain\Engagement\Models\Campaign;
 use App\Domain\Engagement\Models\Subscriber;
 use App\Domain\Engagement\Policies\CampaignPolicy;
@@ -110,6 +112,8 @@ use App\Domain\Webhooks\Models\Webhook;
 use App\Domain\Webhooks\Policies\WebhookPolicy;
 use App\Models\User;
 use App\Services\Cdn\PublicContentChanges;
+use App\Services\Payments\BankTransferGateway;
+use App\Services\Payments\PaymentGateway;
 use App\Services\Sms\LogSmsGateway;
 use App\Services\Sms\SmsGateway;
 use App\Settings\SiteSettings;
@@ -145,6 +149,9 @@ class AppServiceProvider extends ServiceProvider
     {
         // ADR-0025: text messages go to the log until an SMS provider is chosen.
         $this->app->bind(SmsGateway::class, fn (): SmsGateway => new LogSmsGateway);
+
+        // ADR-0060: pledges are paid by bank transfer until an online payment provider is added.
+        $this->app->bind(PaymentGateway::class, fn (): PaymentGateway => new BankTransferGateway);
 
         // spatie/laravel-translation-loader builds its loader from lang/ only, which
         // drops Laravel's built-in English framework strings (validation, auth,
@@ -268,6 +275,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Comment::class, CommentPolicy::class);
         Gate::policy(Webhook::class, WebhookPolicy::class);
         Gate::policy(ApiKey::class, ApiKeyPolicy::class);
+        Gate::policy(Donation::class, DonationPolicy::class);
         Gate::policy(Office::class, OfficePolicy::class);
         Gate::policy(Leader::class, LeaderPolicy::class);
         Gate::policy(League::class, LeaguePolicy::class);

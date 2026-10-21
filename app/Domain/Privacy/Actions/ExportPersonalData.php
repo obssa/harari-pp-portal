@@ -2,6 +2,7 @@
 
 namespace App\Domain\Privacy\Actions;
 
+use App\Domain\Donations\Models\Donation;
 use App\Domain\Engagement\Models\Subscriber;
 use App\Domain\Events\Models\EventRegistration;
 use App\Domain\Forms\Models\FormSubmission;
@@ -38,6 +39,7 @@ final class ExportPersonalData
         $volunteers = $search->volunteers();
         $subscribers = $search->subscribers();
         $mediaContacts = $search->mediaContacts();
+        $donations = $search->donations();
 
         $export = [
             'exported_at' => now()->toIso8601String(),
@@ -119,6 +121,12 @@ final class ExportPersonalData
                 'name' => $c->name, 'outlet' => $c->outlet, 'position' => $c->position, 'email' => $c->email, 'phone' => $c->phone,
                 'languages' => $c->languages, 'notes' => $c->notes, 'opted_out_at' => $c->opted_out_at?->toIso8601String(),
                 'press_releases_received' => $c->distributions()->where('status', 'sent')->count(),
+            ])->values()->all(),
+            'donations' => $donations->map(fn (Donation $d): array => [
+                'reference' => $d->reference, 'name' => $d->name, 'email' => $d->email, 'phone' => $d->phone,
+                'amount' => $d->amount, 'currency' => $d->currency, 'purpose' => $d->purpose, 'anonymous' => $d->anonymous,
+                'status' => $d->status->value, 'received_amount' => $d->received_amount, 'received_on' => $d->received_on?->toDateString(),
+                'receipt_no' => $d->receipt_no, 'pledged_at' => $d->created_at->toIso8601String(),
             ])->values()->all(),
             'failed_sign_ins' => $failed->map(fn (Activity $a): array => ['at' => $a->created_at?->toIso8601String()])->values()->all(),
             'staff_account' => $search->staffAccount() !== null,

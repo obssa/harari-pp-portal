@@ -234,6 +234,7 @@ class PrivacyRequests extends Page implements HasTable
                 TextEntry::make('volunteers')->label(__('privacy.found.volunteers'))->state($counts['volunteers']),
                 TextEntry::make('subscribers')->label(__('privacy.found.subscribers'))->state($counts['subscribers']),
                 TextEntry::make('media_contacts')->label(__('privacy.found.media_contacts'))->state($counts['media_contacts']),
+                TextEntry::make('donations')->label(__('privacy.found.donations'))->state($counts['donations']),
                 TextEntry::make('failed')->label(__('privacy.found.failed_sign_ins'))->state($counts['failed_sign_ins']),
                 TextEntry::make('staff')->label(__('privacy.found.staff_account'))
                     ->state($counts['staff_account'] > 0 ? __('privacy.found.staff_yes') : __('privacy.found.staff_no')),
