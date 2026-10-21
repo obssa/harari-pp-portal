@@ -44,7 +44,16 @@
                 <a href="{{ route('documents.notices') }}" class="mt-auto pt-4 text-sm font-semibold text-link underline-offset-4 hover:underline">{{ __('involved.vacancies.link') }}</a>
             </li>
 
-            @foreach (['membership', 'volunteer', 'newsletter'] as $soon)
+            <li class="{{ $card }}">
+                <h2 class="heading-3">{{ __('involved.membership.title') }}</h2>
+                <p class="mt-2 text-ink-muted">{{ __('involved.membership.text') }}</p>
+                <p class="mt-auto flex flex-wrap gap-x-4 pt-4 text-sm font-semibold">
+                    <a href="{{ route('membership.apply') }}" class="text-link underline-offset-4 hover:underline">{{ __('membership.apply.link') }}</a>
+                    <a href="{{ route('membership.status') }}" class="text-link underline-offset-4 hover:underline">{{ __('membership.status.link') }}</a>
+                </p>
+            </li>
+
+            @foreach (['volunteer', 'newsletter'] as $soon)
                 <li class="{{ $card }} border-dashed">
                     <p><x-ui.badge>{{ __('involved.coming_soon') }}</x-ui.badge></p>
                     <h2 class="heading-3 mt-3">{{ __("involved.{$soon}.title") }}</h2>

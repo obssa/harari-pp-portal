@@ -19,7 +19,7 @@ it('has no serious accessibility issues on the main pages', function () {
         '/en', '/am', '/en/news', '/en/news/sample-browser-story', '/am/news/yenamuna-yeasash-zena',
         '/en/events', '/en/events/sample-browser-forum', '/en/events/sample-browser-forum/register',
         '/en/offices', '/en/offices/sample-browser-office', '/en/documents', '/en/search?q=sample',
-        '/en/contact', '/en/social', '/en/press', '/en/structure',
+        '/en/contact', '/en/social', '/en/press', '/en/structure', '/en/get-involved', '/am/membership/apply', '/en/membership/status',
     ];
 
     foreach ($pages as $path) {

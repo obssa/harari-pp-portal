@@ -4,6 +4,13 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 6, step 6.1 — membership application (2026-10-21)
+
+- `/{language}/membership/apply`: a three-step application (about you, where you live and how to reach you,
+  confirm) with a six-digit code by SMS, a reference number and a status page; birth dates in the Ethiopian
+  or Gregorian calendar; personal details encrypted (ADR-0044).
+- The Get Involved page links to the application and the status page.
+
 - Fix: a scheduled task could start twice when two scheduler runs fell in the same minute (the nightly
   backup ran twice); every task now starts at most once per due minute.
 

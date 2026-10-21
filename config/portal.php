@@ -87,6 +87,12 @@ return [
     'submission_retention_days' => (int) env('PORTAL_SUBMISSION_RETENTION_DAYS', 730),
 
     /*
+    | Days after a rejected or withdrawn membership application was decided
+    | that it is kept (ADR-0044). Unfinished applications go after a week.
+    */
+    'closed_application_retention_days' => (int) env('PORTAL_CLOSED_APPLICATION_RETENTION_DAYS', 180),
+
+    /*
     | Media library (PLAN.md §7, §11; ADR-0009). Files are identified by their
     | content, never by their name; only these kinds are accepted.
     */

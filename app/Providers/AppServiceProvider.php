@@ -200,6 +200,12 @@ class AppServiceProvider extends ServiceProvider
 
         RateLimiter::for('search', fn (Request $request): Limit => Limit::perMinute(30)->by((string) $request->ip()));
 
+        // ADR-0044: the membership steps post several times; codes have their own limits.
+        RateLimiter::for('membership', fn (Request $request): array => [
+            Limit::perMinute(20)->by('membership-minute:'.$request->ip()),
+            Limit::perHour(60)->by('membership-hour:'.$request->ip()),
+        ]);
+
         // ADR-0040: page view beacons, generous but bounded per address.
         RateLimiter::for('beacon', fn (Request $request): Limit => Limit::perMinute(120)->by('beacon:'.$request->ip()));
 

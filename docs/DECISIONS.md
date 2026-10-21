@@ -1289,3 +1289,31 @@ to its translator; until then the Harari footer does not list them.
 
 **Consequences.** The drafts are not legal advice; doubtful wording is listed in
 `docs/translations-review.md` for the reviewers.
+
+## ADR-0044 — Membership applications with a phone code (2026-10-21)
+
+**Context.** PLAN.md §4 asks for a multi-step membership application with an SMS code that verifies the
+phone, a reference number and a status page; §10 for `membership_applications`; §11 for encrypted personal
+data. Party membership is sensitive, and most people in the region know their birth date in the Ethiopian
+calendar.
+
+**Decision.**
+
+- `/{language}/membership/apply` in three steps kept in the visitor's session: about the person (name, sex,
+  date of birth in the Ethiopian or Gregorian calendar, ID type and number, education, occupation); where
+  they live (woreda, kebele and basic organisation from the published offices, or a written address) and
+  their mobile number and email; then a summary, consent and a six-digit code by SMS. The application is
+  stored from the first step (for the funnel) and submitted only when the code is right.
+- Codes are sent at once (not queued), stored only as a keyed hash, valid ten minutes, five tries, a new
+  one after a minute, at most five per application and per phone a day; the first step has the spam
+  guard and Turnstile, every step its own rate limit.
+- Names, birth dates, ID numbers, addresses, phones, emails and decision reasons are encrypted; ID number,
+  phone and email are also kept as keyed hashes for duplicates and privacy requests; sex and birth year
+  stay readable for aggregated reports only. The audit log records status and reviewer, never details.
+- The visitor is never told whether a phone or ID number applied before; officers see possible duplicates
+  (step 6.2). The status page needs both the reference and the phone number and is never stored.
+- Unfinished applications are deleted after a week, rejected or withdrawn ones 180 days after the decision
+  (`PORTAL_CLOSED_APPLICATION_RETENTION_DAYS`).
+
+**Consequences.** Without an SMS gateway (staging) codes go to the server log, so only staff can finish an
+application there. Applicants must be 18 or over.

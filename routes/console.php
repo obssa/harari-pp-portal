@@ -38,6 +38,7 @@ Schedule::command('events:purge-registrations')->dailyAt('03:30');
 
 // ADR-0041: resolved tickets, old notices and failed jobs are removed after their retention period.
 Schedule::command('forms:purge-submissions')->dailyAt('03:40');
+Schedule::command('membership:purge-applications')->dailyAt('03:42');
 Schedule::command('notifications:prune')->dailyAt('03:45');
 Schedule::command('queue:prune-failed', ['--hours' => 720])->dailyAt('03:50');
 

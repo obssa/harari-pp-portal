@@ -13,7 +13,7 @@ applications (clearly labelled); real ones need the branch office and an SMS gat
 
 | Step | Content | Status |
 |---|---|---|
-| 6.1 | Membership application: a multi-step public form (personal details, ID, woreda/kebele and basic organisation, contact, education and occupation, consent), the phone verified by a one-time code by SMS, a reference number and a status page; personal data encrypted, ID and phone also as keyed hashes | |
+| 6.1 | Membership application: a multi-step public form (personal details, ID, woreda/kebele and basic organisation, contact, education and occupation, consent), the phone verified by a one-time code by SMS, a reference number and a status page; personal data encrypted, ID and phone also as keyed hashes | done |
 | 6.2 | Review queue for Membership Officers: filters, masked applicant profile, duplicate detection (ID, phone, name and birth date), approve (creates the member with a member number) or reject with a reason, assign to a woreda office, notes and history, SMS/email to the applicant, notices to officers, export | |
 | 6.3 | Members directory: member number, office, basic organisation, status, joined and renewed dates, renewal due and reminders, notes and timeline, masked lists, export with `members.export`; privacy search, export and erasure (ADR-0041) extended to applications, members and volunteers | |
 | 6.4 | Import of existing membership rolls from Excel or CSV: column mapping, dry run with errors and duplicates, apply, roll back | |

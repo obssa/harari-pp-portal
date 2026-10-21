@@ -11,6 +11,7 @@ use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\LeaderController;
 use App\Http\Controllers\Public\LeagueController;
 use App\Http\Controllers\Public\MediaFileController;
+use App\Http\Controllers\Public\MembershipController;
 use App\Http\Controllers\Public\NewsController;
 use App\Http\Controllers\Public\OfficeController;
 use App\Http\Controllers\Public\PageController;
@@ -95,6 +96,15 @@ Route::prefix('{locale}')
         Route::post('forms/{slug}', [FormController::class, 'submit'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->middleware('throttle:forms')->name('forms.submit');
         Route::get('tickets', [FormController::class, 'lookup'])->middleware(['throttle:search', NoStore::class])->name('tickets.lookup');
         Route::get('tickets/{reference}', [FormController::class, 'ticket'])->where('reference', 'HPP-[2-9A-HJ-NP-Z]{4}-[2-9A-HJ-NP-Z]{4}')->middleware(['throttle:search', NoStore::class])->name('tickets.show');
+
+        // ADR-0044: the membership application, step by step, and its status page.
+        Route::get('membership/apply', [MembershipController::class, 'apply'])->middleware(NoStore::class)->name('membership.apply');
+        Route::post('membership/apply/about', [MembershipController::class, 'about'])->middleware('throttle:membership')->name('membership.about');
+        Route::post('membership/apply/place', [MembershipController::class, 'place'])->middleware('throttle:membership')->name('membership.place');
+        Route::post('membership/apply/code', [MembershipController::class, 'sendCode'])->middleware('throttle:membership')->name('membership.code');
+        Route::post('membership/apply/verify', [MembershipController::class, 'verify'])->middleware('throttle:membership')->name('membership.verify');
+        Route::get('membership/done', [MembershipController::class, 'done'])->middleware(NoStore::class)->name('membership.done');
+        Route::match(['get', 'post'], 'membership/status', [MembershipController::class, 'status'])->middleware(['throttle:search', NoStore::class])->name('membership.status');
     });
 
 // Every public page lives under its language: /en, /am, /om, /har (PLAN.md §3).
