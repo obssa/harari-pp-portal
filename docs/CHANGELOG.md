@@ -4,6 +4,11 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+## v0.6.0 — Phase 6 complete: membership and volunteers (2026-10-21)
+
+- Admin manual chapter 5, members and volunteers, in English and Amharic with screenshots.
+- Phase 6 report in `docs/phases/06-membership-volunteers.md`; sample applications on staging.
+
 ### Phase 6, step 6.7 — people dashboard and membership report (2026-10-21)
 
 - Dashboard widgets "Members and volunteers" and "Applications and members": active members, members who
