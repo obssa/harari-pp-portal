@@ -1,14 +1,10 @@
 @use('App\Domain\Organisation\Queries\PublicDirectory')
 @php $locale = app()->getLocale(); @endphp
 <x-layouts.public :title="__('video.title')" :description="__('video.description')">
-    <div class="mx-auto max-w-page px-4 py-10 sm:px-6">
-        <div class="flex flex-wrap items-baseline justify-between gap-3">
-            <h1 class="heading-1">{{ __('video.title') }}</h1>
-            <a href="{{ route('videos.live') }}" class="text-sm font-medium text-link underline-offset-4 hover:underline">
-                {{ $live ? __('video.live_now_link') : __('video.live_page') }}
-            </a>
-        </div>
-        <p class="mt-2 max-w-prose text-ink-muted">{{ __('video.description') }}</p>
+    <x-page-hero :title="__('video.title')" :lead="__('video.description')" tone="ink" :crumbs="[[__('nav.media'), route('news.index')]]">
+        <x-slot:actions><x-ui.button :href="route('videos.live')" variant="light" size="sm">{{ $live ? __('video.live_now_link') : __('video.live_page') }}</x-ui.button></x-slot:actions>
+    </x-page-hero>
+    <div class="mx-auto max-w-page px-4 pt-2 pb-12 sm:px-6">
 
         @if ($playlists->isNotEmpty())
             <nav aria-label="{{ __('video.playlists') }}" class="mt-6">

@@ -4,12 +4,10 @@
     $select = 'mt-1 block w-full rounded-control border border-line bg-surface px-3 py-2';
 @endphp
 <x-layouts.public :title="__('projects.title')" :description="__('projects.description')">
-    <div class="mx-auto max-w-page px-4 py-10 sm:px-6">
-        <div class="flex flex-wrap items-baseline justify-between gap-3">
-            <h1 class="heading-1">{{ __('projects.title') }}</h1>
-            <a href="{{ route('projects.achievements') }}" class="text-sm font-medium text-link underline-offset-4 hover:underline">{{ __('projects.achievements_link') }}</a>
-        </div>
-        <p class="mt-2 max-w-prose text-ink-muted">{{ __('projects.description') }}</p>
+    <x-page-hero :title="__('projects.title')" :lead="__('projects.description')" tone="night" :crumbs="[]">
+        <x-slot:actions><x-ui.button :href="route('projects.achievements')" variant="light" size="sm">{{ __('projects.achievements_link') }}</x-ui.button></x-slot:actions>
+    </x-page-hero>
+    <div class="mx-auto max-w-page px-4 pt-2 pb-12 sm:px-6">
 
         <form method="get" action="{{ route('projects.index') }}" role="search" aria-label="{{ __('projects.filter') }}" class="mt-6 grid gap-4 rounded-card border border-line bg-surface p-4 sm:grid-cols-4 sm:items-end">
             <div>

@@ -2,26 +2,21 @@
 @use('App\Domain\Content\Queries\PublicPosts')
 @php($locale = app()->getLocale())
 <x-layouts.public :title="$type ? $type->label() : __('news.title')" :description="__('news.description')">
-    <div class="mx-auto max-w-page px-4 py-10 sm:px-6">
-        <header class="max-w-prose">
-            <h1 class="heading-1">{{ $type ? $type->label() : __('news.title') }}</h1>
-            <p class="mt-2 text-ink-muted">{{ __('news.description') }}</p>
-        </header>
-
-        <nav aria-label="{{ __('news.filter_by_type') }}" class="mt-6">
-            <ul class="flex flex-wrap gap-2 text-sm">
-                <li>
-                    <a href="{{ route('news.index') }}" @if (! $type) aria-current="page" @endif
-                       @class(['inline-block rounded-full border px-3 py-1', 'border-primary-600 bg-primary-50 text-primary-800 dark:bg-primary-950 dark:text-primary-200' => ! $type, 'border-line hover:bg-surface-muted' => (bool) $type])>{{ __('news.all') }}</a>
-                </li>
+    <x-page-hero :title="$type ? $type->label() : __('news.title')" :lead="__('news.description')" :crumbs="$type ? [[__('news.title'), route('news.index')]] : []">
+        <x-slot:actions>
+            <x-ui.button :href="route('gallery.index')" variant="secondary" size="sm">{{ __('gallery.title') }}</x-ui.button>
+            <x-ui.button :href="route('press')" variant="secondary" size="sm">{{ __('press.title') }}</x-ui.button>
+        </x-slot:actions>
+        <nav aria-label="{{ __('news.filter_by_type') }}">
+            <ul class="flex flex-wrap gap-2">
+                <li><x-ui.chip :href="route('news.index')" :active="! $type">{{ __('news.all') }}</x-ui.chip></li>
                 @foreach (PostType::cases() as $option)
-                    <li>
-                        <a href="{{ route('news.index', ['type' => $option->value]) }}" @if ($type === $option) aria-current="page" @endif
-                           @class(['inline-block rounded-full border px-3 py-1', 'border-primary-600 bg-primary-50 text-primary-800 dark:bg-primary-950 dark:text-primary-200' => $type === $option, 'border-line hover:bg-surface-muted' => $type !== $option])>{{ $option->label() }}</a>
-                    </li>
+                    <li><x-ui.chip :href="route('news.index', ['type' => $option->value])" :active="$type === $option">{{ $option->label() }}</x-ui.chip></li>
                 @endforeach
             </ul>
         </nav>
+    </x-page-hero>
+    <div class="mx-auto max-w-page px-4 pt-2 pb-12 sm:px-6">
 
         @if ($posts->isEmpty())
             <p class="mt-10 rounded-card border border-line bg-surface px-5 py-8 text-center text-ink-muted">{{ __('news.empty') }}</p>

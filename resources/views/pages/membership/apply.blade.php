@@ -12,10 +12,9 @@
     $birthEthiopian = $birth ? app(\App\Services\Calendar\EthiopianCalendar::class)->toEthiopian($birth) : null;
 @endphp
 <x-layouts.public :title="__('membership.apply.title')" :description="__('membership.apply.description')">
-    <div class="mx-auto max-w-page px-4 py-10 sm:px-6">
+    <x-page-hero :title="__('membership.apply.title')" :lead="__('membership.apply.description')" tone="gold" :crumbs="[[__('nav.get_involved'), route('get-involved')]]" />
+    <div class="mx-auto max-w-page px-4 pt-2 pb-12 sm:px-6">
         <div class="max-w-2xl">
-            <h1 class="heading-1">{{ __('membership.apply.title') }}</h1>
-            <p class="mt-2 text-lg text-ink-muted">{{ __('membership.apply.description') }}</p>
 
             <ol class="mt-8 flex flex-wrap gap-2 text-sm" aria-label="{{ __('membership.apply.steps') }}">
                 @foreach ($steps as $index => $name)

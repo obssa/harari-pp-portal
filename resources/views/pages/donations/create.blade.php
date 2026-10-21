@@ -3,10 +3,9 @@
     $button = 'inline-flex items-center rounded-control bg-primary-600 px-5 py-2.5 font-semibold text-white hover:bg-primary-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600';
 @endphp
 <x-layouts.public :title="__('donations.title')" :description="__('donations.description')">
-    <div class="mx-auto max-w-page px-4 py-10 sm:px-6">
+    <x-page-hero :title="__('donations.title')" :lead="$intro ?? __('donations.description')" tone="plaster" :crumbs="[[__('nav.get_involved'), route('get-involved')]]" />
+    <div class="mx-auto max-w-page px-4 pt-2 pb-12 sm:px-6">
         <div class="max-w-2xl">
-            <h1 class="heading-1">{{ __('donations.title') }}</h1>
-            <p class="mt-2 text-lg text-ink-muted">{{ $intro ?? __('donations.description') }}</p>
 
             <form method="post" action="{{ route('donations.store') }}" class="mt-8 space-y-6" novalidate>
                 @csrf

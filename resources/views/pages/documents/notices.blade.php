@@ -1,12 +1,10 @@
 @use('App\Domain\Organisation\Queries\PublicDirectory')
 @php $locale = app()->getLocale(); @endphp
 <x-layouts.public :title="__('documents.notices_title')" :description="__('documents.notices_description')">
-    <div class="mx-auto max-w-page px-4 py-10 sm:px-6">
-        <div class="flex flex-wrap items-baseline justify-between gap-3">
-            <h1 class="heading-1">{{ __('documents.notices_title') }}</h1>
-            <a href="{{ route('documents.index') }}" class="text-sm font-medium text-link underline-offset-4 hover:underline">{{ __('documents.library_link') }}</a>
-        </div>
-        <p class="mt-2 max-w-prose text-ink-muted">{{ __('documents.notices_description') }}</p>
+    <x-page-hero :title="__('documents.notices_title')" :lead="__('documents.notices_description')" tone="plaster" :crumbs="[[__('documents.title'), route('documents.index')]]">
+        <x-slot:actions><x-ui.button :href="route('documents.index')" variant="secondary" size="sm">{{ __('documents.library_link') }}</x-ui.button></x-slot:actions>
+    </x-page-hero>
+    <div class="mx-auto max-w-page px-4 pt-2 pb-12 sm:px-6">
 
         <section aria-labelledby="notices-open" class="mt-8">
             <h2 id="notices-open" class="heading-2">{{ __('documents.open_notices') }}</h2>

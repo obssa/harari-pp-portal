@@ -1,9 +1,8 @@
 @use('App\Domain\Organisation\Queries\PublicDirectory')
 @php $locale = app()->getLocale(); @endphp
 <x-layouts.public :title="__('gallery.title')" :description="__('gallery.description')">
-    <div class="mx-auto max-w-page px-4 py-10 sm:px-6">
-        <h1 class="heading-1">{{ __('gallery.title') }}</h1>
-        <p class="mt-2 max-w-prose text-ink-muted">{{ __('gallery.description') }}</p>
+    <x-page-hero :title="__('gallery.title')" :lead="__('gallery.description')" tone="ink" :crumbs="[[__('nav.media'), route('news.index')]]" />
+    <div class="mx-auto max-w-page px-4 pt-2 pb-12 sm:px-6">
 
         @if ($galleries->isEmpty())
             <p class="mt-10 rounded-card border border-line bg-surface px-5 py-8 text-center text-ink-muted">{{ __('directory.empty') }}</p>

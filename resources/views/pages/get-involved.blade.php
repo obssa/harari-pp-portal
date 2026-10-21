@@ -4,9 +4,8 @@
     $card = 'flex flex-col rounded-card border border-line bg-surface p-5';
 @endphp
 <x-layouts.public :title="__('involved.title')" :description="__('involved.description')">
-    <div class="mx-auto max-w-page px-4 py-10 sm:px-6">
-        <h1 class="heading-1">{{ __('involved.title') }}</h1>
-        <p class="mt-2 max-w-prose text-lg text-ink-muted">{{ __('involved.description') }}</p>
+    <x-page-hero :title="__('involved.title')" :lead="__('involved.description')" tone="gold" :crumbs="[]" />
+    <div class="mx-auto max-w-page px-4 pt-2 pb-12 sm:px-6">
 
         <ul class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             <li class="{{ $card }}">

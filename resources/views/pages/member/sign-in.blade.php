@@ -3,10 +3,9 @@
     $button = 'inline-flex items-center rounded-control bg-primary-600 px-5 py-2.5 font-semibold text-white hover:bg-primary-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600';
 @endphp
 <x-layouts.public :title="__('members.portal.sign_in_title')" :description="__('members.portal.sign_in_help')">
-    <div class="mx-auto max-w-page px-4 py-10 sm:px-6">
+    <x-page-hero :title="__('members.portal.sign_in_title')" :lead="__('members.portal.sign_in_help')" tone="plaster" :crumbs="[]" />
+    <div class="mx-auto max-w-page px-4 pt-2 pb-12 sm:px-6">
         <div class="max-w-xl">
-            <h1 class="heading-1">{{ __('members.portal.sign_in_title') }}</h1>
-            <p class="mt-2 text-lg text-ink-muted">{{ __('members.portal.sign_in_help') }}</p>
             @if (session('status'))
                 <p role="status" class="mt-6 rounded-card border border-primary-600/40 bg-primary-50 px-4 py-3 text-primary-800 dark:bg-primary-950 dark:text-primary-200">{{ session('status') }}</p>
             @endif

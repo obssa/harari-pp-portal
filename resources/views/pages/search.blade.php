@@ -1,18 +1,18 @@
 @use('App\Domain\Search\SiteSearch')
 @php $title = $searched ? __('search.title_for', ['query' => $query]) : __('search.title'); @endphp
 <x-layouts.public :title="$title" :description="__('search.description')">
-    <div class="mx-auto max-w-page px-4 py-10 sm:px-6">
-        <h1 class="heading-1">{{ __('search.title') }}</h1>
-
-        <form method="get" action="{{ route('search') }}" role="search" class="mt-6 flex max-w-2xl flex-wrap gap-2">
+    <x-page-hero :title="__('search.title')" :lead="__('search.description')" tone="night">
+        <form method="get" action="{{ route('search') }}" role="search" class="flex max-w-3xl flex-wrap gap-2">
             @if ($kind)
                 <input type="hidden" name="type" value="{{ $kind }}">
             @endif
             <label for="search-page-q" class="sr-only">{{ __('search.label') }}</label>
             <input id="search-page-q" type="search" name="q" value="{{ $query }}" maxlength="100" required minlength="2"
-                   placeholder="{{ __('search.placeholder') }}" class="min-w-0 flex-1 rounded-control border border-line bg-surface px-3 py-2 text-base">
-            <x-ui.button type="submit">{{ __('search.button') }}</x-ui.button>
+                   placeholder="{{ __('search.placeholder') }}" class="min-w-0 flex-1 rounded-full border-0 bg-white px-5 py-3 text-base text-ink-brand placeholder:text-ink-muted focus:outline-none focus:ring-3 focus:ring-gold-400">
+            <x-ui.button type="submit" variant="gold" size="lg">{{ __('search.button') }}</x-ui.button>
         </form>
+    </x-page-hero>
+    <div class="mx-auto max-w-page px-4 pt-2 pb-12 sm:px-6">
 
         @if (! $searched)
             <p class="mt-6 max-w-prose text-ink-muted">{{ __('search.hint') }}</p>

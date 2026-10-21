@@ -15,30 +15,28 @@
         </section>
     @endif
 
-    <article class="mx-auto max-w-page px-4 py-10 sm:px-6">
-        <nav aria-label="{{ __('news.breadcrumb') }}" class="text-sm text-ink-muted">
-            <ol class="flex flex-wrap gap-1">
-                <li><a href="{{ route('home') }}" class="hover:underline">{{ __('nav.home') }}</a> /</li>
-                @foreach ($breadcrumbs as $crumb)
-                    <li><a href="{{ $crumb['url'] }}" class="hover:underline">{{ $crumb['title'] }}</a> /</li>
-                @endforeach
-                <li aria-current="page">{{ $translation->title }}</li>
-            </ol>
-        </nav>
+    @php $landing = $page->template === 'landing' && $page->featuredImage; @endphp
+    @unless ($landing)
+        <x-page-hero :title="$translation->title" :lead="$translation->excerpt"
+                     :crumbs="array_map(fn (array $crumb): array => [$crumb['title'], $crumb['url']], $breadcrumbs)" />
+    @endunless
 
-        @unless ($page->template === 'landing' && $page->featuredImage)
-            <header class="mt-6 max-w-3xl">
-                <h1 class="heading-1">{{ $translation->title }}</h1>
-                @if ($translation->excerpt)
-                    <p class="mt-4 text-lg text-ink-muted">{{ $translation->excerpt }}</p>
-                @endif
-            </header>
-            @if ($page->featuredImage)
-                <figure class="mt-8 max-w-4xl">
-                    <x-picture :media="$page->featuredImage" preset="landscape" sizes="(min-width: 64rem) 56rem, 100vw" loading="eager" fetchpriority="high" class="w-full rounded-card" />
-                </figure>
-            @endif
-        @endunless
+    <article class="mx-auto max-w-page px-4 pt-2 pb-12 sm:px-6">
+        @if ($landing)
+            <nav aria-label="{{ __('news.breadcrumb') }}" class="mt-8 text-sm text-ink-muted">
+                <ol class="flex flex-wrap gap-1">
+                    <li><a href="{{ route('home') }}" class="hover:underline">{{ __('nav.home') }}</a> /</li>
+                    @foreach ($breadcrumbs as $crumb)
+                        <li><a href="{{ $crumb['url'] }}" class="hover:underline">{{ $crumb['title'] }}</a> /</li>
+                    @endforeach
+                    <li aria-current="page">{{ $translation->title }}</li>
+                </ol>
+            </nav>
+        @elseif ($page->featuredImage)
+            <figure class="mt-8 max-w-4xl">
+                <x-picture :media="$page->featuredImage" preset="landscape" sizes="(min-width: 64rem) 56rem, 100vw" loading="eager" fetchpriority="high" class="w-full rounded-card" />
+            </figure>
+        @endif
 
         <div @class(['prose-content mt-8', 'max-w-prose' => $page->template !== 'wide', 'max-w-5xl' => $page->template === 'wide'])>{!! $body !!}</div>
 

@@ -5,10 +5,9 @@
     $groups = ['skills' => VolunteerOptions::skills(), 'availability' => VolunteerOptions::availability(), 'languages' => VolunteerOptions::languages()];
 @endphp
 <x-layouts.public :title="__('volunteers.form.title')" :description="__('volunteers.form.description')">
-    <div class="mx-auto max-w-page px-4 py-10 sm:px-6">
+    <x-page-hero :title="__('volunteers.form.title')" :lead="__('volunteers.form.description')" tone="plaster" :crumbs="[[__('nav.get_involved'), route('get-involved')]]" />
+    <div class="mx-auto max-w-page px-4 pt-2 pb-12 sm:px-6">
         <div class="max-w-2xl">
-            <h1 class="heading-1">{{ __('volunteers.form.title') }}</h1>
-            <p class="mt-2 text-lg text-ink-muted">{{ __('volunteers.form.description') }}</p>
 
             @if ($errors->any())
                 <p role="alert" class="mt-6 rounded-card border border-danger-600/40 bg-danger-50 px-4 py-3 text-danger-800">{{ __('volunteers.form.check') }}</p>

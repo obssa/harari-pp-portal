@@ -4,6 +4,17 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Every page in the new design (2026-10-22)
+
+- Listing, form and search pages open on a band with breadcrumb, title and lead (ADR-0062): plaster for
+  most, gold for joining and getting involved, night blue for programmes and search, ink for photos,
+  videos and social media; news types and filters as chips.
+- Articles, offices, leagues, events, projects, documents, albums and videos show their title on the
+  plaster band; CMS pages (About, History, Harar) too.
+- Leader profiles with a round portrait in a gold ring and the source beside the text; leader cards
+  centred with round portraits; cards lift to a gold edge.
+- The header search opens a search field under the header; the search page has its own.
+
 ### Real content from public sources (2026-10-21)
 
 - A content pack loaded on each deploy, once per record (ADR-0063): the branch office and nine woredas,

@@ -1,14 +1,13 @@
 @use('App\Domain\Organisation\Queries\PublicDirectory')
 @php $locale = app()->getLocale(); @endphp
 <x-layouts.public :title="__('leaders.title')" :description="__('leaders.description')">
-    <div class="mx-auto max-w-page px-4 py-10 sm:px-6">
-        <h1 class="heading-1">{{ __('leaders.title') }}</h1>
-        <p class="mt-2 max-w-prose text-ink-muted">{{ __('leaders.description') }}</p>
+    <x-page-hero :title="__('leaders.title')" :lead="__('leaders.description')" tone="plaster" :crumbs="[[__('nav.about'), route('structure')]]" />
+    <div class="mx-auto max-w-page px-4 pt-2 pb-12 sm:px-6">
 
         @forelse ($groups as $group)
             <section class="mt-12" aria-labelledby="body-{{ $group['body']->value }}">
                 <h2 id="body-{{ $group['body']->value }}" class="heading-2">{{ $group['body']->label() }}</h2>
-                <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <ul class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                     @foreach ($group['leaders'] as $leader)
                         @php $shown = PublicDirectory::shown($leader, $locale); @endphp
                         @continue($shown === null)

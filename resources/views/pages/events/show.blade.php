@@ -16,128 +16,135 @@
     :image="$image"
     :json-ld="$jsonLd"
 >
-    <article class="mx-auto max-w-page px-4 py-10 sm:px-6">
-        <nav aria-label="{{ __('news.breadcrumb') }}" class="text-sm text-ink-muted">
-            <ol class="flex flex-wrap gap-1">
-                <li><a href="{{ route('home') }}" class="hover:underline">{{ __('nav.home') }}</a> /</li>
-                <li><a href="{{ route('events.index') }}" class="hover:underline">{{ __('events.title') }}</a></li>
-            </ol>
-        </nav>
+    <article>
+        {{-- ADR-0062: the title of a page sits on the plaster band. --}}
+        <div class="bg-surface-muted">
+            <div class="mx-auto max-w-page px-4 pt-8 pb-10 sm:px-6">
+                <nav aria-label="{{ __('news.breadcrumb') }}" class="text-sm text-ink-muted">
+                    <ol class="flex flex-wrap gap-1">
+                        <li><a href="{{ route('home') }}" class="hover:underline">{{ __('nav.home') }}</a> /</li>
+                        <li><a href="{{ route('events.index') }}" class="hover:underline">{{ __('events.title') }}</a></li>
+                    </ol>
+                </nav>
 
-        <header class="mt-6 flex max-w-3xl gap-5">
-            <x-ui.date-tile :date="$event->starts_at" class="shrink-0" />
-            <div>
-                @if ($event->isPast())
-                    <p class="text-sm font-semibold uppercase tracking-wide text-ink-muted">{{ __('events.ended') }}</p>
-                @endif
-                <h1 class="heading-1">{{ $translation->title }}</h1>
-                @if ($translation->summary)
-                    <p class="mt-3 text-lg text-ink-muted">{{ $translation->summary }}</p>
-                @endif
-            </div>
-        </header>
-
-        <div class="mt-10 grid gap-10 lg:grid-cols-3">
-            <div class="lg:col-span-2">
-                @if ($event->cover)
-                    <x-picture :media="$event->cover" preset="landscape" sizes="(min-width: 64rem) 42rem, 100vw" loading="eager" fetchpriority="high" class="mb-8 w-full rounded-card" />
-                @endif
-
-                @if (trim($body) !== '')
-                    <div class="prose-content max-w-prose">{!! $body !!}</div>
-                @endif
-
-                @if (! empty($translation->agenda))
-                    <section aria-labelledby="event-agenda" class="mt-10">
-                        <h2 id="event-agenda" class="heading-2">{{ __('events.agenda') }}</h2>
-                        <ol class="mt-4 divide-y divide-line rounded-card border border-line bg-surface">
-                            @foreach ($translation->agenda as $line)
-                                <li class="flex gap-4 p-3">
-                                    <span class="w-16 shrink-0 font-medium tabular-nums" dir="ltr">{{ $line['time'] }}</span>
-                                    <span>{{ $line['item'] }}</span>
-                                </li>
-                            @endforeach
-                        </ol>
-                    </section>
-                @endif
-
-                @if ($speakers->isNotEmpty())
-                    <section aria-labelledby="event-speakers" class="mt-10">
-                        <h2 id="event-speakers" class="heading-2">{{ __('events.speakers') }}</h2>
-                        <ul class="mt-4 grid gap-4 sm:grid-cols-2">
-                            @foreach ($speakers as $speaker)
-                                <li><x-directory.person :leader="$speaker['leader']" :translation="$speaker['translation']" :heading-level="3" /></li>
-                            @endforeach
-                        </ul>
-                    </section>
-                @endif
-
-                @if ($event->hasMap())
-                    <section aria-labelledby="event-map" class="mt-10">
-                        <h2 id="event-map" class="heading-3">{{ __('offices.map') }}</h2>
-                        <x-map-frame :latitude="$event->latitude" :longitude="$event->longitude" :title="__('offices.map_of', ['office' => $translation->venue ?: $translation->title])" />
-                    </section>
-                @endif
-            </div>
-
-            <aside class="space-y-6" aria-label="{{ __('events.details') }}">
-                <dl class="space-y-3 text-sm">
+                <header class="mt-6 flex max-w-3xl gap-5">
+                    <x-ui.date-tile :date="$event->starts_at" class="shrink-0" />
                     <div>
-                        <dt class="font-semibold">{{ __('events.when') }}</dt>
-                        <dd class="mt-0.5 text-ink-muted">
-                            <x-date :date="$event->starts_at" :time="! $event->all_day" />
-                            @if ($event->ends_at)
-                                – <x-date :date="$event->ends_at" :time="! $event->all_day" />
-                            @endif
-                        </dd>
-                    </div>
-                    @if (filled($translation->venue) || filled($translation->address))
-                        <div>
-                            <dt class="font-semibold">{{ __('events.where') }}</dt>
-                            <dd class="mt-0.5 whitespace-pre-line text-ink-muted">{{ trim($translation->venue."\n".$translation->address) }}</dd>
-                        </div>
-                    @endif
-                    @if ($event->online_url)
-                        <div>
-                            <dt class="font-semibold">{{ __('events.online') }}</dt>
-                            <dd class="mt-0.5"><a href="{{ $event->online_url }}" rel="noopener" class="text-link underline-offset-4 hover:underline">{{ __('events.join_online') }}</a></dd>
-                        </div>
-                    @endif
-                    @if ($office)
-                        <div>
-                            <dt class="font-semibold">{{ __('admin.leaders.field.office') }}</dt>
-                            <dd class="mt-0.5"><a href="{{ route('offices.show', ['locale' => $office->locale, 'slug' => $office->slug]) }}" class="text-link hover:underline">{{ $office->getAttribute('name') }}</a></dd>
-                        </div>
-                    @endif
-                    @if ($league)
-                        <div>
-                            <dt class="font-semibold">{{ __('admin.leaders.field.league') }}</dt>
-                            <dd class="mt-0.5"><a href="{{ route('leagues.show', ['locale' => $league->locale, 'slug' => $league->slug]) }}" class="text-link hover:underline">{{ $league->getAttribute('name') }}</a></dd>
-                        </div>
-                    @endif
-                </dl>
-
-                @if ($event->registration_enabled && ! $event->isPast())
-                    <div class="rounded-card border border-line bg-surface p-4">
-                        <h2 class="font-semibold">{{ __('events.registration.heading') }}</h2>
-                        @if ($event->registrationClosesAt()->isPast())
-                            <p class="mt-1 text-sm text-ink-muted">{{ __('events.registration.closed') }}</p>
-                        @else
-                            <p class="mt-1 text-sm text-ink-muted">{{ $event->capacity !== null ? __('events.registration.limited') : __('events.registration.free') }}
-                                {{ __('events.registration.closes', ['date' => app(\App\Services\Calendar\EthiopianCalendar::class)->format($event->registrationClosesAt(), withTime: true)]) }}</p>
-                            <a href="{{ route('events.register', ['slug' => $translation->slug]) }}" class="mt-3 inline-flex rounded-control bg-primary-600 px-4 py-2 font-semibold text-white hover:bg-primary-700">{{ __('events.registration.cta') }}</a>
+                        @if ($event->isPast())
+                            <p class="text-sm font-semibold uppercase tracking-wide text-ink-muted">{{ __('events.ended') }}</p>
+                        @endif
+                        <h1 class="heading-1">{{ $translation->title }}</h1>
+                        @if ($translation->summary)
+                            <p class="mt-3 text-lg text-ink-muted">{{ $translation->summary }}</p>
                         @endif
                     </div>
-                @endif
+                </header>
+            </div>
+        </div>
+        <div class="mx-auto max-w-page px-4 pt-2 pb-12 sm:px-6">
 
-                @if (! $event->isPast())
-                    <div class="flex flex-wrap gap-2 text-sm">
-                        <a href="{{ route('events.ics', ['slug' => $translation->slug]) }}" class="rounded-control border border-line px-3 py-1.5 hover:bg-surface-muted">{{ __('events.add_to_calendar') }}</a>
-                        <a href="{{ $google }}" rel="noopener" class="rounded-control border border-line px-3 py-1.5 hover:bg-surface-muted">{{ __('events.google_calendar') }}</a>
-                    </div>
-                @endif
+            <div class="mt-10 grid gap-10 lg:grid-cols-3">
+                <div class="lg:col-span-2">
+                    @if ($event->cover)
+                        <x-picture :media="$event->cover" preset="landscape" sizes="(min-width: 64rem) 42rem, 100vw" loading="eager" fetchpriority="high" class="mb-8 w-full rounded-card" />
+                    @endif
 
-            </aside>
+                    @if (trim($body) !== '')
+                        <div class="prose-content max-w-prose">{!! $body !!}</div>
+                    @endif
+
+                    @if (! empty($translation->agenda))
+                        <section aria-labelledby="event-agenda" class="mt-10">
+                            <h2 id="event-agenda" class="heading-2">{{ __('events.agenda') }}</h2>
+                            <ol class="mt-4 divide-y divide-line rounded-card border border-line bg-surface">
+                                @foreach ($translation->agenda as $line)
+                                    <li class="flex gap-4 p-3">
+                                        <span class="w-16 shrink-0 font-medium tabular-nums" dir="ltr">{{ $line['time'] }}</span>
+                                        <span>{{ $line['item'] }}</span>
+                                    </li>
+                                @endforeach
+                            </ol>
+                        </section>
+                    @endif
+
+                    @if ($speakers->isNotEmpty())
+                        <section aria-labelledby="event-speakers" class="mt-10">
+                            <h2 id="event-speakers" class="heading-2">{{ __('events.speakers') }}</h2>
+                            <ul class="mt-4 grid gap-4 sm:grid-cols-2">
+                                @foreach ($speakers as $speaker)
+                                    <li><x-directory.person :leader="$speaker['leader']" :translation="$speaker['translation']" :heading-level="3" /></li>
+                                @endforeach
+                            </ul>
+                        </section>
+                    @endif
+
+                    @if ($event->hasMap())
+                        <section aria-labelledby="event-map" class="mt-10">
+                            <h2 id="event-map" class="heading-3">{{ __('offices.map') }}</h2>
+                            <x-map-frame :latitude="$event->latitude" :longitude="$event->longitude" :title="__('offices.map_of', ['office' => $translation->venue ?: $translation->title])" />
+                        </section>
+                    @endif
+                </div>
+
+                <aside class="space-y-6" aria-label="{{ __('events.details') }}">
+                    <dl class="space-y-3 text-sm">
+                        <div>
+                            <dt class="font-semibold">{{ __('events.when') }}</dt>
+                            <dd class="mt-0.5 text-ink-muted">
+                                <x-date :date="$event->starts_at" :time="! $event->all_day" />
+                                @if ($event->ends_at)
+                                    – <x-date :date="$event->ends_at" :time="! $event->all_day" />
+                                @endif
+                            </dd>
+                        </div>
+                        @if (filled($translation->venue) || filled($translation->address))
+                            <div>
+                                <dt class="font-semibold">{{ __('events.where') }}</dt>
+                                <dd class="mt-0.5 whitespace-pre-line text-ink-muted">{{ trim($translation->venue."\n".$translation->address) }}</dd>
+                            </div>
+                        @endif
+                        @if ($event->online_url)
+                            <div>
+                                <dt class="font-semibold">{{ __('events.online') }}</dt>
+                                <dd class="mt-0.5"><a href="{{ $event->online_url }}" rel="noopener" class="text-link underline-offset-4 hover:underline">{{ __('events.join_online') }}</a></dd>
+                            </div>
+                        @endif
+                        @if ($office)
+                            <div>
+                                <dt class="font-semibold">{{ __('admin.leaders.field.office') }}</dt>
+                                <dd class="mt-0.5"><a href="{{ route('offices.show', ['locale' => $office->locale, 'slug' => $office->slug]) }}" class="text-link hover:underline">{{ $office->getAttribute('name') }}</a></dd>
+                            </div>
+                        @endif
+                        @if ($league)
+                            <div>
+                                <dt class="font-semibold">{{ __('admin.leaders.field.league') }}</dt>
+                                <dd class="mt-0.5"><a href="{{ route('leagues.show', ['locale' => $league->locale, 'slug' => $league->slug]) }}" class="text-link hover:underline">{{ $league->getAttribute('name') }}</a></dd>
+                            </div>
+                        @endif
+                    </dl>
+
+                    @if ($event->registration_enabled && ! $event->isPast())
+                        <div class="rounded-card border border-line bg-surface p-4">
+                            <h2 class="font-semibold">{{ __('events.registration.heading') }}</h2>
+                            @if ($event->registrationClosesAt()->isPast())
+                                <p class="mt-1 text-sm text-ink-muted">{{ __('events.registration.closed') }}</p>
+                            @else
+                                <p class="mt-1 text-sm text-ink-muted">{{ $event->capacity !== null ? __('events.registration.limited') : __('events.registration.free') }}
+                                    {{ __('events.registration.closes', ['date' => app(\App\Services\Calendar\EthiopianCalendar::class)->format($event->registrationClosesAt(), withTime: true)]) }}</p>
+                                <a href="{{ route('events.register', ['slug' => $translation->slug]) }}" class="mt-3 inline-flex rounded-control bg-primary-600 px-4 py-2 font-semibold text-white hover:bg-primary-700">{{ __('events.registration.cta') }}</a>
+                            @endif
+                        </div>
+                    @endif
+
+                    @if (! $event->isPast())
+                        <div class="flex flex-wrap gap-2 text-sm">
+                            <a href="{{ route('events.ics', ['slug' => $translation->slug]) }}" class="rounded-control border border-line px-3 py-1.5 hover:bg-surface-muted">{{ __('events.add_to_calendar') }}</a>
+                            <a href="{{ $google }}" rel="noopener" class="rounded-control border border-line px-3 py-1.5 hover:bg-surface-muted">{{ __('events.google_calendar') }}</a>
+                        </div>
+                    @endif
+
+                </aside>
+            </div>
         </div>
     </article>
 </x-layouts.public>

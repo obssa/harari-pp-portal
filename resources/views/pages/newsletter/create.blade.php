@@ -6,10 +6,9 @@
     $topics = (array) old('topics', SubscriptionOptions::TOPICS);
 @endphp
 <x-layouts.public :title="__('newsletter.title')" :description="__('newsletter.description')">
-    <div class="mx-auto max-w-page px-4 py-10 sm:px-6">
+    <x-page-hero :title="__('newsletter.title')" :lead="__('newsletter.description')" tone="plaster" :crumbs="[[__('nav.get_involved'), route('get-involved')]]" />
+    <div class="mx-auto max-w-page px-4 pt-2 pb-12 sm:px-6">
         <div class="max-w-2xl">
-            <h1 class="heading-1">{{ __('newsletter.title') }}</h1>
-            <p class="mt-2 text-lg text-ink-muted">{{ __('newsletter.description') }}</p>
 
             <form method="post" action="{{ route('newsletter.store') }}" class="mt-8 space-y-6" novalidate>
                 @csrf

@@ -2,9 +2,8 @@
 @use('App\Domain\Organisation\Queries\PublicDirectory')
 @php $locale = app()->getLocale(); @endphp
 <x-layouts.public :title="$type ? $type->label() : __('offices.title')" :description="__('offices.description')">
-    <div class="mx-auto max-w-page px-4 py-10 sm:px-6">
-        <h1 class="heading-1">{{ __('offices.title') }}</h1>
-        <p class="mt-2 max-w-prose text-ink-muted">{{ __('offices.description') }}</p>
+    <x-page-hero :title="__('offices.title')" :lead="__('offices.description')" tone="plaster" :crumbs="[]" />
+    <div class="mx-auto max-w-page px-4 pt-2 pb-12 sm:px-6">
 
         <form method="get" action="{{ route('offices.index') }}" role="search" class="mt-6 flex max-w-xl flex-wrap gap-2">
             @if ($type)

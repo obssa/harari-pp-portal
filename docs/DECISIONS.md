@@ -1835,6 +1835,9 @@ the plaster and terracotta of the Jugol walls and the woven basket plates (sagar
   ring cannot be read; the whole round logo for phones (`apple-touch-icon.png`), installed apps and the
   header and footer (`public/brand/`).
 
+- Pages open on a band (`<x-page-hero>`) with breadcrumb, title and lead in the tone the canvas gives
+  each section; detail pages put their title on the plaster band; filters are chips (`<x-ui.chip>`).
+
 **Consequences.** Every page takes the new colours from the tokens. The design canvas remains the reference
 for later pages; the national party's official vector logo replaces the raster copy when the branch supplies
 it.

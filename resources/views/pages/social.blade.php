@@ -4,9 +4,8 @@
     $active = 'border-primary-600 bg-primary-50 text-primary-800 dark:bg-primary-950 dark:text-primary-200';
 @endphp
 <x-layouts.public :title="__('social.hub.title')" :description="__('social.hub.description')">
-    <div class="mx-auto max-w-page px-4 py-10 sm:px-6">
-        <h1 class="heading-1">{{ __('social.hub.title') }}</h1>
-        <p class="mt-2 max-w-prose text-ink-muted">{{ __('social.hub.description') }}</p>
+    <x-page-hero :title="__('social.hub.title')" :lead="__('social.hub.description')" tone="ink" :crumbs="[[__('nav.media'), route('news.index')]]" />
+    <div class="mx-auto max-w-page px-4 pt-2 pb-12 sm:px-6">
 
         @if ($platforms->count() > 1)
             <nav aria-label="{{ __('social.hub.networks') }}" class="mt-6">

@@ -6,9 +6,8 @@
     $hours = $settings->office_hours[$locale] ?? $settings->office_hours['am'] ?? $settings->office_hours['en'] ?? null;
 @endphp
 <x-layouts.public :title="__('forms.contact_title')" :description="__('forms.contact_description')">
-    <div class="mx-auto max-w-page px-4 py-10 sm:px-6">
-        <h1 class="heading-1">{{ __('forms.contact_title') }}</h1>
-        <p class="mt-2 max-w-prose text-ink-muted">{{ __('forms.contact_description') }}</p>
+    <x-page-hero :title="__('forms.contact_title')" :lead="__('forms.contact_description')" />
+    <div class="mx-auto max-w-page px-4 pt-2 pb-12 sm:px-6">
 
         <div class="mt-8 grid gap-10 lg:grid-cols-3">
             <div class="lg:col-span-2">

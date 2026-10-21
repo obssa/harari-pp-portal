@@ -1,7 +1,6 @@
 <x-layouts.public :title="__('structure.title')" :description="__('structure.description')">
-    <div class="mx-auto max-w-page px-4 py-10 sm:px-6">
-        <h1 class="heading-1">{{ __('structure.title') }}</h1>
-        <p class="mt-2 max-w-prose text-ink-muted">{{ __('structure.description') }}</p>
+    <x-page-hero :title="__('structure.title')" :lead="__('structure.description')" tone="plaster" :crumbs="[[__('nav.about'), route('structure')]]" />
+    <div class="mx-auto max-w-page px-4 pt-2 pb-12 sm:px-6">
 
         @if ($tree === [])
             <p class="mt-10 rounded-card border border-line bg-surface px-5 py-8 text-center text-ink-muted">{{ __('directory.empty') }}</p>

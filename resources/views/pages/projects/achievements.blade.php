@@ -2,12 +2,10 @@
 @use('App\Domain\Projects\Enums\ProjectStatus')
 @php $locale = app()->getLocale(); @endphp
 <x-layouts.public :title="__('projects.achievements_title')" :description="__('projects.achievements_description')">
-    <div class="mx-auto max-w-page px-4 py-10 sm:px-6">
-        <div class="flex flex-wrap items-baseline justify-between gap-3">
-            <h1 class="heading-1">{{ __('projects.achievements_title') }}</h1>
-            <a href="{{ route('projects.index') }}" class="text-sm font-medium text-link underline-offset-4 hover:underline">{{ __('projects.all_projects') }}</a>
-        </div>
-        <p class="mt-2 max-w-prose text-ink-muted">{{ __('projects.achievements_description') }}</p>
+    <x-page-hero :title="__('projects.achievements_title')" :lead="__('projects.achievements_description')" tone="night" :crumbs="[[__('projects.title'), route('projects.index')]]">
+        <x-slot:actions><x-ui.button :href="route('projects.index')" variant="light" size="sm">{{ __('projects.all_projects') }}</x-ui.button></x-slot:actions>
+    </x-page-hero>
+    <div class="mx-auto max-w-page px-4 pt-2 pb-12 sm:px-6">
 
         @if ($total === 0 && $regional->isEmpty() && $sectors->isEmpty())
             <p class="mt-10 rounded-card border border-line bg-surface px-5 py-8 text-center text-ink-muted">{{ __('directory.empty') }}</p>
