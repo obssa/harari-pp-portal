@@ -11,6 +11,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -58,6 +59,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property-read ?Office $kebele
  * @property-read ?Office $basicOrganisation
  * @property-read ?User $reviewer
+ * @property-read ?Member $member
  */
 class MembershipApplication extends Model
 {
@@ -164,6 +166,16 @@ class MembershipApplication extends Model
     public function notes(): MorphMany
     {
         return $this->morphMany(PersonNote::class, 'notable')->latest('id');
+    }
+
+    /**
+     * The member made when the application was approved.
+     *
+     * @return HasOne<Member, $this>
+     */
+    public function member(): HasOne
+    {
+        return $this->hasOne(Member::class, 'application_id');
     }
 
     /**

@@ -136,17 +136,14 @@ class PrivacyRequests extends Page implements HasTable
                 ->label(__('privacy.action.erase'))
                 ->icon(Heroicon::OutlinedTrash)
                 ->color('danger')
-                ->visible(fn (): bool => array_sum(array_slice($this->search()?->counts() ?? [], 0, 3)) > 0)
+                ->visible(fn (): bool => ($this->search()?->erasable() ?? 0) > 0)
                 ->requiresConfirmation()
                 ->modalHeading(__('privacy.action.erase_heading'))
-                ->modalDescription(fn (): string => __('privacy.action.erase_help', [
-                    'registrations' => $this->search()?->counts()['registrations'] ?? 0,
-                    'submissions' => $this->search()?->counts()['submissions'] ?? 0,
-                ]))
+                ->modalDescription(fn (): string => __('privacy.action.erase_help', $this->summary($this->search()?->counts() ?? [])))
                 ->action(function (): void {
                     abort_unless(CurrentUser::get()->can('privacy.manage') && ($search = $this->search()) !== null, 403);
                     $found = app(ErasePersonalData::class)->handle($search, CurrentUser::get());
-                    Notification::make()->success()->title(__('privacy.erased', ['registrations' => $found['registrations'], 'submissions' => $found['submissions']]))->send();
+                    Notification::make()->success()->title(__('privacy.erased', $this->summary($found)))->send();
                     $this->resetTable();
                 }),
         ];
@@ -190,13 +187,26 @@ class PrivacyRequests extends Page implements HasTable
                     ->formatStateUsing(fn (string $state): string => $state === PrivacyRequest::ERASE ? __('privacy.kind.erase') : __('privacy.kind.export'))
                     ->color(fn (string $state): string => $state === PrivacyRequest::ERASE ? 'danger' : 'gray'),
                 TextColumn::make('found')->label(__('privacy.column.found'))
-                    ->formatStateUsing(fn (mixed $state, PrivacyRequest $record): string => __('privacy.found_summary', [
-                        'registrations' => (int) ($record->found['registrations'] ?? 0),
-                        'submissions' => (int) ($record->found['submissions'] ?? 0),
-                    ])),
+                    ->formatStateUsing(fn (mixed $state, PrivacyRequest $record): string => __('privacy.found_summary', $this->summary($record->found ?? []))),
                 TextColumn::make('handler.name')->label(__('privacy.column.by'))->placeholder('—'),
             ])
             ->emptyStateHeading(__('privacy.no_requests'));
+    }
+
+    /**
+     * The numbers for the summary sentences; requests logged before ADR-0046 have no membership counts.
+     *
+     * @param  array<string, mixed>  $counts
+     * @return array{registrations: int, submissions: int, applications: int, members: int}
+     */
+    private function summary(array $counts): array
+    {
+        return [
+            'registrations' => (int) ($counts['registrations'] ?? 0),
+            'submissions' => (int) ($counts['submissions'] ?? 0),
+            'applications' => (int) ($counts['applications'] ?? 0),
+            'members' => (int) ($counts['members'] ?? 0),
+        ];
     }
 
     private function search(): ?PersonalDataSearch
@@ -214,9 +224,11 @@ class PrivacyRequests extends Page implements HasTable
         $counts = $search->counts();
 
         return [
-            Grid::make(['default' => 2, 'md' => 4])->schema([
+            Grid::make(['default' => 2, 'md' => 3])->schema([
                 TextEntry::make('registrations')->label(__('privacy.found.registrations'))->state($counts['registrations']),
                 TextEntry::make('submissions')->label(__('privacy.found.submissions'))->state($counts['submissions']),
+                TextEntry::make('applications')->label(__('privacy.found.applications'))->state($counts['applications']),
+                TextEntry::make('members')->label(__('privacy.found.members'))->state($counts['members']),
                 TextEntry::make('failed')->label(__('privacy.found.failed_sign_ins'))->state($counts['failed_sign_ins']),
                 TextEntry::make('staff')->label(__('privacy.found.staff_account'))
                     ->state($counts['staff_account'] > 0 ? __('privacy.found.staff_yes') : __('privacy.found.staff_no')),

@@ -5,9 +5,13 @@ namespace App\Domain\Privacy\Actions;
 use App\Domain\Events\Models\EventRegistration;
 use App\Domain\Forms\Models\FormSubmission;
 use App\Domain\Forms\Models\SubmissionNote;
+use App\Domain\Membership\Models\Member;
+use App\Domain\Membership\Models\MembershipApplication;
+use App\Domain\Membership\Models\PersonNote;
 use App\Domain\Privacy\Models\PrivacyRequest;
 use App\Domain\Privacy\Support\PersonalDataSearch;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Spatie\Activitylog\Models\Activity;
 
 /**
@@ -25,6 +29,8 @@ final class ExportPersonalData
         $registrations = $search->registrations();
         $submissions = $search->submissions();
         $failed = $search->failedSignIns();
+        $applications = $search->applications();
+        $members = $search->members();
 
         $export = [
             'exported_at' => now()->toIso8601String(),
@@ -56,6 +62,25 @@ final class ExportPersonalData
                     ->map(fn (SubmissionNote $n): array => ['kind' => $n->kind, 'at' => $n->created_at->toIso8601String(), 'text' => $n->body])
                     ->values()->all(),
             ])->values()->all(),
+            'membership_applications' => $applications->map(fn (MembershipApplication $a): array => [
+                'reference' => $a->reference,
+                'status' => $a->status->value,
+                'submitted_at' => $a->submitted_at?->toIso8601String(),
+                'decided_at' => $a->decided_at?->toIso8601String(),
+                'reason' => $a->reason,
+                ...self::person($a),
+                'language' => $a->locale,
+                'history' => self::history($a->notes),
+            ])->values()->all(),
+            'membership' => $members->map(fn (Member $m): array => [
+                'member_no' => $m->member_no,
+                'status' => $m->status->value,
+                'joined_on' => $m->joined_on->toDateString(),
+                'renewed_on' => $m->renewed_on?->toDateString(),
+                'renewal_due_on' => $m->renewal_due_on?->toDateString(),
+                ...self::person($m),
+                'history' => self::history($m->notes),
+            ])->values()->all(),
             'failed_sign_ins' => $failed->map(fn (Activity $a): array => ['at' => $a->created_at?->toIso8601String()])->values()->all(),
             'staff_account' => $search->staffAccount() !== null,
         ];
@@ -69,5 +94,36 @@ final class ExportPersonalData
         activity('privacy')->causedBy($actor)->event('export')->withProperties(['found' => $search->counts()])->log('Personal data exported');
 
         return $export;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private static function person(MembershipApplication|Member $person): array
+    {
+        return [
+            'name' => $person->name,
+            'sex' => $person->sex,
+            'birth_date' => $person->birth_date,
+            'id_type' => $person->id_type,
+            'id_number' => $person->id_number,
+            'education' => $person->education,
+            'occupation' => $person->occupation,
+            'woreda' => $person->woreda?->name(),
+            'kebele' => $person->kebele?->name(),
+            'basic_organisation' => $person->basicOrganisation?->name(),
+            'address' => $person->address_note,
+            'phone' => $person->phone,
+            'email' => $person->email,
+        ];
+    }
+
+    /**
+     * @param  Collection<int, PersonNote>  $notes
+     * @return list<array{kind: string, at: string, text: ?string}>
+     */
+    private static function history(Collection $notes): array
+    {
+        return $notes->sortBy('id')->map(fn (PersonNote $n): array => ['kind' => $n->kind, 'at' => $n->created_at->toIso8601String(), 'text' => $n->body])->values()->all();
     }
 }

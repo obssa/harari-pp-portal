@@ -6,6 +6,10 @@ use App\Domain\Events\Models\EventRegistration;
 use App\Domain\Forms\Actions\SubmitForm;
 use App\Domain\Forms\Models\FormSubmission;
 use App\Domain\Forms\Models\SubmissionNote;
+use App\Domain\Membership\Enums\MemberStatus;
+use App\Domain\Membership\Models\Member;
+use App\Domain\Membership\Models\MembershipApplication;
+use App\Domain\Membership\Models\PersonNote;
 use App\Domain\Privacy\Models\PrivacyRequest;
 use App\Domain\Privacy\Support\PersonalDataSearch;
 use App\Models\User;
@@ -18,15 +22,17 @@ use Illuminate\Support\Str;
  * ADR-0041). Registrations and tickets stay as anonymous records, so event
  * numbers and inbox statistics still add up, but their name, contact
  * details, answers, attachments and the text of notes are removed, and
- * ticket links stop working. Failed sign-ins forget the email tried. Staff
- * accounts are not touched here. Backups age out within their retention.
+ * ticket links stop working. Membership applications and member records keep
+ * only their reference or number, status, woreda and dates (ADR-0046); an
+ * active member becomes resigned. Failed sign-ins forget the email tried.
+ * Staff accounts are not touched here. Backups age out within their retention.
  */
 final class ErasePersonalData
 {
     public const ERASED = '—';
 
     /**
-     * @return array{registrations: int, submissions: int, failed_sign_ins: int, staff_account: int}
+     * @return array{registrations: int, submissions: int, applications: int, members: int, failed_sign_ins: int, staff_account: int}
      */
     public function handle(PersonalDataSearch $search, User $actor): array
     {
@@ -34,13 +40,21 @@ final class ErasePersonalData
         $registrations = $search->registrations();
         $submissions = $search->submissions();
         $failed = $search->failedSignIns();
+        $applications = $search->applications();
+        $members = $search->members();
 
-        DB::transaction(function () use ($registrations, $submissions, $failed): void {
+        DB::transaction(function () use ($registrations, $submissions, $failed, $applications, $members): void {
             foreach ($registrations as $registration) {
                 $this->registration($registration);
             }
             foreach ($submissions as $submission) {
                 $this->submission($submission);
+            }
+            foreach ($applications as $application) {
+                $this->person($application);
+            }
+            foreach ($members as $member) {
+                $this->person($member);
             }
             foreach ($failed as $activity) {
                 $activity->properties = $activity->properties->except('email');
@@ -72,6 +86,38 @@ final class ErasePersonalData
             'token_hash' => EventRegistration::hash($token),
             'erased_at' => now(),
         ])->saveQuietly();
+    }
+
+    private function person(MembershipApplication|Member $person): void
+    {
+        $person->notes()->whereNotNull('body')->each(
+            fn (PersonNote $note) => $note->forceFill(['body' => self::ERASED])->saveQuietly(),
+        );
+        $person->forceFill([
+            'name' => self::ERASED,
+            'sex' => null,
+            'birth_date' => null,
+            'birth_year' => null,
+            'id_type' => null,
+            'id_number' => null,
+            'id_hash' => null,
+            'education' => null,
+            'occupation' => null,
+            'kebele_id' => null,
+            'basic_org_id' => null,
+            'address_note' => null,
+            'phone' => null,
+            'phone_hash' => null,
+            'email' => null,
+            'email_hash' => null,
+            'erased_at' => now(),
+        ]);
+        if ($person instanceof MembershipApplication) {
+            $person->forceFill(['reason' => null]);
+        } elseif ($person->status === MemberStatus::Active || $person->status === MemberStatus::Lapsed) {
+            $person->forceFill(['status' => MemberStatus::Resigned]);
+        }
+        $person->saveQuietly();
     }
 
     private function submission(FormSubmission $submission): void

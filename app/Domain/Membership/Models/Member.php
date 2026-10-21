@@ -44,6 +44,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property CarbonImmutable $joined_on
  * @property ?CarbonImmutable $renewed_on
  * @property ?CarbonImmutable $renewal_due_on
+ * @property ?CarbonImmutable $renewal_reminded_on
  * @property ?CarbonImmutable $erased_at
  * @property CarbonImmutable $created_at
  * @property-read ?Office $woreda
@@ -88,6 +89,7 @@ class Member extends Model
             'joined_on' => 'immutable_date',
             'renewed_on' => 'immutable_date',
             'renewal_due_on' => 'immutable_date',
+            'renewal_reminded_on' => 'immutable_date',
             'erased_at' => 'immutable_datetime',
             'created_at' => 'immutable_datetime',
             'updated_at' => 'immutable_datetime',

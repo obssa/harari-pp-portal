@@ -1350,3 +1350,35 @@ see duplicates, assign them to a woreda, keep notes and export; §8 scopes Membe
 **Consequences.** A member number reveals roughly how many members joined before; acceptable for a party
 card. Members are not deleted from the admin: leaving, death or erasure go through statuses and privacy
 requests (step 6.3).
+
+## ADR-0046 — Members directory, renewals and privacy for members (2026-10-21)
+
+**Context.** PLAN.md §5 asks for a members directory with member number, office, status, joined and renewed
+dates, renewal reminders, notes and a timeline, masked lists and a permissioned export; ADR-0041 handles
+privacy requests for registrations and tickets only.
+
+**Decision.**
+
+- Admin → Members and volunteers → Members lists the members of the woredas a person covers
+  (`members.view`, office-scoped as in ADR-0045), names and phones masked, searched by member number or phone
+  number (through the keyed hash; encrypted names cannot be searched). Filters: status, woreda, renewal due
+  within the reminder window or overdue.
+- Officers with `members.create` add members by hand (source "added by staff", next number); with
+  `members.update` they correct details. The form never shows the ID number in full: left empty, the number on
+  file stays. A second member with the same ID number is refused. The history names the details that changed,
+  never their values.
+- A membership runs 12 months. Without a date given, the first renewal is due on the next anniversary of
+  joining. Renewing extends from the due date, or from today when it has passed. `membership:renewals` runs
+  daily at 09:00 Addis Ababa time: one SMS per period to active members whose renewal falls due within 30 days
+  (`PORTAL_MEMBERSHIP_REMINDER_DAYS`), and active members more than 90 days overdue
+  (`PORTAL_MEMBERSHIP_GRACE_DAYS`) become lapsed, recorded in their history by the portal.
+- Status changes (active, lapsed, suspended, resigned, deceased) need a reason, kept in the history; members are
+  never deleted from the admin.
+- Download CSV exports the members on screen without ID numbers, logged with the number of rows.
+- Privacy requests (ADR-0041) now also find sent membership applications and member records by email or phone.
+  The copy includes everything held, the ID number and the history included. Erasure keeps only the reference
+  or member number, status, woreda and dates; history texts are replaced; an active or lapsed member becomes
+  resigned. Purged applications take their history with them.
+
+**Consequences.** Without an SMS gateway (staging) reminders go to the SMS log. Volunteers join the privacy
+search with step 6.5.

@@ -52,6 +52,9 @@ Schedule::command('model:prune', ['--model' => [SearchTerm::class, HealthCheckRe
 // ADR-0040: scheduled traffic reports leave at 07:00 Addis Ababa time.
 Schedule::command('analytics:send-reports')->dailyAt('04:00')->withoutOverlapping();
 
+// ADR-0046: renewal reminders go out at 09:00 Addis Ababa time; long-overdue memberships lapse.
+Schedule::command('membership:renewals')->dailyAt('06:00')->withoutOverlapping();
+
 // ADR-0037: health checks every five minutes; the scheduler and queue checks need their heartbeats.
 Schedule::command(RunHealthChecksCommand::class)->everyFiveMinutes()->withoutOverlapping();
 Schedule::command(ScheduleCheckHeartbeatCommand::class)->everyMinute();

@@ -31,6 +31,8 @@ class PersonNote extends Model
 
     public const ASSIGN = 'assign';
 
+    public const UPDATE = 'update';
+
     public const DECISION = 'decision';
 
     public const STATUS = 'status';

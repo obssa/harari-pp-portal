@@ -93,6 +93,13 @@ return [
     'closed_application_retention_days' => (int) env('PORTAL_CLOSED_APPLICATION_RETENTION_DAYS', 180),
 
     /*
+    | Membership renewals (ADR-0046): members get one SMS this many days before
+    | their renewal is due, and become lapsed this many days after it.
+    */
+    'membership_reminder_days' => (int) env('PORTAL_MEMBERSHIP_REMINDER_DAYS', 30),
+    'membership_grace_days' => (int) env('PORTAL_MEMBERSHIP_GRACE_DAYS', 90),
+
+    /*
     | Media library (PLAN.md §7, §11; ADR-0009). Files are identified by their
     | content, never by their name; only these kinds are accepted.
     */

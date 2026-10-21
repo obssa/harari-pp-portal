@@ -11,6 +11,7 @@ use App\Domain\Membership\Support\DuplicateFinder;
 use App\Domain\Membership\Support\Mask;
 use App\Domain\Organisation\Enums\OfficeType;
 use App\Domain\Organisation\Models\Office;
+use App\Filament\Resources\Members\MemberResource;
 use App\Filament\Resources\MembershipApplications\Pages\ListMembershipApplications;
 use App\Filament\Resources\MembershipApplications\Pages\ViewMembershipApplication;
 use App\Filament\Support\CalendarDate;
@@ -149,6 +150,11 @@ class MembershipApplicationResource extends Resource
                 TextEntry::make('reviewer.name')->label(__('membership.admin.reviewer'))->placeholder('—'),
                 TextEntry::make('decided_at')->label(__('membership.admin.decided_at'))->formatStateUsing(CalendarDate::format(withTime: true))->placeholder('—'),
                 TextEntry::make('reason')->label(__('membership.admin.reason'))->placeholder('—'),
+                TextEntry::make('member_no')->label(__('members.field.member_no'))->fontFamily('mono')
+                    ->state(fn (MembershipApplication $record): ?string => $record->member?->member_no)
+                    ->url(fn (MembershipApplication $record): ?string => $record->member !== null && CurrentUser::get()->can('view', $record->member)
+                        ? MemberResource::getUrl('view', ['record' => $record->member]) : null)
+                    ->visible(fn (MembershipApplication $record): bool => $record->member !== null),
             ]),
         ]);
     }
@@ -167,7 +173,7 @@ class MembershipApplicationResource extends Resource
             ->label($match['type'] === 'member' ? __('membership.admin.duplicate_member') : __('membership.admin.duplicate_application'))
             ->state($match['label'].' — '.implode(', ', $match['reasons']))
             ->color('warning')
-            ->url($match['type'] === 'application' ? self::getUrl('view', ['record' => $match['id']]) : null), $matches, array_keys($matches));
+            ->url($match['type'] === 'application' ? self::getUrl('view', ['record' => $match['id']]) : MemberResource::getUrl('view', ['record' => $match['id']])), $matches, array_keys($matches));
     }
 
     /**

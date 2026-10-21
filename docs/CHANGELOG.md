@@ -4,6 +4,15 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 6, step 6.3 — members directory (2026-10-21)
+
+- Admin → Members and volunteers → Members: members per woreda with masked names and phones, search by
+  member number or phone, add and correct members, renew, change status with a reason, notes and history,
+  CSV download (ADR-0046).
+- Renewal reminders by SMS 30 days ahead; memberships 90 days overdue become lapsed.
+- Privacy requests also find, copy and erase membership applications and member records.
+- An approved application links to its member; purged applications take their history with them.
+
 ### Phase 6, step 6.2 — review queue (2026-10-21)
 
 - Admin → Members and volunteers → Membership applications: the queue per woreda with masked names and
