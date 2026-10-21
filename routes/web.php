@@ -31,6 +31,7 @@ use App\Http\Controllers\Public\SocialController;
 use App\Http\Controllers\Public\StructureController;
 use App\Http\Controllers\Public\VideoController;
 use App\Http\Controllers\Public\VolunteerController;
+use App\Http\Controllers\TelegramWebhookController;
 use App\Http\Middleware\CachePublicPages;
 use App\Http\Middleware\EnsureMemberSignedIn;
 use App\Http\Middleware\NoStore;
@@ -113,6 +114,12 @@ Route::post('/{locale}/press/opt-out/{token}', [PressOptOutController::class, 's
     ->middleware([SetLocale::class, 'throttle:forms', NoStore::class])
     ->withoutMiddleware($stateless)
     ->name('press.opt-out.store');
+
+// ADR-0055: Telegram delivers messages for the bot here, with the secret header it was given.
+Route::post('/telegram/webhook', TelegramWebhookController::class)
+    ->middleware('throttle:beacon')
+    ->withoutMiddleware([...$stateless, EncryptCookies::class, AddQueuedCookiesToResponse::class])
+    ->name('telegram.webhook');
 
 // Cookieless page view counts (ADR-0040): no session, no cookies, nothing about the visitor stored.
 Route::post('/pv', PageViewController::class)

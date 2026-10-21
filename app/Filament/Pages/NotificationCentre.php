@@ -7,11 +7,13 @@ use App\Domain\Notifications\Support\NoticePreferences;
 use App\Filament\Support\CalendarDate;
 use App\Filament\Support\CurrentUser;
 use App\Models\User;
+use App\Services\Telegram\TelegramBot;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\CheckboxList;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\EmbeddedTable;
@@ -87,6 +89,24 @@ class NotificationCentre extends Page implements HasTable
                     CurrentUser::get()->unreadNotifications()->update(['read_at' => now()]);
                     $this->resetTable();
                 }),
+            Action::make('telegram')
+                ->label(fn (): string => CurrentUser::get()->telegram_chat_id === null ? __('notifications.telegram.connect') : __('notifications.telegram.disconnect'))
+                ->icon(Heroicon::OutlinedChatBubbleOvalLeftEllipsis)
+                ->color('gray')
+                ->visible(fn (): bool => app(TelegramBot::class)->isConfigured())
+                ->modalSubmitAction(fn (Action $action): Action => $action->label(CurrentUser::get()->telegram_chat_id === null ? __('notifications.telegram.done') : __('notifications.telegram.disconnect')))
+                ->modalDescription(fn (): string => CurrentUser::get()->telegram_chat_id === null ? __('notifications.telegram.connect_help') : __('notifications.telegram.disconnect_help'))
+                ->schema(fn (): array => CurrentUser::get()->telegram_chat_id !== null ? [] : [
+                    TextEntry::make('link')->label(__('notifications.telegram.link'))
+                        ->state(fn (): ?string => $this->telegramLink())->url(fn (): ?string => $this->telegramLink(), true)->copyable(),
+                ])
+                ->action(function (): void {
+                    $user = CurrentUser::get();
+                    if ($user->telegram_chat_id !== null) {
+                        $user->forceFill(['telegram_chat_id' => null, 'telegram_linked_at' => null])->save();
+                        activity('notifications')->performedOn($user)->causedBy($user)->event('telegram_unlinked')->log('Telegram unlinked');
+                    }
+                }),
             Action::make('preferences')
                 ->label(__('notifications.action.preferences'))
                 ->icon(Heroicon::OutlinedAdjustmentsHorizontal)
@@ -96,11 +116,12 @@ class NotificationCentre extends Page implements HasTable
                     fn (NoticeKind $kind): CheckboxList => CheckboxList::make($kind->value)
                         ->label($kind->label())
                         ->helperText($kind->help())
-                        ->options([
+                        ->options(array_filter([
                             NoticePreferences::IN_APP => __('notifications.channel.in_app'),
                             NoticePreferences::EMAIL => __('notifications.channel.email'),
-                        ])
-                        ->columns(2),
+                            NoticePreferences::TELEGRAM => CurrentUser::get()->telegram_chat_id !== null ? __('notifications.channel.telegram') : null,
+                        ]))
+                        ->columns(3),
                     NoticeKind::for(CurrentUser::get()),
                 ))
                 ->action(function (array $data): void {
@@ -207,6 +228,21 @@ class NotificationCentre extends Page implements HasTable
     }
 
     /** The page a notice links to, only within the portal. */
+    /** A deep link to the bot with a fresh code, valid for a day (ADR-0055). */
+    private function telegramLink(): ?string
+    {
+        $user = CurrentUser::get();
+        $username = app(TelegramBot::class)->username();
+        if ($username === null) {
+            return null;
+        }
+        if ($user->telegram_link_code === null || $user->telegram_link_expires_at?->isPast() !== false) {
+            $user->forceFill(['telegram_link_code' => Str::random(10), 'telegram_link_expires_at' => now()->addDay()])->save();
+        }
+
+        return 'https://t.me/'.$username.'?start='.$user->telegram_link_code;
+    }
+
     private static function target(DatabaseNotification $record): ?string
     {
         $url = data_get($record->data, 'actions.0.url');

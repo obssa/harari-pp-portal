@@ -67,6 +67,14 @@ abstract class StaffNotice extends Notification implements ShouldQueue
             ->line(__('notifications.mail.choices', [], $locale));
     }
 
+    /** The notice as a plain Telegram message: title, lines and the link (ADR-0055). */
+    public function toTelegram(User $notifiable): string
+    {
+        $locale = self::localeOf($notifiable);
+
+        return implode("\n\n", array_filter([$this->title($locale), implode("\n", $this->lines($locale)), $this->url()]));
+    }
+
     /**
      * @return array<string, mixed>
      */

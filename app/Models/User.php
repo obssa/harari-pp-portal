@@ -28,6 +28,10 @@ use Spatie\Permission\Traits\HasRoles;
  * @property UserStatus $status
  * @property ?string $locale
  * @property ?array<string, list<string>> $notification_preferences
+ * @property ?string $telegram_chat_id
+ * @property ?Carbon $telegram_linked_at
+ * @property ?string $telegram_link_code
+ * @property ?Carbon $telegram_link_expires_at
  * @property ?Carbon $last_login_at
  * @property ?string $last_login_ip
  */
@@ -70,6 +74,8 @@ class User extends Authenticatable implements FilamentUser, HasAppAuthentication
     protected $hidden = [
         'password',
         'remember_token',
+        'telegram_chat_id',
+        'telegram_link_code',
     ];
 
     /**
@@ -85,6 +91,9 @@ class User extends Authenticatable implements FilamentUser, HasAppAuthentication
             'password' => 'hashed',
             'status' => UserStatus::class,
             'notification_preferences' => 'array',
+            'telegram_chat_id' => 'encrypted',
+            'telegram_linked_at' => 'datetime',
+            'telegram_link_expires_at' => 'datetime',
         ];
     }
 

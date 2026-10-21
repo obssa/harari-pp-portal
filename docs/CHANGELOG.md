@@ -4,6 +4,11 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 7, step 7.5 — notices by Telegram (2026-10-21)
+
+- Staff link their Telegram account from the notifications page and choose Telegram per kind of notice, once
+  the bot token is saved; `php artisan telegram:webhook` registers the bot's webhook (ADR-0055).
+
 ### Phase 7, step 7.4 — media contacts (2026-10-21)
 
 - Admin → Communication → Media contacts: journalists and outlets with their languages (ADR-0054).

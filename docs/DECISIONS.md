@@ -1607,3 +1607,25 @@ media contacts to the Communications Officer.
 - Privacy requests find, copy and delete media contacts.
 
 **Consequences.** Until the branch office's mail account is set, press emails go to the mail log on staging.
+
+## ADR-0055 — Notices by Telegram (2026-10-21)
+
+**Context.** PLAN.md §7 asks for alerts in the portal, by email and by Telegram; editors in the region use
+Telegram more than email.
+
+**Decision.**
+
+- Telegram is a third channel in each person's notice preferences, beside the portal and email. It is offered
+  only once the bot token is saved in Settings → Integrations (the same token the Telegram import uses) and
+  the person linked their account.
+- Linking: Notifications → "Connect Telegram" shows a link to the bot with a one-time code valid for a day;
+  pressing Start in Telegram sends "/start CODE" to the portal, which stores the chat (encrypted) on the
+  account and confirms in the chat. "/stop" in Telegram, or "Disconnect Telegram" in the portal, unlinks.
+  Both are in the audit log.
+- The bot's messages reach the portal through a webhook (`POST /telegram/webhook`, no session) that is read
+  only when it carries the secret header given to Telegram, derived from the app key;
+  `php artisan telegram:webhook` registers it once the token is saved.
+- A notice by Telegram is plain text: its title, its lines and the admin link, in the person's admin language.
+
+**Consequences.** Until the branch office creates the bot with BotFather and saves its token, Telegram stays
+hidden; nothing else changes.

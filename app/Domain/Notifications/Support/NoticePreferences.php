@@ -3,13 +3,16 @@
 namespace App\Domain\Notifications\Support;
 
 use App\Domain\Notifications\Channels\GroupedDatabaseChannel;
+use App\Domain\Notifications\Channels\TelegramChannel;
 use App\Domain\Notifications\Enums\NoticeKind;
 use App\Models\User;
+use App\Services\Telegram\TelegramBot;
 
 /**
  * Where a person receives each kind of notice (ADR-0036): in the portal
- * (the bell and the notifications page), by email, both or neither. Kinds
- * a person never chose keep their defaults.
+ * (the bell and the notifications page), by email, by Telegram once the
+ * person linked their account (ADR-0055), or not at all. Kinds a person
+ * never chose keep their defaults.
  */
 final class NoticePreferences
 {
@@ -17,7 +20,9 @@ final class NoticePreferences
 
     public const EMAIL = 'email';
 
-    public const CHANNELS = [self::IN_APP, self::EMAIL];
+    public const TELEGRAM = 'telegram';
+
+    public const CHANNELS = [self::IN_APP, self::EMAIL, self::TELEGRAM];
 
     /**
      * @return list<string>
@@ -46,6 +51,9 @@ final class NoticePreferences
         }
         if (in_array(self::EMAIL, $channels, true) && filled($user->email)) {
             $via[] = 'mail';
+        }
+        if (in_array(self::TELEGRAM, $channels, true) && $user->telegram_chat_id !== null && app(TelegramBot::class)->isConfigured()) {
+            $via[] = TelegramChannel::class;
         }
 
         return $via;

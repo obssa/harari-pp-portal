@@ -18,7 +18,7 @@ sample subscribers and the log drivers; real sending needs the mail and SMS acco
 | 7.2 | Campaigns: email (subject and text per language) and SMS (text per language, length and parts shown) to segments (subscribers by channel, topic and language; members by woreda and status; active volunteers), audience count before sending, test send to oneself, send now or at a set time, queued in batches within sending limits, unsubscribe link and header in every email, permission `campaigns.send` | done |
 | 7.3 | Delivery reports: per recipient queued, sent, failed or unsubscribed; click counts through signed redirect links; optional open counting (off by default); campaign results page and CSV; dashboard widgets "Campaign results" and "Subscribers" | done |
 | 7.4 | Media contacts: journalists and outlets with beats, languages and email; send a published press release or statement to chosen contacts in their language with a link to the full text; delivery log; opt-out link | done |
-| 7.5 | Telegram notices: staff link their Telegram account to the portal's bot with a one-time code; "Telegram" becomes a channel in notice preferences beside in-app and email; the bot token is an integration setting | |
+| 7.5 | Telegram notices: staff link their Telegram account to the portal's bot with a one-time code; "Telegram" becomes a channel in notice preferences beside in-app and email; the bot token is an integration setting | done (live with the branch office's bot) |
 | 7.6 | Manual chapter, first sample campaign on staging with its delivery report, phase report | |
 
 ## Open questions (do not block the build; defaults in brackets)

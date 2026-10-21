@@ -193,3 +193,15 @@ Logs: `~/hararipp.orcamind.dev/storage/logs/laravel-*.log` (daily, 14 days).
   for another).
 - Lighthouse audits one published post (`lighthouserc.json`); if that story is unpublished or
   renamed, point the file at another published post.
+
+## Telegram bot for staff notices (ADR-0055)
+
+Once the branch office has created the bot with BotFather and saved its token in Settings → Integrations, run
+once on the server, in the site folder:
+
+```
+php artisan telegram:webhook
+```
+
+It tells Telegram to deliver the bot's messages to `/telegram/webhook` with the secret header. Staff then link
+their accounts from Notifications → "Connect Telegram".
