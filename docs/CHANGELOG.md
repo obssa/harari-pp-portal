@@ -4,6 +4,11 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 8, step 8.4 — sharing to Facebook and Telegram (2026-10-21)
+
+- "Share" on a published post posts it, with its link, to the chosen Facebook pages and Telegram
+  channels in one language; the post's "Shared" tab shows each outcome (ADR-0059).
+
 ### Phase 8, step 8.3 — sign-in with Fayda (2026-10-21)
 
 - Members can sign in to the member portal with Fayda through eSignet once the branch office is

@@ -13,6 +13,7 @@ use App\Domain\Organisation\Models\Leader;
 use App\Domain\Organisation\Models\League;
 use App\Domain\Organisation\Models\Office;
 use App\Domain\Press\Models\PressDistribution;
+use App\Domain\Social\Models\SocialShare;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
@@ -162,6 +163,16 @@ class Post extends Model implements TranslatableModel
     public function pressDistributions(): HasMany
     {
         return $this->hasMany(PressDistribution::class);
+    }
+
+    /**
+     * Where this post was shared on social networks (ADR-0059).
+     *
+     * @return HasMany<SocialShare, $this>
+     */
+    public function socialShares(): HasMany
+    {
+        return $this->hasMany(SocialShare::class);
     }
 
     /**

@@ -1721,3 +1721,26 @@ own identifier for a person (`sub`), not the Fayda number.
 
 **Consequences.** Until the branch office is registered, nothing changes for members. Replacing the key stops
 Fayda sign-in until the new public key is registered.
+
+## ADR-0059 — Sharing posts to Facebook and Telegram from the admin (2026-10-21)
+
+**Context.** PLAN.md §13 (Phase 8) asks for posting to social networks from the admin. The Phase 8 plan chose
+the Facebook page and the Telegram channel; X/Twitter needs a paid API and is left out.
+
+**Decision.**
+
+- A published post's edit page has **Share** for staff with the new `social.share` permission (Publisher,
+  Communications Officer, Admin; the Media Manager keeps the sources but does not edit posts, PLAN.md §8): choose the Facebook pages and
+  Telegram channels among the social sources (ADR-0031), one language the post is live in, and optionally own
+  words; otherwise the title and summary in that language. The post's link is always added.
+- Each account gets its own row in `social_shares` (platform, account, language, text, status, the shared
+  post's id and address, error, who and when), sent through the queue one after the other; one refused account
+  does not stop the others. The post's **Shared** tab lists them; each share is in the audit log.
+- Facebook: `POST /{page}/feed` on the Graph API with `message` and `link`, using the page token kept with the
+  source or the one under Integrations; the token needs the `pages_manage_posts` permission. Telegram: the
+  portal's bot posts with `sendMessage` to `@channel` (or a numeric chat id); the bot must be an administrator
+  of the channel.
+- Nothing is shared automatically on publishing: staff choose when and where.
+
+**Consequences.** Until the branch office gives a page token allowed to publish and makes the bot an
+administrator of the channel, shares fail with the platform's reason shown in the tab; nothing else changes.

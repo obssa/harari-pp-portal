@@ -76,7 +76,7 @@ enum SystemRole: string
             self::Publisher => [
                 ...$staff,
                 'posts.view', 'posts.create', 'posts.update', 'posts.translate', 'posts.review',
-                'posts.publish', 'posts.feature', 'posts.delete',
+                'posts.publish', 'posts.feature', 'posts.delete', 'social.share',
                 'pages.view', 'pages.create', 'pages.update', 'pages.translate', 'pages.publish', 'pages.delete',
                 'homepage.manage', 'menus.manage', 'taxonomies.manage', 'redirects.manage', 'forms.manage',
                 'inbox.view', 'inbox.reply', 'inbox.assign',
@@ -124,7 +124,7 @@ enum SystemRole: string
 
             self::CommunicationsOfficer => [
                 ...$staff,
-                'posts.view', 'posts.create', 'posts.update',
+                'posts.view', 'posts.create', 'posts.update', 'social.share',
                 'press_kit.manage', 'media_contacts.manage', 'forms.manage', 'inbox.view', 'inbox.reply',
                 'campaigns.view', 'campaigns.manage', 'campaigns.send',
                 'subscribers.view', 'subscribers.manage',

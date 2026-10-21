@@ -38,7 +38,7 @@ final class PermissionRegistry
         'forms' => ['manage'],
         'inbox' => ['view', 'reply', 'assign'],
         'translations' => ['view', 'export', 'import', 'glossary'],
-        'social' => ['view', 'manage'],
+        'social' => ['view', 'manage', 'share'],
         'press_kit' => ['manage'],
         'media_contacts' => ['manage'],
         'campaigns' => ['view', 'manage', 'send'],

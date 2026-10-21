@@ -9,6 +9,7 @@ use App\Filament\Resources\Posts\Pages\ListPosts;
 use App\Filament\Resources\Posts\RelationManagers\CommentsRelationManager;
 use App\Filament\Resources\Posts\RelationManagers\PressDistributionsRelationManager;
 use App\Filament\Resources\Posts\RelationManagers\RevisionsRelationManager;
+use App\Filament\Resources\Posts\RelationManagers\SocialSharesRelationManager;
 use App\Filament\Resources\Posts\Schemas\PostForm;
 use App\Filament\Resources\Posts\Tables\PostsTable;
 use BackedEnum;
@@ -59,6 +60,7 @@ class PostResource extends Resource
             CommentsRelationManager::class,
             RevisionsRelationManager::class,
             PressDistributionsRelationManager::class,
+            SocialSharesRelationManager::class,
         ];
     }
 

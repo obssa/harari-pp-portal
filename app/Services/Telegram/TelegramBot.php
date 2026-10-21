@@ -49,6 +49,24 @@ class TelegramBot
         }
     }
 
+    /**
+     * Posts to a channel the bot is an administrator of, with the link's
+     * preview (ADR-0059); returns the message id.
+     */
+    public function publish(string $chatId, string $text): int
+    {
+        $response = Http::timeout(15)->asJson()->post($this->endpoint('sendMessage'), [
+            'chat_id' => $chatId,
+            'text' => mb_substr($text, 0, 4000),
+        ]);
+        $id = $response->json('result.message_id');
+        if (! $response->successful() || ! is_int($id)) {
+            throw new RuntimeException('Telegram: '.mb_substr((string) ($response->json('description') ?? $response->status()), 0, 150));
+        }
+
+        return $id;
+    }
+
     /** Tells Telegram where to deliver messages sent to the bot, with the secret it must send back. */
     public function registerWebhook(string $url): bool
     {
