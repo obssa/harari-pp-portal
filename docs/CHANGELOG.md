@@ -4,6 +4,14 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 6, step 6.7 — people dashboard and membership report (2026-10-21)
+
+- Dashboard widgets "Members and volunteers" and "Applications and members": active members, members who
+  joined, applications waiting and the funnel, volunteers and hours, members by woreda, sex and age band
+  (ADR-0050).
+- Admin → Members and volunteers → Membership report, with a CSV download that hides counts under five.
+- Fix: masked names ignore brackets and signs and show initials in capitals.
+
 ### Phase 6, step 6.6 — member portal (2026-10-21)
 
 - `/{language}/member`: members sign in with a code by SMS and see their membership, a printable card with a QR

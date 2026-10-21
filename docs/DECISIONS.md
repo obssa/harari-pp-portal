@@ -1473,3 +1473,29 @@ registrations and members-only documents. Members are not staff: they have no ad
 
 **Consequences.** Without an SMS gateway (staging) codes go to the SMS log, so only staff can try the portal
 there. A member without a phone on file cannot sign in until an officer adds one.
+
+## ADR-0050 — People dashboard and membership report (2026-10-21)
+
+**Context.** PLAN.md §7 asks for a people dashboard (applications funnel, member growth by office, sex and age
+band, volunteers and hours, aggregated and without personal data) and a membership report in the report
+builder.
+
+**Decision.**
+
+- Two dashboard widgets for `members.view`, part of the default layout of the roles that hold it: "Members and
+  volunteers" (active members; members who joined in the dashboard's period against the period before;
+  applications waiting, with `applications.view`; active volunteers, sign-ups and hours given, with
+  `volunteers.view`) and "Applications and members" (applications started in the period and how many were
+  sent, approved and not approved; active members by woreda, sex and age band, with shares). They follow the
+  dashboard's period and office filters.
+- Admin → Members and volunteers → Membership report: members by woreda, sex, age band (18–24 … 65+, or not
+  known), status, how they were added, or the month they joined; filtered by status and by joining period.
+  Download CSV needs `members.export`, is logged, and shows counts under five as "<5" (and no share), so no
+  one can be picked out in a small group. The screen shows exact numbers: those who see it can already see the
+  members of their woredas.
+- Everything is counted in the database from plain columns (woreda, sex, year of birth, status, source,
+  joining date); encrypted details are never read, and every count covers only the woredas the viewer
+  looks after.
+
+**Consequences.** Age bands come from the year of birth, so a member counts one band early until their
+birthday in the year. Members without a year of birth are "not known".

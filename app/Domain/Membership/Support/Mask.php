@@ -18,8 +18,10 @@ final class Mask
             return '—';
         }
         $first = array_shift($parts);
+        // Initials of the other names; brackets and other signs are not names.
+        $initials = array_filter(array_map(fn (string $part): string => mb_strtoupper(mb_substr((string) preg_replace('/[^\p{L}\p{M}]/u', '', $part), 0, 1)), $parts));
 
-        return trim($first.' '.implode(' ', array_map(fn (string $part): string => mb_substr($part, 0, 1).'.', $parts)));
+        return trim($first.' '.implode(' ', array_map(fn (string $initial): string => $initial.'.', $initials)));
     }
 
     /** "+251911234567" → "+251••••••567" (the same mask as elsewhere in the portal) */

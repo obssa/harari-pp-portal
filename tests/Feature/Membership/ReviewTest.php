@@ -145,6 +145,8 @@ it('masks names, phones and ID numbers in the queue and records each look at the
     $this->actingAs($officer);
 
     expect(Mask::name('Sample Applicant Person'))->toBe('Sample A. P.')
+        ->and(Mask::name('Sample Applicant (staging test)'))->toBe('Sample A. S. T.')
+        ->and(Mask::name('የናሙና አባል ሰው'))->toBe('የናሙና አ. ሰ.')
         ->and(Mask::phone('+251911234567'))->toBe('+251••••••567')
         ->and(Mask::idNumber('123456789012'))->toBe('••••••••9012');
 

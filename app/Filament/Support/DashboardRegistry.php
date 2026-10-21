@@ -10,6 +10,8 @@ use App\Filament\Widgets\AttentionNeeded;
 use App\Filament\Widgets\EditorialPipeline;
 use App\Filament\Widgets\KpiStrip;
 use App\Filament\Widgets\MediaStorage;
+use App\Filament\Widgets\PeopleBreakdown;
+use App\Filament\Widgets\PeopleOverview;
 use App\Filament\Widgets\QueueHealth;
 use App\Filament\Widgets\QuickActions;
 use App\Filament\Widgets\SearchInsights;
@@ -41,6 +43,8 @@ final class DashboardRegistry
         KpiStrip::class,
         AttentionNeeded::class,
         QuickActions::class,
+        PeopleOverview::class,
+        PeopleBreakdown::class,
         EditorialPipeline::class,
         TranslationCoverage::class,
         TranslationQueue::class,
