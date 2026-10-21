@@ -21,6 +21,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property int $priority
  * @property string $default_locale
  * @property bool $enabled
+ * @property bool $auto_publish
  * @property ?int $cursor
  * @property ?CarbonImmutable $last_fetched_at
  * @property ?string $last_error
@@ -32,13 +33,14 @@ class ContentSource extends Model
 
     public const HANDLE_PATTERN = '/^[A-Za-z0-9_]{5,32}$/';
 
-    protected $fillable = ['platform', 'handle', 'name', 'priority', 'default_locale', 'enabled', 'cursor', 'last_fetched_at', 'last_error'];
+    protected $fillable = ['platform', 'handle', 'name', 'priority', 'default_locale', 'enabled', 'auto_publish', 'cursor', 'last_fetched_at', 'last_error'];
 
     protected function casts(): array
     {
         return [
             'priority' => 'integer',
             'enabled' => 'boolean',
+            'auto_publish' => 'boolean',
             'cursor' => 'integer',
             'last_fetched_at' => 'immutable_datetime',
         ];
@@ -47,7 +49,7 @@ class ContentSource extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()->useLogName('import')
-            ->logOnly(['handle', 'name', 'priority', 'default_locale', 'enabled'])
+            ->logOnly(['handle', 'name', 'priority', 'default_locale', 'enabled', 'auto_publish'])
             ->logOnlyDirty()->dontSubmitEmptyLogs();
     }
 

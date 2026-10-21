@@ -10,7 +10,12 @@
                 @continue($shown === null)
                 <li lang="{{ $shown->locale }}">
                     <x-ui.card :title="$shown->title" :href="route('news.show', ['locale' => $shown->locale, 'slug' => $shown->slug])" :media="$post->featuredImage">
-                        <x-slot:badges><x-ui.badge tone="primary">{{ $post->type->label() }}</x-ui.badge></x-slot:badges>
+                        <x-slot:badges>
+                            <x-ui.badge :tone="$post->type->tone()">{{ $post->type->label() }}</x-ui.badge>
+                            @if ($shown->locale !== $locale)
+                                <x-ui.badge>{{ __('news.in_language', ['language' => \App\Domain\Translation\Support\Locales::nativeName($shown->locale)]) }}</x-ui.badge>
+                            @endif
+                        </x-slot:badges>
                         <x-slot:meta><x-date :date="$shown->published_at" /></x-slot:meta>
                     </x-ui.card>
                 </li>

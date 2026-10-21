@@ -8,6 +8,7 @@ use App\Domain\Content\Enums\PostType;
 use App\Domain\Content\Models\Post;
 use App\Domain\Content\Models\PostTranslation;
 use App\Domain\Content\Support\BodyRenderer;
+use App\Domain\Content\Workflow\ContentWorkflow;
 use App\Domain\Import\Models\ContentImport;
 use App\Domain\Import\Models\ContentSource;
 use App\Domain\Import\Support\StoryText;
@@ -26,9 +27,10 @@ use Throwable;
 /**
  * Makes one draft post from a channel story (docs/content/sources.md rules):
  * text as written, the source and its link kept, photos downloaded once,
- * cleaned like any upload and credited, nothing published. A story already
- * imported from the same channel or a higher-priority source is recorded as
- * a duplicate.
+ * cleaned like any upload and credited. Only a channel trusted to publish
+ * (the branch's own, ADR-0063) has its stories published at once. A story
+ * already imported from the same channel or a higher-priority source is
+ * recorded as a duplicate.
  */
 final class ImportStory
 {
@@ -48,6 +50,7 @@ final class ImportStory
         private readonly UploadMedia $upload,
         private readonly SyncMediaUsage $usage,
         private readonly RecordRevision $revisions,
+        private readonly ContentWorkflow $workflow,
     ) {}
 
     /**
@@ -92,6 +95,11 @@ final class ImportStory
 
             return $post;
         });
+
+        $translation = $post->translation($locale, fallback: false);
+        if ($source->auto_publish && $translation instanceof PostTranslation) {
+            $this->workflow->publishImported($post, $translation, $message->at);
+        }
 
         return $this->record($source, $message, ContentImport::IMPORTED, $post->id, $fingerprint);
     }

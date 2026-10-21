@@ -19,9 +19,10 @@
         line-height: 1.6;
     }
 
-    /* Ethiopic script needs more room between lines (PLAN.md §12). */
-    :lang(am),
-    :lang(har) {
+    /* Ethiopic script needs more room between lines (PLAN.md §12). Set where the language is
+       declared and inherited from there, so headings and the links inside them keep their own. */
+    [lang|='am'],
+    [lang|='har'] {
         line-height: 1.7;
     }
 
@@ -65,20 +66,33 @@
 }
 
 /* Headline sizes that shrink slightly for Ethiopic (use instead of text-4xl etc. on headings). */
+/* ADR-0062: confident, tight headings; Ethiopic scripts slightly smaller (--heading-scale). */
 @utility heading-1 {
-    font-size: calc(var(--text-4xl) * var(--heading-scale, 1));
-    font-weight: 700;
-    letter-spacing: -0.01em;
+    font-size: calc(clamp(var(--text-3xl), 1.6rem + 2.4vw, var(--text-5xl)) * var(--heading-scale, 1));
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: -0.03em;
 }
 
 @utility heading-2 {
-    font-size: calc(var(--text-2xl) * var(--heading-scale, 1));
-    font-weight: 650;
+    font-size: calc(var(--text-3xl) * var(--heading-scale, 1));
+    line-height: 1.2;
+    font-weight: 800;
+    letter-spacing: -0.02em;
 }
 
 @utility heading-3 {
     font-size: calc(var(--text-xl) * var(--heading-scale, 1));
-    font-weight: 600;
+    font-weight: 700;
+}
+
+/* Small capitals above a heading, as on the canvas. */
+@utility kicker {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-accent-600);
 }
 
 /* Post and page bodies from the block editor (ADR-0012). */

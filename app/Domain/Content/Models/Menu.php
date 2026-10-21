@@ -52,7 +52,7 @@ class Menu extends Model
 
     public static function forgetCache(): void
     {
-        foreach (self::LOCATIONS as $location) {
+        foreach ([...self::LOCATIONS, 'about'] as $location) {
             foreach (Locales::all() as $locale) {
                 Cache::forget("menu:{$location}:{$locale}");
             }

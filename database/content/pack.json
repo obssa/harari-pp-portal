@@ -1,0 +1,3505 @@
+{
+  "version": 1,
+  "compiled": "2026-10-21",
+  "note": "Real content gathered from public sources on 2026-10-21; every item carries its source. Loaded once per key by `php artisan content:load-pack` (ADR-0063).",
+  "leagues": [
+    {
+      "key": "league.women",
+      "sort": 1,
+      "head": "leader.zinet-yusuf",
+      "translations": {
+        "en": {
+          "name": "Women's Wing",
+          "summary": "The party's women's wing in the Harari Region, with its own office."
+        },
+        "am": {
+          "name": "የሴቶች ክንፍ",
+          "summary": "በሀረሪ ክልል የሚገኘው የፓርቲው የሴቶች ክንፍ ጽሕፈት ቤት።"
+        },
+        "om": {
+          "name": "Kutaa Dubartootaa",
+          "summary": "Kutaa dubartootaa paartii Naannoo Hararii, waajjira mataa isaa qabu."
+        }
+      }
+    },
+    {
+      "key": "league.youth",
+      "sort": 2,
+      "translations": {
+        "en": {
+          "name": "Youth Wing",
+          "summary": "The party's youth wing in the Harari Region, with its own office."
+        },
+        "am": {
+          "name": "የወጣቶች ክንፍ",
+          "summary": "በሀረሪ ክልል የሚገኘው የፓርቲው የወጣቶች ክንፍ ጽሕፈት ቤት።"
+        },
+        "om": {
+          "name": "Kutaa Dargaggootaa",
+          "summary": "Kutaa dargaggootaa paartii Naannoo Hararii, waajjira mataa isaa qabu."
+        }
+      }
+    }
+  ],
+  "offices": [
+    {
+      "key": "office.branch",
+      "type": "branch",
+      "sort": 0,
+      "head": "leader.getu-weyesa",
+      "translations": {
+        "en": {
+          "name": "Harari Region Branch Office",
+          "summary": "The Prosperity Party's office for the Harari Region. It leads the party's work in the region's nine woredas, its sectors and its women's and youth wings."
+        },
+        "am": {
+          "name": "የብልፅግና ፓርቲ የሀረሪ ክልል ቅርንጫፍ ጽሕፈት ቤት",
+          "summary": "የብልፅግና ፓርቲ የሀረሪ ክልል ጽሕፈት ቤት። በክልሉ ዘጠኝ ወረዳዎች፣ በዘርፎቹና በሴቶችና ወጣቶች ክንፎቹ የፓርቲውን ሥራ ይመራል።"
+        },
+        "om": {
+          "name": "Waajjira Paartii Badhaadhinaa Damee Naannoo Hararii",
+          "summary": "Waajjira Paartii Badhaadhinaa Naannoo Hararii. Hojii paartii aanaalee naannichaa sagalan, kutaalee hojii fi kutaalee dubartootaa fi dargaggootaa keessatti ni geggeessa."
+        }
+      }
+    },
+    {
+      "key": "office.woreda.amir-nur",
+      "type": "woreda",
+      "parent": "office.branch",
+      "sort": 1,
+      "translations": {
+        "en": {
+          "name": "Amir-Nur Woreda",
+          "summary": "A woreda in the city of Harar."
+        },
+        "am": {
+          "name": "አሚር ኑር ወረዳ",
+          "summary": "በሀረር ከተማ የሚገኝ ወረዳ።"
+        },
+        "om": {
+          "name": "Aanaa Amir-Nur",
+          "summary": "Aanaa magaalaa Harar keessaa."
+        }
+      }
+    },
+    {
+      "key": "office.woreda.abadir",
+      "type": "woreda",
+      "parent": "office.branch",
+      "sort": 2,
+      "translations": {
+        "en": {
+          "name": "Abadir Woreda",
+          "summary": "A woreda in the city of Harar."
+        },
+        "am": {
+          "name": "አባድር ወረዳ",
+          "summary": "በሀረር ከተማ የሚገኝ ወረዳ።"
+        },
+        "om": {
+          "name": "Aanaa Abadir",
+          "summary": "Aanaa magaalaa Harar keessaa."
+        }
+      }
+    },
+    {
+      "key": "office.woreda.jinela",
+      "type": "woreda",
+      "parent": "office.branch",
+      "sort": 3,
+      "translations": {
+        "en": {
+          "name": "Jinela Woreda",
+          "summary": "A woreda in the city of Harar."
+        },
+        "am": {
+          "name": "ጅኔላ ወረዳ",
+          "summary": "በሀረር ከተማ የሚገኝ ወረዳ።"
+        },
+        "om": {
+          "name": "Aanaa Jinela",
+          "summary": "Aanaa magaalaa Harar keessaa."
+        }
+      }
+    },
+    {
+      "key": "office.woreda.hakim",
+      "type": "woreda",
+      "parent": "office.branch",
+      "sort": 4,
+      "translations": {
+        "en": {
+          "name": "Hakim Woreda",
+          "summary": "A woreda in the city of Harar."
+        },
+        "am": {
+          "name": "ሀኪም ወረዳ",
+          "summary": "በሀረር ከተማ የሚገኝ ወረዳ።"
+        },
+        "om": {
+          "name": "Aanaa Hakim",
+          "summary": "Aanaa magaalaa Harar keessaa."
+        }
+      }
+    },
+    {
+      "key": "office.woreda.shenkor",
+      "type": "woreda",
+      "parent": "office.branch",
+      "sort": 5,
+      "translations": {
+        "en": {
+          "name": "Shenkor Woreda",
+          "summary": "A woreda in the city of Harar."
+        },
+        "am": {
+          "name": "ሸንኮር ወረዳ",
+          "summary": "በሀረር ከተማ የሚገኝ ወረዳ።"
+        },
+        "om": {
+          "name": "Aanaa Shenkor",
+          "summary": "Aanaa magaalaa Harar keessaa."
+        }
+      }
+    },
+    {
+      "key": "office.woreda.aboker",
+      "type": "woreda",
+      "parent": "office.branch",
+      "sort": 6,
+      "translations": {
+        "en": {
+          "name": "Aboker Woreda",
+          "summary": "A woreda in the city of Harar."
+        },
+        "am": {
+          "name": "አቦከር ወረዳ",
+          "summary": "በሀረር ከተማ የሚገኝ ወረዳ።"
+        },
+        "om": {
+          "name": "Aanaa Aboker",
+          "summary": "Aanaa magaalaa Harar keessaa."
+        }
+      }
+    },
+    {
+      "key": "office.woreda.sofi",
+      "type": "woreda",
+      "parent": "office.branch",
+      "sort": 7,
+      "translations": {
+        "en": {
+          "name": "Sofi Woreda",
+          "summary": "A rural woreda of the Harari Region."
+        },
+        "am": {
+          "name": "ሶፊ ወረዳ",
+          "summary": "የሀረሪ ክልል የገጠር ወረዳ።"
+        },
+        "om": {
+          "name": "Aanaa Soofii",
+          "summary": "Aanaa baadiyyaa Naannoo Hararii."
+        }
+      }
+    },
+    {
+      "key": "office.woreda.erer",
+      "type": "woreda",
+      "parent": "office.branch",
+      "sort": 8,
+      "translations": {
+        "en": {
+          "name": "Erer Woreda",
+          "summary": "A rural woreda of the Harari Region."
+        },
+        "am": {
+          "name": "ኤረር ወረዳ",
+          "summary": "የሀረሪ ክልል የገጠር ወረዳ።"
+        },
+        "om": {
+          "name": "Aanaa Erer",
+          "summary": "Aanaa baadiyyaa Naannoo Hararii."
+        }
+      }
+    },
+    {
+      "key": "office.woreda.dire-teyara",
+      "type": "woreda",
+      "parent": "office.branch",
+      "sort": 9,
+      "translations": {
+        "en": {
+          "name": "Dire Teyara Woreda",
+          "summary": "A rural woreda of the Harari Region."
+        },
+        "am": {
+          "name": "ድሬ ጠያራ ወረዳ",
+          "summary": "የሀረሪ ክልል የገጠር ወረዳ።"
+        },
+        "om": {
+          "name": "Aanaa Dirree Xiyyaaraa",
+          "summary": "Aanaa baadiyyaa Naannoo Hararii."
+        }
+      }
+    }
+  ],
+  "leaders": [
+    {
+      "key": "leader.getu-weyesa",
+      "body": "secretariat",
+      "rank": 1,
+      "source_url": "https://t.me/hrprosperityparty/23920",
+      "source_date": "2026-10-15",
+      "translations": {
+        "en": {
+          "name": "Getu Weyesa",
+          "position": "Head of the Harari Region Branch Office",
+          "summary": "Heads the branch office. Since 2 October 2026 he also chairs the board of the Harari Broadcasting Network (HBN)."
+        },
+        "am": {
+          "name": "አቶ ጌቱ ወዬሳ",
+          "position": "የብልፅግና ፓርቲ የሀረሪ ክልል ቅርንጫፍ ጽሕፈት ቤት ኃላፊ",
+          "summary": "የቅርንጫፍ ጽሕፈት ቤቱ ኃላፊ። ከመስከረም 22 ቀን 2019 ዓ.ም. ጀምሮ የሀረሪ ብሮድካስቲንግ ኔትዎርክ (HBN) የቦርድ ሰብሳቢም ናቸው።"
+        },
+        "om": {
+          "name": "Obbo Geetuu Wayyeessaa",
+          "position": "Itti Gaafatamaa Waajjira Paartii Badhaadhinaa Damee Naannoo Hararii",
+          "summary": "Itti gaafatamaa waajjira damee. Onkololeessa 2, 2026 irraa kaasee dura taa'aa boordii Harari Broadcasting Network (HBN) ti."
+        }
+      },
+      "photo": "getu-weyesa.jpg",
+      "office": "office.branch"
+    },
+    {
+      "key": "leader.dinir-yusuf",
+      "body": "office_heads",
+      "rank": 10,
+      "source_url": "https://t.me/hrprosperityparty/23849",
+      "source_date": "2026-10-07",
+      "translations": {
+        "en": {
+          "name": "Dinir Yusuf",
+          "position": "Head of the Public Relations Sector",
+          "summary": null
+        },
+        "am": {
+          "name": "አቶ ዲኒር ዩሱፍ",
+          "position": "የሕዝብ ግንኙነት ዘርፍ ኃላፊ",
+          "summary": null
+        }
+      },
+      "office": "office.branch"
+    },
+    {
+      "key": "leader.seifu-getachew",
+      "body": "office_heads",
+      "rank": 11,
+      "source_url": "https://t.me/hrprosperityparty/23470",
+      "source_date": "2026-08-11",
+      "translations": {
+        "en": {
+          "name": "Seifu Getachew",
+          "position": "Director of Public Relations and Media",
+          "summary": null
+        },
+        "am": {
+          "name": "አቶ ሰይፉ ጌታቸው",
+          "position": "የሕዝብ ግንኙነትና ሚዲያ ዳይሬክተር",
+          "summary": null
+        }
+      },
+      "office": "office.branch"
+    },
+    {
+      "key": "leader.ayele-tesfaye",
+      "body": "office_heads",
+      "rank": 12,
+      "source_url": "https://t.me/hrprosperityparty/23201",
+      "source_date": "2026-07-08",
+      "translations": {
+        "en": {
+          "name": "Ayele Tesfaye",
+          "position": "Director of Party Organisation in Regional Institutions",
+          "summary": null
+        },
+        "am": {
+          "name": "አቶ አየለ ተስፋዬ",
+          "position": "የክልሉ ተቋማት ብልፅግና አደረጃጀት ዳይሬክተር",
+          "summary": null
+        }
+      },
+      "office": "office.branch"
+    },
+    {
+      "key": "leader.hassen-abdi",
+      "body": "office_heads",
+      "rank": 13,
+      "source_url": "https://t.me/HarariGovernmentCommunication/34921",
+      "source_date": "2026-06-17",
+      "translations": {
+        "en": {
+          "name": "Hassen Abdi",
+          "position": "Director of Democratic Culture Building",
+          "summary": null
+        },
+        "am": {
+          "name": "አቶ ሀሰን አብዲ",
+          "position": "የዴሞክራሲ ባህል ግንባታ ዳይሬክተር",
+          "summary": null
+        }
+      },
+      "office": "office.branch"
+    },
+    {
+      "key": "leader.zinet-yusuf",
+      "body": "leagues",
+      "rank": 20,
+      "source_url": "https://t.me/hrprosperityparty/23217",
+      "source_date": "2026-07-08",
+      "translations": {
+        "en": {
+          "name": "Zinet Yusuf",
+          "position": "Head of the Women's Wing",
+          "summary": null
+        },
+        "am": {
+          "name": "ወይዘሮ ዚነት ዩሱፍ",
+          "position": "የሴቶች ክንፍ ጽሕፈት ቤት ኃላፊ",
+          "summary": null
+        }
+      },
+      "league": "league.women"
+    },
+    {
+      "key": "leader.tuna-ibrahim",
+      "body": "leagues",
+      "rank": 21,
+      "source_url": "https://t.me/hrprosperityparty/23217",
+      "source_date": "2026-07-08",
+      "translations": {
+        "en": {
+          "name": "Tuna Ibrahim",
+          "position": "Deputy Head of the Women's Wing",
+          "summary": null
+        },
+        "am": {
+          "name": "ወ/ሪት ቱና ኢብራሂም",
+          "position": "የሴቶች ክንፍ ምክትል ኃላፊ",
+          "summary": null
+        }
+      },
+      "league": "league.women"
+    },
+    {
+      "key": "leader.ordin-bedri",
+      "body": "government",
+      "rank": 1,
+      "source_url": "https://www.ena.et/web/amh/w/amh_9658364",
+      "source_date": "2026-10-02",
+      "translations": {
+        "en": {
+          "name": "Ordin Bedri",
+          "position": "President of the Harari Region",
+          "summary": "Re-appointed by the 7th-term regional council on 2 October 2026; he has led the region since 2018."
+        },
+        "am": {
+          "name": "አቶ ኦርዲን በድሪ",
+          "position": "የሀረሪ ክልል ርዕሰ መስተዳድር",
+          "summary": "መስከረም 22 ቀን 2019 ዓ.ም. በ7ኛው ዙር የክልሉ ምክር ቤት በድጋሚ ተሾሙ፤ ከ2011 ዓ.ም. ጀምሮ ክልሉን እየመሩ ይገኛሉ።"
+        },
+        "om": {
+          "name": "Obbo Ordiin Badrii",
+          "position": "Pireezidaantii Naannoo Hararii",
+          "summary": "Onkololeessa 2, 2026 mana marii naannoo bara 7ffaatiin irra deebiin muudame; bara 2018 irraa kaasee naannicha geggeessaa jira."
+        }
+      },
+      "photo": "ordin-bedri.jpg",
+      "term_start": "2026-10-02"
+    },
+    {
+      "key": "leader.roza-umar",
+      "body": "government",
+      "rank": 2,
+      "source_url": "https://www.ena.et/web/amh/w/amh_9659140",
+      "source_date": "2026-10-02",
+      "translations": {
+        "en": {
+          "name": "Roza Umar",
+          "position": "Deputy President of the Region and Head of the Agricultural Development Bureau",
+          "summary": null
+        },
+        "am": {
+          "name": "ወ/ሮ ሮዛ ኡመር",
+          "position": "የክልሉ ምክትል ርዕሰ መስተዳድርና የግብርና ልማት ቢሮ ኃላፊ",
+          "summary": null
+        },
+        "om": {
+          "name": "Aadde Roozaa Umar",
+          "position": "Itti Aantuu Pireezidaantii Naannoo fi Itti Gaafatamtuu Biiroo Misooma Qonnaa",
+          "summary": null
+        }
+      },
+      "photo": "roza-umer.jpg",
+      "term_start": "2026-10-02"
+    },
+    {
+      "key": "leader.mukhtar-saleh",
+      "body": "government",
+      "rank": 3,
+      "source_url": "https://www.ena.et/web/amh/w/amh_9659140",
+      "source_date": "2026-10-02",
+      "translations": {
+        "en": {
+          "name": "Mukhtar Saleh",
+          "position": "Head of the Urban Development and Construction Bureau, with the rank of Deputy President",
+          "summary": null
+        },
+        "am": {
+          "name": "አቶ ሙክታር ሳሊህ",
+          "position": "በምክትል ርዕሰ መስተዳድር ማዕረግ የከተማ ልማትና ኮንስትራክሽን ቢሮ ኃላፊ",
+          "summary": null
+        }
+      },
+      "photo": "mukhtar-salih.jpg",
+      "term_start": "2026-10-02"
+    },
+    {
+      "key": "leader.sultan-abduselam",
+      "body": "government",
+      "rank": 4,
+      "source_url": "https://www.ena.et/web/amh/w/amh_9657776",
+      "source_date": "2026-10-02",
+      "translations": {
+        "en": {
+          "name": "Sultan Abduselam",
+          "position": "Speaker of the Harari Regional Council",
+          "summary": null
+        },
+        "am": {
+          "name": "አቶ ሱልጣን አብዱሰላም",
+          "position": "የሐረሪ ክልል ምክር ቤት ዋና አፈ ጉባኤ",
+          "summary": null
+        }
+      },
+      "photo": "sultan-abdusselam.jpg",
+      "term_start": "2026-10-02"
+    },
+    {
+      "key": "leader.arif-mohamed",
+      "body": "government",
+      "rank": 5,
+      "source_url": "https://www.ena.et/web/amh/w/amh_9657776",
+      "source_date": "2026-10-02",
+      "translations": {
+        "en": {
+          "name": "Arif Mohamed",
+          "position": "Deputy Speaker of the Harari Regional Council",
+          "summary": null
+        },
+        "am": {
+          "name": "አቶ አሪፍ መሀመድ",
+          "position": "የሐረሪ ክልል ምክር ቤት ምክትል አፈ ጉባኤ",
+          "summary": null
+        }
+      },
+      "term_start": "2026-10-02"
+    },
+    {
+      "key": "leader.muhyedin-ahmed",
+      "body": "government",
+      "rank": 6,
+      "source_url": "https://t.me/HarariGovernmentCommunication/37104",
+      "source_date": "2026-10-02",
+      "translations": {
+        "en": {
+          "name": "Muhyedin Ahmed",
+          "position": "Speaker of the Harari National Assembly",
+          "summary": null
+        },
+        "am": {
+          "name": "አቶ ሙህየዲን አህመድ",
+          "position": "የሀረሪ ብሔራዊ ጉባኤ ዋና አፈ ጉባኤ",
+          "summary": null
+        }
+      },
+      "term_start": "2026-10-02"
+    },
+    {
+      "key": "leader.amina-abdukerim",
+      "body": "government",
+      "rank": 7,
+      "source_url": "https://t.me/HarariGovernmentCommunication/37104",
+      "source_date": "2026-10-02",
+      "translations": {
+        "en": {
+          "name": "Amina Abdukerim",
+          "position": "Deputy Speaker of the Harari National Assembly",
+          "summary": null
+        },
+        "am": {
+          "name": "ወይዘሮ አሚና አብዱከሪም",
+          "position": "የሀረሪ ብሔራዊ ጉባኤ ምክትል አፈ ጉባኤ",
+          "summary": null
+        }
+      },
+      "term_start": "2026-10-02"
+    }
+  ],
+  "pages": [
+    {
+      "key": "page.about",
+      "sort": 1,
+      "translations": {
+        "en": {
+          "title": "About the branch",
+          "slug": "about",
+          "excerpt": "The Prosperity Party's office for the Harari Region: what it does, how it is organised and how to follow it.",
+          "body": {
+            "type": "doc",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "The Prosperity Party Harari Region Branch Office (in Amharic የብልፅግና ፓርቲ የሀረሪ ክልል ቅርንጫፍ ጽሕፈት ቤት, in Afaan Oromo Waajjira Paartii Badhaadhinaa Damee Naannoo Hararii) leads the party's work in the Harari Region. It is headed by Getu Weyesa."
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "What the branch does"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "content": [
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Organises the party's members and structures, from the branch office down to the woredas and basic organisations."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Leads the women's and youth wings and the branch's sectors: political and capacity building, organisation, public relations and media, democratic culture building, and strategic leadership and ICT."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Reviews the work of the party and of the regional government every quarter, together with the region's leaders."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Publishes its news on its public Telegram channel, in Amharic and the other languages of the region."
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "In the region"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "In the 7th general election of 2026 the Prosperity Party won 32 of the 36 seats of the Harari Regional Council and both of the region's seats in the House of Peoples' Representatives. The new council formed the regional government on 2 October 2026."
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Follow the branch"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "News from the branch appears on this site and on its Telegram channel, "
+                  },
+                  {
+                    "type": "text",
+                    "text": "t.me/hrprosperityparty",
+                    "marks": [
+                      {
+                        "type": "link",
+                        "attrs": {
+                          "href": "https://t.me/hrprosperityparty",
+                          "target": "_blank",
+                          "rel": "noopener"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "text": "."
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Sources"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "content": [
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "t.me/hrprosperityparty/23920 (15 Oct 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://t.me/hrprosperityparty/23920",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "t.me/hrprosperityparty/23201 (8 Jul 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://t.me/hrprosperityparty/23201",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "t.me/hrprosperityparty/23849 (7 Oct 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://t.me/hrprosperityparty/23849",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "t.me/HarariGovernmentCommunication/37301 (9 Oct 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://t.me/HarariGovernmentCommunication/37301",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Birr Metrics (21 Jun 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://birrmetrics.com/prosperity-party-wins-438-parliamentary-seats-sweeps-regional-councils-in-7th-general-election/",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "ENA (2 Oct 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://www.ena.et/web/amh/w/amh_9659140",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "am": {
+          "title": "ስለ ቅርንጫፉ",
+          "slug": "about",
+          "excerpt": "የብልፅግና ፓርቲ የሀረሪ ክልል ቅርንጫፍ ጽሕፈት ቤት ተግባራት፣ አደረጃጀትና መረጃዎቹን የሚከታተሉበት መንገድ።",
+          "body": {
+            "type": "doc",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "የብልፅግና ፓርቲ የሀረሪ ክልል ቅርንጫፍ ጽሕፈት ቤት በሀረሪ ክልል የፓርቲውን ሥራዎች ይመራል። ጽሕፈት ቤቱን የሚመሩት አቶ ጌቱ ወዬሳ ናቸው።"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "ቅርንጫፉ የሚያከናውናቸው ተግባራት"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "content": [
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "የፓርቲውን አባላትና አደረጃጀቶች ከቅርንጫፍ ጽሕፈት ቤቱ እስከ ወረዳዎችና መሰረታዊ ድርጅቶች ያደራጃል።"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "የሴቶችና የወጣቶች ክንፎችን እንዲሁም የፖለቲካና አቅም ግንባታ፣ የአደረጃጀት፣ የሕዝብ ግንኙነትና ሚዲያ፣ የዴሞክራሲ ባህል ግንባታ እና የስትራቴጂ አመራርና የኢንፎርሜሽን ኮሙኒኬሽን ቴክኖሎጂ ዘርፎችን ይመራል።"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "ከክልሉ አመራሮች ጋር በመሆን የፓርቲውንና የክልሉን መንግሥት ሥራዎች በየሩብ ዓመቱ ይገመግማል።"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "ዜናዎቹን በይፋዊ የቴሌግራም ቻናሉ በአማርኛና በሌሎች የክልሉ ቋንቋዎች ያሰራጫል።"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "በክልሉ"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "ብልፅግና ፓርቲ በ2018 ዓ.ም. በተካሄደው 7ኛው አጠቃላይ ምርጫ ከሀረሪ ክልል ምክር ቤት 36 መቀመጫዎች 32ቱን፣ እንዲሁም ክልሉ በሕዝብ ተወካዮች ምክር ቤት ያሉትን ሁለቱንም መቀመጫዎች አሸንፏል። አዲሱ ምክር ቤት መስከረም 22 ቀን 2019 ዓ.ም. የክልሉን መንግሥት መሥርቷል።"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "ቅርንጫፉን ይከታተሉ"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "የቅርንጫፉ ዜናዎች በዚህ ድረ ገጽና በቴሌግራም ቻናሉ "
+                  },
+                  {
+                    "type": "text",
+                    "text": "t.me/hrprosperityparty",
+                    "marks": [
+                      {
+                        "type": "link",
+                        "attrs": {
+                          "href": "https://t.me/hrprosperityparty",
+                          "target": "_blank",
+                          "rel": "noopener"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "text": " ላይ ይወጣሉ።"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "ምንጮች"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "content": [
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "t.me/hrprosperityparty/23920 (15 Oct 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://t.me/hrprosperityparty/23920",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "t.me/hrprosperityparty/23201 (8 Jul 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://t.me/hrprosperityparty/23201",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "t.me/hrprosperityparty/23849 (7 Oct 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://t.me/hrprosperityparty/23849",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "t.me/HarariGovernmentCommunication/37301 (9 Oct 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://t.me/HarariGovernmentCommunication/37301",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Birr Metrics (21 Jun 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://birrmetrics.com/prosperity-party-wins-438-parliamentary-seats-sweeps-regional-councils-in-7th-general-election/",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "ENA (2 Oct 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://www.ena.et/web/amh/w/amh_9659140",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "om": {
+          "title": "Waa'ee damee",
+          "slug": "about",
+          "excerpt": "Hojii, caasaa fi odeeffannoo Waajjira Paartii Badhaadhinaa Damee Naannoo Hararii.",
+          "body": {
+            "type": "doc",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Waajjirri Paartii Badhaadhinaa Damee Naannoo Hararii hojii paartii Naannoo Hararii keessatti ni geggeessa. Waajjirri kun Obbo Geetuu Wayyeessaatiin durfama."
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Hojii damichi hojjetu"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "content": [
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Miseensotaa fi caasaalee paartii waajjira damee irraa hanga aanaalee fi jaarmiyaalee bu'uuraatti ni ijaara."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Kutaalee dubartootaa fi dargaggootaa, akkasumas kutaalee hojii siyaasaa fi ijaarsa dandeettii, ijaarsa jaarmiyaa, quunnamtii hawaasaa fi miidiyaa, ijaarsa aadaa dimokraasii, fi hoggansa tarsiimoo fi teeknoolojii odeeffannoo ni geggeessa."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Hoggantoota naannichaa waliin hojii paartii fi mootummaa naannoo kurmaana kurmaanaan ni gamaaggama."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Oduu isaa chaanaalii Teleegiraamii isaa irratti Afaan Amaaraa fi afaanota naannichaa biroon ni tamsaasa."
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Naannicha keessatti"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Paartiin Badhaadhinaa filannoo waliigalaa 7ffaa bara 2026 irratti teessoo Mana Marii Naannoo Hararii 36 keessaa 32, akkasumas teessoo naannichi Mana Bakka Bu'oota Ummataa keessatti qabu lamaanuu mo'ateera. Manni marii haaraan Onkololeessa 2, 2026 mootummaa naannichaa hundeesseera."
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Damee hordofaa"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Oduun damichaa marsariitii kana fi chaanaalii Teleegiraamii isaa "
+                  },
+                  {
+                    "type": "text",
+                    "text": "t.me/hrprosperityparty",
+                    "marks": [
+                      {
+                        "type": "link",
+                        "attrs": {
+                          "href": "https://t.me/hrprosperityparty",
+                          "target": "_blank",
+                          "rel": "noopener"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "text": " irratti ni maxxanfama."
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Maddoota"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "content": [
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "t.me/hrprosperityparty/23920 (15 Oct 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://t.me/hrprosperityparty/23920",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "t.me/hrprosperityparty/23201 (8 Jul 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://t.me/hrprosperityparty/23201",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "t.me/hrprosperityparty/23849 (7 Oct 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://t.me/hrprosperityparty/23849",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "t.me/HarariGovernmentCommunication/37301 (9 Oct 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://t.me/HarariGovernmentCommunication/37301",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Birr Metrics (21 Jun 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://birrmetrics.com/prosperity-party-wins-438-parliamentary-seats-sweeps-regional-councils-in-7th-general-election/",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "ENA (2 Oct 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://www.ena.et/web/amh/w/amh_9659140",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "key": "page.history",
+      "parent": "page.about",
+      "sort": 1,
+      "translations": {
+        "en": {
+          "title": "History",
+          "slug": "history",
+          "excerpt": "From the Harari National League to the Prosperity Party, and the general elections of 2021 and 2026.",
+          "body": {
+            "type": "doc",
+            "content": [
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "The Harari National League"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "The Harari National League (HNL) was founded in 1991. Until 2019 it led the Harari Region as a party allied to the EPRDF."
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Joining the Prosperity Party"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "At its 11th organisational conference on 17 November 2019, the HNL announced that it would merge into the Prosperity Party. The parties of the EPRDF merged on 18 November, and the Prosperity Party was formally established on 21 November 2019."
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Elections"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "content": [
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "6th general election: Harari voted on 30 September 2021. The Prosperity Party won both of the region's seats in the House of Peoples' Representatives and all three constituencies of the regional council. On 22 October 2021 the new council re-elected Ordin Bedri as president of the region."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "7th general election: the vote was held on 1 June 2026 and the National Election Board of Ethiopia announced the final results on 21 June. Of the 36 seats of the regional council, the Prosperity Party won 32; the Ethiopian National Unity Party, the Freedom and Equality Party and the Harari Democratic Organisation won one each, and one seat went to an independent candidate."
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Forming the government, October 2026"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "The 7th-term regional council held its first session on 2 October 2026. It re-elected Sultan Abduselam as speaker and Arif Mohamed as deputy speaker, re-appointed Ordin Bedri as president, and approved the cabinet, with Roza Umar as deputy president and Mukhtar Saleh as head of the Urban Development and Construction Bureau with the rank of deputy president. The Harari National Assembly elected Muhyedin Ahmed as its speaker and Amina Abdukerim as deputy speaker."
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Sources"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "content": [
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Prosperity Party: formation of the party",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "http://prosperity.org.et/en/web/eng/formation-of-prosperity-party",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Wikipedia: Harari National League",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://en.wikipedia.org/wiki/Harari_National_League",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "NEBE: Harari HoPR results, 2021",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://nebe.org.et/sites/default/files/Harari%20HoPR%20Election%20Results%20Final%20-Sep%2030.pdf",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Fana (22 Oct 2021)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://www.fanamc.com/english/council-reelects-ordin-bedri-as-chief-administrator-of-harari-regional-state/",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "NEBE: 7th general election results",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://nebe.org.et/am/7th-general-election-result-summary",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "ENA (21 Jun 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://www.ena.et/web/eng/w/eng_9074409",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "ENA (2 Oct 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://www.ena.et/web/amh/w/amh_9657776",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "ENA (2 Oct 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://www.ena.et/web/amh/w/amh_9659140",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "t.me/HarariGovernmentCommunication/37104 (2 Oct 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://t.me/HarariGovernmentCommunication/37104",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "am": {
+          "title": "ታሪክ",
+          "slug": "history",
+          "excerpt": "ከሀረሪ ብሔራዊ ሊግ እስከ ብልፅግና ፓርቲ፤ 6ኛውና 7ኛው አጠቃላይ ምርጫዎች።",
+          "body": {
+            "type": "doc",
+            "content": [
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "ሀረሪ ብሔራዊ ሊግ"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "ሀረሪ ብሔራዊ ሊግ እ.ኤ.አ. በ1991 ተመሠረተ። እስከ 2019 ድረስ ከኢሕአዴግ ጋር አጋር ፓርቲ ሆኖ የሀረሪ ክልልን መርቷል።"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "ብልፅግና ፓርቲን መቀላቀል"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "ሀረሪ ብሔራዊ ሊግ ኅዳር 7 ቀን 2012 ዓ.ም. ባካሄደው 11ኛው ድርጅታዊ ጉባኤ ወደ ብልፅግና ፓርቲ እንደሚዋሐድ አሳወቀ። የኢሕአዴግ አባል ፓርቲዎች ኅዳር 8 ቀን ተዋሐዱ፤ ብልፅግና ፓርቲ ኅዳር 11 ቀን 2012 ዓ.ም. በይፋ ተመሠረተ።"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "ምርጫዎች"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "content": [
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "6ኛው አጠቃላይ ምርጫ፦ ሀረሪ መስከረም 20 ቀን 2014 ዓ.ም. ድምፅ ሰጠ። ብልፅግና ፓርቲ ክልሉ በሕዝብ ተወካዮች ምክር ቤት ያሉትን ሁለቱንም መቀመጫዎችና የክልሉን ምክር ቤት ሦስቱንም የምርጫ ክልሎች አሸነፈ። አዲሱ ምክር ቤት ጥቅምት 12 ቀን 2014 ዓ.ም. አቶ ኦርዲን በድሪን በድጋሚ የክልሉ ርዕሰ መስተዳድር አድርጎ መረጠ።"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "7ኛው አጠቃላይ ምርጫ፦ ድምፅ የተሰጠው ግንቦት 24 ቀን 2018 ዓ.ም. ሲሆን የኢትዮጵያ ብሔራዊ ምርጫ ቦርድ የመጨረሻ ውጤቱን ሰኔ 14 ቀን 2018 ዓ.ም. አሳወቀ። 36 መቀመጫ ካለው የክልሉ ምክር ቤት ብልፅግና ፓርቲ 32ቱን አሸነፈ፤ የኢትዮጵያ ብሔራዊ አንድነት ፓርቲ፣ ነፃነትና እኩልነት ፓርቲ እና የሐረሪ ዴሞክራሲያዊ ድርጅት እያንዳንዳቸው አንድ መቀመጫ አገኙ፤ አንዱን መቀመጫ የግል ዕጩ አሸነፈ።"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "የመንግሥት ምሥረታ፣ መስከረም 2019 ዓ.ም."
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "7ኛው ዙር የክልሉ ምክር ቤት መስከረም 22 ቀን 2019 ዓ.ም. የመጀመሪያ ጉባኤውን አካሄደ። አቶ ሱልጣን አብዱሰላምን ዋና አፈ ጉባኤ፣ አቶ አሪፍ መሀመድን ምክትል አፈ ጉባኤ አድርጎ በድጋሚ መረጠ፤ አቶ ኦርዲን በድሪን በድጋሚ ርዕሰ መስተዳድር አድርጎ ሾመ፤ ወ/ሮ ሮዛ ኡመርን ምክትል ርዕሰ መስተዳድር፣ አቶ ሙክታር ሳሊህን በምክትል ርዕሰ መስተዳድር ማዕረግ የከተማ ልማትና ኮንስትራክሽን ቢሮ ኃላፊ አድርጎ ጨምሮ የካቢኔ አባላትን አጸደቀ። የሀረሪ ብሔራዊ ጉባኤ አቶ ሙህየዲን አህመድን ዋና አፈ ጉባኤ፣ ወይዘሮ አሚና አብዱከሪምን ምክትል አፈ ጉባኤ አድርጎ መረጠ።"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "ምንጮች"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "content": [
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Prosperity Party: formation of the party",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "http://prosperity.org.et/en/web/eng/formation-of-prosperity-party",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Wikipedia: Harari National League",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://en.wikipedia.org/wiki/Harari_National_League",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "NEBE: Harari HoPR results, 2021",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://nebe.org.et/sites/default/files/Harari%20HoPR%20Election%20Results%20Final%20-Sep%2030.pdf",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Fana (22 Oct 2021)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://www.fanamc.com/english/council-reelects-ordin-bedri-as-chief-administrator-of-harari-regional-state/",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "NEBE: 7th general election results",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://nebe.org.et/am/7th-general-election-result-summary",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "ENA (21 Jun 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://www.ena.et/web/eng/w/eng_9074409",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "ENA (2 Oct 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://www.ena.et/web/amh/w/amh_9657776",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "ENA (2 Oct 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://www.ena.et/web/amh/w/amh_9659140",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "t.me/HarariGovernmentCommunication/37104 (2 Oct 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://t.me/HarariGovernmentCommunication/37104",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "om": {
+          "title": "Seenaa",
+          "slug": "history",
+          "excerpt": "Liigii Biyyoolessaa Hararii irraa hanga Paartii Badhaadhinaatti, fi filannoowwan waliigalaa 2021 fi 2026.",
+          "body": {
+            "type": "doc",
+            "content": [
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Liigii Biyyoolessaa Hararii"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Liigiin Biyyoolessaa Hararii (HNL) bara 1991 hundeeffame. Hanga bara 2019tti paartii ADWUI waliin hiriyyaa ta'ee Naannoo Hararii geggeessaa ture."
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Paartii Badhaadhinaatti makamuu"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "HNL walgahii jaarmiyaa 11ffaa Sadaasa 17, 2019 geggeesse irratti Paartii Badhaadhinaatti makamuuf murteessuu isaa beeksise. Paartileen ADWUI Sadaasa 18 walitti makaman; Paartiin Badhaadhinaa Sadaasa 21, 2019 seeraan hundeeffame."
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Filannoowwan"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "content": [
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Filannoo waliigalaa 6ffaa: Hararii keessatti sagaleen Fulbaana 30, 2021 kenname. Paartiin Badhaadhinaa teessoo naannichi Mana Bakka Bu'oota Ummataa keessatti qabu lamaanuu fi naannolee filannoo mana marii naannoo sadanuu mo'ate. Onkololeessa 22, 2021 manni marii haaraan Obbo Ordiin Badrii irra deebiin pireezidaantii naannichaa godhee filate."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Filannoo waliigalaa 7ffaa: sagaleen Waxabajjii 1, 2026 kenname; Boordiin Filannoo Biyyoolessaa Itoophiyaa bu'aa xumuraa Waxabajjii 21 beeksise. Teessoo mana marii naannoo 36 keessaa Paartiin Badhaadhinaa 32 mo'ate; Paartiin Tokkummaa Biyyoolessaa Itoophiyaa, Paartiin Bilisummaa fi Walqixxummaa, fi Dhaabbanni Dimokraatawaa Hararii tokko tokko argatan; teessoo tokko immoo dorgomaa dhuunfaa tokkotu mo'ate."
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Hundeeffama mootummaa, Onkololeessa 2026"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Manni marii naannoo bara 7ffaa Onkololeessa 2, 2026 walgahii isaa jalqabaa geggeesse. Sultan Abduselam afyaa'ii, Arif Mohamed itti aanaa afyaa'ii godhee irra deebiin filate; Obbo Ordiin Badrii irra deebiin pireezidaantii godhee muude; kaabinee, Aadde Roozaa Umar itti aantuu pireezidaantii fi Mukhtar Saleh sadarkaa itti aanaa pireezidaantiitiin itti gaafatamaa Biiroo Misooma Magaalaa fi Ijaarsaa godhee, raggaasise. Yaa'iin Biyyoolessaa Hararii Muhyedin Ahmed afyaa'ii, Amina Abdukerim itti aantuu afyaa'ii godhee filate."
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Maddoota"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "content": [
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Prosperity Party: formation of the party",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "http://prosperity.org.et/en/web/eng/formation-of-prosperity-party",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Wikipedia: Harari National League",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://en.wikipedia.org/wiki/Harari_National_League",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "NEBE: Harari HoPR results, 2021",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://nebe.org.et/sites/default/files/Harari%20HoPR%20Election%20Results%20Final%20-Sep%2030.pdf",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Fana (22 Oct 2021)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://www.fanamc.com/english/council-reelects-ordin-bedri-as-chief-administrator-of-harari-regional-state/",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "NEBE: 7th general election results",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://nebe.org.et/am/7th-general-election-result-summary",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "ENA (21 Jun 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://www.ena.et/web/eng/w/eng_9074409",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "ENA (2 Oct 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://www.ena.et/web/amh/w/amh_9657776",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "ENA (2 Oct 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://www.ena.et/web/amh/w/amh_9659140",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "t.me/HarariGovernmentCommunication/37104 (2 Oct 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://t.me/HarariGovernmentCommunication/37104",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "key": "page.harar",
+      "parent": "page.about",
+      "sort": 2,
+      "translations": {
+        "en": {
+          "title": "Harar and the Harari Region",
+          "slug": "harar",
+          "excerpt": "The walled city of Harar Jugol, a UNESCO World Heritage site, and the region the branch serves.",
+          "body": {
+            "type": "doc",
+            "content": [
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Harar Jugol"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "The historic town of Harar Jugol has been on UNESCO's World Heritage List since 2006. Its wall, the Jugol, was built between the 13th and 16th centuries. Within its 48 hectares stand 82 mosques, three of them from the 10th century, and 102 shrines. UNESCO notes that Harar is considered the fourth holy city of Islam."
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "The wall has five historic gates, which matched the main roads and the five quarters of the old town, and a sixth added later, the Harar Gate."
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Traditional Harari townhouses and the Indian-style houses with wooden verandas, built by Indian merchants at the end of the 19th century, give the town its character. The patterns on this site come from the woven basket plates that hang on the walls of Harari homes."
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "History in brief"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Harar was the capital of the Harari Kingdom from 1520 to 1568 and an independent emirate in the 17th century, and has been part of Ethiopia since 1887."
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "The region today"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "content": [
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Nine woredas: six in the city of Harar (Amir-Nur, Abadir, Jinela, Hakim, Shenkor and Aboker) and three rural woredas (Sofi, Erer and Dire Teyara)."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Population: 183,415 at the 2007 census; the Ethiopian Statistics Service projected about 276,000 for 2022."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Mother tongues at the 2007 census: Afaan Oromo 56.8%, Amharic 27.5%, Harari 7.3%, Somali 3.7% and Gurage 2.9%."
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Sources"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "content": [
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "UNESCO World Heritage Centre: Harar Jugol",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://whc.unesco.org/en/list/1189/",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "ICOMOS evaluation, 2006",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://whc.unesco.org/document/151989",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "CSA: 2007 census, Harari Region",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://web.archive.org/web/20101114005428/http://www.csa.gov.et/index.php?option=com_rubberdoc&view=doc&id=271&format=raw&Itemid=521",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Ethiopian Statistics Service: population 2007-2022",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://data.moa.gov.et/dataset/81af0277-1d0e-4f5d-a948-cdf26aa95748",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "t.me/hrprosperityparty/23088 (10 Jun 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://t.me/hrprosperityparty/23088",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "t.me/hrprosperityparty/23068 (10 Jun 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://t.me/hrprosperityparty/23068",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "am": {
+          "title": "ሀረርና የሀረሪ ክልል",
+          "slug": "harar",
+          "excerpt": "በዩኔስኮ የዓለም ቅርስነት የተመዘገበችው ቅጥር ከተማ ሀረር ጀጎል እና ቅርንጫፉ የሚያገለግለው ክልል።",
+          "body": {
+            "type": "doc",
+            "content": [
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "ሀረር ጀጎል"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "ታሪካዊቷ የሀረር ጀጎል ከተማ ከ1998 ዓ.ም. ጀምሮ በዩኔስኮ የዓለም ቅርሶች መዝገብ ውስጥ ትገኛለች። ጀጎል የተባለው ቅጥሯ ከ13ኛው እስከ 16ኛው ክፍለ ዘመን ባለው ጊዜ ተገንብቷል። በ48 ሄክታር ቅጥር ውስጥ 82 መስጊዶች፣ ከእነዚህም ሦስቱ የ10ኛው ክፍለ ዘመን፣ እና 102 ቅዱሳን ስፍራዎች ይገኛሉ። ዩኔስኮ እንደሚገልጸው ሀረር አራተኛዋ የእስልምና ቅድስት ከተማ ተደርጋ ትታያለች።"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "ቅጥሩ ከዋና ዋና መንገዶችና ከጥንቷ ከተማ አምስት ሰፈሮች ጋር የሚገናኙ አምስት ታሪካዊ በሮች እና በኋላ የተጨመረ ስድስተኛ በር፣ የሀረር በር፣ አለው።"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "ባህላዊ የሀረሪ ቤቶች እና በ19ኛው ክፍለ ዘመን መጨረሻ የህንድ ነጋዴዎች የገነቧቸው የእንጨት በረንዳ ያላቸው ቤቶች ለከተማዋ ልዩ ገጽታ ይሰጣሉ። በዚህ ድረ ገጽ ላይ የሚታዩት ቅጦች በሀረሪ ቤቶች ግድግዳ ላይ ከሚሰቀሉት የሰፌድ ሥራዎች የተወሰዱ ናቸው።"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "ታሪክ በአጭሩ"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "ሀረር እ.ኤ.አ. ከ1520 እስከ 1568 የሀረሪ መንግሥት ዋና ከተማ፣ በ17ኛው ክፍለ ዘመን ራሷን የቻለች ኢሚሬት ነበረች፤ ከ1887 ጀምሮ የኢትዮጵያ አካል ሆናለች።"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "ክልሉ ዛሬ"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "content": [
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "ዘጠኝ ወረዳዎች፦ በሀረር ከተማ ውስጥ ስድስት (አሚር ኑር፣ አባድር፣ ጅኔላ፣ ሀኪም፣ ሸንኮር እና አቦከር) እና ሦስት የገጠር ወረዳዎች (ሶፊ፣ ኤረር እና ድሬ ጠያራ)።"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "የሕዝብ ብዛት፦ በ1999 ዓ.ም. የሕዝብና ቤት ቆጠራ 183,415፤ የኢትዮጵያ ስታቲስቲክስ አገልግሎት እ.ኤ.አ. ለ2022 ወደ 276,000 ገደማ ገምቷል።"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "በ1999 ዓ.ም. ቆጠራ የአፍ መፍቻ ቋንቋዎች፦ አፋን ኦሮሞ 56.8%፣ አማርኛ 27.5%፣ ሀረሪ 7.3%፣ ሶማሊኛ 3.7% እና ጉራጊኛ 2.9%።"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "ምንጮች"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "content": [
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "UNESCO World Heritage Centre: Harar Jugol",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://whc.unesco.org/en/list/1189/",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "ICOMOS evaluation, 2006",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://whc.unesco.org/document/151989",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "CSA: 2007 census, Harari Region",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://web.archive.org/web/20101114005428/http://www.csa.gov.et/index.php?option=com_rubberdoc&view=doc&id=271&format=raw&Itemid=521",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Ethiopian Statistics Service: population 2007-2022",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://data.moa.gov.et/dataset/81af0277-1d0e-4f5d-a948-cdf26aa95748",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "t.me/hrprosperityparty/23088 (10 Jun 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://t.me/hrprosperityparty/23088",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "t.me/hrprosperityparty/23068 (10 Jun 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://t.me/hrprosperityparty/23068",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "om": {
+          "title": "Harar fi Naannoo Hararii",
+          "slug": "harar",
+          "excerpt": "Magaalaa dallaa qabdu Harar Jugol, hambaa addunyaa UNESCO, fi naannoo damichi tajaajilu.",
+          "body": {
+            "type": "doc",
+            "content": [
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Harar Jugol"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Magaalaan seenaa qabeettiin Harar Jugol bara 2006 irraa kaasee galmee hambaa addunyaa UNESCO keessa jirti. Dallaan ishee, Jugol, jaarraa 13ffaa fi 16ffaa gidduutti ijaarame. Lafa hektaara 48 keessatti masjiidota 82, kanneen keessaa sadii jaarraa 10ffaa, fi iddoowwan qulqulluu 102 ni argamu. Akka UNESCO ibsutti, Harar magaalaa qulqulluu Islaamaa afraffaa jedhamtee ilaalamti."
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Dallaan kun karrawwan seenaa shan, kanneen karaalee gurguddoo fi ollaawwan magaalattii durii shanan waliin walsiman, fi karra jahaffaa booda dabalame, Karra Harar, qaba."
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Manneen aadaa Hararii fi manneen balbala mukaa qaban kanneen daldaltoonni Hindii xumura jaarraa 19ffaatti ijaaran magaalattiif bifa addaa kennu. Faayiin marsariitii kana irratti mul'atu gabatee hodhaa dallaa manneen Hararii irratti fannifamu irraa fudhatame."
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Seenaa gabaabaan"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Harar bara 1520 hanga 1568tti magaalaa guddoo Mootummaa Hararii, jaarraa 17ffaatti immoo imireetii of danda'e turte; bara 1887 irraa kaasee kutaa Itoophiyaa taate."
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Naannichi har'a"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "content": [
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Aanaalee sagal: jaha magaalaa Harar keessatti (Amir-Nur, Abadir, Jinela, Hakim, Shenkor fi Aboker) fi sadii baadiyyaatti (Soofii, Erer fi Dirree Xiyyaaraa)."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Baay'ina ummataa: lakkoofsa ummataa bara 2007tti 183,415; Tajaajilli Istaatistiksii Itoophiyaa bara 2022f gara 276,000 tilmaameera."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Afaan dhalootaa lakkoofsa bara 2007tti: Afaan Oromoo 56.8%, Afaan Amaaraa 27.5%, Afaan Hararii 7.3%, Afaan Somaalii 3.7% fi Afaan Guraagee 2.9%."
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Maddoota"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "content": [
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "UNESCO World Heritage Centre: Harar Jugol",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://whc.unesco.org/en/list/1189/",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "ICOMOS evaluation, 2006",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://whc.unesco.org/document/151989",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "CSA: 2007 census, Harari Region",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://web.archive.org/web/20101114005428/http://www.csa.gov.et/index.php?option=com_rubberdoc&view=doc&id=271&format=raw&Itemid=521",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Ethiopian Statistics Service: population 2007-2022",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://data.moa.gov.et/dataset/81af0277-1d0e-4f5d-a948-cdf26aa95748",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "t.me/hrprosperityparty/23088 (10 Jun 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://t.me/hrprosperityparty/23088",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "t.me/hrprosperityparty/23068 (10 Jun 2026)",
+                            "marks": [
+                              {
+                                "type": "link",
+                                "attrs": {
+                                  "href": "https://t.me/hrprosperityparty/23068",
+                                  "target": "_blank",
+                                  "rel": "noopener"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "events": [
+    {
+      "key": "event.tourism-day-2026",
+      "starts_at": "2026-10-22",
+      "all_day": true,
+      "translations": {
+        "en": {
+          "title": "Harari Tourism Day",
+          "venue": "Harar",
+          "summary": "The region's tourism day opens on 22 October, with music, art and handicraft shows, talks on digital tourism, and tour operators and guests from Addis Ababa. Announced by the regional government's communication office (t.me/HarariGovernmentCommunication/37645)."
+        },
+        "am": {
+          "title": "የሐረሪ ቱሪዝም ቀን",
+          "venue": "ሀረር",
+          "summary": "የክልሉ የቱሪዝም ቀን ጥቅምት 12 ቀን 2019 ዓ.ም. ይጀመራል፤ የሙዚቃ፣ የኪነ ጥበብና የእደ ጥበብ ትርኢቶች፣ በዲጂታል ቱሪዝም ላይ ውይይቶች ይካሄዳሉ፤ አስጎብኚዎችና ከአዲስ አበባ የሚመጡ እንግዶች ይሳተፋሉ። ምንጭ፦ የክልሉ መንግሥት ኮሙኒኬሽን (t.me/HarariGovernmentCommunication/37645)።"
+        },
+        "om": {
+          "title": "Guyyaa Tuurizimii Hararii",
+          "venue": "Harar",
+          "summary": "Guyyaan tuurizimii naannichaa Onkololeessa 22 ni jalqaba; agarsiisa muuziqaa, aartii fi hojii harkaa, marii tuurizimii dijitaalaa, akkasumas qindeessitoota imalaa fi keessummoota Finfinnee irraa dhufan ni qabata. Madda: komunikeeshinii mootummaa naannichaa (t.me/HarariGovernmentCommunication/37645)."
+        }
+      }
+    }
+  ],
+  "homepage": {
+    "leadership": {
+      "leader": "leader.getu-weyesa",
+      "quote": {
+        "am": "የስራ ባህላችንን በመቀየር ዜጎች ከተረጂነት ወደ ምርታማነት የምናሸጋግርበት ጊዜው አሁን ነው።",
+        "en": "Now is the time to change our work culture and move citizens from dependence on aid to productivity."
+      },
+      "source_url": "https://t.me/hrprosperityparty/23819"
+    },
+    "counters": [
+      {
+        "value": "32/36",
+        "label": {
+          "en": "Regional council seats won in 2026",
+          "am": "በ2018 ዓ.ም. ምርጫ የተገኙ የክልል ምክር ቤት መቀመጫዎች",
+          "om": "Teessoo mana marii naannoo bara 2026 mo'ataman"
+        }
+      },
+      {
+        "value": "2/2",
+        "label": {
+          "en": "Federal parliament seats won in 2026",
+          "am": "በ2018 ዓ.ም. ምርጫ የተገኙ የሕዝብ ተወካዮች ምክር ቤት መቀመጫዎች",
+          "om": "Teessoo Mana Bakka Bu'oota Ummataa bara 2026 mo'ataman"
+        }
+      },
+      {
+        "value": "9",
+        "label": {
+          "en": "Woredas in the region",
+          "am": "በክልሉ የሚገኙ ወረዳዎች",
+          "om": "Aanaalee naannicha keessaa"
+        }
+      },
+      {
+        "value": "2006",
+        "label": {
+          "en": "Harar Jugol on the UNESCO World Heritage List",
+          "am": "ሀረር ጀጎል በዩኔስኮ የዓለም ቅርስነት የተመዘገበበት ዓመት (እ.ኤ.አ.)",
+          "om": "Harar Jugol galmee hambaa addunyaa UNESCO keessa gale"
+        }
+      }
+    ]
+  },
+  "settings": {
+    "social_links": {
+      "telegram": "https://t.me/hrprosperityparty"
+    }
+  }
+}

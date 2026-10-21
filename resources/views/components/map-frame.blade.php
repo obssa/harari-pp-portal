@@ -9,7 +9,7 @@
     $placeholder = '<!doctype html><html lang="'.e(app()->getLocale()).'"><body style="margin:0;height:100vh;display:grid;place-items:center;'
         .'font:15px/1.5 system-ui,sans-serif;background:#f1f5f9;color:#475569;text-align:center"><div style="padding:16px">'
         .'<p style="margin:0 0 12px">'.e(__('maps.consent')).'</p>'
-        .'<a href="'.e($embed).'" target="_self" style="display:inline-block;padding:8px 16px;border-radius:8px;background:#3151ed;color:#fff;font-weight:600;text-decoration:none">'
+        .'<a href="'.e($embed).'" target="_self" style="display:inline-block;padding:8px 16px;border-radius:8px;background:#0b6ca8;color:#fff;font-weight:600;text-decoration:none">'
         .e(__('maps.show')).'</a></div></body></html>';
 @endphp
 <iframe srcdoc="{{ $placeholder }}" title="{{ $title }}" referrerpolicy="no-referrer"

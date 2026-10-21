@@ -4,18 +4,45 @@
  * these tokens generate (bg-primary-600, text-accent-700, rounded-card ...).
  */
 @theme {
-    /* Prosperity Party blue; 600 is the brand colour (#3151ED, 5.9:1 on white). */
-    --color-primary-50: #eef1fe;
-    --color-primary-100: #dfe4fd;
-    --color-primary-200: #c5cefc;
-    --color-primary-300: #a1aef9;
-    --color-primary-400: #7a86f4;
-    --color-primary-500: #5562ef;
-    --color-primary-600: #3151ed;
-    --color-primary-700: #2539c9;
-    --color-primary-800: #2231a2;
-    --color-primary-900: #222f80;
-    --color-primary-950: #161c4b;
+    /* Prosperity Blue from the logo (ADR-0062); 600 is the brand colour (#0B6CA8, 5.6:1 on white),
+       900 the night blue of heroes and figure bands. */
+    --color-primary-50: #eef6fb;
+    --color-primary-100: #dcedf7;
+    --color-primary-200: #badcef;
+    --color-primary-300: #86c2e4;
+    --color-primary-400: #4ca2d3;
+    --color-primary-500: #1f86c2;
+    --color-primary-600: #0b6ca8;
+    --color-primary-700: #095a8c;
+    --color-primary-800: #084a73;
+    --color-primary-900: #083a5c;
+    --color-primary-950: #05253b;
+
+    /* Prosperity Gold from the logo: calls to action and highlights, always with ink text. */
+    --color-gold-50: #fff6d6;
+    --color-gold-100: #ffedad;
+    --color-gold-200: #ffe07a;
+    --color-gold-300: #ffd447;
+    --color-gold-400: #ffc61f;
+    --color-gold-500: #f5b800;
+    --color-gold-600: #d69e00;
+    --color-gold-700: #a67a00;
+    --color-gold-800: #7a5a00;
+    --color-gold-900: #5c4300;
+
+    /* Basket magenta from the logo: the Women's League and speeches (600: 5.9:1 on white). */
+    --color-magenta-50: #fce8f0;
+    --color-magenta-100: #f9d0e1;
+    --color-magenta-600: #c2185b;
+    --color-magenta-700: #9e1349;
+
+    /* Sky blue from the logo: patterns only, never text. */
+    --color-sky-brand: #29a8e0;
+
+    /* Jugol plaster and ink (ADR-0062). */
+    --color-plaster: #f7f2e9;
+    --color-plaster-line: #e5dccb;
+    --color-ink-brand: #14161a;
 
     /* Harar heritage ochre/terracotta, used sparingly for highlights (600: 5.0:1 on white). */
     --color-accent-50: #fdf5ef;
@@ -42,18 +69,18 @@
     --color-danger-800: var(--color-red-800);
 
     /* Surfaces and text; redefined for dark mode below. */
-    --color-canvas: var(--color-slate-50);
+    --color-canvas: var(--color-white);
     --color-surface: var(--color-white);
-    --color-surface-muted: var(--color-slate-100);
-    --color-line: var(--color-slate-200);
-    --color-ink: var(--color-slate-900);
-    --color-ink-muted: var(--color-slate-600);
+    --color-surface-muted: var(--color-plaster);
+    --color-line: #e5e1d8;
+    --color-ink: var(--color-ink-brand);
+    --color-ink-muted: #4b5563;
     --color-link: var(--color-primary-700);
 
     --font-sans: 'Inter Variable', 'Noto Sans Ethiopic Variable', 'Abyssinica SIL', ui-sans-serif, system-ui,
         sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
 
-    --radius-card: 0.75rem;
+    --radius-card: 1rem;
     --radius-control: 0.5rem;
 
     --container-page: 80rem;
@@ -66,10 +93,10 @@
 
 @media (prefers-color-scheme: dark) {
     :root {
-        --color-canvas: var(--color-slate-950);
-        --color-surface: var(--color-slate-900);
-        --color-surface-muted: var(--color-slate-800);
-        --color-line: var(--color-slate-700);
+        --color-canvas: #0e1013;
+        --color-surface: #16191e;
+        --color-surface-muted: #1f232a;
+        --color-line: #30353d;
         --color-ink: var(--color-slate-50);
         --color-ink-muted: var(--color-slate-300);
         --color-link: var(--color-primary-300);

@@ -28,7 +28,9 @@ it('hides the styleguide in production', function () {
 
 it('renders buttons as links or buttons with the chosen variant', function () {
     expect(Blade::render('<x-ui.button href="/en" variant="secondary">Go</x-ui.button>'))
-        ->toContain('<a href="/en"', 'border-line', '>Go</a>')
+        ->toContain('<a href="/en"', 'border-ink', 'rounded-full', '>Go</a>')
+        ->and(Blade::render('<x-ui.button href="/en/membership/apply" variant="gold">Join</x-ui.button>'))
+        ->toContain('bg-gold-500', 'text-ink-brand')
         ->and(Blade::render('<x-ui.button type="submit">Send</x-ui.button>'))
         ->toContain('<button type="submit"', 'bg-primary-600');
 });
@@ -42,6 +44,9 @@ it('renders badges in each tone', function (string $tone, string $class) {
     ['success', 'bg-success-50'],
     ['warning', 'bg-warning-50'],
     ['danger', 'bg-danger-50'],
+    ['gold', 'bg-gold-50'],
+    ['magenta', 'bg-magenta-50'],
+    ['ink', 'bg-ink-brand'],
 ]);
 
 it('renders cards with an optional link, badges and meta line', function () {

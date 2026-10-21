@@ -41,7 +41,7 @@ it('shows the press kit with the boilerplate, contact, logos, colours, portraits
         ->assertSee('Sample boilerplate')
         ->assertSee('Sample communication office')->assertSee('press@example.org')
         ->assertSee(route('media.file', ['uuid' => $logo->uuid, 'name' => $logo->file_name]), escape: false)
-        ->assertSee('#3151ED')
+        ->assertSee('#0B6CA8')->assertSee('#F5B800')
         ->assertSee('Sample Chairperson')
         ->assertSee('Sample press release')
         ->assertSee(route('forms.show', ['locale' => 'en', 'slug' => 'sample-press-enquiry']), escape: false);

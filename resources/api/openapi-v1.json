@@ -2413,7 +2413,7 @@
         "name": "lang",
         "in": "query",
         "required": false,
-        "description": "Language of the answer. Without it, Accept-Language, then the default language of the site. Harari falls back to Amharic, the others to English; `lang` in each item says which language it is in.",
+        "description": "Language of the answer. Without it, Accept-Language, then the default language of the site. News written only in Amharic is listed in every language; other content falls back from Harari to Amharic and from the others to English. `lang` in each item says which language it is in.",
         "schema": {
           "type": "string",
           "enum": [

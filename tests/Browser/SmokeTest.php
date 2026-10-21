@@ -27,8 +27,8 @@ it('switches language and keeps the page', function () {
 
 it('finds a story through the search form', function () {
     visit('/en/search')
-        ->fill('q', 'browser')
-        ->press(__('search.button'))
+        ->fill('#search-page-q', 'browser')
+        ->click('form[role="search"] button[type="submit"]')
         ->assertQueryStringHas('q', 'browser')
         ->assertSee('Sample browser story');
 });

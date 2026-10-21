@@ -61,6 +61,8 @@ trap '"$PHP_BIN" artisan up >/dev/null 2>&1 || true' EXIT
 "$PHP_BIN" artisan portal:sync-permissions --no-interaction
 "$PHP_BIN" artisan optimize
 [ -e public/storage ] || "$PHP_BIN" artisan storage:link
+# ADR-0063: content pack records not loaded yet; a problem is reported but never stops the release.
+"$PHP_BIN" artisan content:load-pack --no-interaction || echo "content pack: not loaded, see storage/logs"
 "$PHP_BIN" artisan queue:restart || true
 
 # rsync mirrors the runner's modes; LiteSpeed needs a traversable site folder.

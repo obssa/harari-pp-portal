@@ -34,6 +34,8 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property ?string $phone
  * @property ?string $email
  * @property ?array<string, string> $socials
+ * @property ?string $source_url
+ * @property ?CarbonImmutable $source_date
  * @property-read ?Office $office
  * @property-read ?League $league
  * @property-read ?Media $portrait
@@ -53,7 +55,7 @@ class Leader extends Model implements TranslatableModel
     /** Social networks a profile may link to, in display order. */
     public const SOCIALS = ['facebook', 'telegram', 'x', 'youtube', 'tiktok', 'linkedin'];
 
-    protected $fillable = ['body', 'office_id', 'league_id', 'rank', 'term_start', 'term_end', 'portrait_id', 'phone', 'email', 'socials'];
+    protected $fillable = ['body', 'office_id', 'league_id', 'rank', 'term_start', 'term_end', 'portrait_id', 'phone', 'email', 'socials', 'source_url', 'source_date'];
 
     protected $attributes = ['rank' => 100];
 
@@ -65,6 +67,7 @@ class Leader extends Model implements TranslatableModel
             'term_start' => 'immutable_date',
             'term_end' => 'immutable_date',
             'socials' => 'array',
+            'source_date' => 'immutable_date',
         ];
     }
 

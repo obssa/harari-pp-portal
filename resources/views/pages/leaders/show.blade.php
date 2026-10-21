@@ -43,6 +43,13 @@
                     </p>
                 @endif
                 <x-directory.contacts class="mt-6" :phone="$leader->phone" :email="$leader->email" :socials="$leader->socialLinks()" />
+                @if ($leader->source_url)
+                    {{-- ADR-0063: where the position was published, so readers can check it. --}}
+                    <p class="mt-6 text-sm text-ink-muted">
+                        {{ __('leaders.source') }}:
+                        <a href="{{ $leader->source_url }}" rel="noopener nofollow" class="break-all text-link underline-offset-4 hover:underline">{{ preg_replace('#^https?://(www\.)?#', '', $leader->source_url) }}</a>@if ($leader->source_date), <x-date :date="$leader->source_date" />@endif
+                    </p>
+                @endif
             </header>
 
             <div class="lg:col-span-2">

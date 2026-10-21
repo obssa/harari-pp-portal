@@ -43,6 +43,15 @@ it('lists live posts of the page language only', function () {
         ->assertDontSee('Oduu Afaan Oromoo');
 });
 
+it('lists Amharic-only posts on the English and Afaan Oromo pages, marked as Amharic', function () {
+    newsPost(['am' => ['title' => 'የቅርንጫፉ የናሙና ዜና']], ['am']);
+
+    foreach (['/en/news', '/om/news'] as $url) {
+        $this->get($url)->assertOk()->assertSee('የቅርንጫፉ የናሙና ዜና')->assertSee('lang="am"', escape: false)
+            ->assertSee(__('news.in_language', ['language' => 'አማርኛ'], substr($url, 1, 2)));
+    }
+});
+
 it('shows Amharic posts on the Harari pages, marked as Amharic', function () {
     newsPost(['am' => ['title' => 'የአማርኛ ዜና']], ['am']);
 

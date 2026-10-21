@@ -101,6 +101,11 @@ class LeaderResource extends Resource
                         DatePicker::make('term_end')->label(__('admin.leaders.field.term_end'))->afterOrEqual('term_start'),
                     ]),
                     MediaPicker::make('portrait_id', [MediaKind::Image])->label(__('admin.leaders.field.portrait')),
+                    Grid::make(2)->schema([
+                        TextInput::make('source_url')->label(__('admin.leaders.field.source_url'))
+                            ->helperText(__('admin.leaders.help.source_url'))->url()->maxLength(500),
+                        DatePicker::make('source_date')->label(__('admin.leaders.field.source_date')),
+                    ]),
                 ]),
                 Section::make(__('admin.leaders.section.contacts'))->collapsed()->schema([
                     TextInput::make('phone')->label(__('admin.offices.field.phone'))->tel()->maxLength(40),

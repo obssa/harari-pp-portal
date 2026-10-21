@@ -96,12 +96,14 @@ it('offers the original photos for download only when allowed', function () {
         ->assertSee(route('media.file', ['uuid' => $photo->uuid, 'name' => $photo->file_name]), escape: false);
 });
 
-it('shows Amharic albums to Harari readers and the newest album on the homepage', function () {
+it('shows Amharic albums to readers of the other languages and the newest album on the homepage', function () {
     makeGallery(['am' => ['title' => 'የናሙና ፎቶ ስብስብ', 'published' => true]], [galleryPhoto()]);
 
     $this->get('/har/gallery')->assertOk()->assertSee('የናሙና ፎቶ ስብስብ')->assertSee('lang="am"', escape: false);
     $this->get('/am')->assertSee('id="home-gallery"', escape: false)->assertSee('#photo-1', escape: false);
-    expect(collect(app(HomepageLayout::class)->forLocale('om'))->pluck('section.key.value'))->not->toContain('gallery');
+    // ADR-0063: the branch publishes in Amharic, so the other languages show its albums too.
+    expect(collect(app(HomepageLayout::class)->forLocale('om'))->pluck('section.key.value'))->toContain('gallery');
+    $this->get('/en/gallery')->assertOk()->assertSee('የናሙና ፎቶ ስብስብ')->assertSee('lang="am"', escape: false);
 });
 
 it('lists albums in the sitemaps', function () {

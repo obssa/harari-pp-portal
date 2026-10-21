@@ -1802,3 +1802,77 @@ where no long-running PHP process may run; the production host is not chosen yet
   (`PORTAL_SLOW_QUERIES_MS`) is logged with where it happened and the query that crossed the limit.
 
 **Consequences.** Moving to a VPS with Octane needs configuration only (ADR-0002 drivers plus `octane:start`).
+
+## ADR-0062 — Brand from the party logo and Harar; new public design (2026-10-21)
+
+**Context.** PLAN.md §12 left the brand colour open ("confirm the official brand guide"); the portal used
+`#3151ED`, the blue of another branch's site. The owner supplied the Prosperity Party logo (a ring from gold to
+sky blue around two hands holding three figures, in sky blue, gold and magenta, over the Amharic and English
+names) and approved a design canvas ("Harari PP Portal Design") that grounds the logo's colours in Harar's:
+the plaster and terracotta of the Jugol walls and the woven basket plates (sagaro) on the walls of Harari houses.
+
+**Decision.**
+
+- Colours (`resources/css/tokens.css`): Prosperity Blue `#0B6CA8` (primary 600, 5.6:1 on white) with night
+  blue `#083A5C` (900) for heroes and figure bands; Prosperity Gold `#F5B800` for calls to action, always with
+  ink text; Basket Magenta `#C2185B` for the Women's League and speeches; Jugol Terracotta `#B4532A` (accent)
+  for kickers, statements and Harar sections; Jugol Plaster `#F7F2E9` for warm section grounds instead of
+  grey; Ink `#14161A` for text, the top bar and the footer. Sky blue `#29A8E0` appears only in patterns. The
+  admin uses the same blue.
+- Layout: a dark top bar (both calendars, hotline, the four languages, member login), a white header with the
+  round logo, search and a gold "Join the party" button, the main menu on its own row with full-width panels
+  (native `<details name>`, no script), and an ink footer under a band woven in the logo's colours. On phones
+  and tablets the menu sits behind one "Menu" button and lists every section in full.
+- Until an editor builds a header menu in Admin → Menus, the design's sections are shown: About, News &
+  Media, Offices, Leagues, Programmes, Get involved, Resources and Contact, each pointing at the site's own
+  listings (filtered by post, office or document type where that helps). Donations appear only once they
+  are switched on.
+- Homepage sections follow the canvas: featured stories on night blue, the leader's message in a gold ring,
+  figures on night blue with coloured edges, values with plate icons, events on plaster, a Harar heritage
+  band (a wall of basket plates), league cards in blue and magenta. Post types carry their colour on badges.
+- Headings are heavier and tighter (800, negative tracking); Ethiopic keeps its smaller heading scale.
+- Favicon from the logo: the emblem (hands, figures and rays) on a white disc at 16–96 px, where the text and
+  ring cannot be read; the whole round logo for phones (`apple-touch-icon.png`), installed apps and the
+  header and footer (`public/brand/`).
+
+**Consequences.** Every page takes the new colours from the tokens. The design canvas remains the reference
+for later pages; the national party's official vector logo replaces the raster copy when the branch supplies
+it.
+
+## ADR-0063 — Content pack from public sources; the branch channel publishes (2026-10-21)
+
+**Context.** The owner asked for the site to be filled with real, current content gathered online,
+leaders and images included, and chose to publish everything at once, each item with its source, and
+to correct it in the admin afterwards. The earlier rules (docs/content/sources.md) kept imports as
+drafts and leaders unlisted until the branch confirmed them. There is no admin login or server shell
+available to the developer for loading content by hand, and the branch's news is written in Amharic.
+
+**Decision.**
+
+- `database/content/pack.json` holds the content found on 2026-10-21 in public sources (the branch's
+  Telegram channel, the regional government's channel, ENA, Fana, the election board, UNESCO, the
+  statistics service): the branch office and the nine woredas, the women's and youth wings, the
+  leaders whose positions are published, with five portraits that are captioned or attached to posts
+  about that person alone, three pages (About, History, Harar), Harari Tourism Day, the leader's
+  message and four sourced figures for the homepage, and the branch's Telegram link.
+- `php artisan content:load-pack` runs on every deploy after the migrations. It loads each record once,
+  remembered by its key in `content_pack_items`, as the first Super Admin, published; what editors
+  later change or delete is never put back. Settings and homepage sections an editor already set stay.
+- Leaders carry the public source of their position (`source_url`, `source_date`), shown on the
+  profile. A new group, "Regional government and councils", lists the region's president, deputy
+  presidents and council speakers, who are not party bodies.
+- Left out, for the branch to confirm: officers whose party posts are unclear after the October 2026
+  reshuffle (two different deputy heads are named; three officers moved to council or government
+  posts), photos that could only be inferred, and any contact details, since none are published.
+- Content sources get "Publish stories at once". It is on for the branch's own channel only: its
+  stories go live when imported, dated when they were posted, and the drafts imported before are
+  published once by the loader. The government office's stories stay drafts until it grants
+  permission to republish.
+- Posts written only in Amharic are listed on the English and Afaan Oromo pages too, marked
+  "In አማርኛ" and linking to the Amharic page, as Harari pages already did (ADR-0014,
+  `portal.content_fallbacks`).
+
+**Consequences.** The site shows real people and facts, each traceable to a public source; mistakes
+are corrected in the admin and stay corrected. Names in English are transliterations where no
+official spelling exists; the Afaan Oromo pages and terms are listed in docs/translations-review.md.
+The branch confirms the open points in docs/content/sources.md.

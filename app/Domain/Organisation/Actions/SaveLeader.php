@@ -45,9 +45,15 @@ final class SaveLeader
         }
 
         $officeId = filled($data['office_id'] ?? null) && Office::query()->whereKey($data['office_id'])->exists() ? (string) $data['office_id'] : null;
+        $source = trim((string) ($data['source_url'] ?? ''));
+        if ($source !== '' && (preg_match('#^https?://#i', $source) !== 1 || filter_var($source, FILTER_VALIDATE_URL) === false)) {
+            throw ValidationException::withMessages(['data.source_url' => __('organisation.validation.source_url')]);
+        }
+        $sourceDate = $this->date($data['source_date'] ?? null);
+
         $leagueId = filled($data['league_id'] ?? null) && League::query()->whereKey($data['league_id'])->exists() ? (string) $data['league_id'] : null;
 
-        return DB::transaction(function () use ($leader, $data, $translations, $actor, $body, $termStart, $termEnd, $officeId, $leagueId): Leader {
+        return DB::transaction(function () use ($leader, $data, $translations, $actor, $body, $termStart, $termEnd, $officeId, $leagueId, $source, $sourceDate): Leader {
             $leader->fill([
                 'body' => $body,
                 'office_id' => $officeId,
@@ -59,6 +65,8 @@ final class SaveLeader
                 'phone' => filled($data['phone'] ?? null) ? trim((string) $data['phone']) : null,
                 'email' => WriteTranslations::email($data['email'] ?? null),
                 'socials' => WriteTranslations::socials($data['socials'] ?? null, Leader::SOCIALS),
+                'source_url' => $source !== '' ? $source : null,
+                'source_date' => $sourceDate,
             ]);
             if (! $leader->exists) {
                 $leader->created_by = $actor->id;

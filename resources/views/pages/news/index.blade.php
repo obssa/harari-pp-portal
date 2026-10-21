@@ -40,7 +40,7 @@
                         >
                             {{ $shown->excerpt }}
                             <x-slot:badges>
-                                <x-ui.badge tone="primary">{{ $post->type->label() }}</x-ui.badge>
+                                <x-ui.badge :tone="$post->type->tone()">{{ $post->type->label() }}</x-ui.badge>
                                 @if ($shown->locale !== $locale)
                                     <x-ui.badge>{{ __('news.in_language', ['language' => \App\Domain\Translation\Support\Locales::nativeName($shown->locale)]) }}</x-ui.badge>
                                 @endif

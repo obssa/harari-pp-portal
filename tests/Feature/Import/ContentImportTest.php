@@ -3,8 +3,6 @@
 use App\Domain\Access\Enums\SystemRole;
 use App\Domain\Content\Enums\ContentStatus;
 use App\Domain\Content\Models\Post;
-use App\Domain\Content\Workflow\ContentWorkflow;
-use App\Domain\Content\Workflow\Transition;
 use App\Domain\Import\Actions\RunImport;
 use App\Domain\Import\Models\ContentImport;
 use App\Domain\Import\Models\ContentSource;
@@ -112,7 +110,7 @@ it('splits a message into title, summary and paragraphs and tells languages apar
         ->and(StoryText::similarity(StoryText::fingerprint(BRANCH_STORY), StoryText::fingerprint(BRANCH_STORY)))->toBe(1.0);
 });
 
-it('imports new stories as drafts with their source and photos, once', function () {
+it('imports new stories with their source and photos, once; the branch publishes its own at once', function () {
     fakeChannels();
     $report = app(RunImport::class)->handle();
 
@@ -122,7 +120,8 @@ it('imports new stories as drafts with their source and photos, once', function 
     $post = Post::query()->where('source_url', 'https://t.me/hrprosperityparty/101')->firstOrFail();
     $translation = $post->translation('en', fallback: false);
     expect($translation?->title)->toBe('Sample council meeting reviews the first quarter')
-        ->and($translation?->status)->toBe(ContentStatus::Draft)
+        ->and($translation?->status)->toBe(ContentStatus::Published)
+        ->and($translation?->published_at?->toIso8601String())->toBe('2026-10-15T10:00:00+00:00')
         ->and($post->source_name)->toBe('Prosperity Party Harari Region Branch')
         ->and($post->source_published_at?->toIso8601String())->toBe('2026-10-15T10:00:00+00:00')
         ->and($post->featuredImage?->credit)->toBe('Prosperity Party Harari Region Branch')
@@ -132,6 +131,10 @@ it('imports new stories as drafts with their source and photos, once', function 
     expect(Post::query()->where('source_url', 'https://t.me/hrprosperityparty/103')->firstOrFail()->source_locale)->toBe('om')
         ->and(ContentImport::query()->where('external_id', 'HarariGovernmentCommunication/501')->value('status'))->toBe(ContentImport::DUPLICATE)
         ->and(ContentSource::query()->where('handle', 'hrprosperityparty')->value('cursor'))->toBe(104);
+
+    // ADR-0063: the communication office's stories still wait for a person.
+    $office = Post::query()->where('source_url', 'https://t.me/HarariGovernmentCommunication/502')->firstOrFail();
+    expect($office->translations()->firstOrFail()->status)->toBe(ContentStatus::Draft);
 
     $again = app(RunImport::class)->handle();
     expect($again['hrprosperityparty']['imported'])->toBe(0)->and(Post::query()->count())->toBe(3);
@@ -191,7 +194,6 @@ it('shows the source under a published imported story', function () {
     fakeChannels();
     app(RunImport::class)->handle();
     $post = Post::query()->where('source_url', 'https://t.me/hrprosperityparty/101')->firstOrFail();
-    app(ContentWorkflow::class)->apply($post, 'en', Transition::Publish, staff(SystemRole::Publisher));
 
     $this->get('/en/news/'.$post->translation('en')?->slug)
         ->assertOk()
@@ -207,6 +209,7 @@ it('recognises Harari text in Ethiopic script', function () {
 
 it('publishes imported drafts on request, moving Harari stories and leaving chosen ones as drafts', function () {
     staff(SystemRole::SuperAdmin);
+    ContentSource::query()->update(['auto_publish' => false]);
     fakeChannels(branch: telegramPage('hrprosperityparty', [
         ['id' => 301, 'at' => '2026-10-15T10:00:00+00:00', 'text' => "የናሙና ዜና ርዕስ\n\nየናሙና ዜና ጽሑፍ።"],
         ['id' => 302, 'at' => '2026-10-15T10:00:05+00:00', 'photos' => ['https://cdn4.telesco.pe/file/one.jpg']],

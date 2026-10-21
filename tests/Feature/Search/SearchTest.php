@@ -62,12 +62,12 @@ it('finds Amharic text typed in Latin letters', function () {
     $this->get('/am/search?q=medemer')->assertOk()->assertSee('መደመር እና ልማት');
 });
 
-it('only finds what is published in the reader’s languages, Amharic included for Harari', function () {
+it('only finds what is published, Amharic included for the other languages', function () {
     searchPost(['en' => ['title' => 'Sample draft budget']], []);
     searchPost(['am' => ['title' => 'የበጀት ውይይት ናሙና']], ['am']);
 
     $this->get('/en/search?q=budget')->assertOk()->assertSee(__('search.none', ['query' => 'budget'], 'en'));
-    $this->get('/om/search?q='.urlencode('በጀት'))->assertDontSee('የበጀት ውይይት ናሙና');
+    $this->get('/om/search?q='.urlencode('በጀት'))->assertSee('የበጀት ውይይት ናሙና')->assertSee('lang="am"', escape: false);
     $this->get('/har/search?q='.urlencode('በጀት'))->assertSee('የበጀት ውይይት ናሙና')->assertSee('lang="am"', escape: false);
 });
 

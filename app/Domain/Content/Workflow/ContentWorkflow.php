@@ -159,6 +159,33 @@ final class ContentWorkflow
         return $published;
     }
 
+    /**
+     * Publishes a story imported from a channel trusted to publish
+     * (ADR-0063), dated when the channel posted it. No person acts, as with
+     * scheduled posts.
+     */
+    public function publishImported(Post $post, PostTranslation $translation, DateTimeInterface $postedAt): bool
+    {
+        if ($translation->status !== ContentStatus::Draft) {
+            return false;
+        }
+
+        $translation->status = ContentStatus::Published;
+        $translation->published_at = CarbonImmutable::instance($postedAt);
+        $translation->save();
+        $this->revisions->handle($post, $translation, Transition::Publish->label());
+
+        activity('workflow')
+            ->performedOn($post)
+            ->event('auto_publish')
+            ->withProperties(['locale' => $translation->locale, 'from' => 'draft', 'to' => 'published'])
+            ->log('post.published');
+
+        ContentTransitioned::dispatch($post, $translation, Transition::Publish, null, null);
+
+        return true;
+    }
+
     private function permitted(Post $post, Transition $transition, User $actor): bool
     {
         if (! $actor->can('update', $post)) {

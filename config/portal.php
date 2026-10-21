@@ -32,8 +32,12 @@ return [
     /*
     | Posts written in these languages stand in on listing pages when a post
     | has no translation of its own (shown with their real language marked).
+    | The branch writes its news in Amharic, so every language lists it until
+    | staff translate a story (ADR-0063).
     */
     'content_fallbacks' => [
+        'en' => ['am'],
+        'om' => ['am'],
         'har' => ['am'],
     ],
 

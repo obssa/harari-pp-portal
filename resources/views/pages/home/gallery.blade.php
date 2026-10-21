@@ -1,7 +1,7 @@
 <section aria-labelledby="home-gallery" class="mx-auto max-w-page px-4 py-12 sm:px-6">
     <div class="flex flex-wrap items-baseline justify-between gap-2">
         <h2 id="home-gallery" class="heading-2">{{ $section->heading() }}</h2>
-        <a href="{{ route('gallery.index') }}" class="text-sm text-link underline-offset-4 hover:underline">{{ __('gallery.all') }}</a>
+        <a href="{{ route('gallery.index') }}" class="font-bold text-link underline-offset-4 hover:underline">{{ __('gallery.all') }}</a>
     </div>
     <p class="mt-2 text-ink-muted" lang="{{ $data['translation']->locale }}">
         <a href="{{ route('gallery.show', ['locale' => $data['translation']->locale, 'slug' => $data['translation']->slug]) }}" class="font-medium text-ink underline-offset-4 hover:underline">{{ $data['translation']->getAttribute('title') }}</a>

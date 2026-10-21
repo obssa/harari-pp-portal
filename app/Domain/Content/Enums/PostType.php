@@ -18,6 +18,18 @@ enum PostType: string
         return __("content.post_type.{$this->value}", [], $locale);
     }
 
+    /** The badge colour of the type on cards and pages (ADR-0062). */
+    public function tone(): string
+    {
+        return match ($this) {
+            self::News => 'primary',
+            self::PressRelease => 'ink',
+            self::Statement => 'accent',
+            self::Speech => 'magenta',
+            self::Announcement => 'gold',
+        };
+    }
+
     /**
      * @return array<string, string>
      */

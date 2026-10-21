@@ -168,10 +168,11 @@ it('lists live news in the language asked for, with fallback, filters and pages'
     $this->getJson('/api/v1/posts?lang=en', ['X-Api-Key' => $key])
         ->assertOk()
         ->assertJsonPath('meta.lang', 'en')
-        ->assertJsonPath('meta.total', 2)
+        ->assertJsonPath('meta.total', 3)
         ->assertJsonFragment(['title' => 'Sample live news', 'excerpt' => 'Sample summary', 'lang' => 'en'])
         ->assertJsonMissing(['title' => 'Sample draft news'])
-        ->assertJsonMissing(['title' => 'የናሙና ዜና']);
+        // ADR-0063: the branch writes in Amharic, so English lists its stories too, marked as Amharic.
+        ->assertJsonFragment(['title' => 'የናሙና ዜና', 'lang' => 'am']);
 
     $this->getJson('/api/v1/posts?lang=en&type=statement', ['X-Api-Key' => $key])
         ->assertJsonPath('meta.total', 1)
@@ -189,7 +190,7 @@ it('lists live news in the language asked for, with fallback, filters and pages'
     $this->getJson('/api/v1/posts?lang=en&per_page=1&page=2', ['X-Api-Key' => $key])
         ->assertJsonPath('meta.per_page', 1)
         ->assertJsonPath('meta.page', 2)
-        ->assertJsonPath('meta.last_page', 2)
+        ->assertJsonPath('meta.last_page', 3)
         ->assertJsonCount(1, 'data');
 
     $this->getJson('/api/v1/posts?per_page=500', ['X-Api-Key' => $key])

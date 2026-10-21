@@ -69,3 +69,13 @@ Drafts for the branch office's legal reviewers; the English text is the referenc
 | draft for legal review | ለሕግ ግምገማ የቀረበ ረቂቅ | wixinee gamaaggama seeraaf dhiyaate | |
 | accessibility statement | የተደራሽነት መግለጫ | ibsa dhaqqabummaa | |
 
+## Menu and content pack (redesign, ADR-0062 and ADR-0063)
+
+| Keys or text | Languages | Context | Doubts |
+|---|---|---|---|
+| `nav.*` | am, om | main menu sections and hints | "Resources" (የመረጃ ማዕከል / Kuusaa odeeffannoo); "Programmes" (ፕሮግራሞች / Pirogiraamota, since Sagantaalee already means events); "sector offices" (Waajjiraalee kutaa hojii) |
+| `organisation.leader_body.government`, `leaders.source` | am, om | leadership page | "councils" (ምክር ቤቶች / mana mareewwan) |
+| `import.source.*.auto_publish` | am, om | content sources admin | "publish at once" (ወዲያውኑ አትም / battaluma maxxansi) |
+| Pack pages About, History, Harar (`database/content/pack.json`) | om | written for the pack, not translated by a native speaker | "wing" of the party (Kutaa Dubartootaa / Kutaa Dargaggootaa); "speaker" (afyaa'ii); woreda names other than Soofii and Dirree Xiyyaaraa kept in their English form; EPRDF as ADWUI |
+| Pack leader names | en | transliterations where no official English spelling exists | Getu Weyesa, Dinir Yusuf, Seifu Getachew (also written ሴይፉ), Ayele Tesfaye, Hassen Abdi, Zinet Yusuf, Tuna Ibrahim, Muhyedin Ahmed, Amina Abdukerim |
+

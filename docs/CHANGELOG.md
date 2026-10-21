@@ -4,6 +4,30 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Real content from public sources (2026-10-21)
+
+- A content pack loaded on each deploy, once per record (ADR-0063): the branch office and nine woredas,
+  the women's and youth wings, 14 leaders with their sources and five portraits, the About, History and
+  Harar pages, Harari Tourism Day, the leader's message and sourced figures on the homepage.
+- Leaders show where their position was published; a "Regional government and councils" group.
+- The branch's own Telegram channel publishes its stories when imported, with their original dates;
+  earlier imported drafts are published once.
+- Amharic-only news is listed on the English and Afaan Oromo pages, marked "In አማርኛ".
+- The About menu section lists the published About page and its pages.
+
+### New public design and brand (2026-10-21)
+
+- Colours from the party logo and Harar (ADR-0062): Prosperity Blue, gold for calls to action, basket
+  magenta, Jugol terracotta and plaster; the admin uses the same blue.
+- New header with a dark top bar (date in both calendars, hotline, languages, member login), the round
+  logo, search and a gold "Join the party" button; the main menu opens full-width panels and collapses
+  behind a "Menu" button on phones.
+- A full default main menu (About, News & Media, Offices, Leagues, Programmes, Get involved, Resources,
+  Contact) until an editor builds one.
+- Homepage sections redrawn: featured stories on night blue with a basket-plate pattern, the leader's
+  message, figures, values, a Harar heritage band, league cards; post types carry their colour on badges.
+- Favicon and app icons made from the party logo.
+
 ## v0.8.0 — Phase 8 complete: extensions (2026-10-21)
 
 - Admin manual chapter 7, extensions, in English and Amharic with screenshots.

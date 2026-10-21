@@ -60,6 +60,7 @@ class ContentSourceResource extends Resource
                 ->options(collect(Locales::all())->mapWithKeys(fn (string $l): array => [$l => Locales::nativeName($l)])->all())
                 ->required(),
             Toggle::make('enabled')->label(__('import.source.field.enabled')),
+            Toggle::make('auto_publish')->label(__('import.source.field.auto_publish'))->helperText(__('import.source.help.auto_publish')),
         ]);
     }
 
@@ -78,6 +79,7 @@ class ContentSourceResource extends Resource
                     ->formatStateUsing(fn (int $state): string => $state === 1 ? __('import.source.primary') : __('import.source.secondary'))
                     ->badge(),
                 IconColumn::make('enabled')->label(__('import.source.field.enabled'))->boolean(),
+                IconColumn::make('auto_publish')->label(__('import.source.field.auto_publish'))->boolean(),
                 TextColumn::make('imported_count')->label(__('import.source.field.imported'))->numeric(),
                 TextColumn::make('last_fetched_at')->label(__('import.source.field.last_fetched_at'))
                     ->formatStateUsing(CalendarDate::format(withTime: true))->placeholder('—'),

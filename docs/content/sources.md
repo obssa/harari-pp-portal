@@ -49,15 +49,17 @@ National League / Harari People's Democratic Party.
 
 1. Every imported item keeps its source: channel, post link and original date. Public pages show
    "Source: …" with the link.
-2. Imported items arrive as drafts; staff review, correct and publish them. Nothing is published
-   automatically.
+2. Imported items arrive as drafts; staff review, correct and publish them. Since ADR-0063 the
+   branch's own channel is trusted to publish: its stories go live when imported, dated when posted.
+   Stories from the government office stay drafts.
 3. Text is taken as written (mostly Amharic) and translated by staff following
    `docs/translations-review.md`; machine translation is only a draft.
 4. Photos are downloaded once, cleaned like any upload (ADR-0009) and credited to the source.
    Telegram image links expire, so the post link is the citation.
 5. The office republishes branch stories: import the branch version and skip duplicates.
-6. Names and titles of officials are copied exactly from the source post, never guessed. Leadership
-   pages use only names confirmed by the branch.
+6. Names and titles of officials are copied exactly from the source post, never guessed. Since
+   ADR-0063 the leadership pages list the people whose positions are published in public sources,
+   each with its source; the branch corrects them in the admin.
 
 ## Open questions for the branch (add to PLAN.md §14 inputs)
 
@@ -67,3 +69,21 @@ National League / Harari People's Democratic Party.
 3. The branch's official name in Afaan Oromo and Harari; contact address, phone, email and office hours
    (only unverified snippets were found).
 4. The current leadership list with titles after the October 2026 government formation.
+
+## Content pack (ADR-0063)
+
+`database/content/pack.json` was compiled on 2026-10-21 from the sources above and from ENA, Fana,
+Birr Metrics, the election board (NEBE), UNESCO and the statistics service; every leader and page
+carries its links. Points left for the branch to confirm:
+
+1. The deputy head of the branch office: branch posts of March-April 2026 name Abdulhakim Umer; a
+   government post of 9 October 2026 names Abdulhakim Abdumalik, who ENA reported on 2 October as the
+   president's adviser. Neither is listed.
+2. Whether Jafer Sufian (organisation sector), Mustefa Ilyas (youth wing) and Hailegiorgis Megersa
+   (strategy and ICT) keep their party posts after their council and government appointments of
+   2 October 2026. Not listed; the youth wing shows no head.
+3. Photos for the other leaders; portraits of Arif Mohamed and Muhyedin Ahmed could only be inferred
+   from group photos and were left out.
+4. The office's address, phone, email and hours (none are published) and its official English name.
+5. English spellings of names, which are transliterations where no official form was found.
+
