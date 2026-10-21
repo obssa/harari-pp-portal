@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Domain\Membership\Actions\ImportMembers;
+use App\Domain\Membership\Actions\SignInMember;
 use App\Domain\Membership\Enums\ApplicationStatus;
 use App\Domain\Membership\Models\MembershipApplication;
 use App\Domain\Membership\Models\PersonNote;
@@ -42,6 +43,7 @@ final class PurgeApplicationsCommand extends Command
 
         $imports = ImportMembers::purgeStale();
         $volunteers = $this->purgeVolunteers($now);
+        SignInMember::purge();
 
         $this->components->info("Unfinished applications deleted: {$unfinished}; closed applications deleted: {$closed}; stale roll imports discarded: {$imports}; old volunteer sign-ups deleted: {$volunteers}");
 

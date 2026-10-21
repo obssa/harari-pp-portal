@@ -25,7 +25,8 @@ return [
      * You can specify an auth driver here that gets user models.
      * If this is null we'll use the current Laravel auth driver.
      */
-    'default_auth_driver' => null,
+    // Only staff are recorded as the one who made a change; members signed in to the portal never are (ADR-0049).
+    'default_auth_driver' => 'web',
 
     /*
      * If set to true, the subject returns soft deleted models.

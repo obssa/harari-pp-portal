@@ -67,6 +67,8 @@ final class SaveDocument
                 'deadline_at' => $type->isNotice() ? $this->time($data['deadline_at'] ?? null) : null,
                 'office_id' => filled($data['office_id'] ?? null) && Office::query()->whereKey($data['office_id'])->exists() ? (string) $data['office_id'] : null,
                 'league_id' => filled($data['league_id'] ?? null) && League::query()->whereKey($data['league_id'])->exists() ? (string) $data['league_id'] : null,
+                // ADR-0049: members-only documents are listed and served in the member portal only.
+                'access' => ($data['access'] ?? null) === Document::ACCESS_MEMBERS ? Document::ACCESS_MEMBERS : Document::ACCESS_PUBLIC,
             ]);
             if (! $document->exists) {
                 $document->created_by = $actor->id;

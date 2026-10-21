@@ -4,6 +4,14 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 6, step 6.6 — member portal (2026-10-21)
+
+- `/{language}/member`: members sign in with a code by SMS and see their membership, a printable card with a QR
+  code anyone can check, their details with correction requests, their event registrations and members-only
+  documents (ADR-0049).
+- Documents can be marked "members only"; their files are never served at the public address.
+- Officers get a notice when a member asks for a correction.
+
 ### Phase 6, step 6.5 — volunteers (2026-10-21)
 
 - `/{language}/volunteer`: sign up with skills, availability and languages; the Get Involved page links to it

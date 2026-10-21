@@ -1442,3 +1442,34 @@ availability and languages, assignments to events and an hours log.
 
 **Consequences.** Sign-ups are not verified; coordinators confirm by calling. The same person can sign up
 twice; the member link and the phone column show it.
+
+## ADR-0049 — Member portal (2026-10-21)
+
+**Context.** PLAN.md §4 promises members a portal: sign-in with phone and a one-time code (no passwords), their
+profile with change requests, a membership card with a QR code that verifies the member number, their event
+registrations and members-only documents. Members are not staff: they have no admin account.
+
+**Decision.**
+
+- A separate `member` guard on the member records. `/{language}/member/sign-in` takes the mobile number on the
+  record; if it belongs to an active or lapsed member, a six-digit code goes by SMS at once (ten minutes, five
+  tries, a new one after a minute, five a day per number). The page never says whether the number is a
+  member's. Members are never remembered on a device; sessions end after 30 minutes without activity; every
+  portal page is private, never stored and not indexed. Sign-ins are in the audit log; the audit log records
+  only staff as the person who made a change.
+- The overview shows the member number, status, joining and renewal dates, with a notice when the renewal is
+  near or the membership has lapsed.
+- The card is a printable page with the party name, the member's name, number, woreda, joining date, validity
+  and a QR code. The code opens `/{language}/verify/{number}/{check}`; the check is a keyed signature of the
+  number, so numbers cannot be tried one by one. The check page shows only the number, initials, woreda,
+  validity and whether the membership is in good standing (active or lapsed with a future due date).
+- "My details" shows the record with the ID number masked. Corrections are requests, not edits: they go into
+  the member's history and to the woreda's officers (notice kind "Member corrections"), who update the record;
+  three requests a day at most.
+- "My events" lists event registrations made with the member's phone or email, with their ticket links.
+- Documents can now be marked "members only" in the admin. They are listed and downloaded only in the portal;
+  their files are refused at the public media address, in every language and earlier version.
+- Sign-in codes older than a day are deleted.
+
+**Consequences.** Without an SMS gateway (staging) codes go to the SMS log, so only staff can try the portal
+there. A member without a phone on file cannot sign in until an officer adds one.

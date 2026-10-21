@@ -6,6 +6,8 @@ use App\Domain\Content\Concerns\BelongsToSite;
 use App\Domain\Membership\Enums\MemberStatus;
 use App\Domain\Organisation\Models\Office;
 use Carbon\CarbonImmutable;
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -53,8 +55,9 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property-read ?Office $basicOrganisation
  * @property-read ?MembershipApplication $application
  */
-class Member extends Model
+class Member extends Model implements AuthenticatableContract
 {
+    use Authenticatable;
     use BelongsToSite;
     use HasUlids;
     use LogsActivity;
@@ -64,6 +67,9 @@ class Member extends Model
     public const SOURCE_IMPORT = 'import';
 
     public const SOURCE_MANUAL = 'manual';
+
+    /** Statuses that may sign in to the member portal. */
+    public const PORTAL_STATUSES = [MemberStatus::Active, MemberStatus::Lapsed];
 
     /** Months between renewals (open question 4). */
     public const RENEWAL_MONTHS = 12;
@@ -113,6 +119,37 @@ class Member extends Model
         DB::table('sequences')->where('name', 'member_no')->update(['value' => $next]);
 
         return 'HPP-'.str_pad((string) $next, 6, '0', STR_PAD_LEFT);
+    }
+
+    /** Members sign in with a code by SMS, never a password (ADR-0049). */
+    public function getAuthPassword(): string
+    {
+        return '';
+    }
+
+    /** ...and are never remembered on a device. */
+    public function getRememberTokenName(): string
+    {
+        return '';
+    }
+
+    public function canUsePortal(): bool
+    {
+        return $this->erased_at === null && in_array($this->status, self::PORTAL_STATUSES, true);
+    }
+
+    /**
+     * The check printed on the card's QR code (ADR-0049): the number alone does
+     * not open the verification page, so numbers cannot be tried one by one.
+     */
+    public static function cardSignature(string $memberNo): string
+    {
+        return substr(hash_hmac('sha256', 'member-card:'.$memberNo, (string) config('app.key')), 0, 16);
+    }
+
+    public function cardUrl(?string $locale = null): string
+    {
+        return route('member.verify', ['locale' => $locale ?? app()->getLocale(), 'number' => $this->member_no, 'check' => self::cardSignature($this->member_no)]);
     }
 
     /**

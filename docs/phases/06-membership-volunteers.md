@@ -18,7 +18,7 @@ applications (clearly labelled); real ones need the branch office and an SMS gat
 | 6.3 | Members directory: member number, office, basic organisation, status, joined and renewed dates, renewal due and reminders, notes and timeline, masked lists, export with `members.export`; privacy search, export and erasure (ADR-0041) extended to applications, members and volunteers | done |
 | 6.4 | Import of existing membership rolls from Excel or CSV: column mapping, dry run with errors and duplicates, apply, roll back | done |
 | 6.5 | Volunteers: public sign-up with skills, availability and languages; admin list, assignments to events, hours log | done |
-| 6.6 | Member portal: sign-in with phone and a one-time code (no passwords), own profile with change requests, membership card (printable, with a QR code that verifies the member number), own event registrations, members-only documents | |
+| 6.6 | Member portal: sign-in with phone and a one-time code (no passwords), own profile with change requests, membership card (printable, with a QR code that verifies the member number), own event registrations, members-only documents | done |
 | 6.7 | People dashboard and reports: applications funnel, member growth by office, sex and age band (aggregated, no personal data), volunteers and hours; membership report in the report builder | |
 | 6.8 | Manual chapter, sample applications on staging, phase report | |
 

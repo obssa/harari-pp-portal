@@ -100,6 +100,9 @@ class DocumentResource extends Resource
                     Select::make('league_id')->label(__('admin.leaders.field.league'))
                         ->options(fn (): array => League::query()->with('translations')->orderBy('sort')->get()
                             ->mapWithKeys(fn (League $l): array => [$l->id => $l->name()])->all()),
+                    Select::make('access')->label(__('documents.admin.field.access'))->required()->default(Document::ACCESS_PUBLIC)
+                        ->options([Document::ACCESS_PUBLIC => __('documents.admin.access.public'), Document::ACCESS_MEMBERS => __('documents.admin.access.members')])
+                        ->helperText(__('documents.admin.help.access')),
                     Select::make('related')->label(__('documents.admin.field.related'))->multiple()->searchable()
                         ->maxItems(8)
                         ->options(fn (?Document $record): array => Document::query()->with('translations')
@@ -121,6 +124,9 @@ class DocumentResource extends Resource
                     ->state(fn (Document $record): string => $record->title())->wrap(),
                 TextColumn::make('type')->label(__('documents.admin.field.type'))->badge()
                     ->formatStateUsing(fn (DocumentType $state): string => $state->label()),
+                TextColumn::make('access')->label(__('documents.admin.field.access'))->badge()
+                    ->formatStateUsing(fn (string $state): string => __("documents.admin.access.{$state}"))
+                    ->color(fn (string $state): string => $state === Document::ACCESS_MEMBERS ? 'warning' : 'gray'),
                 TextColumn::make('year')->label(__('documents.admin.field.year'))->placeholder('—')->sortable(),
                 TextColumn::make('deadline_at')->label(__('documents.admin.field.deadline_at'))
                     ->formatStateUsing(CalendarDate::format(withTime: true))->placeholder('—')->sortable()->toggleable(),

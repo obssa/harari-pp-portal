@@ -116,7 +116,20 @@ class Document extends Model implements TranslatableModel
     }
 
     /**
-     * Only what the public may see: members-only documents wait for the member portal.
+     * Whether a library file belongs to a members-only document (ADR-0049), in
+     * any language or earlier version; such files are served only in the member
+     * portal.
+     */
+    public static function isMembersOnlyFile(int $mediaId): bool
+    {
+        $members = fn ($query) => $query->where('access', self::ACCESS_MEMBERS);
+
+        return DocumentTranslation::query()->where('file_id', $mediaId)->whereHas('document', $members)->exists()
+            || DocumentVersion::query()->where('media_id', $mediaId)->whereHas('document', $members)->exists();
+    }
+
+    /**
+     * Only what the public may see: members-only documents are in the member portal (ADR-0049).
      *
      * @param  Builder<static>  $query
      * @return Builder<static>

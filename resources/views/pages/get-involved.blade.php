@@ -50,6 +50,7 @@
                 <p class="mt-auto flex flex-wrap gap-x-4 pt-4 text-sm font-semibold">
                     <a href="{{ route('membership.apply') }}" class="text-link underline-offset-4 hover:underline">{{ __('membership.apply.link') }}</a>
                     <a href="{{ route('membership.status') }}" class="text-link underline-offset-4 hover:underline">{{ __('membership.status.link') }}</a>
+                    <a href="{{ route('member.sign-in') }}" class="text-link underline-offset-4 hover:underline">{{ __('members.portal.link') }}</a>
                 </p>
             </li>
 

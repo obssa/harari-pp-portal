@@ -11,6 +11,7 @@ use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\LeaderController;
 use App\Http\Controllers\Public\LeagueController;
 use App\Http\Controllers\Public\MediaFileController;
+use App\Http\Controllers\Public\MemberPortalController;
 use App\Http\Controllers\Public\MembershipController;
 use App\Http\Controllers\Public\NewsController;
 use App\Http\Controllers\Public\OfficeController;
@@ -28,6 +29,7 @@ use App\Http\Controllers\Public\StructureController;
 use App\Http\Controllers\Public\VideoController;
 use App\Http\Controllers\Public\VolunteerController;
 use App\Http\Middleware\CachePublicPages;
+use App\Http\Middleware\EnsureMemberSignedIn;
 use App\Http\Middleware\NoStore;
 use App\Http\Middleware\OutsideProductionOnly;
 use App\Http\Middleware\SetLocale;
@@ -111,6 +113,24 @@ Route::prefix('{locale}')
         Route::get('volunteer', [VolunteerController::class, 'create'])->middleware(NoStore::class)->name('volunteer.create');
         Route::post('volunteer', [VolunteerController::class, 'store'])->middleware('throttle:forms')->name('volunteer.store');
         Route::get('volunteer/thanks', [VolunteerController::class, 'thanks'])->middleware(NoStore::class)->name('volunteer.thanks');
+
+        // ADR-0049: the member portal, signed in with a code by SMS; the card check is public.
+        Route::get('member/sign-in', [MemberPortalController::class, 'signIn'])->middleware(NoStore::class)->name('member.sign-in');
+        Route::post('member/sign-in', [MemberPortalController::class, 'sendCode'])->middleware('throttle:membership')->name('member.send-code');
+        Route::get('member/code', [MemberPortalController::class, 'code'])->middleware(NoStore::class)->name('member.code');
+        Route::post('member/code', [MemberPortalController::class, 'verify'])->middleware('throttle:membership')->name('member.verify-code');
+        Route::post('member/sign-out', [MemberPortalController::class, 'signOut'])->name('member.sign-out');
+        Route::middleware([EnsureMemberSignedIn::class, NoStore::class])->group(function (): void {
+            Route::get('member', [MemberPortalController::class, 'home'])->name('member.home');
+            Route::get('member/card', [MemberPortalController::class, 'card'])->name('member.card');
+            Route::get('member/profile', [MemberPortalController::class, 'profile'])->name('member.profile');
+            Route::post('member/profile', [MemberPortalController::class, 'requestChange'])->middleware('throttle:forms')->name('member.request');
+            Route::get('member/events', [MemberPortalController::class, 'events'])->name('member.events');
+            Route::get('member/documents', [MemberPortalController::class, 'documents'])->name('member.documents');
+            Route::get('member/documents/{slug}/download', [MemberPortalController::class, 'download'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('member.download');
+        });
+        Route::get('verify/{number}/{check}', [MemberPortalController::class, 'verifyCard'])
+            ->where(['number' => 'HPP-[0-9]{6}', 'check' => '[0-9a-f]{16}'])->middleware(['throttle:search', NoStore::class])->name('member.verify');
     });
 
 // Every public page lives under its language: /en, /am, /om, /har (PLAN.md §3).
