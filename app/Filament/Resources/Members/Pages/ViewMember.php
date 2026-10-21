@@ -65,6 +65,17 @@ class ViewMember extends ViewRecord
                     app(ManageMember::class)->note($this->member(), (string) $data['body'], CurrentUser::get());
                     Notification::make()->success()->title(__('membership.admin.noted'))->send();
                 }),
+            Action::make('signOutApps')
+                ->label(__('members.admin.sign_out_apps'))
+                ->icon(Heroicon::OutlinedDevicePhoneMobile)
+                ->color('gray')
+                ->visible(fn (): bool => $canUpdate() && $this->member()->appTokens()->exists())
+                ->requiresConfirmation()
+                ->modalDescription(fn (): string => __('members.admin.sign_out_apps_help', ['count' => $this->member()->appTokens()->count()]))
+                ->action(function (): void {
+                    app(ManageMember::class)->signOutApps($this->member(), CurrentUser::get());
+                    Notification::make()->success()->title(__('members.admin.apps_signed_out'))->send();
+                }),
             Action::make('reveal')
                 ->label(__('membership.admin.reveal'))
                 ->icon(Heroicon::OutlinedEye)

@@ -21,6 +21,13 @@ final class ApiCacheHeaders
             return $response;
         }
 
+        // A member's own data is never kept anywhere (ADR-0057).
+        if ($request->attributes->has('member')) {
+            $response->headers->set('Cache-Control', 'private, no-store');
+
+            return $response;
+        }
+
         $response->setEtag(hash('xxh128', (string) $response->getContent()));
         $response->setPrivate();
         $response->setMaxAge((int) config('portal.api.max_age'));

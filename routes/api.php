@@ -5,11 +5,13 @@ use App\Http\Controllers\Api\V1\ContentController;
 use App\Http\Controllers\Api\V1\DirectoryController;
 use App\Http\Controllers\Api\V1\DocumentController;
 use App\Http\Controllers\Api\V1\EventController;
+use App\Http\Controllers\Api\V1\MemberController;
 use App\Http\Controllers\Api\V1\OpenApiController;
 use App\Http\Controllers\Api\V1\ProjectController;
 use App\Http\Controllers\Api\V1\SearchController;
 use App\Http\Middleware\ApiCacheHeaders;
 use App\Http\Middleware\AuthenticateApiKey;
+use App\Http\Middleware\AuthenticateMemberToken;
 use App\Http\Middleware\SetApiLanguage;
 use Illuminate\Support\Facades\Route;
 
@@ -55,5 +57,19 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
 
     $scoped(ApiScope::Search)->group(function () {
         Route::get('search', SearchController::class)->name('search');
+    });
+
+    // The member app (ADR-0057): sign-in by SMS code, then the member's token.
+    $scoped(ApiScope::Members)->prefix('member')->name('member.')->group(function () use ($key) {
+        Route::post('sign-in', [MemberController::class, 'requestCode'])->middleware('throttle:membership')->name('sign-in');
+        Route::post('token', [MemberController::class, 'token'])->middleware('throttle:membership')->name('token');
+
+        Route::middleware(AuthenticateMemberToken::class)->group(function () use ($key) {
+            Route::get('me', [MemberController::class, 'me'])->name('me');
+            Route::get('registrations', [MemberController::class, 'registrations'])->name('registrations');
+            Route::get('documents', [MemberController::class, 'documents'])->name('documents');
+            Route::get('documents/{key}/download', [MemberController::class, 'download'])->where('key', $key)->name('documents.download');
+            Route::delete('token', [MemberController::class, 'signOut'])->name('sign-out');
+        });
     });
 });

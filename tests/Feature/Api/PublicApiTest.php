@@ -80,15 +80,18 @@ it('describes every endpoint in the OpenAPI document, readable without a key', f
         ->json();
 
     $routes = collect(Route::getRoutes()->getRoutes())
-        ->filter(fn ($route): bool => str_starts_with((string) $route->getName(), 'api.v1.') && $route->getName() !== 'api.v1.openapi')
-        ->map(fn ($route): string => '/'.preg_replace('#^api/v1/#', '', $route->uri()))
-        ->values()->all();
+        ->filter(fn ($route): bool => str_starts_with((string) $route->getName(), 'api.v1.') && $route->getName() !== 'api.v1.openapi');
 
     expect($routes)->not->toBeEmpty();
-    foreach ($routes as $path) {
-        expect($document['paths'])->toHaveKey($path);
+    $paths = [];
+    foreach ($routes as $route) {
+        $path = '/'.preg_replace('#^api/v1/#', '', $route->uri());
+        $method = strtolower((string) collect($route->methods())->reject(fn (string $m): bool => $m === 'HEAD')->first());
+        expect($document['paths'])->toHaveKey($path)
+            ->and($document['paths'][$path])->toHaveKey($method);
+        $paths[$path] = true;
     }
-    expect(array_keys($document['paths']))->toHaveCount(count($routes));
+    expect(array_keys($document['paths']))->toHaveCount(count($paths));
 });
 
 it('refuses requests without a usable key and stops an address that keeps guessing', function () {
@@ -176,10 +179,12 @@ it('lists live news in the language asked for, with fallback, filters and pages'
         ->assertJsonPath('data.0.type', 'statement');
 
     // Harari readers get Amharic, marked as such.
-    $this->getJson('/api/v1/posts?lang=har', ['X-Api-Key' => $key])
+    $harari = $this->getJson('/api/v1/posts?lang=har', ['X-Api-Key' => $key])
         ->assertJsonPath('meta.lang', 'har')
         ->assertJsonPath('data.0.title', 'የናሙና ዜና')
         ->assertJsonPath('data.0.lang', 'am');
+    // Ethiopic and addresses as they are, not escaped.
+    expect((string) $harari->getContent())->toContain('"title":"የናሙና ዜና"')->not->toContain('\/');
 
     $this->getJson('/api/v1/posts?lang=en&per_page=1&page=2', ['X-Api-Key' => $key])
         ->assertJsonPath('meta.per_page', 1)

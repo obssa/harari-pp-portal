@@ -14,8 +14,10 @@ use App\Domain\Content\Support\BodyRenderer;
 use App\Domain\Documents\Models\Document;
 use App\Domain\Documents\Models\DocumentTranslation;
 use App\Domain\Events\Models\Event;
+use App\Domain\Events\Models\EventRegistration;
 use App\Domain\Events\Models\EventTranslation;
 use App\Domain\Media\Models\Media;
+use App\Domain\Membership\Models\Member;
 use App\Domain\Organisation\Models\Leader;
 use App\Domain\Organisation\Models\LeaderTranslation;
 use App\Domain\Organisation\Models\Office;
@@ -25,6 +27,7 @@ use App\Domain\Projects\Models\Project;
 use App\Domain\Projects\Models\ProjectTranslation;
 use App\Domain\Translation\Support\Locales;
 use App\Services\Calendar\EthiopianCalendar;
+use Carbon\CarbonImmutable;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 
@@ -298,6 +301,68 @@ final class ApiPresenter
         }
 
         return $data;
+    }
+
+    /**
+     * A member's own details and card (member API, ADR-0057).
+     *
+     * @return array<string, mixed>
+     */
+    public function member(Member $member, string $locale): array
+    {
+        $due = $member->renewal_due_on;
+
+        return [
+            'id' => $member->id,
+            'member_no' => $member->member_no,
+            'name' => $member->name,
+            'status' => $member->status->value,
+            'status_label' => $member->status->label(),
+            'woreda' => $member->woreda !== null ? ['id' => $member->woreda->id, 'name' => $member->woreda->name($locale)] : null,
+            'kebele' => $member->kebele !== null ? ['id' => $member->kebele->id, 'name' => $member->kebele->name($locale)] : null,
+            'phone' => $member->phone,
+            'email' => $member->email,
+            'joined_on' => $member->joined_on->toDateString(),
+            'renewal_due_on' => $due?->toDateString(),
+            'renewal_due_soon' => $due !== null && $due->lessThanOrEqualTo(CarbonImmutable::today()->addDays((int) config('portal.membership_reminder_days'))),
+            'card' => [
+                'number' => $member->member_no,
+                'valid' => $member->canUsePortal() && $due?->isFuture() !== false,
+                'valid_until' => $due?->toDateString(),
+                'valid_until_ethiopian' => $this->ethiopian($due, $locale),
+                'verify_url' => $member->cardUrl($locale),
+            ],
+        ];
+    }
+
+    /**
+     * One of the member's event registrations, with its ticket.
+     *
+     * @return array<string, mixed>
+     */
+    public function registration(EventRegistration $registration, string $locale): array
+    {
+        $event = $registration->event;
+        $shown = PublicDirectory::shown($event, $locale);
+
+        return [
+            'id' => $registration->id,
+            'status' => $registration->status->value,
+            'status_label' => $registration->status->label(),
+            'registered_at' => $this->time($registration->created_at),
+            'checked_in_at' => $this->time($registration->checked_in_at),
+            'cancelled_at' => $this->time($registration->cancelled_at),
+            'ticket_url' => route('events.ticket', ['locale' => $registration->locale, 'token' => $registration->token]),
+            'event' => [
+                'id' => $event->id,
+                'title' => $shown instanceof EventTranslation ? $shown->title : $event->title($locale),
+                'starts_at' => $this->time($event->starts_at),
+                'ends_at' => $this->time($event->ends_at),
+                'all_day' => $event->all_day,
+                'venue' => $shown instanceof EventTranslation ? $shown->venue : null,
+                'url' => $shown instanceof EventTranslation ? route('events.show', ['locale' => $shown->locale, 'slug' => $shown->slug]) : null,
+            ],
+        ];
     }
 
     /**

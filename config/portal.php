@@ -150,7 +150,8 @@ return [
 
     /*
     | Public API (ADR-0056): items per page, requests per minute a new key
-    | gets and the most a key may get, and how long apps may keep an answer.
+    | gets and the most a key may get, how long apps may keep an answer, and
+    | how long a member stays signed in to the member app (ADR-0057).
     */
     'api' => [
         'per_page' => 20,
@@ -158,6 +159,7 @@ return [
         'default_rate' => (int) env('PORTAL_API_DEFAULT_RATE', 60),
         'max_rate' => 600,
         'max_age' => 60,
+        'member_token_days' => (int) env('PORTAL_MEMBER_TOKEN_DAYS', 90),
     ],
 
     /*

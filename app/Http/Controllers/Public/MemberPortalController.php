@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Public;
 
 use App\Domain\Documents\Models\Document;
 use App\Domain\Documents\Models\DocumentTranslation;
+use App\Domain\Documents\Support\MembersOnlyFile;
 use App\Domain\Events\Models\EventRegistration;
 use App\Domain\Membership\Actions\RequestMemberChange;
 use App\Domain\Membership\Actions\SignInMember;
@@ -24,9 +25,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\HeaderUtils;
 
 /**
  * The member portal (PLAN.md §4, ADR-0049): sign-in with a code by SMS, the
@@ -126,12 +125,7 @@ final class MemberPortalController extends Controller
     public function events(): View
     {
         $member = $this->signedIn();
-        $hashes = array_values(array_filter([$member->phone_hash, $member->email_hash]));
-        $registrations = $hashes === [] ? collect() : EventRegistration::query()
-            ->where(fn ($q) => $q->whereIn('phone_hash', $hashes)->orWhereIn('email_hash', $hashes))
-            ->whereNull('erased_at')
-            ->with('event.translations')
-            ->get()
+        $registrations = ($member->eventRegistrations()?->with('event.translations')->get() ?? collect())
             ->sortByDesc(fn (EventRegistration $r) => $r->event->starts_at)
             ->values();
 
@@ -154,19 +148,9 @@ final class MemberPortalController extends Controller
         /** @var DocumentTranslation|null $translation */
         $translation = DocumentTranslation::query()->where('locale', $locale)->where('slug', $slug)->first();
         $document = $translation?->document;
-        abort_if($translation === null || $document === null || ! $translation->isLive() || $document->access !== Document::ACCESS_MEMBERS, 404);
-        $media = $document->fileFor($locale)?->file;
-        abort_if($media === null || ! Storage::disk('media')->exists($media->getPathRelativeToRoot()), 404);
+        abort_if($translation === null || $document === null || ! $translation->isLive(), 404);
 
-        activity('membership')->performedOn($document)->causedBy(null)->event('member_download')->log('Members-only document downloaded');
-
-        return response()->file(Storage::disk('media')->path($media->getPathRelativeToRoot()), [
-            'Content-Type' => (string) $media->mime_type,
-            'Content-Disposition' => HeaderUtils::makeDisposition(HeaderUtils::DISPOSITION_ATTACHMENT, $media->file_name),
-            'X-Content-Type-Options' => 'nosniff',
-            'Cache-Control' => 'private, no-store',
-            'X-Robots-Tag' => 'noindex',
-        ]);
+        return MembersOnlyFile::response($document, $locale);
     }
 
     /** What anyone who scans a card sees: no personal details beyond initials. */

@@ -129,8 +129,12 @@ final class ErasePersonalData
         ]);
         if ($person instanceof MembershipApplication) {
             $person->forceFill(['reason' => null]);
-        } elseif ($person->status === MemberStatus::Active || $person->status === MemberStatus::Lapsed) {
-            $person->forceFill(['status' => MemberStatus::Resigned]);
+        } else {
+            // Signed out of the member app on every device (ADR-0057).
+            $person->appTokens()->delete();
+            if ($person->status === MemberStatus::Active || $person->status === MemberStatus::Lapsed) {
+                $person->forceFill(['status' => MemberStatus::Resigned]);
+            }
         }
         $person->saveQuietly();
     }

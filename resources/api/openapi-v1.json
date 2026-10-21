@@ -3,7 +3,7 @@
   "info": {
     "title": "Harari Prosperity Party Portal API",
     "version": "1.0.0",
-    "description": "Read-only access to what the public site publishes, for the apps of the branch office. Every request needs a key in the X-Api-Key header. A Super Admin issues keys under Administration, API keys, each with the scopes and requests per minute its app needs. Answers carry an ETag: send it back in If-None-Match to get 304 when nothing changed."
+    "description": "Read-only access to what the public site publishes, for the apps of the branch office. Every request needs a key in the X-Api-Key header. A Super Admin issues keys under Administration, API keys, each with the scopes and requests per minute its app needs. Answers carry an ETag: send it back in If-None-Match to get 304 when nothing changed. The member app also signs members in by SMS code and sends their token as a Bearer token."
   },
   "servers": [
     {
@@ -33,6 +33,9 @@
     },
     {
       "name": "Search"
+    },
+    {
+      "name": "Member app"
     }
   ],
   "paths": {
@@ -1911,6 +1914,485 @@
           }
         }
       }
+    },
+    "/member/sign-in": {
+      "post": {
+        "tags": [
+          "Member app"
+        ],
+        "summary": "Send a sign-in code by SMS",
+        "description": "Step 1. Five codes a day per number; a new code a minute after the last one. Key scope: `members`.",
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/lang"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Sent if the number is a member's; the answer is the same either way.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "A parameter has a value the API does not know.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, or the key is wrong, expired or revoked.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests; see Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "phone"
+                ],
+                "properties": {
+                  "phone": {
+                    "type": "string",
+                    "description": "The phone on the member's record, such as 0911000000."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/member/token": {
+      "post": {
+        "tags": [
+          "Member app"
+        ],
+        "summary": "Exchange the code for a member token",
+        "description": "Step 2. A code is valid ten minutes and five tries. A member is signed in on at most five devices; the oldest sign-in goes first. Key scope: `members`.",
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/lang"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Signed in.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemberToken"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "A parameter has a value the API does not know.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, or the key is wrong, expired or revoked.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests; see Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "phone",
+                  "code"
+                ],
+                "properties": {
+                  "phone": {
+                    "type": "string"
+                  },
+                  "code": {
+                    "type": "string"
+                  },
+                  "device": {
+                    "type": "string",
+                    "description": "A name for the device, shown to the member's officers, such as \"Android phone\"."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Member app"
+        ],
+        "summary": "Sign out on this device",
+        "description": "The token stops working. Key scope: `members`.",
+        "security": [
+          {
+            "apiKey": [],
+            "memberToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/lang"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Signed out."
+          },
+          "401": {
+            "description": "No member token, or it has expired, was signed out, or the member may no longer use the portal.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests; see Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/member/me": {
+      "get": {
+        "tags": [
+          "Member app"
+        ],
+        "summary": "The member and their card",
+        "description": "Personal data: answers are never cached. Key scope: `members`.",
+        "security": [
+          {
+            "apiKey": [],
+            "memberToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/lang"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Member"
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "lang": {
+                          "type": "string",
+                          "enum": [
+                            "en",
+                            "am",
+                            "om",
+                            "har"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No member token, or it has expired, was signed out, or the member may no longer use the portal.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests; see Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/member/registrations": {
+      "get": {
+        "tags": [
+          "Member app"
+        ],
+        "summary": "The member's event registrations",
+        "description": "Registrations made with the phone or email on the member's record. Key scope: `members`.",
+        "security": [
+          {
+            "apiKey": [],
+            "memberToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/lang"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Registration"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No member token, or it has expired, was signed out, or the member may no longer use the portal.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests; see Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/member/documents": {
+      "get": {
+        "tags": [
+          "Member app"
+        ],
+        "summary": "Members-only documents",
+        "description": "`file.download_url` points to the member API. Key scope: `members`.",
+        "security": [
+          {
+            "apiKey": [],
+            "memberToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/lang"
+          },
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/per_page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Document"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    },
+                    "links": {
+                      "$ref": "#/components/schemas/Links"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No member token, or it has expired, was signed out, or the member may no longer use the portal.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests; see Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/member/documents/{key}/download": {
+      "get": {
+        "tags": [
+          "Member app"
+        ],
+        "summary": "Download a members-only document",
+        "description": "Each download is noted in the audit log. Key scope: `members`.",
+        "security": [
+          {
+            "apiKey": [],
+            "memberToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/lang"
+          },
+          {
+            "$ref": "#/components/parameters/key"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The file.",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such members-only document, or it has no file.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No member token, or it has expired, was signed out, or the member may no longer use the portal.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests; see Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1919,6 +2401,11 @@
         "type": "apiKey",
         "in": "header",
         "name": "X-Api-Key"
+      },
+      "memberToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Member app only: the token from POST /member/token."
       }
     },
     "parameters": {
@@ -3030,6 +3517,216 @@
           "url": {
             "type": "string",
             "format": "uri"
+          }
+        }
+      },
+      "Member": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "member_no": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "status_label": {
+            "type": "string"
+          },
+          "woreda": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            }
+          },
+          "kebele": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            }
+          },
+          "phone": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "email": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "joined_on": {
+            "type": "string",
+            "format": "date"
+          },
+          "renewal_due_on": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          },
+          "renewal_due_soon": {
+            "type": "boolean"
+          },
+          "card": {
+            "type": "object",
+            "properties": {
+              "number": {
+                "type": "string"
+              },
+              "valid": {
+                "type": "boolean"
+              },
+              "valid_until": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date"
+              },
+              "valid_until_ethiopian": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "verify_url": {
+                "type": "string",
+                "format": "uri",
+                "description": "Put this address in the QR code of the card; anyone who scans it sees whether the card is valid."
+              }
+            }
+          }
+        }
+      },
+      "Registration": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "status_label": {
+            "type": "string"
+          },
+          "registered_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "checked_in_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "cancelled_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "ticket_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "event": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "starts_at": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date-time"
+              },
+              "ends_at": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date-time"
+              },
+              "all_day": {
+                "type": "boolean"
+              },
+              "venue": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "url": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "uri"
+              }
+            }
+          }
+        }
+      },
+      "MemberToken": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "token": {
+                "type": "string",
+                "description": "Send it as `Authorization: Bearer <token>`. Shown once."
+              },
+              "token_type": {
+                "type": "string",
+                "enum": [
+                  "Bearer"
+                ]
+              },
+              "expires_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "member": {
+                "$ref": "#/components/schemas/Member"
+              }
+            }
           }
         }
       }

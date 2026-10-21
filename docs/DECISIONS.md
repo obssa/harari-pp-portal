@@ -1661,3 +1661,32 @@ open access.
 
 **Consequences.** Nothing is open until a Super Admin issues a key. Breaking changes need `/api/v2`; new
 fields may be added to v1. Changing `APP_KEY` invalidates every API key, as it does the other keyed hashes.
+
+## ADR-0057 — Member API for the member app (2026-10-21)
+
+**Context.** PLAN.md §13 (Phase 8) names a public API for a mobile app; the Phase 8 plan gives the app what
+the member portal offers (ADR-0049): sign-in by SMS code, the card with its QR check address, the member's
+event registrations and members-only documents.
+
+**Decision.**
+
+- The app sends its API key (scope `members`) on every request. `POST /api/v1/member/sign-in` with the phone
+  sends the same six-digit code as the portal (ten minutes, five tries, five codes a day, a minute between
+  codes) and always answers 202 with the same message, so it never tells whether a number is a member's.
+  `POST /api/v1/member/token` with the phone, the code and a device name returns a member token
+  (`hppm_` and 48 random characters), shown once; the app sends it as `Authorization: Bearer`.
+- Tokens are stored as an HMAC with the app key, the device name encrypted. They last 90 days
+  (`PORTAL_MEMBER_TOKEN_DAYS`); a member is signed in on at most five devices, the oldest sign-in going
+  first. A token stops working at once when the member is suspended, expelled, resigned or erased, when the
+  member signs out (`DELETE /api/v1/member/token`), or when an officer chooses "Sign out of the member app"
+  on the member's page (noted in the member's history). Erasure deletes the tokens.
+- `GET /member/me` gives the member's details and card (number, valid, valid until, and the verification
+  address for the QR code), `/member/registrations` the registrations made with the phone or email on the
+  record with their tickets, `/member/documents` the members-only documents, downloaded through
+  `/member/documents/{key}/download` and noted in the audit log as in the portal.
+- Member answers are `Cache-Control: private, no-store`. Sign-in steps also use the membership rate limit
+  per address.
+- JSON answers keep Ethiopic text and slashes unescaped, which halves the size of Amharic answers.
+
+**Consequences.** The portal and the app share the sign-in code, the registrations query and the
+members-only file handling. Publishing the app itself (stores, developer accounts) is for the branch office.

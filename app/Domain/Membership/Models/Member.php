@@ -3,14 +3,17 @@
 namespace App\Domain\Membership\Models;
 
 use App\Domain\Content\Concerns\BelongsToSite;
+use App\Domain\Events\Models\EventRegistration;
 use App\Domain\Membership\Enums\MemberStatus;
 use App\Domain\Organisation\Models\Office;
 use Carbon\CarbonImmutable;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\DB;
 use Spatie\Activitylog\LogOptions;
@@ -192,6 +195,34 @@ class Member extends Model implements AuthenticatableContract
     public function notes(): MorphMany
     {
         return $this->morphMany(PersonNote::class, 'notable')->latest('id');
+    }
+
+    /**
+     * Devices the member is signed in to the member app on (ADR-0057).
+     *
+     * @return HasMany<MemberToken, $this>
+     */
+    public function appTokens(): HasMany
+    {
+        return $this->hasMany(MemberToken::class);
+    }
+
+    /**
+     * The member's own event registrations: those made with the phone or
+     * email on their record.
+     *
+     * @return Builder<EventRegistration>|null null when the record has neither
+     */
+    public function eventRegistrations(): ?Builder
+    {
+        $hashes = array_values(array_filter([$this->phone_hash, $this->email_hash]));
+        if ($hashes === []) {
+            return null;
+        }
+
+        return EventRegistration::query()
+            ->where(fn (Builder $q) => $q->whereIn('phone_hash', $hashes)->orWhereIn('email_hash', $hashes))
+            ->whereNull('erased_at');
     }
 
     public function getActivitylogOptions(): LogOptions

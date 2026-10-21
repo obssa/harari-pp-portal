@@ -79,6 +79,16 @@ final class ManageMember
         return $member->id_number;
     }
 
+    /** Signs the member out of the member app on every device, for example after a lost phone (ADR-0057). */
+    public function signOutApps(Member $member, User $actor): int
+    {
+        $this->authorise($member, $actor, 'members.update');
+        $count = app(IssueMemberToken::class)->revokeAll($member);
+        $this->log($member, $actor, PersonNote::UPDATE, __('members.note.apps_signed_out', ['count' => $count]));
+
+        return $count;
+    }
+
     private function authorise(Member $member, User $actor, string $permission): void
     {
         abort_unless($member->erased_at === null && OfficeScope::covers($actor, $member->woreda_id, $permission), 403);

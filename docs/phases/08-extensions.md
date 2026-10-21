@@ -15,7 +15,7 @@ data or provider test doubles, and is switched off (or limited to staff) until i
 | Step | Content | Status |
 |---|---|---|
 | 8.1 | Public API `/api/v1`: read-only JSON for posts, pages, events, documents, offices, leaders, projects and search, per language, with filters, pagination, ETags and cache headers; API keys with scopes, rate limits and a last-used time, managed in the admin; OpenAPI description | done |
-| 8.2 | Member API for a mobile app: sign-in by SMS code giving a revocable token, the member's card data and QR check address, own registrations, members-only documents | |
+| 8.2 | Member API for a mobile app: sign-in by SMS code giving a revocable token, the member's card data and QR check address, own registrations, members-only documents | done |
 | 8.3 | Fayda/eSignet sign-in for members (OpenID Connect with PKCE and signed client assertion): configured under Integrations, off until the branch office is registered as a relying party; a member is matched by their Fayda number | |
 | 8.4 | Posting to social networks from the admin: share a published post to the Facebook page and the Telegram channel in a chosen language, with a log and the post's link; uses the tokens already kept under Integrations | |
 | 8.5 | Donations module, off by default: when switched on by a Super Admin after legal approval, a pledge form with bank-transfer instructions per language, an admin list with receipts and totals, and a payment driver interface for later Telebirr or CBE Birr accounts | |

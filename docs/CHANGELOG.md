@@ -4,6 +4,13 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 8, step 8.2 — member API (2026-10-21)
+
+- The member app signs members in with the portal's SMS code and a revocable token, and reads the card,
+  details, event registrations and members-only documents (ADR-0057).
+- Officers can sign a member out of the app on every device from the member's page.
+- API answers keep Amharic text unescaped.
+
 ### Phase 8, step 8.1 — public API (2026-10-21)
 
 - Read-only `/api/v1` for news, pages, events, documents, offices, leaders, projects and search, per
