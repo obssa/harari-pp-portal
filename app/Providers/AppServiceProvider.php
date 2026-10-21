@@ -93,6 +93,7 @@ use App\Domain\Search\Engines\WordMatchEngine;
 use App\Domain\Search\Models\SearchTerm;
 use App\Domain\Search\Policies\SearchTermPolicy;
 use App\Domain\Settings\Listeners\RecordSettingsChanges;
+use App\Domain\Sites\Support\CurrentSite;
 use App\Domain\Social\Models\SocialPost;
 use App\Domain\Social\Models\SocialSource;
 use App\Domain\Social\Policies\SocialPostPolicy;
@@ -117,6 +118,7 @@ use App\Services\Payments\PaymentGateway;
 use App\Services\Sms\LogSmsGateway;
 use App\Services\Sms\SmsGateway;
 use App\Settings\SiteSettings;
+use App\Support\SlowQueries;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Eloquent\Model;
@@ -149,6 +151,9 @@ class AppServiceProvider extends ServiceProvider
     {
         // ADR-0025: text messages go to the log until an SMS provider is chosen.
         $this->app->bind(SmsGateway::class, fn (): SmsGateway => new LogSmsGateway);
+
+        // ADR-0061: the current site lives for one request or job, also under long-running workers.
+        $this->app->scoped(CurrentSite::class);
 
         // ADR-0060: pledges are paid by bank transfer until an online payment provider is added.
         $this->app->bind(PaymentGateway::class, fn (): PaymentGateway => new BankTransferGateway);
@@ -354,6 +359,11 @@ class AppServiceProvider extends ServiceProvider
     {
         // N+1 queries fail loudly in development and tests, and are logged on staging.
         Model::preventLazyLoading(! $this->app->isProduction());
+
+        // ADR-0061: a request or job spending more than a second in the database is logged.
+        if (! $this->app->runningUnitTests()) {
+            SlowQueries::watch((int) config('portal.slow_queries_ms'));
+        }
 
         if ($this->app->environment('staging')) {
             Model::handleLazyLoadingViolationUsing(function (Model $model, string $relation): void {

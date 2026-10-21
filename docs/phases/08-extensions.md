@@ -19,7 +19,7 @@ data or provider test doubles, and is switched off (or limited to staff) until i
 | 8.3 | Fayda/eSignet sign-in for members (OpenID Connect with PKCE and signed client assertion): configured under Integrations, off until the branch office is registered as a relying party; a member is matched by their Fayda number | done (matched by the Fayda `sub`, ADR-0058) |
 | 8.4 | Posting to social networks from the admin: share a published post to the Facebook page and the Telegram channel in a chosen language, with a log and the post's link; uses the tokens already kept under Integrations | done |
 | 8.5 | Donations module, off by default: when switched on by a Super Admin after legal approval, a pledge form with bank-transfer instructions per language, an admin list with receipts and totals, and a payment driver interface for later Telebirr or CBE Birr accounts | done |
-| 8.6 | Performance and Octane readiness: no request state kept in static properties, a check that the app boots and serves under a long-running worker, slow-query and N+1 review, the decision on Octane for the production host | |
+| 8.6 | Performance and Octane readiness: no request state kept in static properties, a check that the app boots and serves under a long-running worker, slow-query and N+1 review, the decision on Octane for the production host | done |
 | 8.7 | Manual chapter, phase report | |
 
 ## Open questions (do not block the build; defaults in brackets)

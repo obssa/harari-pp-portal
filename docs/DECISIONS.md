@@ -1776,3 +1776,29 @@ no online payment (Telebirr, CBE Birr) merchant account.
 
 **Consequences.** The module is complete but closed. Before switching it on, the branch office needs the
 party's and its legal advisers' approval, the bank accounts, and the texts in each language.
+
+## ADR-0061 — Performance review and Octane readiness (2026-10-21)
+
+**Context.** PLAN.md §9 and §13 (Phase 8) name Laravel Octane. The staging host is shared cPanel (ADR-0002),
+where no long-running PHP process may run; the production host is not chosen yet (PLAN.md §14).
+
+**Decision.**
+
+- **No Octane on shared hosting.** PHP there is started per request by LiteSpeed, and the queue is drained by
+  cron. On a production VPS, Octane (FrankenPHP or Swoole) with Redis, a Supervisor-run queue worker and
+  `--max-requests` is possible without code changes; the decision is taken with the production host.
+- **The code is kept ready for long-running workers:**
+  - no request state in static properties: a test fails on any new one outside the Filament configuration,
+    with two allowed (a fixed transliteration table and the language resolver set at boot);
+  - the current site, the one static that held request state, now lives in a scoped container instance,
+    which Octane and the queue worker reset for every request and job;
+  - settings are scoped by the settings package; the app registers no singletons of its own;
+  - a test serves request after request from one application instance, as a worker does, and checks that
+    language, site and addresses follow each request.
+- **N+1 review:** lazy loading already fails in development and tests and is logged on staging. Tests now check
+  that the news, events, documents, leaders, offices and projects listings, and the matching API listings,
+  make no more queries for eight records than for two.
+- **Slow queries:** a request or job that spends more than a second in the database
+  (`PORTAL_SLOW_QUERIES_MS`) is logged with where it happened and the query that crossed the limit.
+
+**Consequences.** Moving to a VPS with Octane needs configuration only (ADR-0002 drivers plus `octane:start`).

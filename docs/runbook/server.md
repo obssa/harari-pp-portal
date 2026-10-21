@@ -219,3 +219,9 @@ Off until the branch office is registered with the National ID Program as an eSi
 
 Replacing the key stops Fayda sign-in until the new public key is registered. Errors from eSignet go to the log
 (and Sentry once it is set up); members are told to sign in with an SMS code instead.
+
+## Slow requests (ADR-0061)
+
+A request or job spending more than `PORTAL_SLOW_QUERIES_MS` (1000 by default) in the database writes a
+"Slow database work" warning to the log, with the address or command, the total time and the query that crossed
+the limit. Set it to 0 in `.env` to turn the log off.

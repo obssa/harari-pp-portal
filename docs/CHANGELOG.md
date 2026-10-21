@@ -4,6 +4,13 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 8, step 8.6 — performance and Octane readiness (2026-10-21)
+
+- The current site lives for one request or job, so long-running workers start each request afresh;
+  a test keeps request state out of static properties (ADR-0061).
+- Query-count tests for the public and API listings; slow database work is logged
+  (`PORTAL_SLOW_QUERIES_MS`, 1000 ms by default).
+
 ### Phase 8, step 8.5 — donations module, off by default (2026-10-21)
 
 - Pledges on `/{language}/donate` with bank-transfer instructions and a reference, once a Super Admin

@@ -4,6 +4,7 @@ namespace App\Domain\Sites\Models;
 
 use App\Domain\Media\Models\Media;
 use App\Domain\Media\Support\ImageConversions;
+use App\Domain\Sites\Support\CurrentSite;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -26,8 +27,6 @@ class Site extends Model implements HasMedia
 
     protected $fillable = ['key', 'name', 'domain', 'is_default'];
 
-    private static ?Site $current = null;
-
     protected function casts(): array
     {
         return ['is_default' => 'boolean'];
@@ -45,19 +44,20 @@ class Site extends Model implements HasMedia
 
     /**
      * The site serving this request: the one whose domain matches the host,
-     * otherwise the default site.
+     * otherwise the default site. Kept for the request or job only (ADR-0061).
      */
     public static function current(): self
     {
-        if (self::$current !== null) {
-            return self::$current;
+        $holder = app(CurrentSite::class);
+        if ($holder->site !== null) {
+            return $holder->site;
         }
 
         $host = app()->runningInConsole() && ! app()->runningUnitTests() ? null : request()->getHost();
 
         $byDomain = $host ? self::query()->where('domain', $host)->first() : null;
 
-        return self::$current = $byDomain ?? self::query()->where('is_default', true)->firstOrFail();
+        return $holder->site = $byDomain ?? self::query()->where('is_default', true)->firstOrFail();
     }
 
     /**
@@ -65,11 +65,11 @@ class Site extends Model implements HasMedia
      */
     public static function setCurrent(self $site): void
     {
-        self::$current = $site;
+        app(CurrentSite::class)->site = $site;
     }
 
     public static function forgetCurrent(): void
     {
-        self::$current = null;
+        app(CurrentSite::class)->site = null;
     }
 }

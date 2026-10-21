@@ -149,6 +149,12 @@ return [
     ],
 
     /*
+    | ADR-0061: requests and jobs spending longer than this in the database
+    | are logged with their address and query count.
+    */
+    'slow_queries_ms' => (int) env('PORTAL_SLOW_QUERIES_MS', 1000),
+
+    /*
     | Public API (ADR-0056): items per page, requests per minute a new key
     | gets and the most a key may get, how long apps may keep an answer, and
     | how long a member stays signed in to the member app (ADR-0057).
