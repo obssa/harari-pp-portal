@@ -7,6 +7,7 @@ use App\Domain\Engagement\Enums\CampaignStatus;
 use App\Domain\Engagement\Models\Campaign;
 use App\Domain\Engagement\Models\CampaignDelivery;
 use App\Domain\Engagement\Support\Audience;
+use App\Domain\Engagement\Support\CampaignReport;
 use App\Domain\Engagement\Support\SmsLength;
 use App\Domain\Engagement\Support\SubscriptionOptions;
 use App\Domain\Membership\Enums\MemberStatus;
@@ -178,8 +179,39 @@ class CampaignResource extends Resource
                     TextEntry::make('finished_at')->label(__('campaigns.field.finished_at'))->formatStateUsing(CalendarDate::format(withTime: true))->placeholder('—'),
                     TextEntry::make('sender.name')->label(__('campaigns.field.sent_by'))->placeholder('—'),
                 ]),
+                Section::make(__('campaigns.report.title'))
+                    ->visible(fn (Campaign $record): bool => in_array($record->status, [CampaignStatus::Sending, CampaignStatus::Sent, CampaignStatus::Cancelled], true))
+                    ->schema(fn (?Campaign $record): array => $record === null ? [] : self::reportEntries($record)),
             ]),
         ]);
+    }
+
+    /**
+     * @return list<TextEntry>
+     */
+    private static function reportEntries(Campaign $campaign): array
+    {
+        $report = new CampaignReport($campaign);
+        $totals = $report->totals();
+        $rate = fn (int $part): string => $part.' ('.CampaignReport::rate($part, $totals['sent']).'%)';
+        $entries = [
+            TextEntry::make('report_recipients')->label(__('campaigns.report.recipients'))->state($totals['recipients']),
+            TextEntry::make('report_sent')->label(__('campaigns.report.sent'))->state($totals['sent'])->color('success'),
+            TextEntry::make('report_queued')->label(__('campaigns.report.queued'))->state($totals['queued'])->visible($totals['queued'] > 0),
+            TextEntry::make('report_failed')->label(__('campaigns.report.failed'))->state($totals['failed'])->color($totals['failed'] > 0 ? 'danger' : null),
+            TextEntry::make('report_skipped')->label(__('campaigns.report.skipped'))->state($totals['skipped'])->helperText(__('campaigns.report.skipped_help')),
+            TextEntry::make('report_clicked')->label(__('campaigns.report.clicked'))->state($rate($totals['clicked']))
+                ->helperText(__('campaigns.report.clicks', ['count' => $totals['clicks']]))->visible($campaign->channel === Campaign::EMAIL),
+            TextEntry::make('report_opened')->label(__('campaigns.report.opened'))->state($rate($totals['opened']))
+                ->visible($campaign->channel === Campaign::EMAIL && ($totals['opened'] > 0 || (bool) config('portal.campaign_open_tracking'))),
+            TextEntry::make('report_unsubscribed')->label(__('campaigns.report.unsubscribed'))->state($rate($totals['unsubscribed'])),
+            TextEntry::make('report_languages')->label(__('campaigns.report.by_language'))->listWithLineBreaks()
+                ->state(array_map(fn (array $row): string => __('campaigns.report.language_line', [
+                    'language' => Locales::nativeName($row['language']), 'sent' => $row['sent'], 'recipients' => $row['recipients'], 'clicked' => $row['clicked'],
+                ]), $report->byLanguage())),
+        ];
+
+        return $entries;
     }
 
     public static function getPages(): array

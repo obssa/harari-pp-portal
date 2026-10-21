@@ -107,6 +107,13 @@ return [
     'campaign_sms_per_minute' => (int) env('PORTAL_CAMPAIGN_SMS_PER_MINUTE', 30),
 
     /*
+    | Counting campaign email opens with an invisible image (ADR-0053). Off: many
+    | mail apps block it, and it counts people without asking. Clicks are counted
+    | through the portal's own links either way.
+    */
+    'campaign_open_tracking' => (bool) env('PORTAL_CAMPAIGN_OPEN_TRACKING', false),
+
+    /*
     | Media library (PLAN.md §7, §11; ADR-0009). Files are identified by their
     | content, never by their name; only these kinds are accepted.
     */

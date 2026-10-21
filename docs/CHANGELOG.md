@@ -4,6 +4,13 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 7, step 7.3 — delivery reports (2026-10-21)
+
+- Campaign pages show the delivery report (sent, failed, skipped, clicked, unsubscribed, by language) with a
+  CSV download without addresses (ADR-0053).
+- Links in campaign emails are counted through the portal; open counting can be switched on.
+- Dashboard widgets "Campaign results" and "Subscribers".
+
 ### Phase 7, step 7.2 — campaigns (2026-10-21)
 
 - Admin → Communication → Campaigns: email and SMS campaigns written per language, to subscribers by topic and

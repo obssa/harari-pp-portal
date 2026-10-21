@@ -7,6 +7,7 @@ use App\Domain\Dashboard\Models\DashboardLayout;
 use App\Filament\Widgets\ActivityFeed;
 use App\Filament\Widgets\Announcements;
 use App\Filament\Widgets\AttentionNeeded;
+use App\Filament\Widgets\CampaignResults;
 use App\Filament\Widgets\EditorialPipeline;
 use App\Filament\Widgets\KpiStrip;
 use App\Filament\Widgets\MediaStorage;
@@ -15,6 +16,7 @@ use App\Filament\Widgets\PeopleOverview;
 use App\Filament\Widgets\QueueHealth;
 use App\Filament\Widgets\QuickActions;
 use App\Filament\Widgets\SearchInsights;
+use App\Filament\Widgets\SubscriberGrowth;
 use App\Filament\Widgets\TopPages;
 use App\Filament\Widgets\TrafficOverview;
 use App\Filament\Widgets\TranslationCoverage;
@@ -45,6 +47,8 @@ final class DashboardRegistry
         QuickActions::class,
         PeopleOverview::class,
         PeopleBreakdown::class,
+        SubscriberGrowth::class,
+        CampaignResults::class,
         EditorialPipeline::class,
         TranslationCoverage::class,
         TranslationQueue::class,

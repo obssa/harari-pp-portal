@@ -85,6 +85,16 @@ Route::get('/{locale}/u/{token}', [CampaignLinkController::class, 'show'])
     ->middleware([SetLocale::class, 'throttle:forms', NoStore::class])
     ->withoutMiddleware($stateless)
     ->name('campaigns.unsubscribe');
+Route::get('/{locale}/c/{token}/{link}', [CampaignLinkController::class, 'click'])
+    ->where(['locale' => implode('|', Locales::all()), 'token' => '[A-Za-z0-9]{12}', 'link' => '[0-9]{1,3}'])
+    ->middleware([SetLocale::class, 'throttle:beacon'])
+    ->withoutMiddleware([...$stateless, EncryptCookies::class, AddQueuedCookiesToResponse::class])
+    ->name('campaigns.click');
+Route::get('/{locale}/o/{token}.gif', [CampaignLinkController::class, 'open'])
+    ->where(['locale' => implode('|', Locales::all()), 'token' => '[A-Za-z0-9]{12}'])
+    ->middleware([SetLocale::class, 'throttle:beacon'])
+    ->withoutMiddleware([...$stateless, EncryptCookies::class, AddQueuedCookiesToResponse::class])
+    ->name('campaigns.open');
 Route::post('/{locale}/u/{token}', [CampaignLinkController::class, 'unsubscribe'])
     ->where(['locale' => implode('|', Locales::all()), 'token' => '[A-Za-z0-9]{12}'])
     ->middleware([SetLocale::class, 'throttle:forms', NoStore::class])

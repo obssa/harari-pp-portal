@@ -6,6 +6,7 @@ use App\Domain\Engagement\Actions\SendCampaign;
 use App\Domain\Engagement\Enums\CampaignStatus;
 use App\Domain\Engagement\Models\Campaign;
 use App\Domain\Engagement\Support\Audience;
+use App\Domain\Engagement\Support\CampaignReport;
 use App\Domain\Translation\Support\Locales;
 use App\Filament\Resources\Campaigns\CampaignResource;
 use App\Filament\Support\CurrentUser;
@@ -19,6 +20,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Support\Icons\Heroicon;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ViewCampaign extends ViewRecord
 {
@@ -31,6 +33,16 @@ class ViewCampaign extends ViewRecord
 
         return [
             EditAction::make(),
+            Action::make('report')
+                ->label(__('campaigns.report.download'))
+                ->icon(Heroicon::OutlinedArrowDownTray)
+                ->color('gray')
+                ->visible(fn (): bool => $this->campaign()->started_at !== null)
+                ->action(fn (): StreamedResponse => response()->streamDownload(function (): void {
+                    $out = fopen('php://output', 'wb');
+                    (new CampaignReport($this->campaign()))->write($out);
+                    fclose($out);
+                }, 'campaign-'.$this->campaign()->id.'-report.csv', ['Content-Type' => 'text/csv; charset=UTF-8'])),
             Action::make('test')
                 ->label(__('campaigns.admin.test'))
                 ->icon(Heroicon::OutlinedBeaker)

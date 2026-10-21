@@ -23,6 +23,7 @@ use Illuminate\Support\Str;
  * @property string $status
  * @property ?string $error
  * @property ?CarbonImmutable $sent_at
+ * @property ?CarbonImmutable $opened_at
  * @property ?CarbonImmutable $clicked_at
  * @property int $clicks
  * @property ?CarbonImmutable $unsubscribed_at
@@ -46,6 +47,7 @@ class CampaignDelivery extends Model
     {
         return [
             'sent_at' => 'immutable_datetime',
+            'opened_at' => 'immutable_datetime',
             'clicked_at' => 'immutable_datetime',
             'unsubscribed_at' => 'immutable_datetime',
             'clicks' => 'integer',

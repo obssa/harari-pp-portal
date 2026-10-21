@@ -1560,3 +1560,29 @@ members and volunteers, who did not subscribe to a newsletter.
 
 **Consequences.** Until the branch office's mail and SMS accounts are set, campaign emails go to the mail log
 and SMS to the SMS log on staging. Delivery reports and click counts follow in step 7.3.
+
+## ADR-0053 — Campaign delivery reports, clicks and opens (2026-10-21)
+
+**Context.** PLAN.md §7 asks for campaign results (sent, delivered, opened, clicked, unsubscribed per campaign
+and channel) and a subscribers widget.
+
+**Decision.**
+
+- Each delivery records whether it was sent, failed (with the provider's error) or skipped (the person left
+  before their turn), when it was sent, its clicks and whether the person unsubscribed from it. "Delivered" as
+  confirmed by the provider needs the provider's callbacks and comes with the branch office's mail and SMS
+  accounts; until then "sent" means accepted for sending.
+- Clicks: web links in a campaign email go through `/{language}/c/{token}/{n}`, which counts the click and
+  sends the person on to the n-th link of the campaign's own text in their language. The address comes from
+  the campaign, never from the link, so it cannot be used to send people elsewhere. No session or cookie.
+- Opens: an invisible image (`/{language}/o/{token}.gif`) only when `PORTAL_CAMPAIGN_OPEN_TRACKING` is on.
+  Off by default: many mail apps block it or load it for everyone, and it counts people without asking.
+- The campaign page shows the delivery report: recipients, sent, still to send, failed, skipped, clicked and
+  unsubscribed (as shares of the messages sent), opens when counted, and the figures per language. "Download
+  the report" gives one line per recipient with type, language, outcome, times and clicks, never an address.
+- Dashboard widgets: "Campaign results" (`campaigns.view`: the campaigns of the period with sent, click and
+  unsubscribe rates) and "Subscribers" (`subscribers.view`: reachable by email and by SMS, confirmed in the
+  period against the one before, waiting to confirm).
+
+**Consequences.** Click rates count people who clicked at least once; link checkers in some mail systems may
+click on their own, so rates are indications, not exact figures.
