@@ -11,6 +11,8 @@ All notable changes. Dates are Gregorian.
   or Gregorian calendar; personal details encrypted (ADR-0044).
 - The Get Involved page links to the application and the status page.
 
+- Fix: the log SMS driver now writes to its own file (`storage/logs/sms-*.log`, kept a week) so codes can be
+  read on staging, where the general log keeps warnings only.
 - Fix: a scheduled task could start twice when two scheduler runs fell in the same minute (the nightly
   backup ran twice); every task now starts at most once per due minute.
 

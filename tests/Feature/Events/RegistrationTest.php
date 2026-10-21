@@ -24,7 +24,6 @@ use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -267,12 +266,16 @@ it('writes the confirmation email in the language of the registration, with the 
     expect($mail->attachments())->toHaveCount(1);
 });
 
-it('writes text messages to the log with the number partly hidden', function () {
-    Log::spy();
+it('writes text messages to their own log with the number partly hidden, whatever the log level', function () {
+    $path = storage_path('logs/sms-test-'.Str::random(8).'.log');
+    config(['logging.default' => 'stack', 'logging.channels.stack' => ['driver' => 'stack', 'channels' => []], 'logging.level' => 'error',
+        'logging.channels.sms' => [...config('logging.channels.sms'), 'driver' => 'single', 'path' => $path]]);
 
     (new SendSms('+251911234567', 'Sample text'))->handle(new LogSmsGateway);
 
-    Log::shouldHaveReceived('info')->withArgs(fn (string $message, array $context): bool => $context['to'] === '+251••••••567' && $context['text'] === 'Sample text');
+    $written = (string) file_get_contents($path);
+    @unlink($path);
+    expect($written)->toContain('SMS not sent (log driver)')->toContain('+251••••••567')->toContain('Sample text')->not->toContain('911234567');
 });
 
 it('deletes registrations once the retention period after the event has passed', function () {

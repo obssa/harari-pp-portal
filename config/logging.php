@@ -73,6 +73,16 @@ return [
             'replace_placeholders' => true,
         ],
 
+        // The log SMS driver (ADR-0044): its own file, kept a week, whatever LOG_LEVEL says,
+        // so staff can read codes and messages where no SMS gateway is set up.
+        'sms' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/sms.log'),
+            'level' => 'info',
+            'max_files' => 7,
+            'replace_placeholders' => true,
+        ],
+
         'monthly' => [
             'driver' => 'monthly',
             'path' => storage_path('logs/laravel.log'),
