@@ -22,6 +22,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property string $id
  * @property string $member_no
  * @property ?string $application_id
+ * @property ?int $import_id
  * @property MemberStatus $status
  * @property string $source
  * @property string $name
@@ -68,7 +69,7 @@ class Member extends Model
     public const RENEWAL_MONTHS = 12;
 
     protected $fillable = [
-        'application_id', 'status', 'source', 'name', 'sex', 'birth_date', 'birth_year', 'id_type', 'id_number', 'id_hash',
+        'application_id', 'import_id', 'status', 'source', 'name', 'sex', 'birth_date', 'birth_year', 'id_type', 'id_number', 'id_hash',
         'education', 'occupation', 'woreda_id', 'kebele_id', 'basic_org_id', 'address_note',
         'phone', 'phone_hash', 'email', 'email_hash', 'joined_on', 'renewed_on', 'renewal_due_on',
     ];
@@ -97,14 +98,19 @@ class Member extends Model
     }
 
     /**
-     * The next member number: HPP- and six digits, in order, never reused.
-     * Call inside a transaction.
+     * The next member number: HPP- and six digits, in order, never reused,
+     * even after an import is rolled back (ADR-0047). Call inside a transaction.
      */
     public static function nextNumber(): string
     {
-        $last = DB::table('members')->lockForUpdate()->where('member_no', 'like', 'HPP-%')
-            ->orderByDesc('member_no')->value('member_no');
-        $next = $last !== null ? ((int) substr((string) $last, 4)) + 1 : 1;
+        $current = DB::table('sequences')->where('name', 'member_no')->lockForUpdate()->value('value');
+        if ($current === null) {
+            $last = DB::table('members')->where('member_no', 'like', 'HPP-%')->orderByDesc('member_no')->value('member_no');
+            $current = $last !== null ? (int) substr((string) $last, 4) : 0;
+            DB::table('sequences')->insert(['name' => 'member_no', 'value' => $current]);
+        }
+        $next = (int) $current + 1;
+        DB::table('sequences')->where('name', 'member_no')->update(['value' => $next]);
 
         return 'HPP-'.str_pad((string) $next, 6, '0', STR_PAD_LEFT);
     }

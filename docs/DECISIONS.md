@@ -1382,3 +1382,35 @@ privacy requests for registrations and tickets only.
 
 **Consequences.** Without an SMS gateway (staging) reminders go to the SMS log. Volunteers join the privacy
 search with step 6.5.
+
+## ADR-0047 — Importing existing membership rolls (2026-10-21)
+
+**Context.** PLAN.md §5 asks for an import of existing membership rolls from Excel or CSV with column mapping,
+a dry run with errors and duplicates, apply and roll back. Rolls hold personal data, are typed by hand, mix
+Amharic, Afaan Oromo and English, and often give dates in the Ethiopian calendar or only a year of birth.
+
+**Decision.**
+
+- Admin → Members and volunteers → Roll imports, for `members.import`. "Import a roll" takes an Excel (.xlsx,
+  first sheet) or CSV file (comma or semicolon, UTF-8) of at most 5,000 rows with headings in the first row.
+  The second step matches the columns (guessed from usual headings in the three languages), names the ID
+  document of the numbers, the calendar of typed dates and a joining date for rows without one. OpenSpout,
+  already installed with Filament, reads Excel files.
+- The check reads every row with the rules of the admin form and changes nothing: offices are found by their
+  name in any language, with or without the word "woreda" or "kebele", and a kebele name used in several
+  woredas by the row's woreda; a four-digit year of birth is accepted; dates are day/month/year or
+  year-month-day, or real spreadsheet dates (always Gregorian). Rows with a problem are left out; a row
+  whose ID number is already a member's or appears earlier in the file is a duplicate and left out; a phone
+  already on file only warns (families share phones). Officers scoped to woredas can only import rows of
+  those woredas. The problem list keeps row numbers and reasons only, never names.
+- The checked rows wait encrypted in the import record; "Add members" applies them in the queue (rows are
+  checked once more for ID numbers added meanwhile) and then deletes them. Each member gets a new number and
+  a history line with the file, the row and the number in the roll. Checked imports not applied within a
+  week lose their rows; uploads left between the two steps are deleted after a day.
+- Within 30 days an import can be rolled back: its members and their history are removed, including changes
+  made since. Member numbers now come from a sequence, so numbers of rolled-back members are never given out
+  again.
+
+**Consequences.** Officers fix problems in their file and import the remaining rows again; duplicates
+protect against importing a roll twice. Name and date-of-birth duplicates are not checked in imports (that
+would mean decrypting every member); the review queue still checks them for applications.

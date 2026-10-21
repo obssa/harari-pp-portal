@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Domain\Membership\Actions\ImportMembers;
 use App\Domain\Membership\Enums\ApplicationStatus;
 use App\Domain\Membership\Models\MembershipApplication;
 use App\Domain\Membership\Models\PersonNote;
@@ -11,7 +12,8 @@ use Illuminate\Console\Command;
 /**
  * Membership applications that were never sent are deleted after a week;
  * rejected and withdrawn ones some months after the decision (ADR-0044).
- * Approved applications stay with the member record.
+ * Approved applications stay with the member record. Checked roll imports
+ * nobody applied within a week lose their rows (ADR-0047).
  */
 final class PurgeApplicationsCommand extends Command
 {
@@ -33,7 +35,9 @@ final class PurgeApplicationsCommand extends Command
             ->where('decided_at', '<', $now->subDays(max(30, (int) config('portal.closed_application_retention_days'))))
             ->pluck('id')->all());
 
-        $this->components->info("Unfinished applications deleted: {$unfinished}; closed applications deleted: {$closed}");
+        $imports = ImportMembers::purgeStale();
+
+        $this->components->info("Unfinished applications deleted: {$unfinished}; closed applications deleted: {$closed}; stale roll imports discarded: {$imports}");
 
         return self::SUCCESS;
     }

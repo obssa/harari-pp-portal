@@ -20,6 +20,7 @@
         "laravel/framework": "^13.17",
         "laravel/scout": "^11.9",
         "laravel/tinker": "^3.0",
+        "openspout/openspout": "^4.32",
         "rhukster/dom-sanitizer": "^1.0.19",
         "sentry/sentry-laravel": "^4.29",
         "spatie/laravel-activitylog": "^4.12",

@@ -60,8 +60,10 @@ use App\Domain\Media\Policies\MediaFolderPolicy;
 use App\Domain\Media\Policies\MediaPolicy;
 use App\Domain\Media\Policies\VideoPolicy;
 use App\Domain\Membership\Models\Member;
+use App\Domain\Membership\Models\MemberImport;
 use App\Domain\Membership\Models\MembershipApplication;
 use App\Domain\Membership\Models\PersonNote;
+use App\Domain\Membership\Policies\MemberImportPolicy;
 use App\Domain\Membership\Policies\MemberPolicy;
 use App\Domain\Membership\Policies\MembershipApplicationPolicy;
 use App\Domain\Membership\Policies\PersonNotePolicy;
@@ -280,6 +282,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(MembershipApplication::class, MembershipApplicationPolicy::class);
         Gate::policy(Member::class, MemberPolicy::class);
         Gate::policy(PersonNote::class, PersonNotePolicy::class);
+        Gate::policy(MemberImport::class, MemberImportPolicy::class);
 
         // Super Admins hold every permission (PLAN.md §8). Only permission
         // names (`module.action`) are short-circuited, so policy rules such as

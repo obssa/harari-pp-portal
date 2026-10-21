@@ -4,6 +4,14 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 6, step 6.4 — importing membership rolls (2026-10-21)
+
+- Admin → Members and volunteers → Roll imports: upload an Excel or CSV roll, match the columns, see the
+  problems and duplicates before anything is added, add the ready rows as members, roll back within 30
+  days (ADR-0047).
+- Ethiopian-calendar dates, years of birth and office names in any language are understood.
+- Member numbers come from a sequence and are never given out twice.
+
 ### Phase 6, step 6.3 — members directory (2026-10-21)
 
 - Admin → Members and volunteers → Members: members per woreda with masked names and phones, search by
