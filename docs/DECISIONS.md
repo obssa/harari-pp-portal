@@ -1586,3 +1586,24 @@ and channel) and a subscribers widget.
 
 **Consequences.** Click rates count people who clicked at least once; link checkers in some mail systems may
 click on their own, so rates are indications, not exact figures.
+
+## ADR-0054 — Media contacts and press release distribution (2026-10-21)
+
+**Context.** PLAN.md §5 asks for a list of journalists and outlets for press release distribution; §8 gives
+media contacts to the Communications Officer.
+
+**Decision.**
+
+- Admin → Communication → Media contacts for `media_contacts.manage`: name, outlet, position, email (one
+  contact per address), phone, the languages they take in order of preference, and notes for staff. Name,
+  email, phone and notes are encrypted; contacts are business contacts and can be edited or deleted.
+- A published press release, statement or speech has "Send to the media" on its edit page: to every contact
+  who takes press releases or to those chosen. Each receives, in the first of their languages the text is
+  published in (or its closest language), the title, kicker, summary and a link to the full text on the
+  portal. Sent in the queue; the post's "Sent to the media" tab lists each contact, language, outcome, time
+  and sender.
+- Every press email carries an opt-out link and the one-click headers; `/{language}/press/opt-out/{token}`
+  asks first, then stops further releases to that contact.
+- Privacy requests find, copy and delete media contacts.
+
+**Consequences.** Until the branch office's mail account is set, press emails go to the mail log on staging.

@@ -6,6 +6,8 @@ use App\Domain\Content\Actions\DuplicatePost;
 use App\Domain\Content\Actions\SavePost;
 use App\Domain\Content\Models\Post;
 use App\Domain\Content\Models\PostTranslation;
+use App\Domain\Press\Actions\DistributePressRelease;
+use App\Domain\Press\Models\MediaContact;
 use App\Domain\Translation\Support\Locales;
 use App\Filament\Resources\Posts\PostResource;
 use App\Filament\Support\CurrentUser;
@@ -26,6 +28,23 @@ class EditPost extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('sendToMedia')
+                ->label(__('press.distribution.send'))
+                ->icon(Heroicon::OutlinedNewspaper)
+                ->color('gray')
+                ->visible(fn (Post $record): bool => CurrentUser::get()->can('media_contacts.manage') && DistributePressRelease::canSend($record))
+                ->modalDescription(__('press.distribution.send_help'))
+                ->schema([
+                    Select::make('contacts')->label(__('press.media.plural'))->multiple()->searchable()
+                        ->helperText(__('press.distribution.contacts_help'))
+                        ->options(fn (): array => MediaContact::query()->active()->orderBy('outlet')->get()
+                            ->mapWithKeys(fn (MediaContact $c): array => [$c->id => $c->outlet.' · '.$c->name])->all()),
+                ])
+                ->action(function (array $data, Post $record): void {
+                    $ids = array_map('intval', (array) ($data['contacts'] ?? []));
+                    $count = app(DistributePressRelease::class)->send($record, $ids !== [] ? $ids : null, CurrentUser::get());
+                    Notification::make()->success()->title(__('press.distribution.sending', ['count' => $count]))->send();
+                }),
             Action::make('preview')
                 ->label(__('admin.posts.action.preview'))
                 ->icon(Heroicon::OutlinedEye)

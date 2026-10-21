@@ -9,6 +9,7 @@ use App\Domain\Forms\Models\SubmissionNote;
 use App\Domain\Membership\Models\Member;
 use App\Domain\Membership\Models\MembershipApplication;
 use App\Domain\Membership\Models\PersonNote;
+use App\Domain\Press\Models\MediaContact;
 use App\Domain\Privacy\Models\PrivacyRequest;
 use App\Domain\Privacy\Support\PersonalDataSearch;
 use App\Domain\Volunteers\Models\Volunteer;
@@ -36,6 +37,7 @@ final class ExportPersonalData
         $members = $search->members();
         $volunteers = $search->volunteers();
         $subscribers = $search->subscribers();
+        $mediaContacts = $search->mediaContacts();
 
         $export = [
             'exported_at' => now()->toIso8601String(),
@@ -112,6 +114,11 @@ final class ExportPersonalData
                 'email_confirmed_at' => $s->email_confirmed_at?->toIso8601String(),
                 'phone_confirmed_at' => $s->phone_confirmed_at?->toIso8601String(),
                 'unsubscribed_at' => $s->unsubscribed_at?->toIso8601String(),
+            ])->values()->all(),
+            'media_contact' => $mediaContacts->map(fn (MediaContact $c): array => [
+                'name' => $c->name, 'outlet' => $c->outlet, 'position' => $c->position, 'email' => $c->email, 'phone' => $c->phone,
+                'languages' => $c->languages, 'notes' => $c->notes, 'opted_out_at' => $c->opted_out_at?->toIso8601String(),
+                'press_releases_received' => $c->distributions()->where('status', 'sent')->count(),
             ])->values()->all(),
             'failed_sign_ins' => $failed->map(fn (Activity $a): array => ['at' => $a->created_at?->toIso8601String()])->values()->all(),
             'staff_account' => $search->staffAccount() !== null,

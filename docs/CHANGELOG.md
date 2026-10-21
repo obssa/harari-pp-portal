@@ -4,6 +4,13 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Phase 7, step 7.4 — media contacts (2026-10-21)
+
+- Admin → Communication → Media contacts: journalists and outlets with their languages (ADR-0054).
+- "Send to the media" on published press releases, statements and speeches, in each contact's language, with
+  a log on the post and an opt-out link for journalists.
+- Privacy requests also cover media contacts.
+
 ### Phase 7, step 7.3 — delivery reports (2026-10-21)
 
 - Campaign pages show the delivery report (sent, failed, skipped, clicked, unsubscribed, by language) with a

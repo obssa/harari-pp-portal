@@ -77,6 +77,8 @@ use App\Domain\Organisation\Models\Office;
 use App\Domain\Organisation\Policies\LeaderPolicy;
 use App\Domain\Organisation\Policies\LeaguePolicy;
 use App\Domain\Organisation\Policies\OfficePolicy;
+use App\Domain\Press\Models\MediaContact;
+use App\Domain\Press\Policies\MediaContactPolicy;
 use App\Domain\Privacy\Models\PrivacyRequest;
 use App\Domain\Privacy\Policies\PrivacyRequestPolicy;
 use App\Domain\Projects\Models\Project;
@@ -295,6 +297,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(VolunteerAssignment::class, VolunteerAssignmentPolicy::class);
         Gate::policy(Subscriber::class, SubscriberPolicy::class);
         Gate::policy(Campaign::class, CampaignPolicy::class);
+        Gate::policy(MediaContact::class, MediaContactPolicy::class);
 
         // Super Admins hold every permission (PLAN.md §8). Only permission
         // names (`module.action`) are short-circuited, so policy rules such as

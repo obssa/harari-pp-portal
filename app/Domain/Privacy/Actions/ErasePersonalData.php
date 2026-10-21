@@ -28,8 +28,8 @@ use Illuminate\Support\Str;
  * ticket links stop working. Membership applications and member records keep
  * only their reference or number, status, woreda and dates (ADR-0046); an
  * active member becomes resigned. Volunteers keep their woreda, status
- * (inactive) and the hours of their tasks. Newsletter subscriptions are
- * deleted. Failed sign-ins forget the email tried.
+ * (inactive) and the hours of their tasks. Newsletter subscriptions and
+ * media contacts are deleted. Failed sign-ins forget the email tried.
  * Staff accounts are not touched here. Backups age out within their retention.
  */
 final class ErasePersonalData
@@ -37,7 +37,7 @@ final class ErasePersonalData
     public const ERASED = '—';
 
     /**
-     * @return array{registrations: int, submissions: int, applications: int, members: int, volunteers: int, subscribers: int, failed_sign_ins: int, staff_account: int}
+     * @return array{registrations: int, submissions: int, applications: int, members: int, volunteers: int, subscribers: int, media_contacts: int, failed_sign_ins: int, staff_account: int}
      */
     public function handle(PersonalDataSearch $search, User $actor): array
     {
@@ -49,8 +49,9 @@ final class ErasePersonalData
         $members = $search->members();
         $volunteers = $search->volunteers();
         $subscribers = $search->subscribers();
+        $mediaContacts = $search->mediaContacts();
 
-        DB::transaction(function () use ($registrations, $submissions, $failed, $applications, $members, $volunteers, $subscribers): void {
+        DB::transaction(function () use ($registrations, $submissions, $failed, $applications, $members, $volunteers, $subscribers, $mediaContacts): void {
             foreach ($registrations as $registration) {
                 $this->registration($registration);
             }
@@ -68,6 +69,8 @@ final class ErasePersonalData
             }
             // Subscriptions are not records anyone counts: they go entirely.
             $subscribers->each(fn (Subscriber $subscriber) => $subscriber->delete());
+            // Media contacts are business contacts: removed with the record of what they were sent.
+            $mediaContacts->each(fn ($contact) => $contact->delete());
             foreach ($failed as $activity) {
                 $activity->properties = $activity->properties->except('email');
                 $activity->save();

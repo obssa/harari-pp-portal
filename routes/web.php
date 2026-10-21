@@ -20,6 +20,7 @@ use App\Http\Controllers\Public\OfficeController;
 use App\Http\Controllers\Public\PageController;
 use App\Http\Controllers\Public\PageViewController;
 use App\Http\Controllers\Public\PressController;
+use App\Http\Controllers\Public\PressOptOutController;
 use App\Http\Controllers\Public\PreviewController;
 use App\Http\Controllers\Public\ProjectController;
 use App\Http\Controllers\Public\RedirectToPreferredLocale;
@@ -100,6 +101,18 @@ Route::post('/{locale}/u/{token}', [CampaignLinkController::class, 'unsubscribe'
     ->middleware([SetLocale::class, 'throttle:forms', NoStore::class])
     ->withoutMiddleware($stateless)
     ->name('campaigns.unsubscribe.post');
+
+// ADR-0054: journalists stop receiving press releases; mail apps post without a session.
+Route::get('/{locale}/press/opt-out/{token}', [PressOptOutController::class, 'show'])
+    ->where(['locale' => implode('|', Locales::all()), 'token' => '[A-Za-z0-9]{24}'])
+    ->middleware([SetLocale::class, 'throttle:forms', NoStore::class])
+    ->withoutMiddleware($stateless)
+    ->name('press.opt-out');
+Route::post('/{locale}/press/opt-out/{token}', [PressOptOutController::class, 'store'])
+    ->where(['locale' => implode('|', Locales::all()), 'token' => '[A-Za-z0-9]{24}'])
+    ->middleware([SetLocale::class, 'throttle:forms', NoStore::class])
+    ->withoutMiddleware($stateless)
+    ->name('press.opt-out.store');
 
 // Cookieless page view counts (ADR-0040): no session, no cookies, nothing about the visitor stored.
 Route::post('/pv', PageViewController::class)

@@ -12,12 +12,14 @@ use App\Domain\Media\Models\Media;
 use App\Domain\Organisation\Models\Leader;
 use App\Domain\Organisation\Models\League;
 use App\Domain\Organisation\Models\Office;
+use App\Domain\Press\Models\PressDistribution;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
@@ -150,6 +152,16 @@ class Post extends Model implements TranslatableModel
     public function title(?string $locale = null): string
     {
         return (string) $this->translation($locale)?->title;
+    }
+
+    /**
+     * Where this text was sent to the media (ADR-0054).
+     *
+     * @return HasMany<PressDistribution, $this>
+     */
+    public function pressDistributions(): HasMany
+    {
+        return $this->hasMany(PressDistribution::class);
     }
 
     /**

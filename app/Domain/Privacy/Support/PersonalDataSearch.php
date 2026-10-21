@@ -8,6 +8,7 @@ use App\Domain\Forms\Models\FormSubmission;
 use App\Domain\Membership\Enums\ApplicationStatus;
 use App\Domain\Membership\Models\Member;
 use App\Domain\Membership\Models\MembershipApplication;
+use App\Domain\Press\Models\MediaContact;
 use App\Domain\Volunteers\Models\Volunteer;
 use App\Models\User;
 use App\Support\PhoneNumber;
@@ -20,7 +21,7 @@ use Spatie\Activitylog\Models\Activity;
  * address or phone number through the keyed hashes, without decrypting every
  * record (ADR-0041, ADR-0046): event registrations, messages and tickets with
  * their notes, membership applications, member records and volunteer sign-ups
- * with their history, newsletter subscriptions, and failed sign-ins that used the email. Staff accounts are only
+ * with their history, newsletter subscriptions, media contact records, and failed sign-ins that used the email. Staff accounts are only
  * reported; they are managed under Users.
  */
 final class PersonalDataSearch
@@ -148,6 +149,18 @@ final class PersonalDataSearch
     }
 
     /**
+     * @return Collection<int, MediaContact>
+     */
+    public function mediaContacts(): Collection
+    {
+        if (! $this->isValid()) {
+            return new Collection;
+        }
+
+        return MediaContact::query()->where(fn (Builder $q) => $this->byHashes($q))->orderBy('created_at')->get();
+    }
+
+    /**
      * @return Collection<int, Activity>
      */
     public function failedSignIns(): Collection
@@ -166,7 +179,7 @@ final class PersonalDataSearch
     }
 
     /**
-     * @return array{registrations: int, submissions: int, applications: int, members: int, volunteers: int, subscribers: int, failed_sign_ins: int, staff_account: int}
+     * @return array{registrations: int, submissions: int, applications: int, members: int, volunteers: int, subscribers: int, media_contacts: int, failed_sign_ins: int, staff_account: int}
      */
     public function counts(): array
     {
@@ -177,6 +190,7 @@ final class PersonalDataSearch
             'members' => $this->members()->count(),
             'volunteers' => $this->volunteers()->count(),
             'subscribers' => $this->subscribers()->count(),
+            'media_contacts' => $this->mediaContacts()->count(),
             'failed_sign_ins' => $this->failedSignIns()->count(),
             'staff_account' => $this->staffAccount() === null ? 0 : 1,
         ];
@@ -187,7 +201,7 @@ final class PersonalDataSearch
     {
         $counts = $this->counts();
 
-        return $counts['registrations'] + $counts['submissions'] + $counts['applications'] + $counts['members'] + $counts['volunteers'] + $counts['subscribers'] + $counts['failed_sign_ins'];
+        return $counts['registrations'] + $counts['submissions'] + $counts['applications'] + $counts['members'] + $counts['volunteers'] + $counts['subscribers'] + $counts['media_contacts'] + $counts['failed_sign_ins'];
     }
 
     /**
