@@ -5,9 +5,9 @@ use App\Domain\Access\Enums\SystemRole;
 it('brands the admin with the party logo, its colours and self-hosted fonts', function () {
     $html = (string) $this->get('/admin/login')->assertOk()->getContent();
 
-    expect($html)->toContain('/admin/brand.css?v=', 'hpp-brand', '/brand/logo-128.png', __('admin.brand.sub'))
+    expect($html)->toContain('/brand/admin.css?v=', 'hpp-brand', '/brand/logo-128.png', __('admin.brand.sub'))
         ->not->toContain('fonts.bunny.net')
-        ->and(file_get_contents(public_path('admin/brand.css')))->toContain('/fonts/portal/inter-latin-wght-v5.woff2');
+        ->and(file_get_contents(public_path('brand/admin.css')))->toContain('/fonts/portal/inter-latin-wght-v5.woff2');
     expect(public_path('fonts/portal/inter-latin-wght-v5.woff2'))->toBeFile();
 });
 

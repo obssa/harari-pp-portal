@@ -1889,7 +1889,7 @@ and the host build do not have.
 
 **Decision.**
 
-- `public/admin/brand.css`, plain CSS loaded after Filament's (whose styles sit in cascade layers, so
+- `public/brand/admin.css`, plain CSS loaded after Filament's (whose styles sit in cascade layers, so
   plain rules win without `!important`), styles Filament's hook classes: a night-blue sidebar with gold
   group labels and a gold edge on the current item, a faint basket plate at its foot; warm plaster
   ground; white cards with soft shadows; stats with coloured top edges in the logo's colours; primary
@@ -1901,6 +1901,7 @@ and the host build do not have.
   site and the page's own actions. Quick actions are tiles; widget views use shared `hpp-*` classes
   instead of inline styles.
 
-**Consequences.** Upgrading Filament may rename a hook class; the admin brand test and a look at the
+**Consequences.** No folder under `public/` may share its name with a route (a `public/admin` folder
+made the server answer `/admin` with 403); a test checks this. Upgrading Filament may rename a hook class; the admin brand test and a look at the
 dashboard after each Filament upgrade catch it. Dark mode keeps the dark sidebar and darkens the ground
 and cards.

@@ -58,7 +58,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogoHeight('2.5rem')
             ->font('Inter Variable', provider: LocalFontProvider::class)
             ->renderHook(PanelsRenderHook::STYLES_AFTER, fn (): HtmlString => new HtmlString(
-                '<link rel="stylesheet" href="'.e(self::asset('admin/brand.css')).'">'
+                '<link rel="stylesheet" href="'.e(self::asset('brand/admin.css')).'">'
             ))
             // Authenticator-app MFA for everyone who wants it; required for the
             // roles in config('portal.mfa_required_roles') by our middleware.

@@ -4,6 +4,12 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Fix: the admin dashboard answered 403 (2026-10-22)
+
+- The admin stylesheet lived in `public/admin/`, so the web server treated `/admin` as that folder
+  and refused it. It now lives in `public/brand/admin.css`; a test keeps public folders from sharing
+  a name with a route.
+
 ### The admin in the party's brand (2026-10-22)
 
 - Night-blue sidebar with gold section labels and a gold edge on the current page, warm plaster
