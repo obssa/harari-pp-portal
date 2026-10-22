@@ -14,6 +14,7 @@ use App\Filament\Resources\Projects\Pages\ListProjects;
 use App\Filament\Support\DirectoryFields;
 use App\Filament\Support\MediaPicker;
 use App\Filament\Support\Translatable;
+use App\Filament\Support\ViewOnSite;
 use BackedEnum;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -138,7 +139,7 @@ class ProjectResource extends Resource
                 SelectFilter::make('sector_id')->label(__('projects.admin.field.sector'))->options(fn (): array => self::sectorOptions()),
                 TrashedFilter::make(),
             ])
-            ->recordActions([EditAction::make(), DeleteAction::make(), RestoreAction::make()]);
+            ->recordActions([ViewOnSite::row(), EditAction::make(), DeleteAction::make(), RestoreAction::make()]);
     }
 
     public static function getPages(): array

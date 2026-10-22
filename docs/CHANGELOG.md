@@ -4,6 +4,13 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### "View on site" in the admin (2026-10-22)
+
+- Posts, pages, forms, events, documents, projects, galleries, videos, leaders, offices and leagues have a
+  "View on site" button on their edit page (pick a published language; it opens in a new tab) and an icon
+  on each row of their lists. Unpublished items say they are not on the site yet. The homepage, menus and
+  site settings get "View the site" (ADR-0068).
+
 ### Staff manual screenshots (2026-10-22)
 
 - `tests/Browser/StaffManualScreenshotsTest.php` captures 42 screens of the admin and site in the new design

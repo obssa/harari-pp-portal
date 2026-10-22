@@ -7,6 +7,7 @@ use App\Domain\Organisation\Models\Office;
 use App\Filament\Resources\Offices\OfficeResource;
 use App\Filament\Support\CurrentUser;
 use App\Filament\Support\DirectoryFields;
+use App\Filament\Support\ViewOnSite;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\RestoreAction;
 use Filament\Resources\Pages\EditRecord;
@@ -18,7 +19,7 @@ class EditOffice extends EditRecord
 
     protected function getHeaderActions(): array
     {
-        return [DeleteAction::make(), RestoreAction::make()];
+        return [...ViewOnSite::header(), DeleteAction::make(), RestoreAction::make()];
     }
 
     /**

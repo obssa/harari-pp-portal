@@ -15,6 +15,7 @@ use App\Filament\Support\CalendarDate;
 use App\Filament\Support\DirectoryFields;
 use App\Filament\Support\MediaPicker;
 use App\Filament\Support\Translatable;
+use App\Filament\Support\ViewOnSite;
 use App\Services\Calendar\EthiopianCalendar;
 use BackedEnum;
 use Filament\Actions\DeleteAction;
@@ -138,7 +139,7 @@ class DocumentResource extends Resource
                     ->options(DocumentType::options(DocumentType::cases())),
                 TrashedFilter::make(),
             ])
-            ->recordActions([EditAction::make(), DeleteAction::make(), RestoreAction::make()]);
+            ->recordActions([ViewOnSite::row(), EditAction::make(), DeleteAction::make(), RestoreAction::make()]);
     }
 
     public static function getRelations(): array

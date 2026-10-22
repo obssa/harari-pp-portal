@@ -9,6 +9,7 @@ use App\Domain\Content\Models\Post;
 use App\Domain\Content\Models\PostTranslation;
 use App\Domain\Translation\Support\Locales;
 use App\Filament\Support\CalendarDate;
+use App\Filament\Support\ViewOnSite;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -95,6 +96,7 @@ class PostsTable
                 TrashedFilter::make(),
             ])
             ->recordActions([
+                ViewOnSite::row(),
                 EditAction::make(),
                 DeleteAction::make(),
                 RestoreAction::make(),

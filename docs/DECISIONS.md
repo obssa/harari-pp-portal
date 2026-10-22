@@ -1977,3 +1977,25 @@ to be switchable from the admin, with email only or no verification as the other
 
 **Consequences.** Without a code the portal cannot prove a phone or address belongs to the applicant;
 the review step carries that check. The member portal's sign-in still uses SMS codes (or Fayda).
+
+## ADR-0068 — "View on site" in the admin (2026-10-22)
+
+**Context.** Editors could not jump from what they were editing to the public page that shows it; they
+had to find it on the site by hand. The owner asked for a "View on site" button wherever something that
+appears on the portal is created or changed: posts, pages, forms and the rest.
+
+**Decision.**
+
+- `App\Support\PublicLinks` knows the public address of a record in each language that is live now
+  (`isLive()` of its translation): posts, pages (their full path), events, documents, projects,
+  galleries, videos, leaders, offices, leagues and forms. Drafts and scheduled languages, inactive
+  forms and members-only documents have none.
+- The edit page of each of those shows "View on site" with a choice of the published languages, opening
+  in a new tab. Before any language is published the button is greyed out and says so; for posts it
+  points to the existing preview link, which shows a draft.
+- Their lists get the same as a row icon, in the admin's language where it is published, else the first
+  published language. The homepage, menus and site settings get "View the site".
+
+**Consequences.** The button shows the page as visitors see it now, so changes appear after saving (and
+publishing, for content with a workflow). Drafts are seen through the preview link only.
+

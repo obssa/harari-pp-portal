@@ -13,6 +13,7 @@ use App\Domain\Social\Models\SocialSource;
 use App\Domain\Translation\Support\Locales;
 use App\Filament\Resources\Posts\PostResource;
 use App\Filament\Support\CurrentUser;
+use App\Filament\Support\ViewOnSite;
 use App\Http\Controllers\Public\PreviewController;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
@@ -32,6 +33,7 @@ class EditPost extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            ...ViewOnSite::header(),
             Action::make('sendToMedia')
                 ->label(__('press.distribution.send'))
                 ->icon(Heroicon::OutlinedNewspaper)

@@ -13,6 +13,7 @@ use App\Filament\Support\CalendarDate;
 use App\Filament\Support\CurrentUser;
 use App\Filament\Support\MediaPicker;
 use App\Filament\Support\Translatable;
+use App\Filament\Support\ViewOnSite;
 use BackedEnum;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -125,7 +126,7 @@ class PageResource extends Resource
                     ->formatStateUsing(CalendarDate::format(withTime: true))->sortable(),
             ])
             ->filters([TrashedFilter::make()])
-            ->recordActions([EditAction::make(), DeleteAction::make(), RestoreAction::make()]);
+            ->recordActions([ViewOnSite::row(), EditAction::make(), DeleteAction::make(), RestoreAction::make()]);
     }
 
     public static function getPages(): array

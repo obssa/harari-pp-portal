@@ -13,6 +13,7 @@ use App\Filament\Resources\Leaders\Pages\ListLeaders;
 use App\Filament\Support\DirectoryFields;
 use App\Filament\Support\MediaPicker;
 use App\Filament\Support\Translatable;
+use App\Filament\Support\ViewOnSite;
 use BackedEnum;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -140,7 +141,7 @@ class LeaderResource extends Resource
                 SelectFilter::make('body')->label(__('admin.leaders.field.body_group'))->options(LeaderBody::options()),
                 TrashedFilter::make(),
             ])
-            ->recordActions([EditAction::make(), DeleteAction::make(), RestoreAction::make()]);
+            ->recordActions([ViewOnSite::row(), EditAction::make(), DeleteAction::make(), RestoreAction::make()]);
     }
 
     public static function getPages(): array

@@ -18,6 +18,7 @@ use App\Filament\Support\CurrentUser;
 use App\Filament\Support\DirectoryFields;
 use App\Filament\Support\MediaPicker;
 use App\Filament\Support\Translatable;
+use App\Filament\Support\ViewOnSite;
 use App\Services\Calendar\EthiopianCalendar;
 use BackedEnum;
 use Filament\Actions\DeleteAction;
@@ -157,6 +158,7 @@ class EventResource extends Resource
                 TrashedFilter::make(),
             ])
             ->recordActions([
+                ViewOnSite::row(),
                 ViewAction::make()->hidden(fn (Event $record): bool => CurrentUser::get()->can('update', $record)),
                 EditAction::make(), DeleteAction::make(), RestoreAction::make(),
             ]);

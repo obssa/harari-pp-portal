@@ -11,6 +11,7 @@ use App\Filament\Resources\Offices\OfficeResource;
 use App\Filament\Support\DirectoryFields;
 use App\Filament\Support\MediaPicker;
 use App\Filament\Support\Translatable;
+use App\Filament\Support\ViewOnSite;
 use BackedEnum;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -107,7 +108,7 @@ class LeagueResource extends Resource
                 DirectoryFields::languagesColumn(),
             ])
             ->filters([TrashedFilter::make()])
-            ->recordActions([EditAction::make(), DeleteAction::make(), RestoreAction::make()]);
+            ->recordActions([ViewOnSite::row(), EditAction::make(), DeleteAction::make(), RestoreAction::make()]);
     }
 
     public static function getPages(): array

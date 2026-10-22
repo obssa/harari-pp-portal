@@ -8,6 +8,7 @@ use App\Domain\Content\Models\Page;
 use App\Domain\Content\Models\PageTranslation;
 use App\Filament\Resources\Pages\PageResource;
 use App\Filament\Support\CurrentUser;
+use App\Filament\Support\ViewOnSite;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\RestoreAction;
 use Filament\Resources\Pages\EditRecord;
@@ -19,7 +20,7 @@ class EditPage extends EditRecord
 
     protected function getHeaderActions(): array
     {
-        return [DeleteAction::make(), RestoreAction::make()];
+        return [...ViewOnSite::header(), DeleteAction::make(), RestoreAction::make()];
     }
 
     /**

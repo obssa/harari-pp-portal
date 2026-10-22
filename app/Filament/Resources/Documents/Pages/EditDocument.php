@@ -8,6 +8,7 @@ use App\Domain\Documents\Models\DocumentTranslation;
 use App\Filament\Resources\Documents\DocumentResource;
 use App\Filament\Support\CurrentUser;
 use App\Filament\Support\DirectoryFields;
+use App\Filament\Support\ViewOnSite;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\RestoreAction;
 use Filament\Resources\Pages\EditRecord;
@@ -19,7 +20,7 @@ class EditDocument extends EditRecord
 
     protected function getHeaderActions(): array
     {
-        return [DeleteAction::make(), RestoreAction::make()];
+        return [...ViewOnSite::header(), DeleteAction::make(), RestoreAction::make()];
     }
 
     /**

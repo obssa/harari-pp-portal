@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Domain\Translation\Support\Locales;
 use App\Filament\Support\CurrentUser;
+use App\Filament\Support\ViewOnSite;
 use App\Services\Calendar\EthiopianCalendar;
 use App\Settings\SiteSettings;
 use BackedEnum;
@@ -148,5 +149,15 @@ class ManageSiteSettings extends SettingsPage
         }
 
         return $data;
+    }
+
+    /**
+     * ADR-0068: open the public site to see the result.
+     *
+     * @return list<Action>
+     */
+    protected function getHeaderActions(): array
+    {
+        return [ViewOnSite::site()];
     }
 }

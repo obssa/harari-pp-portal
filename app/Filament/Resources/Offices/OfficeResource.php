@@ -12,6 +12,7 @@ use App\Filament\Resources\Offices\Pages\ListOffices;
 use App\Filament\Support\DirectoryFields;
 use App\Filament\Support\MediaPicker;
 use App\Filament\Support\Translatable;
+use App\Filament\Support\ViewOnSite;
 use BackedEnum;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -130,7 +131,7 @@ class OfficeResource extends Resource
                 SelectFilter::make('type')->label(__('admin.offices.field.type'))->options(OfficeType::options()),
                 TrashedFilter::make(),
             ])
-            ->recordActions([EditAction::make(), DeleteAction::make(), RestoreAction::make()]);
+            ->recordActions([ViewOnSite::row(), EditAction::make(), DeleteAction::make(), RestoreAction::make()]);
     }
 
     /**
