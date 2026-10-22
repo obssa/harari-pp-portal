@@ -158,15 +158,15 @@
                     </div>
                     <div class="grid gap-4 sm:grid-cols-2">
                         <div>
-                            <label for="phone" class="font-medium">{{ __('membership.field.phone') }}</label>
-                            <input id="phone" name="phone" type="tel" value="{{ $value('phone', $application?->phone) }}" required maxlength="20" autocomplete="tel" inputmode="tel" dir="ltr"
+                            <label for="phone" class="font-medium">{{ $verification === 'email' ? __('membership.field.phone_optional') : __('membership.field.phone') }}</label>
+                            <input id="phone" name="phone" type="tel" value="{{ $value('phone', $application?->phone) }}" @required($verification !== 'email') maxlength="20" autocomplete="tel" inputmode="tel" dir="ltr"
                                    aria-describedby="phone-help @error('phone') phone-error @enderror" @error('phone') aria-invalid="true" @enderror class="{{ $field }}">
-                            <p id="phone-help" class="mt-1 text-sm text-ink-muted">{{ __('membership.help.phone') }}</p>
+                            <p id="phone-help" class="mt-1 text-sm text-ink-muted">{{ $verification === 'sms' ? __('membership.help.phone') : __('membership.help.phone_contact') }}</p>
                             @error('phone')<p id="phone-error" class="mt-1 text-sm text-danger-600">{{ $message }}</p>@enderror
                         </div>
                         <div>
-                            <label for="email" class="font-medium">{{ __('membership.field.email') }}</label>
-                            <input id="email" name="email" type="email" value="{{ $value('email', $application?->email) }}" maxlength="190" autocomplete="email" dir="ltr"
+                            <label for="email" class="font-medium">{{ $verification === 'email' ? __('membership.field.email_required') : __('membership.field.email') }}</label>
+                            <input id="email" name="email" type="email" value="{{ $value('email', $application?->email) }}" @required($verification === 'email') maxlength="190" autocomplete="email" dir="ltr"
                                    @error('email') aria-invalid="true" aria-describedby="email-error" @enderror class="{{ $field }}">
                             @error('email')<p id="email-error" class="mt-1 text-sm text-danger-600">{{ $message }}</p>@enderror
                         </div>
@@ -182,13 +182,17 @@
                     <dl class="mt-4 grid gap-x-6 gap-y-2 sm:grid-cols-2">
                         <div><dt class="text-sm text-ink-muted">{{ __('membership.field.name') }}</dt><dd>{{ $application->name }}</dd></div>
                         <div><dt class="text-sm text-ink-muted">{{ __('membership.field.birth_date') }}</dt><dd>@if ($birth)<x-date :date="$birth" />@endif</dd></div>
-                        <div><dt class="text-sm text-ink-muted">{{ __('membership.field.phone') }}</dt><dd dir="ltr">{{ $application->phone }}</dd></div>
+                        <div><dt class="text-sm text-ink-muted">{{ __('membership.field.phone') }}</dt><dd dir="ltr">{{ $application->phone ?? '—' }}</dd></div>
+                        @if ($application->email)
+                            <div><dt class="text-sm text-ink-muted">{{ __('membership.field.email_short') }}</dt><dd dir="ltr">{{ $application->email }}</dd></div>
+                        @endif
                         <div><dt class="text-sm text-ink-muted">{{ __('membership.field.woreda_id') }}</dt><dd>{{ $application->woreda_id ? ($woredas[$application->woreda_id] ?? '—') : ($application->address_note ?? '—') }}</dd></div>
                     </dl>
                     <p class="mt-4 text-sm"><a href="{{ route('membership.apply', ['step' => 'about']) }}" class="text-link underline-offset-4 hover:underline">{{ __('membership.change') }}</a></p>
                 </section>
 
-                <form method="post" action="{{ route('membership.code') }}" class="mt-8 space-y-5" novalidate>
+                {{-- ADR-0067: a code by SMS or email, or none, as Settings → Membership asks. --}}
+                <form method="post" action="{{ $verification === 'none' ? route('membership.submit') : route('membership.code') }}" class="mt-8 space-y-5" novalidate>
                     @csrf
                     <div>
                         <div class="flex items-start gap-3">
@@ -198,17 +202,22 @@
                         </div>
                         @error('consent')<p id="consent-error" class="mt-1 text-sm text-danger-600">{{ $message }}</p>@enderror
                     </div>
-                    <button type="submit" class="{{ $codeSent ? $secondary : $button }}">{{ $codeSent ? __('membership.resend_code') : __('membership.send_code') }}</button>
+                    @if ($verification === 'none')
+                        <button type="submit" class="{{ $button }}">{{ __('membership.submit') }}</button>
+                    @else
+                        <p class="text-sm text-ink-muted">{{ $verification === 'email' ? __('membership.help.send_code_email', ['email' => $application->email]) : __('membership.help.send_code_sms', ['phone' => $application->phone]) }}</p>
+                        <button type="submit" class="{{ $codeSent ? $secondary : $button }}">{{ $codeSent ? __('membership.resend_code') : __('membership.send_code') }}</button>
+                    @endif
                 </form>
 
-                @if ($codeSent)
+                @if ($codeSent && $verification !== 'none')
                     <form method="post" action="{{ route('membership.verify') }}" class="mt-8 max-w-sm space-y-4" novalidate>
                         @csrf
                         <div>
-                            <label for="code" class="font-medium">{{ __('membership.field.code') }}</label>
+                            <label for="code" class="font-medium">{{ $verification === 'email' ? __('membership.field.code_email') : __('membership.field.code') }}</label>
                             <input id="code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" dir="ltr" required
                                    aria-describedby="code-help @error('code') code-error @enderror" @error('code') aria-invalid="true" @enderror class="{{ $field }} text-lg tracking-widest">
-                            <p id="code-help" class="mt-1 text-sm text-ink-muted">{{ __('membership.help.code', ['phone' => $application->phone]) }}</p>
+                            <p id="code-help" class="mt-1 text-sm text-ink-muted">{{ $verification === 'email' ? __('membership.help.code_email', ['email' => $application->email]) : __('membership.help.code', ['phone' => $application->phone]) }}</p>
                             @error('code')<p id="code-error" class="mt-1 text-sm text-danger-600">{{ $message }}</p>@enderror
                         </div>
                         <button type="submit" class="{{ $button }}">{{ __('membership.submit') }}</button>

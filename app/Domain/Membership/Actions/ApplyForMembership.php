@@ -4,6 +4,8 @@ namespace App\Domain\Membership\Actions;
 
 use App\Domain\Access\Support\OfficeScope;
 use App\Domain\Membership\Enums\ApplicationStatus;
+use App\Domain\Membership\Mail\ApplicationCodeMail;
+use App\Domain\Membership\Mail\ApplicationReceivedMail;
 use App\Domain\Membership\Models\MembershipApplication;
 use App\Domain\Membership\Notifications\NewApplicationNotice;
 use App\Domain\Membership\Support\ApplicationOptions;
@@ -13,8 +15,10 @@ use App\Domain\Organisation\Models\Office;
 use App\Models\User;
 use App\Services\Calendar\EthiopianCalendar;
 use App\Services\Sms\SendSms;
+use App\Settings\MembershipSettings;
 use App\Support\PhoneNumber;
 use Carbon\CarbonImmutable;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
 use Throwable;
@@ -22,7 +26,8 @@ use Throwable;
 /**
  * The membership application, step by step (PLAN.md §4, ADR-0044): about the
  * person, where they live and how to reach them, then consent and a code by
- * SMS that proves the phone is theirs. Only then is the application
+ * SMS that proves the phone is theirs — or, as Settings → Membership asks
+ * (ADR-0067), a code by email or no code at all. Only then is the application
  * submitted. Whether a phone or ID number has applied before is never told
  * to the visitor; officers see possible duplicates.
  */
@@ -128,19 +133,22 @@ final class ApplyForMembership
             $errors['woreda_id'] = __('membership.validation.place');
         }
 
-        $phone = PhoneNumber::normalise(trim((string) ($input['phone'] ?? '')));
-        if ($phone === null) {
+        // ADR-0067: by email, the address is required and the phone optional; otherwise the phone is required.
+        $byEmail = MembershipSettings::verification() === MembershipSettings::EMAIL;
+        $typedPhone = trim((string) ($input['phone'] ?? ''));
+        $phone = PhoneNumber::normalise($typedPhone);
+        if ($phone === null && (! $byEmail || $typedPhone !== '')) {
             $errors['phone'] = __('events.registration.validation.phone');
         }
         $email = mb_strtolower(trim((string) ($input['email'] ?? '')));
-        if ($email !== '' && (mb_strlen($email) > 190 || filter_var($email, FILTER_VALIDATE_EMAIL) === false)) {
+        if (($email !== '' || $byEmail) && (mb_strlen($email) > 190 || filter_var($email, FILTER_VALIDATE_EMAIL) === false)) {
             $errors['email'] = __('events.registration.validation.email');
         }
         if ($errors !== []) {
             throw ValidationException::withMessages($errors);
         }
 
-        $phoneChanged = $application->phone !== $phone;
+        $contactChanged = $application->phone !== $phone || $application->email !== ($email !== '' ? $email : null);
         $application->fill([
             'woreda_id' => $woreda instanceof Office ? $woreda->id : null,
             'kebele_id' => $kebele instanceof Office ? $kebele->id : null,
@@ -151,8 +159,8 @@ final class ApplyForMembership
             'email' => $email !== '' ? $email : null,
             'email_hash' => $email !== '' ? MembershipApplication::hash($email) : null,
         ]);
-        if ($phoneChanged) {
-            // A new number needs a new code.
+        if ($contactChanged) {
+            // A new number or address needs a new code.
             $application->forceFill(['code_hash' => null, 'code_expires_at' => null, 'code_attempts' => 0]);
         }
         $application->save();
@@ -161,21 +169,26 @@ final class ApplyForMembership
     }
 
     /**
-     * Step 3: consent, then a code by SMS to the phone given.
+     * Step 3: consent, then a code by SMS to the phone or by email to the
+     * address given, as Settings → Membership asks (ADR-0067).
      */
     public function sendCode(MembershipApplication $application, bool $consent): void
     {
         $this->assertEditable($application);
+        $byEmail = MembershipSettings::verification() === MembershipSettings::EMAIL;
+        if (MembershipSettings::verification() === MembershipSettings::NONE) {
+            throw ValidationException::withMessages(['form' => __('membership.validation.no_code_needed')]);
+        }
         if (! $consent) {
             throw ValidationException::withMessages(['consent' => __('events.registration.validation.consent')]);
         }
-        if ($application->phone === null || $application->name === null) {
+        if (($byEmail ? $application->email : $application->phone) === null || $application->name === null) {
             throw ValidationException::withMessages(['form' => __('membership.validation.incomplete')]);
         }
         if ($application->code_sent_at !== null && $application->code_sent_at->diffInSeconds(CarbonImmutable::now()) < self::RESEND_SECONDS) {
             throw ValidationException::withMessages(['code' => __('membership.validation.wait', ['seconds' => self::RESEND_SECONDS])]);
         }
-        $perPhone = 'membership-code:'.$application->phone_hash;
+        $perPhone = 'membership-code:'.($byEmail ? $application->email_hash : $application->phone_hash);
         if ($application->codes_sent >= self::CODES_PER_APPLICATION || RateLimiter::tooManyAttempts($perPhone, self::CODES_PER_APPLICATION)) {
             throw ValidationException::withMessages(['code' => __('membership.validation.too_many_codes')]);
         }
@@ -192,7 +205,41 @@ final class ApplyForMembership
         RateLimiter::hit($perPhone, 86400);
 
         // Sent at once, not queued: the person is waiting for it.
-        SendSms::dispatchSync($application->phone, __('membership.sms.code', ['code' => $code, 'minutes' => self::CODE_MINUTES], $application->locale));
+        if ($byEmail) {
+            Mail::to((string) $application->email)->locale($application->locale)->send(new ApplicationCodeMail($code, self::CODE_MINUTES));
+        } else {
+            SendSms::dispatchSync((string) $application->phone, __('membership.sms.code', ['code' => $code, 'minutes' => self::CODE_MINUTES], $application->locale));
+        }
+    }
+
+    /**
+     * Step 3 when no code is asked for (ADR-0067): consent, and the
+     * application is submitted at once.
+     */
+    public function submit(MembershipApplication $application, bool $consent): MembershipApplication
+    {
+        $this->assertEditable($application);
+        if (MembershipSettings::verification() !== MembershipSettings::NONE) {
+            throw ValidationException::withMessages(['code' => __('membership.validation.code')]);
+        }
+        if (! $consent) {
+            throw ValidationException::withMessages(['consent' => __('events.registration.validation.consent')]);
+        }
+        if ($application->phone === null || $application->name === null) {
+            throw ValidationException::withMessages(['form' => __('membership.validation.incomplete')]);
+        }
+
+        $now = CarbonImmutable::now();
+        $application->forceFill([
+            'consented_at' => $application->consented_at ?? $now,
+            'submitted_at' => $now,
+            'status' => ApplicationStatus::Submitted,
+        ])->save();
+
+        $this->confirm($application);
+        $this->tellOfficers($application);
+
+        return $application;
     }
 
     /**
@@ -218,7 +265,7 @@ final class ApplyForMembership
         $application->forceFill([
             'code_hash' => null,
             'code_expires_at' => null,
-            'phone_verified_at' => $now,
+            MembershipSettings::verification() === MembershipSettings::EMAIL ? 'email_verified_at' : 'phone_verified_at' => $now,
             'submitted_at' => $now,
             'status' => ApplicationStatus::Submitted,
         ])->save();
@@ -232,7 +279,11 @@ final class ApplyForMembership
     private function confirm(MembershipApplication $application): void
     {
         try {
-            SendSms::dispatch((string) $application->phone, __('membership.sms.received', ['reference' => $application->reference], $application->locale));
+            if (MembershipSettings::verification() === MembershipSettings::SMS && $application->phone !== null) {
+                SendSms::dispatch($application->phone, __('membership.sms.received', ['reference' => $application->reference], $application->locale));
+            } elseif ($application->email !== null) {
+                Mail::to($application->email)->locale($application->locale)->queue(new ApplicationReceivedMail($application->reference, $application->locale));
+            }
         } catch (Throwable $e) {
             report($e);
         }

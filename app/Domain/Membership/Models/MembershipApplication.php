@@ -49,6 +49,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property ?CarbonImmutable $code_sent_at
  * @property ?CarbonImmutable $consented_at
  * @property ?CarbonImmutable $phone_verified_at
+ * @property ?CarbonImmutable $email_verified_at
  * @property ?CarbonImmutable $submitted_at
  * @property ?int $reviewer_id
  * @property ?CarbonImmutable $decided_at
@@ -94,6 +95,7 @@ class MembershipApplication extends Model
             'code_sent_at' => 'immutable_datetime',
             'consented_at' => 'immutable_datetime',
             'phone_verified_at' => 'immutable_datetime',
+            'email_verified_at' => 'immutable_datetime',
             'submitted_at' => 'immutable_datetime',
             'decided_at' => 'immutable_datetime',
             'erased_at' => 'immutable_datetime',

@@ -4,6 +4,12 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Choose how applications are confirmed (2026-10-22)
+
+- Administration → Membership: confirm applications to join with a code by SMS (as before), a code by
+  email (the phone becomes optional), or no code (ADR-0067). The status page accepts the phone or the
+  email address.
+
 ### Motion and a new leadership page (2026-10-22)
 
 - The homepage opening carries slowly turning basket plates over Harar Gate, a slow zoom on the photo

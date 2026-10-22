@@ -10,6 +10,7 @@ use App\Domain\Organisation\Enums\OfficeType;
 use App\Domain\Organisation\Models\Office;
 use App\Domain\Organisation\Queries\PublicDirectory;
 use App\Http\Controllers\Controller;
+use App\Settings\MembershipSettings;
 use App\Support\PhoneNumber;
 use App\Support\SpamGuard;
 use App\Support\Turnstile;
@@ -36,7 +37,7 @@ final class MembershipController extends Controller
         $step = match (true) {
             $application === null => 'about',
             in_array($requested, self::STEPS, true) && $this->reached($application, $requested) => $requested,
-            $application->phone === null => 'place',
+            $application->phone === null && $application->email === null => 'place',
             default => 'confirm',
         };
 
@@ -48,6 +49,7 @@ final class MembershipController extends Controller
             'basicOrganisations' => $this->offices(OfficeType::BasicOrganisation),
             'turnstileKey' => $turnstile->siteKey(),
             'codeSent' => $application?->code_hash !== null && $application->code_expires_at?->isFuture(),
+            'verification' => MembershipSettings::verification(),
         ]);
     }
 
@@ -74,7 +76,18 @@ final class MembershipController extends Controller
     {
         $apply->sendCode($this->required($request), $request->boolean('consent'));
 
-        return redirect()->route('membership.apply', ['step' => 'confirm'])->with('status', __('membership.code_sent'));
+        return redirect()->route('membership.apply', ['step' => 'confirm'])->with('status', __(MembershipSettings::verification() === MembershipSettings::EMAIL ? 'membership.code_sent_email' : 'membership.code_sent'));
+    }
+
+    /**
+     * ADR-0067: send the application without a code, when Settings → Membership asks for none.
+     */
+    public function submit(Request $request, ApplyForMembership $apply): RedirectResponse
+    {
+        $application = $apply->submit($this->required($request), $request->boolean('consent'));
+        $request->session()->forget(self::SESSION);
+
+        return redirect()->route('membership.done')->with('reference', $application->reference);
     }
 
     public function verify(Request $request, ApplyForMembership $apply): RedirectResponse
@@ -100,11 +113,14 @@ final class MembershipController extends Controller
         $searched = $request->isMethod('POST');
         if ($searched) {
             $reference = MembershipApplication::normaliseReference((string) $request->input('reference', ''));
-            $phone = PhoneNumber::normalise((string) $request->input('phone', ''));
-            if ($reference !== '' && $phone !== null) {
+            // ADR-0067: the phone or, for applications confirmed by email, the email address.
+            $contact = trim((string) $request->input('phone', ''));
+            $phone = PhoneNumber::normalise($contact);
+            $email = str_contains($contact, '@') ? mb_strtolower($contact) : null;
+            if ($reference !== '' && ($phone !== null || $email !== null)) {
                 $found = MembershipApplication::query()
                     ->where('reference', $reference)
-                    ->where('phone_hash', MembershipApplication::hash($phone))
+                    ->where($phone !== null ? 'phone_hash' : 'email_hash', MembershipApplication::hash($phone ?? (string) $email))
                     ->whereNotIn('status', [ApplicationStatus::Started->value])
                     ->whereNull('erased_at')
                     ->first();
@@ -136,7 +152,7 @@ final class MembershipController extends Controller
     {
         return match ($step) {
             'about', 'place' => true,
-            default => $application->phone !== null,
+            default => $application->phone !== null || $application->email !== null,
         };
     }
 

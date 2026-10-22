@@ -1956,3 +1956,24 @@ come first, then the secretariat and the rest.
   basket plate instead of a blank circle. The page ends with how the branch is organised.
 
 **Consequences.** The enum keeps its order for the admin; only the public page reorders.
+
+## ADR-0067 — Membership applications confirmed by SMS, email or not at all (2026-10-22)
+
+**Context.** Applications to join were confirmed only by a code sent by SMS (ADR-0044). The branch has no
+SMS gateway yet, so nobody can finish an application on staging; the owner asked for SMS verification
+to be switchable from the admin, with email only or no verification as the other choices.
+
+**Decision.**
+
+- Administration → Membership (`MembershipSettings::verification`): "A code by SMS" (default),
+  "A code by email" or "No code". Super Admins change it; those who may view settings see it; every
+  change is recorded like other settings.
+- By SMS nothing changes. By email, the email address is required and the phone optional; the code
+  (`ApplicationCodeMail`, sent at once) goes to the address and `email_verified_at` is set. With no code,
+  the last step asks only for consent and submits (`ApplyForMembership::submit`); officers check the
+  details when they review. The "application received" message goes by SMS when SMS is in use,
+  otherwise by email when an address was given.
+- The status page finds an application by its reference with either the phone or the email address.
+
+**Consequences.** Without a code the portal cannot prove a phone or address belongs to the applicant;
+the review step carries that check. The member portal's sign-in still uses SMS codes (or Fayda).

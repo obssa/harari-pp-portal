@@ -15,8 +15,8 @@
                     <input id="reference" name="reference" type="text" value="{{ old('reference', request('reference')) }}" required maxlength="20" autocomplete="off" dir="ltr" class="{{ $field }}">
                 </div>
                 <div>
-                    <label for="phone" class="font-medium">{{ __('membership.field.phone') }}</label>
-                    <input id="phone" name="phone" type="tel" required maxlength="20" autocomplete="tel" inputmode="tel" dir="ltr" class="{{ $field }}">
+                    <label for="phone" class="font-medium">{{ __('membership.status.contact') }}</label>
+                    <input id="phone" name="phone" type="text" required maxlength="190" autocomplete="tel" dir="ltr" class="{{ $field }}">
                 </div>
                 <div class="sm:col-span-2">
                     <button type="submit" class="inline-flex items-center rounded-control bg-primary-600 px-5 py-2.5 font-semibold text-white hover:bg-primary-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600">{{ __('membership.status.check') }}</button>

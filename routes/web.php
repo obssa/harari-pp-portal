@@ -171,6 +171,7 @@ Route::prefix('{locale}')
         Route::post('membership/apply/place', [MembershipController::class, 'place'])->middleware('throttle:membership')->name('membership.place');
         Route::post('membership/apply/code', [MembershipController::class, 'sendCode'])->middleware('throttle:membership')->name('membership.code');
         Route::post('membership/apply/verify', [MembershipController::class, 'verify'])->middleware('throttle:membership')->name('membership.verify');
+        Route::post('membership/apply/submit', [MembershipController::class, 'submit'])->middleware('throttle:membership')->name('membership.submit');
         Route::get('membership/done', [MembershipController::class, 'done'])->middleware(NoStore::class)->name('membership.done');
         Route::match(['get', 'post'], 'membership/status', [MembershipController::class, 'status'])->middleware(['throttle:search', NoStore::class])->name('membership.status');
 
