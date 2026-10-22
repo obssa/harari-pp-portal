@@ -109,3 +109,9 @@ Drafts for the branch office's legal reviewers; the English text is the referenc
 | `social.facebook.*`, `social.telegram.*`, `admin.settings.site.*facebook_feed*` | am, om | the Facebook and Telegram cards | "cookies" (ኩኪዎች / kuukii); "plugin" (ተሰኪ) |
 | Head's photo descriptions in `database/content/pack.json` | om | photo alt text | poster wording "kutannoon ni hojjenna" |
 
+## Social media redesign (ADR-0072)
+
+| Keys or text | Languages | Context | Doubts |
+|---|---|---|---|
+| `social.section.*`, `social.action.*`, `social.telegram.latest/read/all`, `social.facebook.slow/unreachable*` | am, om | social cards | "Subscribe" (ይመዝገቡ / Galmaa'aa) for YouTube; "connection" (ኔትዎርክ / quunnamtii) |
+

@@ -5,6 +5,8 @@ use App\Domain\Media\Actions\UploadMedia;
 use App\Domain\Media\Models\Media;
 use App\Domain\Organisation\Actions\SaveLeader;
 use App\Domain\Organisation\Models\Leader;
+use App\Domain\Social\Enums\Platform;
+use App\Domain\Social\Models\SocialSource;
 use App\Settings\SiteSettings;
 
 /**
@@ -38,8 +40,10 @@ it('shows the party\'s Facebook page beside its Telegram channel, loading Facebo
     expect($html)->toContain('srcdoc=', __('social.facebook.show', [], 'en'))
         ->and($html)->toContain(e('https://www.facebook.com/plugins/page.php?href='.urlencode('https://www.facebook.com/profile.php?id=100064354104698')))
         ->and($html)->not->toContain('<iframe src="https://www.facebook.com/plugins')
-        ->and($html)->toContain('href="https://t.me/hrprosperityparty"', 'href="https://t.me/s/hrprosperityparty"', __('social.telegram.title', [], 'en'))
-        ->and($html)->toContain('href="https://www.youtube.com/@sample"');
+        ->and($html)->toContain('href="https://t.me/hrprosperityparty"', 'href="https://t.me/s/hrprosperityparty"', __('social.telegram.latest', [], 'en'))
+        ->and($html)->toContain('href="https://www.youtube.com/@sample"', '@hrprosperityparty', '@sample', __('social.action.subscribe', [], 'en'))
+        ->and(substr_count($html, 'href="https://www.facebook.com/profile.php?id=100064354104698"'))->toBeGreaterThan(1)
+        ->and($html)->toContain(__('social.facebook.slow', [], 'en'));
 
     expect($this->get('/en')->headers->get('Content-Security-Policy'))->toContain('frame-src', 'https://www.facebook.com', 'https://web.facebook.com');
 
@@ -50,6 +54,30 @@ it('shows the party\'s Facebook page beside its Telegram channel, loading Facebo
     socialSettings(['facebook' => 'https://www.facebook.com/profile.php?id=100064354104698'], 'off');
     expect((string) $this->get('/en')->getContent())->not->toContain('facebook.com/plugins')
         ->toContain('href="https://www.facebook.com/profile.php?id=100064354104698"');
+});
+
+it('loads the Facebook posts at once unless an administrator chose otherwise', function () {
+    $settings = app(SiteSettings::class);
+    $settings->social_links = ['facebook' => 'https://www.facebook.com/profile.php?id=100064354104698'];
+    $settings->save();
+
+    expect($settings->facebook_feed)->toBe('auto')
+        ->and((string) $this->get('/en')->getContent())->toContain('<iframe src="https://www.facebook.com/plugins/page.php?');
+});
+
+it('shows the latest Telegram posts as the server read them, with their pictures on this site', function () {
+    socialSettings(['telegram' => 'https://t.me/hrprosperityparty']);
+    $source = SocialSource::query()->create(['platform' => Platform::Telegram, 'handle' => 'hrprosperityparty', 'name' => 'Sample channel']);
+    foreach ([1, 2, 3, 4, 5] as $n) {
+        $source->posts()->create(['external_id' => (string) $n, 'posted_at' => now()->subHours(6 - $n), 'text' => "Sample channel post {$n}", 'permalink' => "https://t.me/hrprosperityparty/{$n}"]);
+    }
+
+    $this->get('/en')->assertOk()
+        ->assertSeeInOrder(['Sample channel post 5', 'Sample channel post 4', 'Sample channel post 3', 'Sample channel post 2'])
+        ->assertDontSee('Sample channel post 1')
+        ->assertSee('href="https://t.me/hrprosperityparty/5"', escape: false)
+        ->assertSee(__('social.telegram.read', [], 'en'))
+        ->assertSee(__('social.telegram.all', [], 'en'));
 });
 
 it('lets administrators choose how the Facebook posts load', function () {

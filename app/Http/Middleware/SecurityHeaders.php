@@ -66,7 +66,8 @@ final class SecurityHeaders
             "style-src-attr 'unsafe-inline'",
             "img-src 'self' data: blob:",
             "font-src 'self'",
-            "connect-src 'self'",
+            // ADR-0072: a no-cors check that Facebook answers before its page plugin is loaded.
+            "connect-src 'self' https://www.facebook.com",
             "media-src 'self'",
             // ADR-0071: the Facebook page plugin (Facebook may answer from web.facebook.com).
             "frame-src 'self' https://www.youtube-nocookie.com https://www.openstreetmap.org https://challenges.cloudflare.com https://www.facebook.com https://web.facebook.com",

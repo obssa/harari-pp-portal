@@ -4,6 +4,13 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Social media, redesigned (2026-10-22)
+
+- The homepage's social section shows the latest Telegram posts in the site's own cards (read by the
+  server, pictures on this site), beside a Facebook card that loads the page's posts at once and explains
+  when Facebook is not reachable on the visitor's connection; cards for the other pages (ADR-0072).
+- The social media page, the contact page and the footer show each page with its mark.
+
 ### Facebook posts and the head's photos (2026-10-22)
 
 - The homepage and the social media page show the party's Facebook page (after the visitor agrees, or as

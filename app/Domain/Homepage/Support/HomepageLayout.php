@@ -17,10 +17,11 @@ use App\Domain\Organisation\Models\Leader;
 use App\Domain\Organisation\Models\League;
 use App\Domain\Organisation\Queries\PublicDirectory;
 use App\Domain\Projects\Models\Project;
+use App\Domain\Social\Enums\Platform;
+use App\Domain\Social\Models\SocialPost;
 use App\Domain\Social\Queries\SocialFeed;
 use App\Settings\CarouselSettings;
-use App\Settings\SiteSettings;
-use App\View\Components\SiteFooter;
+use App\Support\SocialLinks;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection as SupportCollection;
@@ -174,43 +175,35 @@ final class HomepageLayout
     }
 
     /**
-     * The party's pages (ADR-0071): its Facebook page through Facebook's
-     * plugin, its Telegram channel, its other pages, and the latest posts
-     * gathered from the sources the branch connected.
+     * The party on social media (ADR-0071, ADR-0072): its pages, the Facebook
+     * page through Facebook's plugin, the latest posts of its Telegram channel
+     * as the server read them, and posts gathered from its other pages.
      *
-     * @return array{facebook: ?string, mode: string, telegram: ?string, telegram_preview: ?string, links: array<string, array{name: string, url: string}>, posts: SupportCollection<int, mixed>}|null
+     * @return array{links: array<string, array<string, string>>, facebook: array{page: string, mode: string}|null, telegram: ?string, telegram_preview: ?string, telegram_posts: Collection<int, SocialPost>, posts: Collection<int, SocialPost>}|null
      */
     private function social(int $limit): ?array
     {
+        $links = SocialLinks::all();
+        $telegram = $links['telegram']['url'] ?? null;
         try {
-            $settings = app(SiteSettings::class);
-            $links = $settings->social_links;
-            $mode = in_array($settings->facebook_feed, SiteSettings::FACEBOOK_FEED, true) ? $settings->facebook_feed : 'ask';
-        } catch (\Throwable) {
-            [$links, $mode] = [[], 'ask'];
+            $telegramPosts = $telegram !== null ? SocialFeed::query(Platform::Telegram)->limit(4)->get() : new Collection;
+            // With the channel's own panel, its posts are not repeated below; without it they join the others.
+            $posts = SocialFeed::query()
+                ->when($telegram !== null, fn ($query) => $query->whereHas('source', fn ($source) => $source->where('platform', '!=', Platform::Telegram->value)))
+                ->limit(min($limit, 3))->get();
+        } catch (QueryException) {
+            [$telegramPosts, $posts] = [new Collection, new Collection];
         }
-        $url = fn (string $platform): ?string => is_string($links[$platform] ?? null) && str_starts_with($links[$platform], 'https://') ? $links[$platform] : null;
-
-        $facebook = $mode !== 'off' ? $url('facebook') : null;
-        $telegram = $url('telegram');
-        $others = [];
-        foreach (SiteFooter::PLATFORMS as $platform => $name) {
-            $link = $url($platform);
-            if ($link !== null && ! ($platform === 'facebook' && $facebook !== null) && $platform !== 'telegram') {
-                $others[$platform] = ['name' => $name, 'url' => $link];
-            }
-        }
-        $posts = SocialFeed::latest($facebook !== null ? min($limit, 4) : $limit);
-        if ($facebook === null && $telegram === null && $others === [] && $posts->isEmpty()) {
+        if ($links === [] && $telegramPosts->isEmpty() && $posts->isEmpty()) {
             return null;
         }
 
         return [
-            'facebook' => $facebook,
-            'mode' => $mode,
+            'links' => $links,
+            'facebook' => SocialLinks::facebookFeed(),
             'telegram' => $telegram,
-            'telegram_preview' => $telegram !== null && preg_match('#^https://t\.me/([A-Za-z0-9_]{4,})/?$#', $telegram, $m) === 1 ? "https://t.me/s/{$m[1]}" : $telegram,
-            'links' => $others,
+            'telegram_preview' => SocialLinks::telegramPreview($telegram),
+            'telegram_posts' => $telegramPosts,
             'posts' => $posts,
         ];
     }

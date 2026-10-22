@@ -78,14 +78,11 @@
                     @endif
                 </dl>
 
-                @if ($settings->social_links !== [])
+                @php $socialLinks = \App\Support\SocialLinks::all(); @endphp
+                @if ($socialLinks !== [])
                     <div>
                         <h2 class="font-semibold">{{ __('footer.follow') }}</h2>
-                        <ul class="mt-2 space-y-1">
-                            @foreach ($settings->social_links as $platform => $link)
-                                <li><a href="{{ $link }}" rel="noopener" class="text-link underline-offset-4 hover:underline">{{ \Illuminate\Support\Str::headline((string) $platform) }}</a></li>
-                            @endforeach
-                        </ul>
+                        <x-social.platforms :links="$socialLinks" stacked class="mt-3" />
                     </div>
                 @endif
 

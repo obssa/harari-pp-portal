@@ -82,10 +82,16 @@
         @if ($social !== [])
             <section aria-labelledby="footer-follow">
                 <h2 id="footer-follow" class="text-xs font-bold tracking-wider text-gold-400 uppercase">{{ __('footer.follow') }}</h2>
-                <ul class="mt-4 space-y-2">
+                {{-- ADR-0072: each page with its mark, coloured on hover. --}}
+                <ul class="mt-4 space-y-2.5">
                     @foreach ($social as $platform => $link)
                         <li>
-                            <a href="{{ $link['url'] }}" rel="noopener me" class="underline-offset-4 hover:underline">{{ $link['name'] }}</a>
+                            <a href="{{ $link['url'] }}" rel="noopener me" class="group inline-flex items-center gap-3 underline-offset-4 hover:underline">
+                                <span class="inline-flex size-9 items-center justify-center rounded-full bg-white/10 text-white transition-colors group-hover:bg-[var(--brand)]" style="--brand: {{ \App\Support\SocialLinks::PLATFORMS[$platform][1] ?? '#1877F2' }}">
+                                    <x-social-icon :platform="$platform" class="size-[1.1rem]" />
+                                </span>
+                                {{ $link['name'] }}
+                            </a>
                         </li>
                     @endforeach
                 </ul>

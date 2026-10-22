@@ -16,6 +16,8 @@ use App\Domain\Organisation\Enums\LeaderBody;
 use App\Domain\Organisation\Models\Leader;
 use App\Domain\Organisation\Models\League;
 use App\Domain\Organisation\Models\Office;
+use App\Domain\Social\Enums\Platform;
+use App\Domain\Social\Models\SocialSource;
 use App\Settings\SiteSettings;
 use Illuminate\Support\Facades\File;
 use Illuminate\Validation\ValidationException;
@@ -99,6 +101,36 @@ it('keeps the social links and homepage an editor already set', function () {
     app(LoadContentPack::class)->handle(samplePack(['settings' => ['social_links' => ['telegram' => 'https://t.me/hrprosperityparty', 'facebook' => 'https://facebook.com/sample']]]));
 
     expect(app(SiteSettings::class)->social_links)->toBe(['telegram' => 'https://t.me/sample_channel', 'facebook' => 'https://facebook.com/sample']);
+});
+
+it('adds the party\'s channel to the social hub once and never brings it back after an editor removed it', function () {
+    staff(SystemRole::SuperAdmin, mfa: false);
+    $path = samplePack(['social_sources' => [
+        ['key' => 'social.telegram.sample', 'platform' => 'telegram', 'handle' => 'sample_channel', 'name' => 'Sample channel', 'interval_minutes' => 5],
+        ['key' => 'social.sample.unknown', 'platform' => 'sample-network', 'handle' => 'sample'],
+    ]]);
+
+    expect(app(LoadContentPack::class)->handle($path))->toBe(['social_sources' => 1]);
+    $source = SocialSource::query()->sole();
+    expect($source->platform)->toBe(Platform::Telegram)
+        ->and($source->name)->toBe('Sample channel')
+        ->and($source->interval_minutes)->toBe(15)
+        ->and($source->enabled)->toBeTrue();
+
+    $source->delete();
+
+    expect(app(LoadContentPack::class)->handle($path))->toBe([])
+        ->and(SocialSource::query()->count())->toBe(0);
+});
+
+it('leaves a channel an editor already added to the social hub', function () {
+    staff(SystemRole::SuperAdmin, mfa: false);
+    SocialSource::query()->create(['platform' => Platform::Telegram, 'handle' => 'sample_channel', 'name' => 'Added by an editor']);
+
+    expect(app(LoadContentPack::class)->handle(samplePack(['social_sources' => [
+        ['key' => 'social.telegram.sample', 'platform' => 'telegram', 'handle' => 'sample_channel', 'name' => 'Sample channel'],
+    ]])))->toBe([])
+        ->and(SocialSource::query()->sole()->name)->toBe('Added by an editor');
 });
 
 it('corrects a name and a phrase once, as the branch office asked, and then leaves them to editors', function () {

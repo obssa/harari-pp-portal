@@ -25,6 +25,8 @@ use App\Domain\Organisation\Actions\SaveOffice;
 use App\Domain\Organisation\Models\Leader;
 use App\Domain\Organisation\Models\League;
 use App\Domain\Organisation\Models\Office;
+use App\Domain\Social\Enums\Platform;
+use App\Domain\Social\Models\SocialSource;
 use App\Filament\Pages\ManageHomepage;
 use App\Models\User;
 use App\Settings\SiteSettings;
@@ -108,6 +110,9 @@ final class LoadContentPack
         $this->homepageSections((array) ($pack['homepage'] ?? []), $actor);
         foreach ((array) ($pack['slides'] ?? []) as $item) {
             $this->slide((array) $item, $photos, $actor);
+        }
+        foreach ((array) ($pack['social_sources'] ?? []) as $item) {
+            $this->socialSource((array) $item);
         }
         $this->socialLinks((array) ($pack['settings']['social_links'] ?? []));
         $this->importedBacklog();
@@ -402,6 +407,34 @@ final class LoadContentPack
             ContentPackItem::remember($key, $slide);
             $this->counts['slides'] = ($this->counts['slides'] ?? 0) + 1;
         });
+    }
+
+    /**
+     * A page of the party the social hub reads (ADR-0072), added once unless
+     * an editor already added it; the schedule fetches its posts.
+     *
+     * @param  array<string, mixed>  $item
+     */
+    private function socialSource(array $item): void
+    {
+        $key = (string) ($item['key'] ?? '');
+        $platform = Platform::tryFrom((string) ($item['platform'] ?? ''));
+        $handle = trim((string) ($item['handle'] ?? ''));
+        if ($key === '' || $platform === null || $handle === '' || ContentPackItem::query()->where('key', $key)->exists()) {
+            return;
+        }
+
+        $exists = SocialSource::query()->where('platform', $platform->value)->where('handle', $handle)->exists();
+        $source = $exists ? null : SocialSource::query()->create([
+            'platform' => $platform,
+            'handle' => $handle,
+            'name' => (string) ($item['name'] ?? $handle),
+            'interval_minutes' => max(15, (int) ($item['interval_minutes'] ?? 60)),
+        ]);
+        ContentPackItem::remember($key, $source);
+        if ($source !== null) {
+            $this->counts['social_sources'] = ($this->counts['social_sources'] ?? 0) + 1;
+        }
     }
 
     /**

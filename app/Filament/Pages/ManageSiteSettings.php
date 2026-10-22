@@ -140,8 +140,8 @@ class ManageSiteSettings extends SettingsPage
                             ->label(__('admin.settings.site.field.facebook_feed'))
                             ->helperText(__('admin.settings.site.help.facebook_feed'))
                             ->options([
-                                'ask' => __('admin.settings.site.facebook_feed.ask'),
                                 'auto' => __('admin.settings.site.facebook_feed.auto'),
+                                'ask' => __('admin.settings.site.facebook_feed.ask'),
                                 'off' => __('admin.settings.site.facebook_feed.off'),
                             ])
                             ->required()

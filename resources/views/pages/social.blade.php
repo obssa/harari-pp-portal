@@ -48,12 +48,12 @@
             </form>
         @endif
 
-        <div class="mt-8 grid gap-10 lg:grid-cols-4">
-            <div class="lg:col-span-3">
+        <div class="mt-8 grid gap-10 lg:grid-cols-3">
+            <div class="lg:col-span-2">
                 @if ($posts->isEmpty())
                     <p class="rounded-card border border-line bg-surface px-5 py-8 text-center text-ink-muted">{{ __('directory.empty') }}</p>
                 @else
-                    <ul class="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+                    <ul class="grid gap-6 sm:grid-cols-2">
                         @foreach ($posts as $post)
                             <li class="flex"><x-social-post :post="$post" :heading-level="2" class="w-full" /></li>
                         @endforeach
@@ -63,33 +63,30 @@
             </div>
 
             @php
-                try {
-                    $siteSettings = app(\App\Settings\SiteSettings::class);
-                    $facebookPage = $siteSettings->facebook_feed !== 'off' && str_starts_with((string) ($siteSettings->social_links['facebook'] ?? ''), 'https://') ? $siteSettings->social_links['facebook'] : null;
-                    $facebookMode = $siteSettings->facebook_feed;
-                } catch (\Throwable) {
-                    [$facebookPage, $facebookMode] = [null, 'ask'];
-                }
+                $facebookFeed = \App\Support\SocialLinks::facebookFeed();
+                $socialLinks = array_diff_key(\App\Support\SocialLinks::all(), $facebookFeed !== null ? ['facebook' => true] : []);
+                $codes = $follow->filter(fn (array $item): bool => (bool) $item['qr']);
             @endphp
-            @if ($follow->isNotEmpty() || $facebookPage !== null)
-                <aside aria-labelledby="social-follow">
+            @if ($socialLinks !== [] || $facebookFeed !== null || $codes->isNotEmpty())
+                {{-- ADR-0072: the party's pages, its Facebook page and the codes to scan, beside the gathered posts. --}}
+                <aside aria-labelledby="social-follow" class="space-y-6">
                     <h2 id="social-follow" class="heading-3">{{ __('footer.follow') }}</h2>
-                    @if ($facebookPage !== null)
-                        {{-- ADR-0071: the party's Facebook page beside the gathered posts. --}}
-                        <x-facebook-feed :page="$facebookPage" :mode="$facebookMode" :height="560" class="mt-4" />
+                    @if ($socialLinks !== [])
+                        <x-social.platforms :links="$socialLinks" stacked />
                     @endif
-                    <ul class="mt-4 space-y-4">
-                        @foreach ($follow as $item)
-                            <li class="rounded-card border border-line bg-surface p-4 text-sm">
-                                <p class="font-medium">{{ $item['source']->name }}</p>
-                                <p class="text-ink-muted">{{ $item['source']->platform->label() }}</p>
-                                <a href="{{ $item['source']->url() }}" rel="noopener me" class="mt-2 inline-flex rounded-control border border-line px-3 py-1.5 hover:bg-surface-muted">{{ __('social.hub.follow_on', ['platform' => $item['source']->platform->label()]) }}</a>
-                                @if ($item['qr'])
-                                    <img src="{{ $item['qr'] }}" alt="{{ __('social.hub.qr_alt', ['name' => $item['source']->name]) }}" width="128" height="128" loading="lazy" class="mt-3 size-32 rounded bg-white p-1">
-                                @endif
-                            </li>
-                        @endforeach
-                    </ul>
+                    @if ($facebookFeed !== null)
+                        <x-facebook-feed :page="$facebookFeed['page']" :mode="$facebookFeed['mode']" :height="560" />
+                    @endif
+                    @if ($codes->isNotEmpty())
+                        <ul class="grid grid-cols-2 gap-4">
+                            @foreach ($codes as $item)
+                                <li class="rounded-card border border-line bg-surface p-3 text-center text-sm">
+                                    <img src="{{ $item['qr'] }}" alt="{{ __('social.hub.qr_alt', ['name' => $item['source']->name]) }}" width="128" height="128" loading="lazy" class="mx-auto size-28 rounded bg-white p-1">
+                                    <p class="mt-2 font-semibold">{{ $item['source']->platform->label() }}</p>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
                 </aside>
             @endif
         </div>

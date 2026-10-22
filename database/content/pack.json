@@ -1,7 +1,7 @@
 {
   "version": 1,
   "compiled": "2026-10-21",
-  "note": "Real content gathered from public sources on 2026-10-21; every item carries its source. Loaded once per key by `php artisan content:load-pack` (ADR-0063, ADR-0065, ADR-0069, ADR-0070, ADR-0071).",
+  "note": "Real content gathered from public sources on 2026-10-21; every item carries its source. Loaded once per key by `php artisan content:load-pack` (ADR-0063, ADR-0065, ADR-0069, ADR-0070, ADR-0071, ADR-0072).",
   "leagues": [
     {
       "key": "league.women",
@@ -4761,6 +4761,15 @@
           }
         }
       ]
+    }
+  ],
+  "social_sources": [
+    {
+      "key": "social.telegram.hrprosperityparty",
+      "platform": "telegram",
+      "handle": "hrprosperityparty",
+      "name": "Harari Region Prosperity Party",
+      "interval_minutes": 30
     }
   ]
 }

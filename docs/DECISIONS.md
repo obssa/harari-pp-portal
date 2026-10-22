@@ -2083,3 +2083,33 @@ Facebook posts only with a page token from the branch's account, which is still 
 **Consequences.** Visitors who load the Facebook posts are seen by Facebook. When the branch provides a
 page token, the hub can also gather the posts into the site's own cards.
 
+## ADR-0072 — Social media, shown by the server first (2026-10-22)
+
+**Context.** The owner found the social section weak and the Facebook feed empty: behind a button, and even
+then only the page's header with a spinning or white area. Testing from Ethiopia showed why: facebook.com
+itself answered slowly or not at all while Telegram and Facebook's image servers answered. The page
+plugin is loaded by each visitor's browser from facebook.com, so on such connections it cannot show posts,
+whatever the site does.
+
+**Decision.**
+
+- What the server reads comes first. The content pack adds the party's Telegram channel as a social
+  source; the schedule reads it (no login, ADR-0031) and its latest posts appear in the site's own cards
+  with the pictures copied to this site, so they show wherever the site does.
+- The homepage section: a kicker, heading and lead; a card for each of the party's other pages (mark in
+  the platform's colour, name or @handle, Follow/Join/Subscribe); the Facebook card beside a "Latest on
+  Telegram" panel; and posts gathered from the other pages. Panel headers use darker brand shades so white
+  text keeps 4.5:1. The social media page, the contact page and the footer use the same cards and marks
+  (`App\Support\SocialLinks`).
+- The Facebook card loads the plugin at once by default (Settings → Site; existing "ask" becomes "auto",
+  "off" stays), once the card nears the screen and only after a no-cors check that facebook.com answers
+  (`connect-src` allows it). If it does not answer, or the plugin has not loaded after 20 seconds, the card
+  says Facebook is not loading on this connection and links to the page and the news instead of showing a
+  white frame or the browser's error page. Post-shaped placeholders sit behind the frame while it loads.
+- Facebook posts in the site's own cards need a page token from the branch office (Content → Social
+  sources, ADR-0030); with it the server reads the page the way it reads Telegram.
+
+**Consequences.** Visitors whose connection reaches Facebook see the plugin at once (and are seen by
+Facebook); others see the message and the Telegram posts. One more small script (0.6 KB) on pages with the
+Facebook card.
+
