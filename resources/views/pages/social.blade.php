@@ -62,9 +62,22 @@
                 @endif
             </div>
 
-            @if ($follow->isNotEmpty())
+            @php
+                try {
+                    $siteSettings = app(\App\Settings\SiteSettings::class);
+                    $facebookPage = $siteSettings->facebook_feed !== 'off' && str_starts_with((string) ($siteSettings->social_links['facebook'] ?? ''), 'https://') ? $siteSettings->social_links['facebook'] : null;
+                    $facebookMode = $siteSettings->facebook_feed;
+                } catch (\Throwable) {
+                    [$facebookPage, $facebookMode] = [null, 'ask'];
+                }
+            @endphp
+            @if ($follow->isNotEmpty() || $facebookPage !== null)
                 <aside aria-labelledby="social-follow">
                     <h2 id="social-follow" class="heading-3">{{ __('footer.follow') }}</h2>
+                    @if ($facebookPage !== null)
+                        {{-- ADR-0071: the party's Facebook page beside the gathered posts. --}}
+                        <x-facebook-feed :page="$facebookPage" :mode="$facebookMode" :height="560" class="mt-4" />
+                    @endif
                     <ul class="mt-4 space-y-4">
                         @foreach ($follow as $item)
                             <li class="rounded-card border border-line bg-surface p-4 text-sm">

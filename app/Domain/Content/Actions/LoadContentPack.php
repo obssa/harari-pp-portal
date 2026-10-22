@@ -229,6 +229,18 @@ final class LoadContentPack
                 }
             }
 
+            if ($record instanceof Leader && $record->photo_ids === null && ($update['photos'] ?? []) !== []) {
+                $ids = [];
+                foreach ((array) $update['photos'] as $photo) {
+                    $ids[] = $this->photo($photos, [
+                        'photo' => $photo['file'] ?? '',
+                        'translations' => array_map(fn (string $alt): array => ['name' => $alt], (array) ($photo['alt'] ?? [])),
+                    ], $actor, (string) ($photo['credit'] ?? ''));
+                }
+                $record->forceFill(['photo_ids' => array_values(array_filter($ids)) ?: null, 'updated_by' => $actor->id])->save();
+                $this->usage->handle($record, 'photos', $record->photo_ids ?? []);
+            }
+
             if ($record instanceof Leader) {
                 foreach ((array) ($update['rename'] ?? []) as $locale => $values) {
                     $translation = $record->translations()->where('locale', (string) $locale)->first();

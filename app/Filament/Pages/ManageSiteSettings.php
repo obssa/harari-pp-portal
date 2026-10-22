@@ -131,10 +131,22 @@ class ManageSiteSettings extends SettingsPage
 
                 Section::make(__('admin.settings.site.section.social'))
                     ->columns(2)
-                    ->schema(array_map(fn (string $network): TextInput => TextInput::make("social_links.{$network}")
-                        ->label(__('admin.settings.site.social.'.$network))
-                        ->url()
-                        ->maxLength(500), self::SOCIAL)),
+                    ->schema([
+                        ...array_map(fn (string $network): TextInput => TextInput::make("social_links.{$network}")
+                            ->label(__('admin.settings.site.social.'.$network))
+                            ->url()
+                            ->maxLength(500), self::SOCIAL),
+                        Radio::make('facebook_feed')
+                            ->label(__('admin.settings.site.field.facebook_feed'))
+                            ->helperText(__('admin.settings.site.help.facebook_feed'))
+                            ->options([
+                                'ask' => __('admin.settings.site.facebook_feed.ask'),
+                                'auto' => __('admin.settings.site.facebook_feed.auto'),
+                                'off' => __('admin.settings.site.facebook_feed.off'),
+                            ])
+                            ->required()
+                            ->columnSpanFull(),
+                    ]),
             ]);
     }
 

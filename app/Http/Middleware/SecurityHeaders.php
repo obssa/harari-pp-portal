@@ -68,7 +68,8 @@ final class SecurityHeaders
             "font-src 'self'",
             "connect-src 'self'",
             "media-src 'self'",
-            "frame-src 'self' https://www.youtube-nocookie.com https://www.openstreetmap.org https://challenges.cloudflare.com",
+            // ADR-0071: the Facebook page plugin (Facebook may answer from web.facebook.com).
+            "frame-src 'self' https://www.youtube-nocookie.com https://www.openstreetmap.org https://challenges.cloudflare.com https://www.facebook.com https://web.facebook.com",
             "object-src 'none'",
             "base-uri 'self'",
             "form-action 'self'",

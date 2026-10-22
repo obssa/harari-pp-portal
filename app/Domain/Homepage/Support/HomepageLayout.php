@@ -19,6 +19,8 @@ use App\Domain\Organisation\Queries\PublicDirectory;
 use App\Domain\Projects\Models\Project;
 use App\Domain\Social\Queries\SocialFeed;
 use App\Settings\CarouselSettings;
+use App\Settings\SiteSettings;
+use App\View\Components\SiteFooter;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection as SupportCollection;
@@ -131,7 +133,7 @@ final class HomepageLayout
             SectionKey::Video => $this->video($locale),
             SectionKey::Projects => $this->nonEmptyProjects(PublicDirectory::visible(Project::query(), $locale)->with(['cover', 'sector.translations'])
                 ->orderByDesc('featured')->orderByDesc('updated_at')->limit($limit)->get()),
-            SectionKey::Social => ($social = SocialFeed::latest($limit))->isEmpty() ? null : $social,
+            SectionKey::Social => $this->social($limit),
             SectionKey::Events => $this->nonEmptyEvents(PublicDirectory::visible(Event::query(), $locale)->upcoming()->orderBy('starts_at')->limit($limit)->get()),
             SectionKey::Partners => $this->items($section, $locale, 'label', ['url']),
         };
@@ -169,6 +171,48 @@ final class HomepageLayout
         }
 
         return ['slides' => $slides, 'settings' => $settings];
+    }
+
+    /**
+     * The party's pages (ADR-0071): its Facebook page through Facebook's
+     * plugin, its Telegram channel, its other pages, and the latest posts
+     * gathered from the sources the branch connected.
+     *
+     * @return array{facebook: ?string, mode: string, telegram: ?string, telegram_preview: ?string, links: array<string, array{name: string, url: string}>, posts: SupportCollection<int, mixed>}|null
+     */
+    private function social(int $limit): ?array
+    {
+        try {
+            $settings = app(SiteSettings::class);
+            $links = $settings->social_links;
+            $mode = in_array($settings->facebook_feed, SiteSettings::FACEBOOK_FEED, true) ? $settings->facebook_feed : 'ask';
+        } catch (\Throwable) {
+            [$links, $mode] = [[], 'ask'];
+        }
+        $url = fn (string $platform): ?string => is_string($links[$platform] ?? null) && str_starts_with($links[$platform], 'https://') ? $links[$platform] : null;
+
+        $facebook = $mode !== 'off' ? $url('facebook') : null;
+        $telegram = $url('telegram');
+        $others = [];
+        foreach (SiteFooter::PLATFORMS as $platform => $name) {
+            $link = $url($platform);
+            if ($link !== null && ! ($platform === 'facebook' && $facebook !== null) && $platform !== 'telegram') {
+                $others[$platform] = ['name' => $name, 'url' => $link];
+            }
+        }
+        $posts = SocialFeed::latest($facebook !== null ? min($limit, 4) : $limit);
+        if ($facebook === null && $telegram === null && $others === [] && $posts->isEmpty()) {
+            return null;
+        }
+
+        return [
+            'facebook' => $facebook,
+            'mode' => $mode,
+            'telegram' => $telegram,
+            'telegram_preview' => $telegram !== null && preg_match('#^https://t\.me/([A-Za-z0-9_]{4,})/?$#', $telegram, $m) === 1 ? "https://t.me/s/{$m[1]}" : $telegram,
+            'links' => $others,
+            'posts' => $posts,
+        ];
     }
 
     /**

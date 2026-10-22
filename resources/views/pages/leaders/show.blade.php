@@ -75,6 +75,39 @@
                 </aside>
             </div>
 
+            @php $photos = $leader->photos(); @endphp
+            @if ($photos->isNotEmpty())
+                {{-- ADR-0071: the profile's photos; each opens large over the page, without script. --}}
+                <section aria-labelledby="leader-photos" class="mt-14">
+                    <h2 id="leader-photos" class="heading-2">{{ __('leaders.photos') }}</h2>
+                    <ul class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+                        @foreach ($photos as $number => $photo)
+                            <li>
+                                <a href="#leader-photo-{{ $number + 1 }}" class="group block overflow-hidden rounded-card bg-surface-muted ring-1 ring-line focus-visible:outline-3 focus-visible:outline-gold-500">
+                                    <x-picture :media="$photo" preset="square" sizes="(min-width: 64rem) 18rem, 50vw" class="aspect-square w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                    @foreach ($photos as $number => $photo)
+                        <div id="leader-photo-{{ $number + 1 }}" role="dialog" aria-modal="true" aria-label="{{ $photo->altFor() ?: __('leaders.photos') }}"
+                             class="fixed inset-0 z-50 hidden place-items-center bg-primary-950/90 p-4 target:grid">
+                            <figure class="max-h-full max-w-5xl">
+                                <img src="{{ $photo->getUrl() }}" alt="{{ $photo->altFor() }}" loading="lazy" decoding="async" class="max-h-[80vh] w-auto rounded-card object-contain shadow-2xl">
+                                <figcaption class="mt-3 flex flex-wrap items-center justify-between gap-3 text-sm text-white/85">
+                                    <span>{{ $photo->altFor() }}@if (filled($photo->credit)) · {{ __('content.photo_credit', ['credit' => $photo->credit]) }}@endif</span>
+                                    <span class="flex gap-2">
+                                        @if ($number > 0)<a href="#leader-photo-{{ $number }}" class="rounded-full px-3 py-1.5 ring-1 ring-white/40 hover:bg-white/10">{{ __('leaders.photo_previous') }}</a>@endif
+                                        @if ($number < $photos->count() - 1)<a href="#leader-photo-{{ $number + 2 }}" class="rounded-full px-3 py-1.5 ring-1 ring-white/40 hover:bg-white/10">{{ __('leaders.photo_next') }}</a>@endif
+                                        <a href="#leader-photos" class="rounded-full bg-gold-500 px-3 py-1.5 font-semibold text-ink-brand hover:bg-gold-400">{{ __('leaders.photo_close') }}</a>
+                                    </span>
+                                </figcaption>
+                            </figure>
+                        </div>
+                    @endforeach
+                </section>
+            @endif
+
             <x-directory.posts :posts="$posts" :heading="__('leaders.posts')" />
         </div>
     </article>

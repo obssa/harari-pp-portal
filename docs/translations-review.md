@@ -102,3 +102,10 @@ Drafts for the branch office's legal reviewers; the English text is the referenc
 | `homepage.carousel.*`, `admin.carousel.*` | am, om | the carousel and its admin | "carousel" (ተንሸራታች ማሳያ / agarsiisa fakkiiwwanii); "slide" (ስላይድ / fakkii); "come into focus" |
 | Slides in `database/content/pack.json` | om | the banner's tagline and the head's message | "Medemer" as Ida'amuu; "fraternity" (እህትማማችነት) as obbolummaa; "all-round prosperity" as badhaadhina hundagaleessa |
 
+## Facebook posts and profile photos (ADR-0071)
+
+| Keys or text | Languages | Context | Doubts |
+|---|---|---|---|
+| `social.facebook.*`, `social.telegram.*`, `admin.settings.site.*facebook_feed*` | am, om | the Facebook and Telegram cards | "cookies" (ኩኪዎች / kuukii); "plugin" (ተሰኪ) |
+| Head's photo descriptions in `database/content/pack.json` | om | photo alt text | poster wording "kutannoon ni hojjenna" |
+

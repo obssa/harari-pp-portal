@@ -4,6 +4,12 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Facebook posts and the head's photos (2026-10-22)
+
+- The homepage and the social media page show the party's Facebook page (after the visitor agrees, or as
+  set under Settings → Site) beside its Telegram channel (ADR-0071).
+- Profiles get a photo gallery; H.E Getu Wayyesa Tola's profile shows four photos from the branch office.
+
 ### Homepage carousel (2026-10-22)
 
 - The homepage opens with a carousel: the welcome over Harar Gate, the Prosperity Party campaign banner

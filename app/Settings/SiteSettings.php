@@ -33,6 +33,11 @@ class SiteSettings extends Settings
     /** @var array<string, string> platform => URL */
     public array $social_links;
 
+    /** ADR-0071: the Facebook page's posts on the site: off, after the visitor agrees (ask), or at once (auto). */
+    public string $facebook_feed;
+
+    public const FACEBOOK_FEED = ['off', 'ask', 'auto'];
+
     public static function group(): string
     {
         return 'site';

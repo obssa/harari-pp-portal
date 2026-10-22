@@ -1,7 +1,7 @@
 {
   "version": 1,
   "compiled": "2026-10-21",
-  "note": "Real content gathered from public sources on 2026-10-21; every item carries its source. Loaded once per key by `php artisan content:load-pack` (ADR-0063, ADR-0065, ADR-0069, ADR-0070).",
+  "note": "Real content gathered from public sources on 2026-10-21; every item carries its source. Loaded once per key by `php artisan content:load-pack` (ADR-0063, ADR-0065, ADR-0069, ADR-0070, ADR-0071).",
   "leagues": [
     {
       "key": "league.women",
@@ -4573,6 +4573,48 @@
           ]
         ]
       }
+    },
+    {
+      "key": "leader.getu-weyesa#photos-2026-10-22",
+      "target": "leader.getu-weyesa",
+      "photos": [
+        {
+          "file": "getu-wayyesa-tola-office.jpg",
+          "credit": "Harari Region Prosperity Party",
+          "alt": {
+            "en": "H.E Getu Wayyesa Tola at his desk, between the Ethiopian flag and the party's flag",
+            "am": "ክቡር አቶ ጌቱ ወዬሳ ቶላ በኢትዮጵያና በፓርቲው ሰንደቅ ዓላማዎች መካከል በጠረጴዛቸው",
+            "om": "Kabajamoo Obbo Geetuu Wayyeessaa Tolaa minjaala isaanii biratti, alaabaa Itoophiyaa fi alaabaa paartii gidduutti"
+          }
+        },
+        {
+          "file": "getu-wayyesa-tola-emblem.jpg",
+          "credit": "Harari Region Prosperity Party",
+          "alt": {
+            "en": "H.E Getu Wayyesa Tola seated before the emblem of Harari Region Prosperity Party",
+            "am": "ክቡር አቶ ጌቱ ወዬሳ ቶላ በሐረሪ ክልል ብልጽግና ፓርቲ አርማ ፊት ተቀምጠው",
+            "om": "Kabajamoo Obbo Geetuu Wayyeessaa Tolaa mallattoo Paartii Badhaadhinaa Naannoo Hararii duratti taa'anii"
+          }
+        },
+        {
+          "file": "getu-wayyesa-tola-commitment.jpg",
+          "credit": "Harari Region Prosperity Party",
+          "alt": {
+            "en": "Poster of H.E Getu Wayyesa Tola: \"We work with commitment to ensure the all-round benefit of our people!\"",
+            "am": "የክቡር አቶ ጌቱ ወዬሳ ቶላ ፖስተር፦ «የህዝባችንን ሁለተናዊ ተጠቃሚነት ለማረጋገጥ በቁርጠኝነት እንሰራለን!»",
+            "om": "Poostarii Kabajamoo Obbo Geetuu Wayyeessaa Tolaa: \"Fayyadamummaa hundagaleessa ummata keenyaa mirkaneessuuf kutannoon ni hojjenna!\""
+          }
+        },
+        {
+          "file": "getu-wayyesa-tola-message.jpg",
+          "credit": "Harari Region Prosperity Party",
+          "alt": {
+            "en": "Poster of H.E Getu Wayyesa Tola on the values of togetherness, respect and fraternity",
+            "am": "የክቡር አቶ ጌቱ ወዬሳ ቶላ ፖስተር ስለ አብሮነት፣ መከባበርና እህትማማችነት እሴቶች",
+            "om": "Poostarii Kabajamoo Obbo Geetuu Wayyeessaa Tolaa duudhaawwan tokkummaa, wal kabajuu fi obbolummaa irratti"
+          }
+        }
+      ]
     }
   ],
   "slides": [

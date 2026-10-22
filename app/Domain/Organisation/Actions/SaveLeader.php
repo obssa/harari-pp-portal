@@ -4,6 +4,8 @@ namespace App\Domain\Organisation\Actions;
 
 use App\Domain\Content\Actions\WriteTranslations;
 use App\Domain\Media\Actions\SyncMediaUsage;
+use App\Domain\Media\Enums\MediaKind;
+use App\Domain\Media\Models\Media;
 use App\Domain\Organisation\Enums\LeaderBody;
 use App\Domain\Organisation\Models\Leader;
 use App\Domain\Organisation\Models\League;
@@ -62,6 +64,7 @@ final class SaveLeader
                 'term_start' => $termStart,
                 'term_end' => $termEnd,
                 'portrait_id' => filled($data['portrait_id'] ?? null) ? (int) $data['portrait_id'] : null,
+                'photo_ids' => self::photoIds($data['photo_ids'] ?? null),
                 'phone' => filled($data['phone'] ?? null) ? trim((string) $data['phone']) : null,
                 'email' => WriteTranslations::email($data['email'] ?? null),
                 'socials' => WriteTranslations::socials($data['socials'] ?? null, Leader::SOCIALS),
@@ -76,6 +79,7 @@ final class SaveLeader
 
             $this->translations->handle($leader, $translations, ['position', 'summary'], $actor->can('leaders.manage'));
             $this->usage->handle($leader, 'portrait', [$leader->portrait_id]);
+            $this->usage->handle($leader, 'photos', $leader->photo_ids ?? []);
 
             return $leader->refresh();
         });
@@ -92,5 +96,21 @@ final class SaveLeader
         } catch (Throwable) {
             throw ValidationException::withMessages(['data.term_start' => __('organisation.validation.date')]);
         }
+    }
+
+    /**
+     * Gallery photos (ADR-0071): library images only, each once, in order.
+     *
+     * @return list<int>|null
+     */
+    public static function photoIds(mixed $ids): ?array
+    {
+        $ids = array_values(array_unique(array_filter(array_map('intval', (array) $ids))));
+        if ($ids === []) {
+            return null;
+        }
+        $images = Media::query()->whereKey($ids)->whereIn('kind', [MediaKind::Image->value, MediaKind::Vector->value])->pluck('id')->map(fn ($id): int => (int) $id)->all();
+
+        return array_slice(array_values(array_filter($ids, fn (int $id): bool => in_array($id, $images, true))), 0, Leader::MAX_PHOTOS) ?: null;
     }
 }

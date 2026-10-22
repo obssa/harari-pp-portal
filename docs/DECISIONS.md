@@ -2061,3 +2061,25 @@ professional slider.
 count). The leaders' strip in the banner is cut from the image the branch supplied; the people in it are
 not named on the site.
 
+## ADR-0071 — The Facebook page on the site, and a photo gallery on profiles (2026-10-22)
+
+**Context.** The branch office asked for its Facebook page's posts on the site (its Telegram channel
+only linked), and for more photos of its head on his profile. The social hub (ADR-0030) can gather
+Facebook posts only with a page token from the branch's account, which is still to come.
+
+**Decision.**
+
+- Facebook's own page plugin (an iframe from facebook.com, no Facebook script on our pages) shows the
+  page's timeline on the homepage's social section, beside a Telegram card ("Join the channel", "See
+  recent posts" at `t.me/s/…`) and the other pages, and in the social media page's sidebar. The page is
+  the one in Settings → Site → Social links.
+- Settings → Site → "Facebook posts on the site": after the visitor agrees (the default, like maps:
+  nothing loads from Facebook until they press "Show the Facebook posts"), straight away, or not at all.
+  `frame-src` allows `www.facebook.com` and `web.facebook.com`.
+- Leaders get a photo gallery (`photo_ids`, library images in the editor's order, up to 24) under the
+  profile; each photo opens large over the page with previous/next/close links and no script. The
+  content pack adds four photos of H.E Getu Wayyesa Tola once.
+
+**Consequences.** Visitors who load the Facebook posts are seen by Facebook. When the branch provides a
+page token, the hub can also gather the posts into the site's own cards.
+
