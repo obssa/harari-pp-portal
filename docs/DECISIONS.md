@@ -1935,3 +1935,24 @@ asked for real photos of Harar — Jugol and the administration — and pages of
 
 **Consequences.** The Harar photos are the site's own files; replacing one means new files and a new
 entry in `HararPhotos`. Story cards no longer depend on every post having a photo.
+
+## ADR-0066 — Motion, and a leadership page that leads with the region's government (2026-10-22)
+
+**Context.** The owner asked for the homepage opening to carry the basket-plate circles and more motion,
+for the leadership page to reach the same standard, and for the region's government and councils to
+come first, then the secretariat and the rest.
+
+**Decision.**
+
+- Motion that never hides text: things slide up and sharpen from a slight blur but are never
+  transparent, so contrast holds at every frame and the headline counts as painted at once (no
+  Lighthouse penalty). The Harar Gate photo zooms slowly, the plates turn very slowly, the welcome
+  rises in steps, and cards and tiles rise into place as they scroll in (CSS scroll timelines where the
+  browser has them, still elsewhere). Nothing moves for visitors who ask for reduced motion.
+- The leadership page opens on night blue with links to each group and its count; the head of the
+  branch office is featured; the groups follow in `LeaderBody::displayOrder()`: the region's government
+  and councils, then the party's bodies (executive and central committee, secretariat, office heads,
+  wings), each with a short description. People without a photo get initials on night blue with a
+  basket plate instead of a blank circle. The page ends with how the branch is organised.
+
+**Consequences.** The enum keeps its order for the admin; only the public page reorders.

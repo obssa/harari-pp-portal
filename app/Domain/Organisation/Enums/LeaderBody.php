@@ -17,6 +17,22 @@ enum LeaderBody: string
     case Leagues = 'leagues';
     case Government = 'government';
 
+    /**
+     * The order of the leadership page (ADR-0066): the region's government
+     * and councils first, then the party's bodies.
+     *
+     * @return list<self>
+     */
+    public static function displayOrder(): array
+    {
+        return [self::Government, self::ExecutiveCommittee, self::CentralCommittee, self::Secretariat, self::OfficeHeads, self::Leagues];
+    }
+
+    public function description(?string $locale = null): string
+    {
+        return __("organisation.leader_body_desc.{$this->value}", [], $locale);
+    }
+
     public function label(?string $locale = null): string
     {
         return __("organisation.leader_body.{$this->value}", [], $locale);

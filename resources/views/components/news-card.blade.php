@@ -6,7 +6,7 @@
 @endphp
 {{-- ADR-0065: every story card has the same parts in the same places: picture (or the party's placeholder), labels, title, summary, date. --}}
 <article lang="{{ $shown->locale }}" {{ $attributes->class([
-    'group relative flex h-full flex-col overflow-hidden rounded-[1.25rem] border border-line bg-surface transition duration-200 hover:-translate-y-0.5 hover:border-gold-500 hover:shadow-xl',
+    'reveal group relative flex h-full flex-col overflow-hidden rounded-[1.25rem] border border-line bg-surface transition duration-200 hover:-translate-y-0.5 hover:border-gold-500 hover:shadow-xl',
 ]) }}>
     <div @class(['relative overflow-hidden bg-primary-900', 'aspect-[16/10] shrink-0' => ! $lead, 'aspect-[16/9] shrink-0 lg:aspect-auto lg:min-h-[18rem] lg:flex-1' => $lead])>
         @if ($post->featuredImage)

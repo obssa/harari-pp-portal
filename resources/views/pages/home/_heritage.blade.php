@@ -8,7 +8,7 @@
 {{-- ADR-0065: Harar itself — a Harari home hung with basket plates, a Jugol alley, the wall at Buda Gate. --}}
 <section aria-labelledby="home-heritage" class="bg-surface-muted">
     <div class="mx-auto grid max-w-page items-center gap-12 px-4 py-20 sm:px-6 lg:grid-cols-[1.15fr_1fr]">
-        <figure>
+        <figure class="reveal">
             <div class="grid h-[26rem] grid-cols-3 grid-rows-2 gap-3 sm:h-[34rem]">
                 <div class="relative col-span-2 row-span-2 overflow-hidden rounded-[1.5rem] bg-primary-900">
                     <x-harar-photo name="interior" sizes="(min-width: 64rem) 42rem, 66vw" class="size-full object-cover" />

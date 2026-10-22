@@ -3,7 +3,7 @@
     <h2 id="home-values" class="heading-2">{{ $section->heading() }}</h2>
     <ul class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         @foreach ($data as $item)
-            <li class="flex flex-col gap-3 rounded-card border border-line bg-surface p-5">
+            <li class="reveal flex flex-col gap-3 rounded-card border border-line bg-surface p-5 transition hover:-translate-y-1 hover:border-gold-500 hover:shadow-lg">
                 <span aria-hidden="true" class="flex size-11 items-center justify-center rounded-full {{ $tints[$loop->index % 4] }}">
                     <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4" stroke-dasharray="none"/></svg>
                 </span>

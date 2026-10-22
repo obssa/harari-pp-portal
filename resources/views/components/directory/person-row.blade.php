@@ -1,10 +1,10 @@
 @props(['leader', 'translation', 'role' => null])
 {{-- ADR-0065: a person in a sidebar or a list: round portrait, name, position; the whole row is the link. --}}
-<article {{ $attributes->class('group relative flex items-center gap-4 rounded-card border border-line bg-surface p-3 pe-4 transition-colors duration-150 hover:border-gold-500') }} lang="{{ $translation->locale }}">
+<article {{ $attributes->class('reveal group relative flex items-center gap-4 rounded-card border border-line bg-surface p-3 pe-4 transition-colors duration-150 hover:border-gold-500') }} lang="{{ $translation->locale }}">
     @if ($leader->portrait)
         <x-picture :media="$leader->portrait" preset="square" sizes="4rem" class="size-14 shrink-0 rounded-full object-cover ring-2 ring-surface-muted group-hover:ring-gold-500" />
     @else
-        <span aria-hidden="true" class="flex size-14 shrink-0 items-center justify-center rounded-full bg-primary-900 text-lg font-extrabold text-white ring-2 ring-surface-muted group-hover:ring-gold-500">{{ mb_substr($translation->name, 0, 1) }}</span>
+        <span aria-hidden="true" class="flex size-14 shrink-0 items-center justify-center rounded-full bg-linear-135 from-primary-700 to-primary-950 text-base font-extrabold tracking-wide text-white ring-2 ring-surface-muted group-hover:ring-gold-500">{{ \App\Support\Initials::of($translation->name) }}</span>
     @endif
     <div class="min-w-0">
         @if ($role)

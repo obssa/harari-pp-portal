@@ -26,7 +26,7 @@ final class LeaderController extends Controller
             ->get();
 
         $groups = [];
-        foreach (LeaderBody::cases() as $body) {
+        foreach (LeaderBody::displayOrder() as $body) {
             $members = $leaders->filter(fn (Leader $leader): bool => $leader->body === $body)->values();
             if ($members->isNotEmpty()) {
                 $groups[] = ['body' => $body, 'leaders' => $members];

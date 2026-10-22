@@ -21,7 +21,7 @@
                     @endphp
                     @continue($shown === null)
                     <li lang="{{ $shown->locale }}">
-                        <article class="group relative flex h-full min-h-64 flex-col justify-between overflow-hidden rounded-[1.5rem] p-8 text-white transition duration-200 hover:-translate-y-0.5 hover:shadow-2xl {{ $ground }}">
+                        <article class="reveal group relative flex h-full min-h-64 flex-col justify-between overflow-hidden rounded-[1.5rem] p-8 text-white transition duration-200 hover:-translate-y-0.5 hover:shadow-2xl {{ $ground }}">
                             @include('pages.home._plate', ['class' => 'pointer-events-none absolute -end-16 -top-16 size-60 opacity-30 transition-transform duration-700 group-hover:rotate-12'])
                             <div class="relative">
                                 <h2 class="text-3xl font-extrabold tracking-tight">

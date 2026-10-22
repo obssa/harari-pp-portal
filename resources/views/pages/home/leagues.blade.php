@@ -18,7 +18,7 @@
             @endphp
             @continue($shown === null)
             <li lang="{{ $shown->locale }}">
-                <article class="group relative flex h-full min-h-60 flex-col justify-between gap-6 overflow-hidden rounded-[1.25rem] p-8 text-white {{ $grounds[$item['league']->accentTone()] }}">
+                <article class="reveal group relative flex h-full min-h-60 flex-col justify-between gap-6 overflow-hidden rounded-[1.25rem] p-8 text-white {{ $grounds[$item['league']->accentTone()] }}">
                     @include('pages.home._plate', ['class' => 'pointer-events-none absolute -end-16 -top-16 size-56 opacity-30'])
                     <div class="relative">
                         <h3 class="text-xs font-bold tracking-wider text-gold-300 uppercase">

@@ -4,6 +4,15 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Motion and a new leadership page (2026-10-22)
+
+- The homepage opening carries slowly turning basket plates over Harar Gate, a slow zoom on the photo
+  and a stepped entrance; cards and tiles rise into place as they scroll in; reduced motion respected
+  (ADR-0066).
+- The leadership page: night-blue opening with links to each group, the head of the branch office
+  featured, the region's government and councils first, then the secretariat and the rest, each group
+  described and counted; initials on the party's colours for people without a photo.
+
 ### Harar on the site; tidier news, league and office pages (2026-10-22)
 
 - Openly licensed photos of Harar, each credited: Harar Gate behind the homepage welcome, a heritage
