@@ -74,6 +74,14 @@
     letter-spacing: -0.03em;
 }
 
+/* The largest headline, for full-bleed page openings (ADR-0065). */
+@utility heading-display {
+    font-size: calc(clamp(2.375rem, 1.4rem + 3.8vw, 4.5rem) * var(--heading-scale, 1));
+    line-height: 1.04;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+}
+
 @utility heading-2 {
     font-size: calc(var(--text-3xl) * var(--heading-scale, 1));
     line-height: 1.2;

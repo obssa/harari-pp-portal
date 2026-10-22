@@ -40,14 +40,39 @@
                 </figure>
             @endif
 
-            <div class="mt-10 grid gap-10 lg:grid-cols-3">
-                <div class="lg:col-span-2">
+            {{-- ADR-0065: text, map and the offices below it in the main column; people and contacts beside it. --}}
+            <div class="mt-10 grid gap-12 lg:grid-cols-[1fr_22rem]">
+                <div class="min-w-0 space-y-12">
                     @if (trim($body) !== '')
                         <div class="prose-content max-w-prose">{!! $body !!}</div>
                     @endif
 
+                    @if ($children->isNotEmpty())
+                        <section aria-labelledby="office-children">
+                            <h2 id="office-children" class="heading-2">{{ __('offices.children') }}</h2>
+                            <ul class="mt-6 grid gap-3 sm:grid-cols-2">
+                                @foreach ($children as $child)
+                                    @php $shown = PublicDirectory::shown($child, $locale); @endphp
+                                    @continue($shown === null)
+                                    <li lang="{{ $shown->locale }}">
+                                        <a href="{{ route('offices.show', ['locale' => $shown->locale, 'slug' => $shown->slug]) }}"
+                                           class="group flex h-full items-center gap-4 rounded-card border border-line bg-surface p-4 transition hover:-translate-y-0.5 hover:border-gold-500 hover:shadow-lg">
+                                            <span aria-hidden="true" class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary-900 text-gold-400">
+                                                <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+                                            </span>
+                                            <span class="min-w-0">
+                                                <span class="block font-bold group-hover:underline">{{ $shown->getAttribute('name') }}</span>
+                                                <span class="mt-0.5 block text-sm text-ink-muted">{{ $shown->getAttribute('summary') ?: $child->type->label() }}</span>
+                                            </span>
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </section>
+                    @endif
+
                     @if ($office->hasMap())
-                        <section aria-labelledby="office-map" class="mt-10">
+                        <section aria-labelledby="office-map">
                             <h2 id="office-map" class="heading-3">{{ __('offices.map') }}</h2>
                             <x-map-frame :latitude="$office->latitude" :longitude="$office->longitude" :title="__('offices.map_of', ['office' => $translation->name])" />
                         </section>
@@ -57,42 +82,25 @@
                 <aside class="space-y-8" aria-label="{{ __('offices.details') }}">
                     @if ($head)
                         <section aria-labelledby="office-head">
-                            <h2 id="office-head" class="text-sm font-semibold uppercase tracking-wide text-ink-muted">{{ __('offices.head') }}</h2>
-                            <x-directory.person class="mt-3" :leader="$office->head" :translation="$head" />
+                            <h2 id="office-head" class="text-xs font-bold tracking-wider text-ink-muted uppercase">{{ __('offices.head') }}</h2>
+                            <x-directory.person-row class="mt-4" :leader="$office->head" :translation="$head" />
+                        </section>
+                    @endif
+                    @if ($people->isNotEmpty())
+                        <section aria-labelledby="office-people">
+                            <h2 id="office-people" class="text-xs font-bold tracking-wider text-ink-muted uppercase">{{ __('offices.people') }}</h2>
+                            <ul class="mt-4 space-y-3">
+                                @foreach ($people as $person)
+                                    @php $shown = PublicDirectory::shown($person, $locale); @endphp
+                                    @continue($shown === null)
+                                    <li><x-directory.person-row :leader="$person" :translation="$shown" /></li>
+                                @endforeach
+                            </ul>
                         </section>
                     @endif
                     <x-directory.contacts :phone="$office->phone" :email="$office->email" :address="$translation->address" :hours="$translation->hours" />
                 </aside>
             </div>
-
-            @if ($people->isNotEmpty())
-                <section aria-labelledby="office-people" class="mt-14">
-                    <h2 id="office-people" class="heading-2">{{ __('offices.people') }}</h2>
-                    <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        @foreach ($people as $person)
-                            @php $shown = PublicDirectory::shown($person, $locale); @endphp
-                            @continue($shown === null)
-                            <li><x-directory.person :leader="$person" :translation="$shown" /></li>
-                        @endforeach
-                    </ul>
-                </section>
-            @endif
-
-            @if ($children->isNotEmpty())
-                <section aria-labelledby="office-children" class="mt-14">
-                    <h2 id="office-children" class="heading-2">{{ __('offices.children') }}</h2>
-                    <ul class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                        @foreach ($children as $child)
-                            @php $shown = PublicDirectory::shown($child, $locale); @endphp
-                            @continue($shown === null)
-                            <li lang="{{ $shown->locale }}" class="rounded-card border border-line bg-surface p-4">
-                                <a href="{{ route('offices.show', ['locale' => $shown->locale, 'slug' => $shown->slug]) }}" class="font-semibold underline-offset-4 hover:underline">{{ $shown->getAttribute('name') }}</a>
-                                <p class="mt-1 text-xs text-ink-muted">{{ $child->type->label() }}</p>
-                            </li>
-                        @endforeach
-                    </ul>
-                </section>
-            @endif
 
             <x-directory.posts :posts="$posts" :heading="__('offices.posts')" />
             <x-directory.social :posts="$social" />

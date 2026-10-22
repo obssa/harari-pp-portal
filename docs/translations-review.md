@@ -79,3 +79,11 @@ Drafts for the branch office's legal reviewers; the English text is the referenc
 | Pack pages About, History, Harar (`database/content/pack.json`) | om | written for the pack, not translated by a native speaker | "wing" of the party (Kutaa Dubartootaa / Kutaa Dargaggootaa); "speaker" (afyaa'ii); woreda names other than Soofii and Dirree Xiyyaaraa kept in their English form; EPRDF as ADWUI |
 | Pack leader names | en | transliterations where no official English spelling exists | Getu Weyesa, Dinir Yusuf, Seifu Getachew (also written ሴይፉ), Ayele Tesfaye, Hassen Abdi, Zinet Yusuf, Tuna Ibrahim, Muhyedin Ahmed, Amina Abdukerim |
 
+## Harar photos and wing profiles (ADR-0065)
+
+| Keys or text | Languages | Context | Doubts |
+|---|---|---|---|
+| `harar.photo.*`, `harar.caption.*`, `homepage.heritage.fact_*` | am, om | photo descriptions and Harar facts | "basket plates" (የሰፌድ ሥራዎች / gabatee hodhaa) |
+| `leagues.about`, `leagues.take_part_*`, `admin.leagues.*accent*` | am, om | league page and admin colour | colour names (የብልጽግና ሰማያዊ / Cuquliisa Badhaadhinaa; Maajantaa hodhaa) |
+| Wing profiles in `database/content/pack.json` (updates) | om | written for the pack | "Resurgence Day" (የማንሰራራት ቀን) left out of the Afaan Oromo text; "corridor development" (misooma koriidaraa); "Green Legacy" (Ashaaraa Magariisaa) |
+

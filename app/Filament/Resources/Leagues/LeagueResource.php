@@ -75,6 +75,11 @@ class LeagueResource extends Resource
                         ->searchable()
                         ->options(fn (): array => OfficeResource::leaderOptions()),
                     TextInput::make('sort')->label(__('admin.categories.field.sort'))->numeric()->integer()->minValue(0)->default(0),
+                    Select::make('accent')
+                        ->label(__('admin.leagues.field.accent'))
+                        ->helperText(__('admin.leagues.help.accent'))
+                        ->placeholder(__('admin.leagues.accent.auto'))
+                        ->options(collect(League::ACCENTS)->mapWithKeys(fn (string $tone): array => [$tone => __("admin.leagues.accent.{$tone}")])->all()),
                     MediaPicker::make('logo_id', [MediaKind::Image])->label(__('admin.leagues.field.logo')),
                     MediaPicker::make('cover_image_id', [MediaKind::Image])->label(__('admin.offices.field.cover_image')),
                 ]),

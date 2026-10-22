@@ -1905,3 +1905,33 @@ and the host build do not have.
 made the server answer `/admin` with 403); a test checks this. Upgrading Filament may rename a hook class; the admin brand test and a look at the
 dashboard after each Filament upgrade catch it. Dark mode keeps the dark sidebar and darkens the ground
 and cards.
+
+## ADR-0065 — Photos of Harar, one story card, league and office pages that read well (2026-10-22)
+
+**Context.** The owner found the news section disorganised (stories with and without photos side by
+side, uneven heights), the Women's Wing page poorly laid out (an empty column, a huge chair card), and
+asked for real photos of Harar — Jugol and the administration — and pages of international standard.
+
+**Decision.**
+
+- Seven photos of Harar from Wikimedia Commons, all under open licences (CC BY 2.0/3.0, CC BY-SA
+  2.0/4.0): Harar Gate, the Jugol panorama, a Harari home hung with basket plates, a Jugol alley, the
+  wall at Buda Gate, the Grand Mosque and the Harari Culture and Tourism Bureau building. They ship as
+  AVIF and WebP in several widths with a JPEG fallback (`public/images/harar/`, `App\Support\HararPhotos`,
+  `<x-harar-photo>`), and every use shows the author, licence and a link to the source
+  (`<x-harar-credit>`), as the licences require.
+- The homepage opens on Harar Gate under night blue when no story is featured; the heritage band is a
+  photo mosaic with three UNESCO facts. The About, History and Harar pages get the panorama, the bureau
+  building and the wall as landing photos through the content pack, which now has "updates": each one
+  is applied once and fills only what is still empty, so an editor's choice stays.
+- One story card everywhere (`<x-news-card>`): a 16:10 picture or, without a photo, a placeholder in the
+  post type's colour with the party's logo and a basket plate; labels on the picture; the title and
+  summary clamped; the date at the foot, so rows line up. On the homepage the newest story leads across
+  two columns and two rows.
+- Leagues have a colour (`leagues.accent`, chosen in the admin; the women's wing magenta, the youth wing
+  blue). A league page opens in that colour with its chair beside the name, then an overview with the
+  wing's sourced recent work, the leadership as compact rows, and ways to take part. Office pages put
+  their sub-offices in the main column as tiles and their people as compact rows beside them.
+
+**Consequences.** The Harar photos are the site's own files; replacing one means new files and a new
+entry in `HararPhotos`. Story cards no longer depend on every post having a photo.

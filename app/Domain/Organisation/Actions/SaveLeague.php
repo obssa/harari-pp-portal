@@ -40,6 +40,7 @@ final class SaveLeague
                 'email' => WriteTranslations::email($data['email'] ?? null),
                 'socials' => WriteTranslations::socials($data['socials'] ?? null, Leader::SOCIALS),
                 'sort' => max(0, (int) ($data['sort'] ?? 0)),
+                'accent' => in_array($data['accent'] ?? null, League::ACCENTS, true) ? $data['accent'] : null,
             ]);
             if (! $league->exists) {
                 $league->created_by = $actor->id;

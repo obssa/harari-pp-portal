@@ -12,18 +12,27 @@
 {{-- ADR-0062: featured stories on night blue, with a Harari basket plate; plaster around them. --}}
 <section aria-label="{{ $section->heading() }}" class="bg-surface-muted">
     @if ($slides === [])
-        <div class="relative overflow-hidden bg-primary-900 text-white">
-            @include('pages.home._plate', ['class' => 'pointer-events-none absolute -end-32 -top-32 size-[32rem] opacity-90'])
-            <div class="relative mx-auto max-w-page px-4 py-16 sm:px-6 sm:py-24">
-                <img src="/brand/logo-256.png" alt="" width="104" height="104" class="size-26 rounded-full bg-white">
-                <p class="mt-6 text-xs font-bold tracking-wider text-gold-400 uppercase">{{ __('site.office') }}</p>
-                <p class="heading-1 mt-3 max-w-3xl text-white">{{ __('site.name') }}</p>
-                <p class="mt-4 max-w-prose text-lg text-primary-100">{{ __('site.description') }}</p>
-                <p class="mt-8 flex flex-wrap gap-3">
-                    <x-ui.button :href="route('membership.apply')" variant="gold" size="lg">{{ __('nav.join') }}</x-ui.button>
-                    <x-ui.button :href="route('news.index')" variant="light" size="lg">{{ __('nav.news') }}</x-ui.button>
-                </p>
+        {{-- ADR-0065: Harar Gate behind the welcome, night blue over it so the words stay readable. --}}
+        <div class="relative isolate overflow-hidden bg-primary-950 text-white">
+            <x-harar-photo name="gate" sizes="100vw" loading="eager" fetchpriority="high" class="absolute inset-0 -z-20 size-full object-cover object-[70%_50%]" />
+            <div aria-hidden="true" class="absolute inset-0 -z-10 bg-linear-to-r from-primary-950 via-primary-950/85 to-primary-900/30"></div>
+            <div aria-hidden="true" class="absolute inset-x-0 bottom-0 -z-10 h-1/3 bg-linear-to-t from-primary-950/90 to-transparent"></div>
+            <div class="mx-auto max-w-page px-4 py-20 sm:px-6 sm:py-28 lg:py-36">
+                <div class="max-w-3xl">
+                    <p class="inline-flex items-center gap-3 rounded-full bg-white/10 py-1.5 ps-1.5 pe-4 text-xs font-bold tracking-wider text-gold-300 uppercase ring-1 ring-white/20 backdrop-blur">
+                        <img src="/brand/logo-128.png" alt="" width="32" height="32" class="size-8 rounded-full bg-white">
+                        {{ __('site.office') }}
+                    </p>
+                    <p class="heading-display mt-6 text-white">{{ __('site.name') }}</p>
+                    <p class="mt-5 max-w-prose text-lg text-white/85 sm:text-xl">{{ __('site.description') }}</p>
+                    <p class="mt-9 flex flex-wrap gap-3">
+                        <x-ui.button :href="route('membership.apply')" variant="gold" size="lg">{{ __('nav.join') }}</x-ui.button>
+                        <x-ui.button :href="route('news.index')" variant="light" size="lg">{{ __('nav.news') }}</x-ui.button>
+                        <x-ui.button :href="route('leaders.index')" variant="light" size="lg">{{ __('leaders.title') }}</x-ui.button>
+                    </p>
+                </div>
             </div>
+            <p class="absolute end-4 bottom-3 text-[11px] text-white/60"><x-harar-credit name="gate" /></p>
         </div>
     @else
         <div class="mx-auto max-w-page px-4 py-8 sm:px-6 sm:py-10">

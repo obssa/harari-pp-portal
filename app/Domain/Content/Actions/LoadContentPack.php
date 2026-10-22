@@ -6,6 +6,7 @@ use App\Domain\Access\Enums\SystemRole;
 use App\Domain\Content\Models\ContentPackItem;
 use App\Domain\Content\Models\Page;
 use App\Domain\Content\Models\PostTranslation;
+use App\Domain\Content\Support\BodyRenderer;
 use App\Domain\Content\Workflow\ContentWorkflow;
 use App\Domain\Events\Actions\SaveEvent;
 use App\Domain\Events\Models\Event;
@@ -14,6 +15,7 @@ use App\Domain\Homepage\Models\HomepageSection;
 use App\Domain\Homepage\Support\HomepageLayout;
 use App\Domain\Import\Models\ContentImport;
 use App\Domain\Import\Models\ContentSource;
+use App\Domain\Media\Actions\SyncMediaUsage;
 use App\Domain\Media\Actions\UploadMedia;
 use App\Domain\Organisation\Actions\SaveLeader;
 use App\Domain\Organisation\Actions\SaveLeague;
@@ -25,6 +27,7 @@ use App\Filament\Pages\ManageHomepage;
 use App\Models\User;
 use App\Settings\SiteSettings;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
@@ -48,6 +51,7 @@ final class LoadContentPack
         private readonly SaveHomepage $homepage,
         private readonly UploadMedia $upload,
         private readonly ContentWorkflow $workflow,
+        private readonly SyncMediaUsage $usage,
     ) {}
 
     /**
@@ -92,6 +96,10 @@ final class LoadContentPack
         }
         foreach ((array) ($pack['events'] ?? []) as $item) {
             $this->once($item, 'events', fn (array $data): Model => $this->events->handle(new Event, $data, $actor));
+        }
+
+        foreach ((array) ($pack['updates'] ?? []) as $update) {
+            $this->update((array) $update, $photos, $actor);
         }
 
         $this->homepageSections((array) ($pack['homepage'] ?? []), $actor);
@@ -143,7 +151,7 @@ final class LoadContentPack
      *
      * @param  array<string, mixed>  $item
      */
-    private function photo(string $folder, array $item, User $actor): ?int
+    private function photo(string $folder, array $item, User $actor, string $credit = ''): ?int
     {
         $file = basename((string) ($item['photo'] ?? ''));
         if ($file === '' || ! is_file("{$folder}/{$file}")) {
@@ -155,9 +163,67 @@ final class LoadContentPack
         foreach ((array) ($item['translations'] ?? []) as $locale => $values) {
             $alt[$locale] = mb_substr((string) ($values['name'] ?? ''), 0, 250);
         }
-        $media->forceFill(['alt' => $alt, 'credit' => parse_url((string) ($item['source_url'] ?? ''), PHP_URL_HOST) ?: null])->save();
+        $media->forceFill([
+            'alt' => $alt,
+            'credit' => $credit !== '' ? $credit : (parse_url((string) ($item['source_url'] ?? ''), PHP_URL_HOST) ?: null),
+        ])->save();
 
         return $media->id;
+    }
+
+    /**
+     * Later additions to records the pack loaded (ADR-0065): a photo, a page
+     * template, a league colour, a body. Each fills only what is still empty,
+     * once, so an editor's choice always stays.
+     *
+     * @param  array<string, mixed>  $update
+     */
+    private function update(array $update, string $photos, User $actor): void
+    {
+        $key = (string) ($update['key'] ?? '');
+        if ($key === '' || ContentPackItem::query()->where('key', $key)->exists()) {
+            return;
+        }
+
+        $target = ContentPackItem::query()->where('key', (string) ($update['target'] ?? ''))->first();
+        $record = null;
+        if ($target !== null && $target->model_type !== null) {
+            $class = Relation::getMorphedModel($target->model_type) ?? $target->model_type;
+            $record = is_a($class, Model::class, true) ? $class::query()->find($target->model_id) : null;
+        }
+
+        DB::transaction(function () use ($update, $record, $photos, $actor, $key): void {
+            if ($record instanceof Page && $record->featured_image_id === null && filled($update['photo'] ?? null)) {
+                $record->featured_image_id = $this->photo($photos, [
+                    'photo' => $update['photo'],
+                    'source_url' => $update['photo_source'] ?? null,
+                    'translations' => array_map(fn (string $alt): array => ['name' => $alt], (array) ($update['photo_alt'] ?? [])),
+                ], $actor, (string) ($update['photo_credit'] ?? ''));
+                if ($record->template === 'default' && in_array($update['template'] ?? null, Page::TEMPLATES, true)) {
+                    $record->template = (string) $update['template'];
+                }
+                $record->updated_by = $actor->id;
+                $record->save();
+                $this->usage->handle($record, 'featured_image', [$record->featured_image_id]);
+            }
+
+            if ($record instanceof League && $record->accent === null && in_array($update['accent'] ?? null, League::ACCENTS, true)) {
+                $record->forceFill(['accent' => $update['accent'], 'updated_by' => $actor->id])->save();
+            }
+
+            if ($record instanceof League || $record instanceof Page) {
+                foreach ((array) ($update['body'] ?? []) as $locale => $body) {
+                    $translation = $record->translations()->where('locale', (string) $locale)->first();
+                    if ($translation !== null && BodyRenderer::isEmpty(is_array($translation->getAttribute('body')) ? $translation->getAttribute('body') : null) && is_array($body)) {
+                        $translation->setAttribute('body', $body);
+                        $translation->save();
+                    }
+                }
+            }
+
+            ContentPackItem::remember($key, $record);
+            $this->counts['updates'] = ($this->counts['updates'] ?? 0) + 1;
+        });
     }
 
     /**

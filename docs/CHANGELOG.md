@@ -4,6 +4,17 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Harar on the site; tidier news, league and office pages (2026-10-22)
+
+- Openly licensed photos of Harar, each credited: Harar Gate behind the homepage welcome, a heritage
+  band with a Harari home, a Jugol alley and the wall, and landing photos on the About, History and
+  Harar pages (ADR-0065).
+- One story card everywhere, the same shape with or without a photo; stories without one get a
+  placeholder in the party's colours with its logo. The newest story leads the homepage news.
+- League pages in each wing's colour with the chair, an overview of the wing's sourced recent work,
+  its leadership and ways to take part; league colours chosen in the admin.
+- Office pages list their woredas as tiles and their people beside them.
+
 ### Fix: the admin dashboard answered 403 (2026-10-22)
 
 - The admin stylesheet lived in `public/admin/`, so the web server treated `/admin` as that folder

@@ -4,14 +4,30 @@
     :alternates="$alternates"
 >
     @if ($page->template === 'landing' && $page->featuredImage)
-        <section class="relative isolate overflow-hidden bg-primary-900 text-white">
-            <x-picture :media="$page->featuredImage" preset="landscape" sizes="100vw" loading="eager" fetchpriority="high" class="absolute inset-0 -z-10 h-full w-full object-cover opacity-30" alt="" />
-            <div class="mx-auto max-w-page px-4 py-20 sm:px-6">
-                <h1 class="heading-1 max-w-3xl">{{ $translation->title }}</h1>
-                @if ($translation->excerpt)
-                    <p class="mt-4 max-w-prose text-lg text-primary-100">{{ $translation->excerpt }}</p>
-                @endif
+        {{-- ADR-0065: a landing page opens full-bleed on its photo, night blue over it for the words. --}}
+        <section class="relative isolate overflow-hidden bg-primary-950 text-white">
+            <x-picture :media="$page->featuredImage" preset="landscape" sizes="100vw" loading="eager" fetchpriority="high" class="absolute inset-0 -z-20 size-full object-cover" alt="" />
+            <div aria-hidden="true" class="absolute inset-0 -z-10 bg-linear-to-r from-primary-950 via-primary-950/80 to-primary-900/20"></div>
+            <div class="mx-auto max-w-page px-4 py-12 sm:px-6 sm:py-16">
+                <nav aria-label="{{ __('news.breadcrumb') }}" class="text-sm text-white/75">
+                    <ol class="flex flex-wrap items-center gap-2">
+                        <li><a href="{{ route('home') }}" class="hover:text-white hover:underline">{{ __('nav.home') }}</a></li>
+                        @foreach ($breadcrumbs as $crumb)
+                            <li class="flex items-center gap-2"><span aria-hidden="true">/</span><a href="{{ $crumb['url'] }}" class="hover:text-white hover:underline">{{ $crumb['title'] }}</a></li>
+                        @endforeach
+                        <li class="flex items-center gap-2"><span aria-hidden="true">/</span><span aria-current="page" class="font-semibold text-white">{{ $translation->title }}</span></li>
+                    </ol>
+                </nav>
+                <div class="max-w-3xl py-14 sm:py-20">
+                    <h1 class="heading-display text-white">{{ $translation->title }}</h1>
+                    @if ($translation->excerpt)
+                        <p class="mt-5 max-w-prose text-lg text-white/85 sm:text-xl">{{ $translation->excerpt }}</p>
+                    @endif
+                </div>
             </div>
+            @if (filled($page->featuredImage->credit))
+                <p class="absolute end-4 bottom-3 text-[11px] text-white/60">{{ __('content.photo_credit', ['credit' => $page->featuredImage->credit]) }}</p>
+            @endif
         </section>
     @endif
 
@@ -22,17 +38,7 @@
     @endunless
 
     <article class="mx-auto max-w-page px-4 pt-2 pb-12 sm:px-6">
-        @if ($landing)
-            <nav aria-label="{{ __('news.breadcrumb') }}" class="mt-8 text-sm text-ink-muted">
-                <ol class="flex flex-wrap gap-1">
-                    <li><a href="{{ route('home') }}" class="hover:underline">{{ __('nav.home') }}</a> /</li>
-                    @foreach ($breadcrumbs as $crumb)
-                        <li><a href="{{ $crumb['url'] }}" class="hover:underline">{{ $crumb['title'] }}</a> /</li>
-                    @endforeach
-                    <li aria-current="page">{{ $translation->title }}</li>
-                </ol>
-            </nav>
-        @elseif ($page->featuredImage)
+        @if (! $landing && $page->featuredImage)
             <figure class="mt-8 max-w-4xl">
                 <x-picture :media="$page->featuredImage" preset="landscape" sizes="(min-width: 64rem) 56rem, 100vw" loading="eager" fetchpriority="high" class="w-full rounded-card" />
             </figure>

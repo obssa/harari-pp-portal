@@ -29,6 +29,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property ?string $email
  * @property ?array<string, string> $socials
  * @property int $sort
+ * @property ?string $accent
  * @property-read ?Leader $head
  * @property-read ?Media $logo
  * @property-read ?Media $coverImage
@@ -45,7 +46,10 @@ class League extends Model implements TranslatableModel
     use SoftDeletes;
     use TracksEditors;
 
-    protected $fillable = ['head_leader_id', 'logo_id', 'cover_image_id', 'phone', 'email', 'socials', 'sort'];
+    protected $fillable = ['head_leader_id', 'logo_id', 'cover_image_id', 'phone', 'email', 'socials', 'sort', 'accent'];
+
+    /** Brand colours a league can wear (ADR-0065). */
+    public const ACCENTS = ['primary', 'magenta', 'accent', 'night'];
 
     protected $attributes = ['sort' => 0];
 
@@ -55,6 +59,14 @@ class League extends Model implements TranslatableModel
             'socials' => 'array',
             'sort' => 'integer',
         ];
+    }
+
+    /**
+     * The league's colour: its own choice, else one by its place in the list.
+     */
+    public function accentTone(): string
+    {
+        return in_array($this->accent, self::ACCENTS, true) ? (string) $this->accent : self::ACCENTS[$this->sort % count(self::ACCENTS)];
     }
 
     public static function translationModel(): string

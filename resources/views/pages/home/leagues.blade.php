@@ -2,8 +2,8 @@
 @use('App\Domain\Organisation\Queries\PublicDirectory')
 @php
     $locale = app()->getLocale();
-    // ADR-0062: the youth league in party blue, the women's league in basket magenta.
-    $grounds = ['bg-primary-600', 'bg-magenta-600', 'bg-primary-900', 'bg-accent-600'];
+    // ADR-0065: each league in the colour chosen for it (the women's wing magenta, the youth wing blue).
+    $grounds = ['primary' => 'bg-primary-700', 'magenta' => 'bg-magenta-700', 'accent' => 'bg-accent-700', 'night' => 'bg-primary-900'];
 @endphp
 <section aria-labelledby="home-leagues" class="mx-auto max-w-page px-4 py-16 sm:px-6">
     <div class="flex flex-wrap items-baseline justify-between gap-2">
@@ -18,7 +18,7 @@
             @endphp
             @continue($shown === null)
             <li lang="{{ $shown->locale }}">
-                <article class="group relative flex h-full min-h-60 flex-col justify-between gap-6 overflow-hidden rounded-[1.25rem] p-8 text-white {{ $grounds[$loop->index % 4] }}">
+                <article class="group relative flex h-full min-h-60 flex-col justify-between gap-6 overflow-hidden rounded-[1.25rem] p-8 text-white {{ $grounds[$item['league']->accentTone()] }}">
                     @include('pages.home._plate', ['class' => 'pointer-events-none absolute -end-16 -top-16 size-56 opacity-30'])
                     <div class="relative">
                         <h3 class="text-xs font-bold tracking-wider text-gold-300 uppercase">

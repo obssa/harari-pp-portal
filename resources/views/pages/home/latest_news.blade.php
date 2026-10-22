@@ -1,25 +1,22 @@
 @use('App\Domain\Content\Queries\PublicPosts')
-@use('App\Domain\Translation\Support\Locales')
-<section aria-labelledby="home-news" class="mx-auto max-w-page px-4 py-12 sm:px-6">
-    <div class="flex flex-wrap items-baseline justify-between gap-2">
-        <h2 id="home-news" class="heading-2">{{ $section->heading() }}</h2>
-        <a href="{{ route('news.index') }}" class="font-bold text-link underline-offset-4 hover:underline">{{ __('homepage.all_news') }}</a>
+@php
+    $locale = app()->getLocale();
+    $stories = collect($data)->map(fn ($post): array => ['post' => $post, 'shown' => PublicPosts::shown($post, $locale)])
+        ->filter(fn (array $item): bool => $item['shown'] !== null)->values();
+@endphp
+{{-- ADR-0065: the newest story leads across two columns and two rows; the rest line up beside and below it. --}}
+<section aria-labelledby="home-news" class="mx-auto max-w-page px-4 py-16 sm:px-6">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+            <p class="kicker">{{ __('homepage.news_kicker') }}</p>
+            <h2 id="home-news" class="heading-2 mt-2">{{ $section->heading() }}</h2>
+        </div>
+        <x-ui.button :href="route('news.index')" variant="secondary">{{ __('homepage.all_news') }}</x-ui.button>
     </div>
-    <ul class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        @foreach ($data as $post)
-            @php $shown = PublicPosts::shown($post, app()->getLocale()); @endphp
-            @continue($shown === null)
-            <li lang="{{ $shown->locale }}">
-                <x-ui.card :title="$shown->title" :href="route('news.show', ['locale' => $shown->locale, 'slug' => $shown->slug])" :media="$post->featuredImage" :kicker="$shown->kicker">
-                    {{ $shown->excerpt }}
-                    <x-slot:badges>
-                        <x-ui.badge :tone="$post->type->tone()">{{ $post->type->label() }}</x-ui.badge>
-                        @if ($shown->locale !== app()->getLocale())
-                            <x-ui.badge>{{ __('news.in_language', ['language' => Locales::nativeName($shown->locale)]) }}</x-ui.badge>
-                        @endif
-                    </x-slot:badges>
-                    <x-slot:meta><x-date :date="$shown->published_at" /></x-slot:meta>
-                </x-ui.card>
+    <ul class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        @foreach ($stories as $item)
+            <li @class(['sm:col-span-2 lg:row-span-2' => $loop->first])>
+                <x-news-card :post="$item['post']" :shown="$item['shown']" :lead="$loop->first" />
             </li>
         @endforeach
     </ul>

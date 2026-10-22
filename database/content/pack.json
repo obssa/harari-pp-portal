@@ -1,7 +1,7 @@
 {
   "version": 1,
   "compiled": "2026-10-21",
-  "note": "Real content gathered from public sources on 2026-10-21; every item carries its source. Loaded once per key by `php artisan content:load-pack` (ADR-0063).",
+  "note": "Real content gathered from public sources on 2026-10-21; every item carries its source. Loaded once per key by `php artisan content:load-pack` (ADR-0063, ADR-0065).",
   "leagues": [
     {
       "key": "league.women",
@@ -20,7 +20,8 @@
           "name": "Kutaa Dubartootaa",
           "summary": "Kutaa dubartootaa paartii Naannoo Hararii, waajjira mataa isaa qabu."
         }
-      }
+      },
+      "accent": "magenta"
     },
     {
       "key": "league.youth",
@@ -38,7 +39,8 @@
           "name": "Kutaa Dargaggootaa",
           "summary": "Kutaa dargaggootaa paartii Naannoo Hararii, waajjira mataa isaa qabu."
         }
-      }
+      },
+      "accent": "primary"
     }
   ],
   "offices": [
@@ -3501,5 +3503,1032 @@
     "social_links": {
       "telegram": "https://t.me/hrprosperityparty"
     }
-  }
+  },
+  "updates": [
+    {
+      "key": "page.about#photo",
+      "target": "page.about",
+      "photo": "harar-panorama.jpg",
+      "photo_credit": "Giustino, CC BY 2.0, Wikimedia Commons",
+      "photo_source": "https://commons.wikimedia.org/wiki/File:Town_of_Harar_with_Citywall.jpg",
+      "photo_alt": {
+        "en": "Harar and its walled old town seen from the hills",
+        "am": "ሀረርና ቅጥር ከተማዋ ከኮረብታ ሲታዩ",
+        "om": "Harar fi magaalaan ishee dallaa qabdu gaara irraa"
+      },
+      "template": "landing"
+    },
+    {
+      "key": "page.history#photo",
+      "target": "page.history",
+      "photo": "harar-bureau.jpg",
+      "photo_credit": "Bikilahussenadem, CC BY-SA 4.0, Wikimedia Commons",
+      "photo_source": "https://commons.wikimedia.org/wiki/File:Harari_culture_and_Tourism_Buruea.jpg",
+      "photo_alt": {
+        "en": "The Harari Culture and Tourism Bureau building in Harar",
+        "am": "በሀረር የሚገኘው የሐረሪ ባህልና ቱሪዝም ቢሮ ሕንፃ",
+        "om": "Gamoo Biiroo Aadaa fi Tuurizimii Hararii, Harar keessatti"
+      },
+      "template": "landing"
+    },
+    {
+      "key": "page.harar#photo",
+      "target": "page.harar",
+      "photo": "harar-wall.jpg",
+      "photo_credit": "Sailko, CC BY 3.0, Wikimedia Commons",
+      "photo_source": "https://commons.wikimedia.org/wiki/File:Harar,_mura_presso_la_porta_di_buda_01.jpg",
+      "photo_alt": {
+        "en": "The Jugol wall near Buda Gate",
+        "am": "በቡዳ በር አቅራቢያ ያለው የጀጎል ቅጥር",
+        "om": "Dallaa Jugol Karra Buda bira"
+      },
+      "template": "landing"
+    },
+    {
+      "key": "league.women#profile",
+      "target": "league.women",
+      "accent": "magenta",
+      "body": {
+        "en": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "The Women's Wing organises the party's women members in the Harari Region, from its regional office to the woredas and institutions. It is led by Zinet Yusuf, with Tuna Ibrahim as deputy head."
+                }
+              ]
+            },
+            {
+              "type": "heading",
+              "attrs": {
+                "level": 3
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Recent work"
+                }
+              ]
+            },
+            {
+              "type": "bulletList",
+              "content": [
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "September 2026: members of the women's and youth wings gave blood on Resurgence Day."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "July 2026: the wing reviewed its work for the 2018 E.C. budget year and set a 90-day plan. The review covered women's share in decision-making bodies at every level, their part in development, corridor development and Green Legacy programmes, and job creation and economic self-reliance."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "December 2025: training for the wing on using social media, given by the branch's public relations sector."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "October 2025: school supplies for students at the Harar correctional centre, under the theme “While I am here, no student will drop out for lack of school materials”."
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "heading",
+              "attrs": {
+                "level": 3
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Sources"
+                }
+              ]
+            },
+            {
+              "type": "bulletList",
+              "content": [
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "t.me/HarariGovernmentCommunication/36488 (7 Sep 2026)",
+                          "marks": [
+                            {
+                              "type": "link",
+                              "attrs": {
+                                "href": "https://t.me/HarariGovernmentCommunication/36488",
+                                "target": "_blank",
+                                "rel": "noopener"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "t.me/hrprosperityparty/23217 (8 Jul 2026)",
+                          "marks": [
+                            {
+                              "type": "link",
+                              "attrs": {
+                                "href": "https://t.me/hrprosperityparty/23217",
+                                "target": "_blank",
+                                "rel": "noopener"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "t.me/hrprosperityparty/21856 (9 Dec 2025)",
+                          "marks": [
+                            {
+                              "type": "link",
+                              "attrs": {
+                                "href": "https://t.me/hrprosperityparty/21856",
+                                "target": "_blank",
+                                "rel": "noopener"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "t.me/hrprosperityparty/21724 (15 Oct 2025)",
+                          "marks": [
+                            {
+                              "type": "link",
+                              "attrs": {
+                                "href": "https://t.me/hrprosperityparty/21724",
+                                "target": "_blank",
+                                "rel": "noopener"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "am": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "የሴቶች ክንፍ በሀረሪ ክልል የሚገኙ የፓርቲውን ሴት አባላት ከክልል ጽሕፈት ቤቱ እስከ ወረዳዎችና ተቋማት ያደራጃል። ክንፉን የሚመሩት ወይዘሮ ዚነት ዩሱፍ ሲሆኑ ምክትል ኃላፊዋ ወ/ሪት ቱና ኢብራሂም ናቸው።"
+                }
+              ]
+            },
+            {
+              "type": "heading",
+              "attrs": {
+                "level": 3
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "text": "የቅርብ ጊዜ ተግባራት"
+                }
+              ]
+            },
+            {
+              "type": "bulletList",
+              "content": [
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "ጳጉሜን 2018 ዓ.ም.፦ የሴቶችና የወጣቶች ክንፍ አባላት በማንሰራራት ቀን ደም ለግሰዋል።"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "ሐምሌ 2018 ዓ.ም.፦ ክንፉ የ2018 በጀት ዓመት የዕቅድ አፈፃፀሙን ገምግሞ የ90 ቀናት ዕቅድ አስተዋውቋል። ግምገማው ሴቶች በየደረጃው ባሉ የውሳኔ ሰጪ አካላት ያላቸውን ድርሻ፣ በልማት፣ በኮሪደር ልማትና በአረንጓዴ አሻራ መርሐ ግብሮች ያላቸውን ተሳትፎ እንዲሁም የሥራ ዕድል ፈጠራንና በኢኮኖሚ ራስን መቻልን ዳስሷል።"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "ኅዳር 2018 ዓ.ም.፦ በቅርንጫፉ የሕዝብ ግንኙነት ዘርፍ ለክንፉ አደረጃጀት በማኅበራዊ ሚዲያ አጠቃቀም ዙሪያ ስልጠና ተሰጥቷል።"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "ጥቅምት 2018 ዓ.ም.፦ «እኔ እያለሁ አንድም ተማሪ በትምህርት ቁሳቁስ ችግር ከትምህርት ገበታ አይገለልም» በሚል መሪ ሀሳብ በሀረር ማረሚያ ቤት ለሚገኙ ተማሪዎች የትምህርት ቁሳቁስ ድጋፍ ተደርጓል።"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "heading",
+              "attrs": {
+                "level": 3
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "text": "ምንጮች"
+                }
+              ]
+            },
+            {
+              "type": "bulletList",
+              "content": [
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "t.me/HarariGovernmentCommunication/36488 (7 Sep 2026)",
+                          "marks": [
+                            {
+                              "type": "link",
+                              "attrs": {
+                                "href": "https://t.me/HarariGovernmentCommunication/36488",
+                                "target": "_blank",
+                                "rel": "noopener"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "t.me/hrprosperityparty/23217 (8 Jul 2026)",
+                          "marks": [
+                            {
+                              "type": "link",
+                              "attrs": {
+                                "href": "https://t.me/hrprosperityparty/23217",
+                                "target": "_blank",
+                                "rel": "noopener"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "t.me/hrprosperityparty/21856 (9 Dec 2025)",
+                          "marks": [
+                            {
+                              "type": "link",
+                              "attrs": {
+                                "href": "https://t.me/hrprosperityparty/21856",
+                                "target": "_blank",
+                                "rel": "noopener"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "t.me/hrprosperityparty/21724 (15 Oct 2025)",
+                          "marks": [
+                            {
+                              "type": "link",
+                              "attrs": {
+                                "href": "https://t.me/hrprosperityparty/21724",
+                                "target": "_blank",
+                                "rel": "noopener"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "om": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Kutaan Dubartootaa miseensota dubartootaa paartii Naannoo Hararii waajjira naannoo irraa hanga aanaalee fi dhaabbileetti ni ijaara. Kutaan kun Aadde Zinet Yusufiin kan durfamu yoo ta'u, itti aantuun ishee Durba Tuna Ibrahim dha."
+                }
+              ]
+            },
+            {
+              "type": "heading",
+              "attrs": {
+                "level": 3
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Hojiiwwan dhihoo"
+                }
+              ]
+            },
+            {
+              "type": "bulletList",
+              "content": [
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "Fulbaana 2026: miseensonni kutaa dubartootaa fi dargaggootaa dhiiga arjoomaniiru."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "Adoolessa 2026: kutaan raawwii karoora bara baajataa 2018 gamaaggamee karoora guyyaa 90 baaseera. Gamaaggamni kun qooda dubartootaa qaamolee murtee sadarkaa hundaa irratti, hirmaannaa isaanii misooma, misooma koriidaraa fi sagantaa Ashaaraa Magariisaa keessatti, akkasumas uumama carraa hojii fi of danda'uu dinagdee ilaaleera."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "Muddee 2025: kutaa hojii quunnamtii hawaasaa dameetiin kutaa kanaaf leenjiin itti fayyadama miidiyaa hawaasaa kennameera."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "Onkololeessa 2025: mana sirreessaa Harar keessatti barattootaaf meeshaalee barnootaa gumaachameera."
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "heading",
+              "attrs": {
+                "level": 3
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Maddoota"
+                }
+              ]
+            },
+            {
+              "type": "bulletList",
+              "content": [
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "t.me/HarariGovernmentCommunication/36488 (7 Sep 2026)",
+                          "marks": [
+                            {
+                              "type": "link",
+                              "attrs": {
+                                "href": "https://t.me/HarariGovernmentCommunication/36488",
+                                "target": "_blank",
+                                "rel": "noopener"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "t.me/hrprosperityparty/23217 (8 Jul 2026)",
+                          "marks": [
+                            {
+                              "type": "link",
+                              "attrs": {
+                                "href": "https://t.me/hrprosperityparty/23217",
+                                "target": "_blank",
+                                "rel": "noopener"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "t.me/hrprosperityparty/21856 (9 Dec 2025)",
+                          "marks": [
+                            {
+                              "type": "link",
+                              "attrs": {
+                                "href": "https://t.me/hrprosperityparty/21856",
+                                "target": "_blank",
+                                "rel": "noopener"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "t.me/hrprosperityparty/21724 (15 Oct 2025)",
+                          "marks": [
+                            {
+                              "type": "link",
+                              "attrs": {
+                                "href": "https://t.me/hrprosperityparty/21724",
+                                "target": "_blank",
+                                "rel": "noopener"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "league.youth#profile",
+      "target": "league.youth",
+      "accent": "primary",
+      "body": {
+        "en": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "The Youth Wing organises the party's young members in the Harari Region and runs volunteer and support programmes."
+                }
+              ]
+            },
+            {
+              "type": "heading",
+              "attrs": {
+                "level": 3
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Recent work"
+                }
+              ]
+            },
+            {
+              "type": "bulletList",
+              "content": [
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "September 2026: with the Yenege Tiwlid Tesfa youth association, school supplies for more than 523 students in Sukul kebele, Dire Teyara woreda. The wing has supported schools in this way for several years."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "September 2026: members of the youth and women's wings gave blood on Resurgence Day."
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "heading",
+              "attrs": {
+                "level": 3
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Sources"
+                }
+              ]
+            },
+            {
+              "type": "bulletList",
+              "content": [
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "t.me/HarariGovernmentCommunication/36711 (16 Sep 2026)",
+                          "marks": [
+                            {
+                              "type": "link",
+                              "attrs": {
+                                "href": "https://t.me/HarariGovernmentCommunication/36711",
+                                "target": "_blank",
+                                "rel": "noopener"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "t.me/HarariGovernmentCommunication/36488 (7 Sep 2026)",
+                          "marks": [
+                            {
+                              "type": "link",
+                              "attrs": {
+                                "href": "https://t.me/HarariGovernmentCommunication/36488",
+                                "target": "_blank",
+                                "rel": "noopener"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "am": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "የወጣቶች ክንፍ በሀረሪ ክልል የሚገኙ የፓርቲውን ወጣት አባላት ያደራጃል፤ የበጎ ፈቃድና የድጋፍ መርሐ ግብሮችንም ያካሂዳል።"
+                }
+              ]
+            },
+            {
+              "type": "heading",
+              "attrs": {
+                "level": 3
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "text": "የቅርብ ጊዜ ተግባራት"
+                }
+              ]
+            },
+            {
+              "type": "bulletList",
+              "content": [
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "መስከረም 2019 ዓ.ም.፦ ከየነገ ትውልድ ተስፋ ወጣቶች ማኅበር ጋር በመተባበር በድሬ ጠያራ ወረዳ ሱቁል ቀበሌ ከ523 በላይ ለሚሆኑ ተማሪዎች የትምህርት ቁሳቁስ ድጋፍ ተደርጓል፤ ክንፉ ለትምህርት ቤቶች ድጋፍ ማድረግ ለዓመታት ሲያከናውን ቆይቷል።"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "ጳጉሜን 2018 ዓ.ም.፦ የወጣቶችና የሴቶች ክንፍ አባላት በማንሰራራት ቀን ደም ለግሰዋል።"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "heading",
+              "attrs": {
+                "level": 3
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "text": "ምንጮች"
+                }
+              ]
+            },
+            {
+              "type": "bulletList",
+              "content": [
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "t.me/HarariGovernmentCommunication/36711 (16 Sep 2026)",
+                          "marks": [
+                            {
+                              "type": "link",
+                              "attrs": {
+                                "href": "https://t.me/HarariGovernmentCommunication/36711",
+                                "target": "_blank",
+                                "rel": "noopener"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "t.me/HarariGovernmentCommunication/36488 (7 Sep 2026)",
+                          "marks": [
+                            {
+                              "type": "link",
+                              "attrs": {
+                                "href": "https://t.me/HarariGovernmentCommunication/36488",
+                                "target": "_blank",
+                                "rel": "noopener"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "om": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Kutaan Dargaggootaa miseensota dargaggootaa paartii Naannoo Hararii ni ijaara; sagantaalee tola ooltummaa fi deeggarsaas ni geggeessa."
+                }
+              ]
+            },
+            {
+              "type": "heading",
+              "attrs": {
+                "level": 3
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Hojiiwwan dhihoo"
+                }
+              ]
+            },
+            {
+              "type": "bulletList",
+              "content": [
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "Fulbaana 2026: waldaa dargaggootaa 'Yenege Tiwlid Tesfa' waliin, aanaa Dirree Xiyyaaraa ganda Sukul keessatti barattoota 523 ol ta'aniif meeshaaleen barnootaa gumaachameera. Kutaan kun waggoota hedduuf haala kanaan mana barumsaa deeggaraa tureera."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "Fulbaana 2026: miseensonni kutaa dargaggootaa fi dubartootaa dhiiga arjoomaniiru."
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "heading",
+              "attrs": {
+                "level": 3
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Maddoota"
+                }
+              ]
+            },
+            {
+              "type": "bulletList",
+              "content": [
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "t.me/HarariGovernmentCommunication/36711 (16 Sep 2026)",
+                          "marks": [
+                            {
+                              "type": "link",
+                              "attrs": {
+                                "href": "https://t.me/HarariGovernmentCommunication/36711",
+                                "target": "_blank",
+                                "rel": "noopener"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "listItem",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "t.me/HarariGovernmentCommunication/36488 (7 Sep 2026)",
+                          "marks": [
+                            {
+                              "type": "link",
+                              "attrs": {
+                                "href": "https://t.me/HarariGovernmentCommunication/36488",
+                                "target": "_blank",
+                                "rel": "noopener"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
 }
