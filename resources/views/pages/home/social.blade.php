@@ -1,5 +1,6 @@
-{{-- ADR-0072: the party on social media: a card per page, the Facebook page beside the latest Telegram posts (read by
-     the server, shown in the site's own cards), and posts gathered from the other pages. --}}
+{{-- ADR-0072/0073: the party on social media: its Facebook page (Facebook's header: cover, followers, Follow) beside its
+     Telegram channel, cards for its other pages, and a wall of the latest posts the server read from them, shown in
+     the site's own cards so they appear wherever the site does. --}}
 <section aria-labelledby="home-social" class="relative isolate overflow-hidden bg-surface-muted">
     <div aria-hidden="true" class="pointer-events-none absolute -start-32 -top-32 -z-10 size-96 opacity-[0.07]">
         @include('pages.home._plate', ['class' => 'animate-spin-slower size-full'])
@@ -17,30 +18,31 @@
             </a>
         </div>
 
-        @php
-            // Pages with a panel of their own below are not repeated in the row of cards.
-            $others = array_diff_key($data['links'], array_filter(['facebook' => $data['facebook'] !== null, 'telegram' => $data['telegram'] !== null]));
-        @endphp
-        @if ($others !== [])
-            <x-social.platforms :links="$others" class="mt-8" />
-        @endif
-
         @if ($data['facebook'] !== null || $data['telegram'] !== null)
-            <div @class(['mt-8 grid items-start gap-6', 'lg:grid-cols-12' => $data['facebook'] !== null && $data['telegram'] !== null])>
+            <div @class(['mt-8 grid items-stretch gap-6', 'lg:grid-cols-2' => $data['facebook'] !== null && $data['telegram'] !== null])>
                 @if ($data['facebook'] !== null)
-                    <x-facebook-feed :page="$data['facebook']['page']" :mode="$data['facebook']['mode']" :height="620" @class(['lg:col-span-5' => $data['telegram'] !== null]) />
+                    <x-facebook-feed :page="$data['facebook']['page']" :mode="$data['facebook']['mode']" />
                 @endif
                 @if ($data['telegram'] !== null)
-                    <x-social.telegram-panel :url="$data['telegram']" :preview="$data['telegram_preview']" :posts="$data['telegram_posts']"
-                                             @class(['lg:col-span-7' => $data['facebook'] !== null]) />
+                    <x-social.channel-card :url="$data['telegram']" :preview="$data['telegram_preview']" />
                 @endif
             </div>
         @endif
 
+        @php
+            // Pages with a card of their own above are not repeated in the row below.
+            $others = array_diff_key($data['links'], array_filter(['facebook' => $data['facebook'] !== null, 'telegram' => $data['telegram'] !== null]));
+        @endphp
+        @if ($others !== [])
+            <x-social.platforms :links="$others" class="mt-6" />
+        @endif
+
         @if ($data['posts']->isNotEmpty())
-            <ul class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                @foreach ($data['posts'] as $post)
-                    <li class="flex"><x-social-post :post="$post" class="w-full" /></li>
+            <h3 class="heading-3 mt-12">{{ __('social.wall.title') }}</h3>
+            <ul class="mt-5 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {{-- Whole rows of three on wide screens. --}}
+                @foreach ($data['posts']->take(max(3, intdiv($data['posts']->count(), 3) * 3)) as $post)
+                    <li class="flex"><x-social-post :post="$post" :heading-level="4" class="w-full" /></li>
                 @endforeach
             </ul>
         @endif

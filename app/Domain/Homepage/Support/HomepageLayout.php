@@ -17,7 +17,6 @@ use App\Domain\Organisation\Models\Leader;
 use App\Domain\Organisation\Models\League;
 use App\Domain\Organisation\Queries\PublicDirectory;
 use App\Domain\Projects\Models\Project;
-use App\Domain\Social\Enums\Platform;
 use App\Domain\Social\Models\SocialPost;
 use App\Domain\Social\Queries\SocialFeed;
 use App\Settings\CarouselSettings;
@@ -175,26 +174,22 @@ final class HomepageLayout
     }
 
     /**
-     * The party on social media (ADR-0071, ADR-0072): its pages, the Facebook
-     * page through Facebook's plugin, the latest posts of its Telegram channel
-     * as the server read them, and posts gathered from its other pages.
+     * The party on social media (ADR-0071 to ADR-0073): its pages, the
+     * Facebook page's header through Facebook's plugin, the Telegram channel,
+     * and the latest posts the server read from all of them.
      *
-     * @return array{links: array<string, array<string, string>>, facebook: array{page: string, mode: string}|null, telegram: ?string, telegram_preview: ?string, telegram_posts: Collection<int, SocialPost>, posts: Collection<int, SocialPost>}|null
+     * @return array{links: array<string, array<string, string>>, facebook: array{page: string, mode: string}|null, telegram: ?string, telegram_preview: ?string, posts: Collection<int, SocialPost>}|null
      */
     private function social(int $limit): ?array
     {
         $links = SocialLinks::all();
         $telegram = $links['telegram']['url'] ?? null;
         try {
-            $telegramPosts = $telegram !== null ? SocialFeed::query(Platform::Telegram)->limit(4)->get() : new Collection;
-            // With the channel's own panel, its posts are not repeated below; without it they join the others.
-            $posts = SocialFeed::query()
-                ->when($telegram !== null, fn ($query) => $query->whereHas('source', fn ($source) => $source->where('platform', '!=', Platform::Telegram->value)))
-                ->limit(min($limit, 3))->get();
+            $posts = SocialFeed::latest(min($limit, 6));
         } catch (QueryException) {
-            [$telegramPosts, $posts] = [new Collection, new Collection];
+            $posts = new Collection;
         }
-        if ($links === [] && $telegramPosts->isEmpty() && $posts->isEmpty()) {
+        if ($links === [] && $posts->isEmpty()) {
             return null;
         }
 
@@ -203,7 +198,6 @@ final class HomepageLayout
             'facebook' => SocialLinks::facebookFeed(),
             'telegram' => $telegram,
             'telegram_preview' => SocialLinks::telegramPreview($telegram),
-            'telegram_posts' => $telegramPosts,
             'posts' => $posts,
         ];
     }

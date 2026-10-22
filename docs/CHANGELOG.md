@@ -4,6 +4,11 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Social media wall (2026-10-22)
+
+- The Facebook card shows Facebook's page header (cover, followers, Follow, Share), beside a Telegram
+  card; below them a wall of the latest posts, which the server reads from the party's pages (ADR-0073).
+
 ### Social media, redesigned (2026-10-22)
 
 - The homepage's social section shows the latest Telegram posts in the site's own cards (read by the

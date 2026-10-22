@@ -40,10 +40,10 @@ it('shows the party\'s Facebook page beside its Telegram channel, loading Facebo
     expect($html)->toContain('srcdoc=', __('social.facebook.show', [], 'en'))
         ->and($html)->toContain(e('https://www.facebook.com/plugins/page.php?href='.urlencode('https://www.facebook.com/profile.php?id=100064354104698')))
         ->and($html)->not->toContain('<iframe src="https://www.facebook.com/plugins')
-        ->and($html)->toContain('href="https://t.me/hrprosperityparty"', 'href="https://t.me/s/hrprosperityparty"', __('social.telegram.latest', [], 'en'))
+        ->and($html)->toContain('href="https://t.me/hrprosperityparty"', 'href="https://t.me/s/hrprosperityparty"', __('social.telegram.join', [], 'en'))
         ->and($html)->toContain('href="https://www.youtube.com/@sample"', '@hrprosperityparty', '@sample', __('social.action.subscribe', [], 'en'))
         ->and(substr_count($html, 'href="https://www.facebook.com/profile.php?id=100064354104698"'))->toBeGreaterThan(1)
-        ->and($html)->toContain(__('social.facebook.slow', [], 'en'));
+        ->and($html)->toContain(__('social.facebook.see_posts', [], 'en'));
 
     expect($this->get('/en')->headers->get('Content-Security-Policy'))->toContain('frame-src', 'https://www.facebook.com', 'https://web.facebook.com');
 
@@ -61,8 +61,17 @@ it('loads the Facebook posts at once unless an administrator chose otherwise', f
     $settings->social_links = ['facebook' => 'https://www.facebook.com/profile.php?id=100064354104698'];
     $settings->save();
 
+    $html = (string) $this->get('/en')->getContent();
     expect($settings->facebook_feed)->toBe('auto')
-        ->and((string) $this->get('/en')->getContent())->toContain('<iframe src="https://www.facebook.com/plugins/page.php?');
+        ->and($html)->toContain('<iframe src="https://www.facebook.com/plugins/page.php?', 'data-facebook ')
+        // Header only: the plugin's own posts stay empty on many connections (ADR-0073).
+        ->and($html)->toContain('tabs=&amp;width=500');
+});
+
+it('leaves the wall of posts out until the server has read some', function () {
+    socialSettings(['facebook' => 'https://www.facebook.com/profile.php?id=100064354104698', 'telegram' => 'https://t.me/hrprosperityparty'], 'auto');
+    $html = (string) $this->get('/en')->getContent();
+    expect($html)->not->toContain(__('social.wall.title', [], 'en'));
 });
 
 it('shows the latest Telegram posts as the server read them, with their pictures on this site', function () {
@@ -73,11 +82,12 @@ it('shows the latest Telegram posts as the server read them, with their pictures
     }
 
     $this->get('/en')->assertOk()
-        ->assertSeeInOrder(['Sample channel post 5', 'Sample channel post 4', 'Sample channel post 3', 'Sample channel post 2'])
-        ->assertDontSee('Sample channel post 1')
+        ->assertSee(__('social.wall.title', [], 'en'))
+        // Whole rows of three: five posts show as the newest three.
+        ->assertSeeInOrder(['Sample channel post 5', 'Sample channel post 4', 'Sample channel post 3'])
+        ->assertDontSee('Sample channel post 2')
         ->assertSee('href="https://t.me/hrprosperityparty/5"', escape: false)
-        ->assertSee(__('social.telegram.read', [], 'en'))
-        ->assertSee(__('social.telegram.all', [], 'en'));
+        ->assertSee(__('social.hub.open_on', ['platform' => 'Telegram'], 'en'));
 });
 
 it('lets administrators choose how the Facebook posts load', function () {

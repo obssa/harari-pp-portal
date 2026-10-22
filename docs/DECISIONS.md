@@ -2113,3 +2113,25 @@ whatever the site does.
 Facebook); others see the message and the Telegram posts. One more small script (0.6 KB) on pages with the
 Facebook card.
 
+## ADR-0073 — Facebook's page header, and a wall of posts the site shows itself (2026-10-22)
+
+**Context.** After ADR-0072 the owner still saw only the Facebook page's header (name, 83K followers) and
+then nothing: the plugin's posts are fetched by a second request from the visitor's browser, and on
+connections in Ethiopia that request does not come back, while the header does. The posts area of the
+plugin therefore stays empty for much of the site's audience, and no change on the site can fill it.
+
+**Decision.**
+
+- The Facebook card keeps only what loads: Facebook's page header with the cover photo, name, followers,
+  the people who follow and Facebook's Follow and Share buttons (`tabs` left empty), under the site's own
+  Facebook header with a Follow button, and "Posts and videos are on our Facebook page" with a link. The
+  check that facebook.com answers and the fallback message stay.
+- The Telegram channel gets a matching card (name, what it carries, Join, read in the browser).
+- Below them, a wall of the latest posts the server read from all of the party's pages (Telegram now),
+  in the site's own cards with each platform's mark.
+- When the branch office gives a Facebook page token (Content → Social sources), the server reads the
+  page like the channel and its posts join the wall: the reliable way to show Facebook posts here.
+
+**Consequences.** Facebook posts appear on the site only once the token is set; until then the card
+leads to the page.
+
