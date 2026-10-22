@@ -100,7 +100,8 @@
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--color-accent-600);
+    /* accent-700: 6.5:1 on plaster and white (accent-600 fell just short on plaster). */
+    color: var(--color-accent-700);
 }
 
 /* Post and page bodies from the block editor (ADR-0012). */

@@ -58,7 +58,7 @@ it('shows Amharic posts on the Harari pages, marked as Amharic', function () {
     $this->get('/har/news')
         ->assertOk()
         ->assertSee('የአማርኛ ዜና')
-        ->assertSee('<li lang="am">', escape: false)
+        ->assertSee('<article lang="am"', escape: false)
         ->assertSee('/am/news/', escape: false);
 });
 
