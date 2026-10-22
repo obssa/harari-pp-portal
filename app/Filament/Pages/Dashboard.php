@@ -15,6 +15,7 @@ use Filament\Pages\Dashboard as BaseDashboard;
 use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Contracts\View\View;
 
 /**
  * The staff dashboard (PLAN.md §7, ADR-0021): range, language and office
@@ -24,6 +25,20 @@ use Filament\Support\Icons\Heroicon;
 class Dashboard extends BaseDashboard
 {
     use HasFiltersForm;
+
+    /**
+     * ADR-0064: a welcome band with the date in both calendars, keeping the
+     * page's actions.
+     */
+    public function getHeader(): ?View
+    {
+        $name = trim((string) CurrentUser::get()->name);
+
+        return view('filament.dashboard.welcome', [
+            'actions' => $this->getCachedHeaderActions(),
+            'name' => $name === '' ? '' : (string) strtok($name, ' '),
+        ]);
+    }
 
     public function getColumns(): int|array
     {

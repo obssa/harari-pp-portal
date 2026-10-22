@@ -2,24 +2,24 @@
     <x-filament::section :heading="$this::title()" icon="heroicon-o-queue-list">
         @php $pipeline = $this->pipeline(); @endphp
         <div style="overflow-x: auto">
-            <table style="width: 100%; font-size: .875rem; border-collapse: collapse">
+            <table class="hpp-table">
                 <thead>
                     <tr>
-                        <th scope="col" style="padding: .5rem .5rem .5rem 0; text-align: start; font-weight: 500; opacity: .7">{{ __('dashboard.pipeline.status') }}</th>
+                        <th scope="col">{{ __('dashboard.pipeline.status') }}</th>
                         @foreach ($pipeline['languages'] as $language)
-                            <th scope="col" style="padding: .5rem; text-align: end; font-weight: 500; opacity: .7">{{ strtoupper($language) }}</th>
+                            <th scope="col">{{ strtoupper($language) }}</th>
                         @endforeach
-                        <th scope="col" style="padding: .5rem; text-align: end; font-weight: 500; opacity: .7">{{ __('dashboard.pipeline.total') }}</th>
+                        <th scope="col">{{ __('dashboard.pipeline.total') }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($pipeline['rows'] as $row)
-                        <tr style="border-top: 1px solid rgb(128 128 128 / .18)">
-                            <th scope="row" style="padding: .5rem 0; text-align: start; font-weight: 400">{{ $row['status']->label() }}</th>
+                        <tr>
+                            <th scope="row">{{ $row['status']->label() }}</th>
                             @foreach ($row['counts'] as $count)
-                                <td style="padding: .5rem; text-align: end; font-variant-numeric: tabular-nums">{{ $count }}</td>
+                                <td>{{ $count }}</td>
                             @endforeach
-                            <td style="padding: .5rem; text-align: end; font-variant-numeric: tabular-nums; font-weight: 600">{{ $row['total'] }}</td>
+                            <td class="hpp-strong">{{ $row['total'] }}</td>
                         </tr>
                     @endforeach
                 </tbody>

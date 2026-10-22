@@ -1,0 +1,609 @@
+/*
+ * Admin brand (ADR-0064): the public site's colours on Filament's hook classes.
+ * Plain CSS, loaded after Filament's own (which sits in cascade layers), so no
+ * extra build step is needed on the server.
+ */
+
+/* Self-hosted fonts, the same files as the public site. */
+@font-face {
+    font-family: 'Inter Variable';
+    font-style: normal;
+    font-display: swap;
+    font-weight: 100 900;
+    src: url('/fonts/portal/inter-latin-wght-v5.woff2') format('woff2-variations');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308,
+        U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+    font-family: 'Inter Variable';
+    font-style: normal;
+    font-display: swap;
+    font-weight: 100 900;
+    src: url('/fonts/portal/inter-latin-ext-wght-v5.woff2') format('woff2-variations');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F,
+        U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+    font-family: 'Noto Sans Ethiopic Variable';
+    font-style: normal;
+    font-display: swap;
+    font-weight: 100 900;
+    src: local('Noto Sans Ethiopic'), url('/fonts/portal/noto-sans-ethiopic-wght-v5.woff2') format('woff2-variations');
+    unicode-range: U+1200-139F, U+2D80-2DDF, U+AB00-AB2F, U+1E7E0-1E7FF;
+}
+
+:root {
+    --hpp-night: #083a5c;
+    --hpp-night-deep: #05253b;
+    --hpp-blue: #0b6ca8;
+    --hpp-gold: #f5b800;
+    --hpp-magenta: #c2185b;
+    --hpp-terracotta: #b4532a;
+    --hpp-sky: #29a8e0;
+    --hpp-plaster: #f7f2e9;
+    --hpp-plaster-line: #e5dccb;
+    --hpp-ink: #14161a;
+    --hpp-card: #ffffff;
+    --hpp-card-line: #ebe4d6;
+    --hpp-muted: #5b6270;
+}
+.dark {
+    --hpp-plaster: #0e1013;
+    --hpp-card: #16191e;
+    --hpp-card-line: #262b33;
+    --hpp-muted: #9aa3af;
+}
+
+.fi-body,
+.fi-simple-layout {
+    font-family: 'Inter Variable', 'Noto Sans Ethiopic Variable', ui-sans-serif, system-ui, sans-serif;
+}
+:lang(am) .fi-body,
+:lang(har) .fi-body {
+    line-height: 1.6;
+}
+
+/* Page ground: warm plaster instead of grey. */
+.fi-body {
+    background-color: var(--hpp-plaster);
+}
+
+/* ---------- Sidebar: night blue, gold for where you are ---------- */
+.fi-sidebar {
+    overflow: hidden;
+    background: linear-gradient(180deg, var(--hpp-night) 0%, var(--hpp-night-deep) 100%);
+    color: #fff;
+}
+.fi-sidebar::after {
+    /* A faint basket plate at the foot of the sidebar. */
+    content: '';
+    position: absolute;
+    inset-inline-end: -5rem;
+    bottom: -5rem;
+    width: 15rem;
+    height: 15rem;
+    pointer-events: none;
+    opacity: 0.12;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Ccircle cx='100' cy='100' r='94' fill='none' stroke='%23f5b800' stroke-width='7' stroke-dasharray='12 6'/%3E%3Ccircle cx='100' cy='100' r='80' fill='none' stroke='%23b4532a' stroke-width='9' stroke-dasharray='4 4'/%3E%3Ccircle cx='100' cy='100' r='64' fill='none' stroke='%2329a8e0' stroke-width='9' stroke-dasharray='14 5'/%3E%3Ccircle cx='100' cy='100' r='48' fill='none' stroke='%23c2185b' stroke-width='7' stroke-dasharray='3 5'/%3E%3Ccircle cx='100' cy='100' r='18' fill='%23f5b800'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.fi-sidebar-header,
+.fi-sidebar-header-ctn {
+    background: transparent;
+    box-shadow: none;
+    border-bottom: 1px solid rgb(255 255 255 / 0.08);
+}
+.fi-sidebar-nav {
+    position: relative;
+    z-index: 1;
+    scrollbar-color: rgb(255 255 255 / 0.2) transparent;
+}
+.fi-sidebar-group-label,
+.fi-sidebar-group-btn .fi-sidebar-group-label {
+    color: var(--hpp-gold);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+}
+.fi-sidebar-group-btn .fi-icon,
+.fi-sidebar-group-collapse-btn,
+.fi-sidebar-group-collapse-btn .fi-icon {
+    color: rgb(255 255 255 / 0.5);
+}
+.fi-sidebar-item-btn {
+    border-radius: 0.75rem;
+    transition: background-color 150ms, box-shadow 150ms;
+}
+.fi-sidebar-item-label {
+    color: rgb(255 255 255 / 0.82);
+    font-weight: 500;
+}
+.fi-sidebar-item-icon {
+    color: rgb(255 255 255 / 0.5);
+}
+.fi-sidebar-item-btn:hover,
+.fi-sidebar-item-btn:focus-visible {
+    background-color: rgb(255 255 255 / 0.08);
+}
+.fi-sidebar-item-btn:hover .fi-sidebar-item-label {
+    color: #fff;
+}
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn,
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn:where(.dark, .dark *) {
+    background-color: rgb(255 255 255 / 0.12);
+    box-shadow: inset 3px 0 0 var(--hpp-gold);
+}
+[dir='rtl'] .fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
+    box-shadow: inset -3px 0 0 var(--hpp-gold);
+}
+.fi-sidebar-item.fi-active .fi-sidebar-item-label {
+    color: #fff;
+    font-weight: 700;
+}
+.fi-sidebar-item.fi-active .fi-sidebar-item-icon {
+    color: var(--hpp-gold);
+}
+.fi-sidebar-item-grouped-border-part {
+    background-color: rgb(255 255 255 / 0.18);
+}
+.fi-sidebar-item.fi-active .fi-sidebar-item-grouped-border-part {
+    background-color: var(--hpp-gold);
+}
+.fi-sidebar .fi-badge {
+    box-shadow: none;
+}
+.fi-sidebar-database-notifications-btn,
+.fi-sidebar-footer {
+    color: rgb(255 255 255 / 0.82);
+}
+.fi-sidebar-close-collapse-sidebar-btn .fi-icon,
+.fi-sidebar-open-collapse-sidebar-btn .fi-icon,
+.fi-sidebar-header .fi-icon-btn {
+    color: rgb(255 255 255 / 0.7);
+}
+
+/* ---------- Brand block (logo, name) ---------- */
+.hpp-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    line-height: 1.15;
+}
+.hpp-brand-logo {
+    width: 2.5rem;
+    height: 2.5rem;
+    flex-shrink: 0;
+    border-radius: 9999px;
+    background: #fff;
+    box-shadow: 0 0 0 2px rgb(245 184 0 / 0.9);
+}
+.hpp-brand-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+.hpp-brand-name {
+    font-size: 0.9375rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--hpp-ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.hpp-brand-sub {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--hpp-terracotta);
+}
+.fi-sidebar .hpp-brand-name,
+.dark .hpp-brand-name {
+    color: #fff;
+}
+.fi-sidebar .hpp-brand-sub {
+    color: var(--hpp-gold);
+}
+
+/* ---------- Topbar ---------- */
+.fi-topbar,
+.fi-topbar-ctn {
+    background-color: rgb(255 255 255 / 0.85);
+    backdrop-filter: saturate(1.4) blur(10px);
+    box-shadow: none;
+    border-bottom: 1px solid var(--hpp-card-line);
+}
+.dark .fi-topbar,
+.dark .fi-topbar-ctn {
+    background-color: rgb(22 25 30 / 0.85);
+}
+
+/* ---------- Page header ---------- */
+.fi-header-heading {
+    font-weight: 800;
+    letter-spacing: -0.025em;
+}
+.fi-breadcrumbs-item-label {
+    font-weight: 500;
+}
+
+/* ---------- Cards: sections, tables, stats ---------- */
+.fi-section:not(.fi-section-not-contained),
+.fi-ta-ctn,
+.fi-wi-stats-overview-stat,
+.fi-wi-chart,
+.fi-fo-tabs,
+.fi-sc-tabs {
+    border-radius: 1rem;
+    background-color: var(--hpp-card);
+    box-shadow: 0 1px 2px rgb(20 22 26 / 0.04), 0 8px 24px -12px rgb(20 22 26 / 0.12);
+    --tw-ring-color: var(--hpp-card-line);
+}
+.fi-section-header-heading {
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+.fi-section-header .fi-icon {
+    color: var(--hpp-terracotta);
+}
+.dark .fi-section-header .fi-icon {
+    color: var(--hpp-gold);
+}
+
+/* Stats: a coloured edge per figure, in the logo's colours. */
+.fi-wi-stats-overview-stat {
+    position: relative;
+    overflow: hidden;
+}
+.fi-wi-stats-overview-stat::before {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 4px;
+    background: var(--hpp-blue);
+}
+.fi-wi-stats-overview-stat:nth-child(4n + 2)::before {
+    background: var(--hpp-gold);
+}
+.fi-wi-stats-overview-stat:nth-child(4n + 3)::before {
+    background: var(--hpp-magenta);
+}
+.fi-wi-stats-overview-stat:nth-child(4n + 4)::before {
+    background: var(--hpp-terracotta);
+}
+.fi-wi-stats-overview-stat-label {
+    font-weight: 600;
+    color: var(--hpp-muted);
+}
+.fi-wi-stats-overview-stat-value {
+    font-weight: 800;
+    letter-spacing: -0.03em;
+}
+
+/*
+ * Primary buttons in the brand blue with white text (5.6:1). Filament picks a
+ * lighter shade with dark text from its generated palette, so pin it here.
+ */
+.fi-btn.fi-color-primary.fi-bg-color-400 {
+    background-color: var(--hpp-blue);
+    color: #fff;
+}
+.fi-btn.fi-color-primary.fi-bg-color-400:hover {
+    background-color: #095a8c;
+    color: #fff;
+}
+.fi-btn.fi-color-primary.fi-bg-color-400 .fi-icon,
+.fi-btn.fi-color-primary.fi-bg-color-400 .fi-loading-indicator {
+    color: #fff;
+}
+
+/* Buttons and inputs a touch rounder. */
+.fi-btn {
+    border-radius: 0.625rem;
+    font-weight: 600;
+}
+.fi-input-wrp {
+    border-radius: 0.625rem;
+}
+.fi-ta-header-cell-label {
+    font-weight: 700;
+}
+
+/* ---------- Dashboard welcome band ---------- */
+.hpp-welcome {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1.25rem;
+    padding: 1.75rem 1.75rem 1.5rem;
+    color: #fff;
+    background:
+        radial-gradient(120% 140% at 0% 0%, rgb(11 108 168 / 0.55) 0%, transparent 55%),
+        linear-gradient(135deg, var(--hpp-night) 0%, var(--hpp-night-deep) 100%);
+    box-shadow: 0 18px 40px -24px rgb(5 37 59 / 0.8);
+}
+.hpp-welcome-plate {
+    position: absolute;
+    inset-inline-end: -4rem;
+    top: -4.5rem;
+    width: 17rem;
+    height: 17rem;
+    opacity: 0.35;
+    pointer-events: none;
+}
+.hpp-welcome-inner {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.25rem;
+}
+.hpp-welcome-kicker {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--hpp-gold);
+}
+.hpp-welcome-title {
+    margin-top: 0.375rem;
+    font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.125rem);
+    line-height: 1.15;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+}
+.hpp-welcome-text {
+    margin-top: 0.5rem;
+    max-width: 40rem;
+    color: rgb(255 255 255 / 0.8);
+}
+.hpp-welcome-date {
+    margin-top: 0.875rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 9999px;
+    padding: 0.375rem 0.875rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    background: rgb(255 255 255 / 0.1);
+    color: rgb(255 255 255 / 0.9);
+}
+.hpp-welcome-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+.hpp-welcome-site {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    border-radius: 0.625rem;
+    padding: 0.5rem 0.875rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    background: var(--hpp-gold);
+    color: var(--hpp-ink);
+}
+.hpp-welcome-site:hover {
+    background: #ffc933;
+}
+.hpp-welcome .fi-btn {
+    background: rgb(255 255 255 / 0.12);
+    color: #fff;
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.25);
+}
+.hpp-welcome .fi-btn:hover {
+    background: rgb(255 255 255 / 0.2);
+}
+.hpp-welcome .fi-btn .fi-icon {
+    color: #fff;
+}
+
+/* ---------- Widget content (our own widget views) ---------- */
+.hpp-muted {
+    color: var(--hpp-muted);
+}
+.hpp-empty {
+    font-size: 0.875rem;
+    color: var(--hpp-muted);
+}
+.hpp-num {
+    font-variant-numeric: tabular-nums;
+}
+.hpp-link {
+    font-weight: 600;
+    color: var(--hpp-blue);
+    text-decoration: none;
+}
+.dark .hpp-link {
+    color: #7cc3ec;
+}
+.hpp-link:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+.hpp-list {
+    font-size: 0.875rem;
+}
+.hpp-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.625rem 0;
+    border-top: 1px solid var(--hpp-card-line);
+}
+.hpp-row:first-child {
+    border-top: 0;
+    padding-top: 0.125rem;
+}
+.hpp-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.hpp-table {
+    width: 100%;
+    font-size: 0.875rem;
+    border-collapse: collapse;
+}
+.hpp-table th {
+    padding: 0.5rem;
+    text-align: end;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--hpp-muted);
+}
+.hpp-table th:first-child {
+    padding-inline-start: 0;
+    text-align: start;
+}
+.hpp-table td {
+    padding: 0.625rem 0.5rem;
+    text-align: end;
+    font-variant-numeric: tabular-nums;
+    border-top: 1px solid var(--hpp-card-line);
+}
+.hpp-table td:first-child,
+.hpp-table th[scope='row'] {
+    padding-inline-start: 0;
+    text-align: start;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 0.875rem;
+    color: inherit;
+}
+.hpp-table tbody tr:hover td,
+.hpp-table tbody tr:hover th {
+    background: rgb(247 242 233 / 0.6);
+}
+.dark .hpp-table tbody tr:hover td,
+.dark .hpp-table tbody tr:hover th {
+    background: rgb(255 255 255 / 0.03);
+}
+.hpp-strong {
+    font-weight: 700;
+}
+.hpp-big {
+    font-size: 2rem;
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+}
+.hpp-subhead {
+    margin-top: 1rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--hpp-muted);
+}
+.hpp-stack {
+    display: grid;
+    gap: 0.75rem;
+}
+.hpp-note {
+    padding: 0.875rem 1rem;
+    border-radius: 0.875rem;
+    background: var(--hpp-plaster);
+    border: 1px solid var(--hpp-card-line);
+}
+.hpp-note-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+}
+.hpp-note-body {
+    margin-top: 0.25rem;
+    white-space: pre-line;
+    font-size: 0.875rem;
+    color: var(--hpp-muted);
+}
+.hpp-chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+}
+.hpp-tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr));
+    gap: 0.625rem;
+}
+.hpp-tile {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.75rem 0.875rem;
+    border-radius: 0.875rem;
+    border: 1px solid var(--hpp-card-line);
+    background: var(--hpp-plaster);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 150ms, background-color 150ms, transform 150ms;
+}
+.hpp-tile:hover {
+    border-color: var(--hpp-gold);
+    background: var(--hpp-card);
+    transform: translateY(-1px);
+}
+.hpp-tile-icon {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.625rem;
+    background: var(--hpp-night);
+    color: var(--hpp-gold);
+}
+.hpp-tile-icon svg {
+    width: 1.125rem;
+    height: 1.125rem;
+}
+
+/* ---------- Sign-in and other simple pages ---------- */
+.fi-simple-layout {
+    background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Ccircle cx='100' cy='100' r='94' fill='none' stroke='%23f5b800' stroke-width='7' stroke-dasharray='12 6'/%3E%3Ccircle cx='100' cy='100' r='80' fill='none' stroke='%23b4532a' stroke-width='9' stroke-dasharray='4 4'/%3E%3Ccircle cx='100' cy='100' r='64' fill='none' stroke='%2329a8e0' stroke-width='9' stroke-dasharray='14 5'/%3E%3Ccircle cx='100' cy='100' r='48' fill='none' stroke='%23c2185b' stroke-width='7' stroke-dasharray='3 5'/%3E%3Ccircle cx='100' cy='100' r='18' fill='%23f5b800'/%3E%3C/svg%3E") right -9rem top -9rem / 30rem 30rem no-repeat,
+        radial-gradient(90% 90% at 0% 100%, rgb(11 108 168 / 0.45) 0%, transparent 60%),
+        linear-gradient(160deg, var(--hpp-night) 0%, var(--hpp-night-deep) 100%);
+}
+.fi-simple-main {
+    border-radius: 1.5rem;
+    background-color: var(--hpp-card);
+    box-shadow: 0 30px 60px -30px rgb(0 0 0 / 0.55);
+    --tw-ring-color: transparent;
+}
+.fi-simple-header-heading {
+    font-weight: 800;
+    letter-spacing: -0.025em;
+}
+.fi-simple-layout .fi-logo {
+    margin-inline: auto;
+}
+.fi-simple-layout .hpp-brand-logo {
+    width: 3.25rem;
+    height: 3.25rem;
+}
+.fi-simple-layout .hpp-brand-name {
+    font-size: 1.0625rem;
+    color: var(--hpp-ink);
+}
+.dark .fi-simple-layout .hpp-brand-name {
+    color: #fff;
+}

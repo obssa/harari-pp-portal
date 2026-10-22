@@ -1879,3 +1879,28 @@ available to the developer for loading content by hand, and the branch's news is
 are corrected in the admin and stay corrected. Names in English are transliterations where no
 official spelling exists; the Afaan Oromo pages and terms are listed in docs/translations-review.md.
 The branch confirms the open points in docs/content/sources.md.
+
+## ADR-0064 — The admin in the party's brand (2026-10-22)
+
+**Context.** After the public redesign (ADR-0062) the owner asked for a state-of-the-art design for the
+admin dashboard too. The admin is Filament 5 with its stock look and widget views styled inline. A
+compiled Filament theme would need Filament's CSS from `vendor/` at build time, which the asset job
+and the host build do not have.
+
+**Decision.**
+
+- `public/admin/brand.css`, plain CSS loaded after Filament's (whose styles sit in cascade layers, so
+  plain rules win without `!important`), styles Filament's hook classes: a night-blue sidebar with gold
+  group labels and a gold edge on the current item, a faint basket plate at its foot; warm plaster
+  ground; white cards with soft shadows; stats with coloured top edges in the logo's colours; primary
+  buttons in the brand blue with white text (Filament's own pick was a pale shade with dark text).
+- Sign-in and other simple pages sit on night blue with a basket plate; the card carries the round logo.
+- The brand block (round logo, name, "Admin") replaces the plain name; fonts are the public site's
+  self-hosted Inter and Noto Sans Ethiopic, so no font request leaves the site.
+- The dashboard opens on a welcome band: greeting, today's date in both calendars, a link to the public
+  site and the page's own actions. Quick actions are tiles; widget views use shared `hpp-*` classes
+  instead of inline styles.
+
+**Consequences.** Upgrading Filament may rename a hook class; the admin brand test and a look at the
+dashboard after each Filament upgrade catch it. Dark mode keeps the dark sidebar and darkens the ground
+and cards.

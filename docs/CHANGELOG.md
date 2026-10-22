@@ -4,6 +4,15 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### The admin in the party's brand (2026-10-22)
+
+- Night-blue sidebar with gold section labels and a gold edge on the current page, warm plaster
+  ground, white cards, stats edged in the logo's colours, brand-blue buttons (ADR-0064).
+- Sign-in on night blue with the round logo; the logo and "Admin" in the sidebar and top bar; the
+  public site's self-hosted fonts.
+- The dashboard opens on a welcome band with today's date in both calendars and a link to the site;
+  quick actions as tiles; tidier widget lists and tables.
+
 ### Every page in the new design (2026-10-22)
 
 - Listing, form and search pages open on a band with breadcrumb, title and lead (ADR-0062): plaster for

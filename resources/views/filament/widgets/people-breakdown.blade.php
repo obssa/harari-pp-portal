@@ -4,12 +4,12 @@
         <div style="display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr))">
             @if ($figures['funnel'] !== null)
                 <div>
-                    <h3 style="font-size: .875rem; font-weight: 500; opacity: .7">{{ __('members.dashboard.funnel') }}</h3>
-                    <ol style="margin-top: .5rem; font-size: .875rem">
+                    <h3 class="hpp-subhead">{{ __('members.dashboard.funnel') }}</h3>
+                    <ol class="hpp-list" style="margin-top: .5rem">
                         @foreach ($figures['funnel'] as $stage => $count)
                             <li style="display: flex; justify-content: space-between; gap: .75rem; padding: .125rem 0">
                                 <span>{{ __("members.dashboard.stage.{$stage}") }}</span>
-                                <span style="font-variant-numeric: tabular-nums">{{ $count }}</span>
+                                <span class="hpp-num">{{ $count }}</span>
                             </li>
                         @endforeach
                     </ol>
@@ -17,8 +17,8 @@
             @endif
             @foreach (['woreda', 'sex', 'age_band'] as $dimension)
                 <div>
-                    <h3 style="font-size: .875rem; font-weight: 500; opacity: .7">{{ \App\Domain\Membership\Support\PeopleStats::dimensionLabel($dimension) }}</h3>
-                    <ol style="margin-top: .5rem; font-size: .875rem">
+                    <h3 class="hpp-subhead">{{ \App\Domain\Membership\Support\PeopleStats::dimensionLabel($dimension) }}</h3>
+                    <ol class="hpp-list" style="margin-top: .5rem">
                         @forelse ($figures[$dimension] as $row)
                             <li style="padding: .125rem 0">
                                 <span style="display: flex; justify-content: space-between; gap: .75rem">
@@ -30,14 +30,14 @@
                                 </span>
                             </li>
                         @empty
-                            <li style="opacity: .7">{{ __('members.dashboard.none') }}</li>
+                            <li class="hpp-muted">{{ __('members.dashboard.none') }}</li>
                         @endforelse
                     </ol>
                 </div>
             @endforeach
         </div>
-        <p style="margin-top: 1rem; font-size: .875rem">
-            <a href="{{ \App\Filament\Pages\MembershipReports::getUrl() }}" style="text-decoration: underline; text-underline-offset: 3px">{{ __('members.dashboard.report') }}</a>
+        <p class="hpp-list" style="margin-top: 1rem">
+            <a href="{{ \App\Filament\Pages\MembershipReports::getUrl() }}" class="hpp-link">{{ __('members.dashboard.report') }}</a>
         </p>
     </x-filament::section>
 </x-filament-widgets::widget>

@@ -8,6 +8,7 @@ use App\Http\Middleware\RequireMfaForPrivilegedRoles;
 use App\Http\Middleware\RestrictAdminByIp;
 use App\Http\Middleware\SetAdminLocale;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
+use Filament\FontProviders\LocalFontProvider;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -15,15 +16,28 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
+use Illuminate\Contracts\View\View;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\HtmlString;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
 {
+    /**
+     * A public file with its modification time, so browsers fetch it again after a deploy.
+     */
+    private static function asset(string $path): string
+    {
+        $file = public_path($path);
+
+        return '/'.$path.(is_file($file) ? '?v='.filemtime($file) : '');
+    }
+
     public function panel(Panel $panel): Panel
     {
         return $panel
@@ -39,6 +53,13 @@ class AdminPanelProvider extends PanelProvider
                 'primary' => Color::hex('#0B6CA8'),
             ])
             ->favicon('/favicon-96.png')
+            // ADR-0064: the public site's brand in the admin; fonts served from this site.
+            ->brandLogo(fn (): View => view('filament.brand'))
+            ->brandLogoHeight('2.5rem')
+            ->font('Inter Variable', provider: LocalFontProvider::class)
+            ->renderHook(PanelsRenderHook::STYLES_AFTER, fn (): HtmlString => new HtmlString(
+                '<link rel="stylesheet" href="'.e(self::asset('admin/brand.css')).'">'
+            ))
             // Authenticator-app MFA for everyone who wants it; required for the
             // roles in config('portal.mfa_required_roles') by our middleware.
             ->multiFactorAuthentication(
