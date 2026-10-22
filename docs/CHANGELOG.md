@@ -4,6 +4,11 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Staff manual screenshots (2026-10-22)
+
+- `tests/Browser/StaffManualScreenshotsTest.php` captures 42 screens of the admin and site in the new design
+  with sample content (`MANUAL_SCREENSHOTS=1`), for the staff manual.
+
 ### Choose how applications are confirmed (2026-10-22)
 
 - Administration → Membership: confirm applications to join with a code by SMS (as before), a code by
