@@ -54,7 +54,9 @@ use App\Domain\Forms\Policies\SubmissionNotePolicy;
 use App\Domain\Health\HealthChecks;
 use App\Domain\Health\Listeners\NotifyAboutBackupProblems;
 use App\Domain\Health\Listeners\NotifyAboutFailingCheck;
+use App\Domain\Homepage\Models\HeroSlide;
 use App\Domain\Homepage\Models\HomepageSection;
+use App\Domain\Homepage\Policies\HeroSlidePolicy;
 use App\Domain\Homepage\Policies\HomepageSectionPolicy;
 use App\Domain\Import\Models\ContentSource;
 use App\Domain\Import\Policies\ContentSourcePolicy;
@@ -285,6 +287,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Leader::class, LeaderPolicy::class);
         Gate::policy(League::class, LeaguePolicy::class);
         Gate::policy(HomepageSection::class, HomepageSectionPolicy::class);
+        Gate::policy(HeroSlide::class, HeroSlidePolicy::class);
         Gate::policy(SearchTerm::class, SearchTermPolicy::class);
         Gate::policy(Announcement::class, AnnouncementPolicy::class);
         Gate::policy(ContentSource::class, ContentSourcePolicy::class);

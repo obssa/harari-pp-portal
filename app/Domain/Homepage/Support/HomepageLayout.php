@@ -8,6 +8,7 @@ use App\Domain\Content\Models\Translation;
 use App\Domain\Content\Queries\PublicPosts;
 use App\Domain\Events\Models\Event;
 use App\Domain\Homepage\Enums\SectionKey;
+use App\Domain\Homepage\Models\HeroSlide;
 use App\Domain\Homepage\Models\HomepageSection;
 use App\Domain\Media\Models\Gallery;
 use App\Domain\Media\Models\GalleryItem;
@@ -17,6 +18,7 @@ use App\Domain\Organisation\Models\League;
 use App\Domain\Organisation\Queries\PublicDirectory;
 use App\Domain\Projects\Models\Project;
 use App\Domain\Social\Queries\SocialFeed;
+use App\Settings\CarouselSettings;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection as SupportCollection;
@@ -25,7 +27,8 @@ use Illuminate\Support\Collection as SupportCollection;
  * The homepage as the builder arranged it (PLAN.md §4 Homepage, §7): the
  * sections in order, each with what it shows to readers of one language.
  * Sections with nothing to show are left out, except the hero, which falls
- * back to a welcome.
+ * back to a welcome. The hero is the carousel (ADR-0070): the slides an
+ * editor made, then the featured stories.
  */
 final class HomepageLayout
 {
@@ -135,11 +138,45 @@ final class HomepageLayout
     }
 
     /**
-     * Hand-picked posts, else featured ones; an empty list means the welcome.
+     * The carousel (ADR-0070): the live slides for this language in their
+     * order, then hand-picked or featured stories when the settings say so.
+     * No slides at all means the welcome.
+     *
+     * @return array{slides: list<array{kind: string, slide?: HeroSlide, post?: Post, translation?: Translation}>, settings: array<string, mixed>}
+     */
+    private function hero(HomepageSection $section, string $locale, int $limit): array
+    {
+        $settings = CarouselSettings::current();
+        $slides = [];
+        try {
+            $live = HeroSlide::query()->live()->with('image')->get();
+        } catch (QueryException) {
+            $live = collect();
+        }
+        foreach ($live as $slide) {
+            if ($slide->showsIn($locale) && $slide->text('title', $locale)[0] !== '') {
+                $slides[] = ['kind' => 'slide', 'slide' => $slide];
+            }
+        }
+
+        if ($settings['include_stories']) {
+            foreach ($this->stories($section, $locale, $limit) as $post) {
+                $shown = PublicPosts::shown($post, $locale);
+                if ($shown !== null) {
+                    $slides[] = ['kind' => 'story', 'post' => $post, 'translation' => $shown];
+                }
+            }
+        }
+
+        return ['slides' => $slides, 'settings' => $settings];
+    }
+
+    /**
+     * Hand-picked posts, else featured ones.
      *
      * @return SupportCollection<int, Post>
      */
-    private function hero(HomepageSection $section, string $locale, int $limit): SupportCollection
+    private function stories(HomepageSection $section, string $locale, int $limit): SupportCollection
     {
         if ($section->curated_ids) {
             $picked = $this->posts->take($locale, $limit, ['ids' => $section->curated_ids]);

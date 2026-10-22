@@ -25,7 +25,7 @@
     @endif
     <x-locale-meta :alternates="$alternates" />
     <x-seo :title="$title ?? __('site.name')" :description="$description ?? __('site.description')" :image="$image ?? app(\App\Domain\Content\Support\OgImage::class)->url('site-'.app()->getLocale(), __('site.name'), __('site.office'))" :type="$type" :json-ld="$jsonLd" />
-    {{-- ADR-0040: the only script on public pages, a cookieless page view count. --}}
+    {{-- ADR-0040: a cookieless page view count; the homepage carousel adds its own small script (ADR-0070). --}}
     @vite(['resources/css/app.css', 'resources/js/beacon.js'])
 </head>
 <body class="flex min-h-screen flex-col bg-canvas text-ink antialiased">

@@ -10,7 +10,9 @@ use App\Domain\Content\Support\BodyRenderer;
 use App\Domain\Content\Workflow\ContentWorkflow;
 use App\Domain\Events\Actions\SaveEvent;
 use App\Domain\Events\Models\Event;
+use App\Domain\Homepage\Actions\SaveHeroSlide;
 use App\Domain\Homepage\Actions\SaveHomepage;
+use App\Domain\Homepage\Models\HeroSlide;
 use App\Domain\Homepage\Models\HomepageSection;
 use App\Domain\Homepage\Support\HomepageLayout;
 use App\Domain\Import\Models\ContentImport;
@@ -49,6 +51,7 @@ final class LoadContentPack
         private readonly SavePage $pages,
         private readonly SaveEvent $events,
         private readonly SaveHomepage $homepage,
+        private readonly SaveHeroSlide $slides,
         private readonly UploadMedia $upload,
         private readonly ContentWorkflow $workflow,
         private readonly SyncMediaUsage $usage,
@@ -103,6 +106,9 @@ final class LoadContentPack
         }
 
         $this->homepageSections((array) ($pack['homepage'] ?? []), $actor);
+        foreach ((array) ($pack['slides'] ?? []) as $item) {
+            $this->slide((array) $item, $photos, $actor);
+        }
         $this->socialLinks((array) ($pack['settings']['social_links'] ?? []));
         $this->importedBacklog();
 
@@ -346,6 +352,44 @@ final class LoadContentPack
             ContentPackItem::remember("homepage.{$section}", null);
         }
         $this->counts['homepage'] = count($changes);
+    }
+
+    /**
+     * A homepage carousel slide (ADR-0070), once by its key. Its picture comes
+     * from the pack's photos; a button may point to a record the pack loaded
+     * ("leader:@leader.key").
+     *
+     * @param  array<string, mixed>  $item
+     */
+    private function slide(array $item, string $photos, User $actor): void
+    {
+        $key = (string) ($item['key'] ?? '');
+        if ($key === '' || ContentPackItem::query()->where('key', $key)->exists()) {
+            return;
+        }
+
+        DB::transaction(function () use ($item, $key, $photos, $actor): void {
+            $imageId = filled($item['photo'] ?? null) ? $this->photo($photos, [
+                'photo' => $item['photo'],
+                'translations' => array_map(fn (string $alt): array => ['name' => $alt], (array) ($item['photo_alt'] ?? [])),
+            ], $actor, (string) ($item['photo_credit'] ?? '')) : null;
+
+            $buttons = [];
+            foreach ((array) ($item['buttons'] ?? []) as $button) {
+                $link = (string) ($button['link'] ?? '');
+                if (preg_match('/^(leader|page|post):@(.+)$/', $link, $match) === 1) {
+                    $id = $this->id($match[2]);
+                    $link = $id !== null ? "{$match[1]}:{$id}" : '';
+                }
+                if ($link !== '') {
+                    $buttons[] = [...(array) $button, 'link' => $link];
+                }
+            }
+
+            $slide = $this->slides->handle(new HeroSlide, [...$item, 'image_id' => $imageId, 'buttons' => $buttons], $actor);
+            ContentPackItem::remember($key, $slide);
+            $this->counts['slides'] = ($this->counts['slides'] ?? 0) + 1;
+        });
     }
 
     /**

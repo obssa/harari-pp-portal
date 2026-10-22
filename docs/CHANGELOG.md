@@ -4,6 +4,15 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Homepage carousel (2026-10-22)
+
+- The homepage opens with a carousel: the welcome over Harar Gate, the Prosperity Party campaign banner
+  rebuilt with live text and a "Join now" button, and the message of H.E Getu Wayyesa Tola, Head of
+  Harari Region Prosperity Party (ADR-0070).
+- Content → Homepage carousel: drag slides into order, switch them on and off, schedule them, choose
+  their languages, preview them, duplicate them, and set the carousel's speed, transition, height and
+  controls.
+
 ### Harari Region Prosperity Party (2026-10-22)
 
 - The party is called Harari Region Prosperity Party everywhere on the site, in every language, and its

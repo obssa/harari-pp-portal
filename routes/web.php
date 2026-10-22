@@ -30,6 +30,7 @@ use App\Http\Controllers\Public\RedirectToPreferredLocale;
 use App\Http\Controllers\Public\RobotsController;
 use App\Http\Controllers\Public\SearchController;
 use App\Http\Controllers\Public\SitemapController;
+use App\Http\Controllers\Public\SlidePreviewController;
 use App\Http\Controllers\Public\SocialController;
 use App\Http\Controllers\Public\StructureController;
 use App\Http\Controllers\Public\VideoController;
@@ -77,6 +78,12 @@ Route::get('/preview/posts/{post}/{language}', PreviewController::class)
     ->middleware('signed')
     ->withoutMiddleware($stateless)
     ->name('preview.post');
+
+// ADR-0070: a carousel slide on its own, also while it is off or scheduled.
+Route::get('/preview/slides/{slide}/{language}', SlidePreviewController::class)
+    ->middleware('signed')
+    ->withoutMiddleware($stateless)
+    ->name('preview.slide');
 
 // ADR-0051: the mail app's one-click unsubscribe (RFC 8058) posts without a session or form token.
 Route::post('/{locale}/newsletter/unsubscribe/{token}', [NewsletterController::class, 'unsubscribe'])

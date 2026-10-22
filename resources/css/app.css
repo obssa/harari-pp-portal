@@ -246,3 +246,82 @@
         }
     }
 }
+
+/*
+ * The homepage carousel (ADR-0070). Slides sit side by side in a scroll-snapping row, so they can be
+ * swiped before (or without) the script; "come into focus" stacks them and sharpens the new one in.
+ * Like all motion here (ADR-0066) it moves and blurs but never fades, and holds still for reduced motion.
+ */
+[data-carousel] [data-track] {
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+}
+
+[data-carousel] [data-track]::-webkit-scrollbar {
+    display: none;
+}
+
+[data-carousel]:not([data-ready]) [data-controls] {
+    visibility: hidden;
+}
+
+[data-carousel] [data-track] > :not(.is-current) .animate-rise {
+    animation: none;
+}
+
+[data-carousel][data-mode='focus'] [data-track] {
+    display: grid;
+    overflow: hidden;
+    scroll-snap-type: none;
+}
+
+[data-carousel][data-mode='focus'] [data-track] > * {
+    grid-area: 1 / 1;
+    visibility: hidden;
+}
+
+[data-carousel][data-mode='focus'] [data-track] > .is-current {
+    visibility: visible;
+    z-index: 2;
+}
+
+[data-carousel][data-mode='focus'] [data-track] > .is-leaving {
+    visibility: visible;
+    z-index: 1;
+}
+
+[data-carousel] [data-progress] {
+    transform: scaleX(0);
+    transform-origin: left;
+}
+
+@keyframes hpp-progress {
+    to {
+        transform: scaleX(1);
+    }
+}
+
+@keyframes hpp-focus {
+    from {
+        transform: scale(1.05);
+        filter: blur(12px);
+    }
+    to {
+        transform: none;
+        filter: none;
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    [data-carousel][data-running] [data-progress] {
+        animation: hpp-progress var(--slide-duration, 7s) linear forwards;
+    }
+
+    [data-carousel][data-held] [data-progress] {
+        animation-play-state: paused;
+    }
+
+    [data-carousel][data-mode='focus'] [data-track] > .is-entering {
+        animation: hpp-focus 0.85s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    }
+}

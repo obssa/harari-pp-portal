@@ -19,6 +19,7 @@ use App\Domain\Events\Models\Event;
 use App\Domain\Events\Models\EventTranslation;
 use App\Domain\Forms\Models\Form;
 use App\Domain\Forms\Models\FormTranslation;
+use App\Domain\Homepage\Models\HeroSlide;
 use App\Domain\Homepage\Models\HomepageSection;
 use App\Domain\Media\Models\Gallery;
 use App\Domain\Media\Models\GalleryItem;
@@ -39,6 +40,7 @@ use App\Domain\Projects\Models\StatisticTranslation;
 use App\Domain\Social\Models\SocialPost;
 use App\Domain\Social\Models\SocialSource;
 use App\Domain\Translation\Models\UiTranslation;
+use App\Settings\CarouselSettings;
 use App\Settings\PressKitSettings;
 use App\Settings\SiteSettings;
 use Spatie\LaravelSettings\Events\SettingsSaved;
@@ -55,7 +57,7 @@ final class PublicContentChanges
         Category::class, CategoryTranslation::class, Menu::class, Page::class, PageTranslation::class,
         Post::class, PostTranslation::class, Redirect::class, Tag::class, TagTranslation::class,
         Document::class, DocumentTranslation::class, DocumentVersion::class, Event::class, EventTranslation::class,
-        Form::class, FormTranslation::class, HomepageSection::class, Gallery::class, GalleryItem::class,
+        Form::class, FormTranslation::class, HeroSlide::class, HomepageSection::class, Gallery::class, GalleryItem::class,
         GalleryTranslation::class, Media::class, Video::class, VideoTranslation::class, Leader::class,
         LeaderTranslation::class, League::class, LeagueTranslation::class, Office::class, OfficeTranslation::class,
         Project::class, ProjectTranslation::class, Statistic::class, StatisticTranslation::class,
@@ -63,7 +65,7 @@ final class PublicContentChanges
     ];
 
     /** @var list<class-string> */
-    public const SETTINGS = [SiteSettings::class, PressKitSettings::class];
+    public const SETTINGS = [SiteSettings::class, PressKitSettings::class, CarouselSettings::class];
 
     /**
      * @param  array<int, mixed>  $payload

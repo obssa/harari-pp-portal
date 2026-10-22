@@ -2022,3 +2022,42 @@ spelling once (ADR-0063), and its rule is never to overwrite what is already the
 **Consequences.** News stories keep the names they were published with. The Amharic and Afaan Oromo
 forms are listed in `docs/translations-review.md`.
 
+## ADR-0070 — The homepage carousel and its manager (2026-10-22)
+
+**Context.** The homepage opened with one welcome over Harar Gate, or with featured stories when there were
+some. The branch office asked for a carousel: its own campaign banner rebuilt from the image it uses on
+social media (the heading, three leaders, a "join now" button and a slogan), a slide for the head of the
+party with his message, and an admin where the order, speed and the rest can be managed like a
+professional slider.
+
+**Decision.**
+
+- `hero_slides` (`HeroSlide`): a layout, a library picture, text in each language (small heading,
+  heading, words in colour, text, footnote), up to three buttons, on/off, dates, seconds on screen, the
+  languages it shows in, and its place. Texts follow the fallback chain field by field and carry their
+  own `lang`. Saved through `SaveHeroSlide`; logged; managed by those with `homepage.manage`.
+- Three layouts: **photo** (a photo across the slide, Harar Gate when none is chosen), **campaign
+  banner** (white, the first word of the heading drawn in outline, the photo in a slanted frame, the
+  orange band, the button with the site's address and social pages, and a slogan), and **message with
+  portrait** (night blue, a framed square picture, the message with words in gold, the name and title).
+  Outline lettering is SVG with the plain words given to screen readers, so contrast checks read real
+  text.
+- Buttons open a page of the site in the visitor's language, a leader's profile, a page, a story (where
+  published), or an address starting with `https://` or `/`; anything else is refused.
+- The admin manager (Content → Homepage carousel): drag-and-drop order, picture, status (live,
+  scheduled, ended, off), languages and dates per slide, an on/off switch in the list, duplicate (the
+  copy starts off), bulk on/off, a signed preview that works for an hour (also for slides that are off),
+  and "View the site". Carousel settings: turn by itself, seconds per slide (3–30), slide across or come
+  into focus, height, pause on hover, arrows, dots, time bar, and whether featured stories follow.
+- Public carousel after the WAI pattern: a region with slides as groups ("2 of 3"), a pause/play button,
+  previous/next and a dot per slide, a time bar; it pauses on hover and keyboard focus and while the tab
+  is hidden, and never turns by itself for visitors who ask for less motion. The slides sit in a
+  scroll-snapping row, so they can be swiped before the 1 KB script loads; motion moves and blurs but
+  never fades (ADR-0066). With no slides the homepage keeps the welcome.
+- The content pack loads three slides once: the welcome, the Prosperity Party banner and the head's
+  message.
+
+**Consequences.** The public pages gain one small script on the homepage (ADR-0040 had only the page
+count). The leaders' strip in the banner is cut from the image the branch supplied; the people in it are
+not named on the site.
+

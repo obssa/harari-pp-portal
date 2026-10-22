@@ -1,7 +1,7 @@
 {
   "version": 1,
   "compiled": "2026-10-21",
-  "note": "Real content gathered from public sources on 2026-10-21; every item carries its source. Loaded once per key by `php artisan content:load-pack` (ADR-0063, ADR-0065, ADR-0069).",
+  "note": "Real content gathered from public sources on 2026-10-21; every item carries its source. Loaded once per key by `php artisan content:load-pack` (ADR-0063, ADR-0065, ADR-0069, ADR-0070).",
   "leagues": [
     {
       "key": "league.women",
@@ -4573,6 +4573,152 @@
           ]
         ]
       }
+    }
+  ],
+  "slides": [
+    {
+      "key": "slide.welcome",
+      "name": "Welcome over Harar Gate",
+      "layout": "photo",
+      "sort": 1,
+      "overlay": 85,
+      "content": {
+        "en": {
+          "kicker": "Harari Regional Branch Office",
+          "title": "Harari Region Prosperity Party",
+          "text": "News, leadership, offices, programmes and ways to take part, from the Prosperity Party's Harari Regional Branch Office."
+        },
+        "am": {
+          "kicker": "የሐረሪ ክልል ቅርንጫፍ ጽሕፈት ቤት",
+          "title": "የሐረሪ ክልል ብልጽግና ፓርቲ",
+          "text": "ከብልጽግና ፓርቲ የሐረሪ ክልል ቅርንጫፍ ጽሕፈት ቤት ዜናዎች፣ አመራሮች፣ ጽሕፈት ቤቶች፣ ፕሮግራሞች እና የተሳትፎ መንገዶች።"
+        },
+        "om": {
+          "kicker": "Waajjira Damee Naannoo Hararii",
+          "title": "Paartii Badhaadhinaa Naannoo Hararii",
+          "text": "Oduu, hoggansa, waajjiraalee, sagantaalee fi karaalee hirmaannaa Waajjira Damee Naannoo Hararii Paartii Badhaadhinaa irraa."
+        }
+      },
+      "buttons": [
+        {
+          "link": "route:membership.apply",
+          "style": "primary",
+          "label": {
+            "en": "Join the party",
+            "am": "ፓርቲውን ይቀላቀሉ",
+            "om": "Paartii makamaa"
+          }
+        },
+        {
+          "link": "route:news.index",
+          "style": "secondary",
+          "label": {
+            "en": "News",
+            "am": "ዜና",
+            "om": "Oduu"
+          }
+        },
+        {
+          "link": "route:leaders.index",
+          "style": "secondary",
+          "label": {
+            "en": "Leadership",
+            "am": "አመራር",
+            "om": "Hoggansa"
+          }
+        }
+      ]
+    },
+    {
+      "key": "slide.prosperity-banner",
+      "name": "Prosperity Party banner",
+      "layout": "banner",
+      "sort": 2,
+      "photo": "prosperity-party-leaders.jpg",
+      "photo_credit": "Prosperity Party",
+      "photo_alt": {
+        "en": "Three Prosperity Party leaders in front of the Ethiopian flag",
+        "am": "ሦስት የብልጽግና ፓርቲ አመራሮች ከኢትዮጵያ ሰንደቅ ዓላማ ፊት",
+        "om": "Hoggantoota Paartii Badhaadhinaa sadii alaabaa Itoophiyaa duratti"
+      },
+      "content": {
+        "en": {
+          "title": "Prosperity Party",
+          "highlight": "ብልፅግና",
+          "text": "We strive for the prosperity of Ethiopia and her peoples: our path is Medemer, our destination is prosperity in every part of life!",
+          "note": "Prosperous Ethiopia ahead..."
+        },
+        "am": {
+          "text": "ለኢትዮጵያ እና ህዝቦቿ ብልፅግና እንተጋለን፤ መንገዳችን መደመር መዳረሻችን ሁለንተናዊ ብልፅግና ነው!"
+        },
+        "om": {
+          "text": "Badhaadhina Itoophiyaa fi ummattoota ishiitiif ni carraaqna: karaan keenya Ida'amuu, gahumsi keenya badhaadhina hundagaleessa!"
+        }
+      },
+      "buttons": [
+        {
+          "link": "route:membership.apply",
+          "style": "primary",
+          "label": {
+            "en": "Join now",
+            "am": "አሁኑኑ ይቀላቀሉ",
+            "om": "Amma nu makamaa"
+          }
+        }
+      ]
+    },
+    {
+      "key": "slide.head-message",
+      "name": "Message from H.E Getu Wayyesa Tola",
+      "layout": "portrait",
+      "sort": 3,
+      "photo": "getu-wayyesa-tola-message.jpg",
+      "photo_credit": "Harari Region Prosperity Party",
+      "photo_alt": {
+        "en": "H.E Getu Wayyesa Tola with his message, in Amharic, on the values of togetherness, respect and fraternity",
+        "am": "ክቡር አቶ ጌቱ ወዬሳ ቶላ ስለ አብሮነት፣ መከባበርና እህትማማችነት እሴቶች ከሰጡት መልእክት ጋር",
+        "om": "Kabajamoo Obbo Geetuu Wayyeessaa Tolaa ergaa isaanii duudhaawwan tokkummaa, wal kabajuu fi obbolummaa irratti kennan wajjin"
+      },
+      "content": {
+        "en": {
+          "kicker": "From the head of the party",
+          "title": "Our proud values of togetherness, mutual respect and fraternity will be planted on a firm foundation!",
+          "highlight": "on a firm foundation",
+          "note": "H.E Getu Wayyesa Tola\nHead of Harari Region Prosperity Party"
+        },
+        "am": {
+          "kicker": "ከፓርቲው ኃላፊ",
+          "title": "የአብሮነት፣ የመከባበር እና የእህትማማችነት አኩሪ እሴቶቻችን በፅኑ መሰረት ላይ ይተከላሉ!",
+          "highlight": "በፅኑ መሰረት ላይ",
+          "note": "ክቡር አቶ ጌቱ ወዬሳ ቶላ\nየሐረሪ ክልል ብልጽግና ፓርቲ ኃላፊ"
+        },
+        "om": {
+          "kicker": "Itti gaafatamaa paartii irraa",
+          "title": "Duudhaawwan keenya boonsoon tokkummaa, wal kabajuu fi obbolummaa bu'uura jabaa irratti ni dhaabbatu!",
+          "highlight": "bu'uura jabaa irratti",
+          "note": "Kabajamoo Obbo Geetuu Wayyeessaa Tolaa\nItti Gaafatamaa Paartii Badhaadhinaa Naannoo Hararii"
+        }
+      },
+      "buttons": [
+        {
+          "link": "leader:@leader.getu-weyesa",
+          "style": "primary",
+          "label": {
+            "en": "Read his profile",
+            "am": "መገለጫቸውን ይመልከቱ",
+            "om": "Seenaa isaanii ilaalaa"
+          }
+        },
+        {
+          "link": "route:leaders.index",
+          "style": "secondary",
+          "label": {
+            "en": "Leadership",
+            "am": "አመራር",
+            "om": "Hoggansa"
+          }
+        }
+      ]
     }
   ]
 }

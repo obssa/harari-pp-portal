@@ -84,20 +84,20 @@ it('shows a welcome, the latest news, press and the core values on a fresh site'
         ->assertDontSee(__('homepage.section.ticker', [], 'en'));
 });
 
-it('puts featured or hand-picked posts in the hero, in the chosen order', function () {
+it('puts featured or hand-picked posts in the carousel, in the chosen order', function () {
     $first = homePost(['en' => ['title' => 'Sample first pick']]);
     $second = homePost(['en' => ['title' => 'Sample second pick']]);
     homePost(['en' => ['title' => 'Sample featured story']], ['is_featured' => true]);
 
-    // One slide: no slide links.
-    $this->get('/en')->assertSee('Sample featured story')->assertSee('id="slide-1"', escape: false)->assertDontSee('href="#slide-1"', escape: false);
+    // One slide: no controls.
+    $this->get('/en')->assertSee('Sample featured story')->assertSee('id="hero-slide-1"', escape: false)->assertDontSee('data-controls', escape: false);
 
     arrangeHomepage(['hero' => ['curated_ids' => [$second->id, $first->id, 'missing-id']]]);
     expect(HomepageSection::query()->where('key', 'hero')->value('curated_ids'))->toBe([$second->id, $first->id]);
 
     $this->get('/en')
-        ->assertSeeInOrder(['id="slide-1"', 'Sample second pick', 'id="slide-2"', 'Sample first pick'], escape: false)
-        ->assertSee(__('homepage.slide', ['number' => 2, 'title' => 'Sample first pick'], 'en'));
+        ->assertSeeInOrder(['id="hero-slide-1"', 'Sample second pick', 'id="hero-slide-2"', 'Sample first pick'], escape: false)
+        ->assertSee(__('homepage.carousel.go_to', ['number' => 2, 'title' => 'Sample first pick'], 'en'));
 });
 
 it('reorders, switches off and limits sections, and hides them per language', function () {

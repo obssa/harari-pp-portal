@@ -7,6 +7,7 @@ use App\Domain\Content\Models\ContentPackItem;
 use App\Domain\Content\Models\Post;
 use App\Domain\Events\Models\Event;
 use App\Domain\Homepage\Enums\SectionKey;
+use App\Domain\Homepage\Models\HeroSlide;
 use App\Domain\Homepage\Models\HomepageSection;
 use App\Domain\Import\Models\ContentImport;
 use App\Domain\Import\Models\ContentSource;
@@ -38,7 +39,7 @@ it('loads the real content pack, published, with portraits, heads, pages and the
 
     $counts = app(LoadContentPack::class)->handle(database_path('content/pack.json'));
 
-    expect($counts)->toMatchArray(['leagues' => 2, 'offices' => 10, 'leaders' => 14, 'pages' => 3, 'events' => 1, 'homepage' => 2, 'settings' => 2]);
+    expect($counts)->toMatchArray(['leagues' => 2, 'offices' => 10, 'leaders' => 14, 'pages' => 3, 'events' => 1, 'homepage' => 2, 'settings' => 2, 'slides' => 3]);
 
     $head = Leader::query()->whereHas('translations', fn ($q) => $q->where('name', 'H.E Getu Wayyesa Tola'))->firstOrFail();
     expect($head->translation('en')?->position)->toBe('Head of Harari Region Prosperity Party')
@@ -66,6 +67,11 @@ it('loads the real content pack, published, with portraits, heads, pages and the
     $this->get('/om/about/harar')->assertOk()->assertSee('Harar Jugol');
     $this->get('/am/about')->assertOk()->assertSee('ክቡር አቶ ጌቱ ወዬሳ ቶላ')->assertDontSee('ክቡር ክቡር');
     $this->get('/en/leaders')->assertOk()->assertSee('H.E Getu Wayyesa Tola')->assertSee(LeaderBody::Government->label('en'));
+    expect(HeroSlide::query()->orderBy('sort')->pluck('layout')->map(fn ($layout) => $layout->value)->all())->toBe(['photo', 'banner', 'portrait']);
+    $this->get('/en')->assertOk()
+        ->assertSeeInOrder(['id="hero-slide-1"', 'Harari Region Prosperity Party', 'id="hero-slide-2"', 'Prosperity Party ብልፅግና', 'id="hero-slide-3"', 'H.E Getu Wayyesa Tola'], escape: false)
+        ->assertSee('href="'.url('/en/leaders/'.$head->translation('en')?->slug).'"', escape: false);
+    $this->get('/am')->assertSee('ለኢትዮጵያ እና ህዝቦቿ ብልፅግና እንተጋለን');
     $this->get('/en/leaders/'.$head->translation('en')?->slug)->assertOk()
         ->assertSee('href="https://t.me/hrprosperityparty/23920"', escape: false);
 });

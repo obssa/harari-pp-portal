@@ -1,18 +1,16 @@
-@use('App\Domain\Content\Queries\PublicPosts')
 @php
-    $locale = app()->getLocale();
-    $slides = [];
-    foreach ($data as $post) {
-        $shown = PublicPosts::shown($post, $locale);
-        if ($shown !== null) {
-            $slides[] = ['post' => $post, 'translation' => $shown];
-        }
-    }
+    $slides = $data['slides'] ?? [];
+    $custom = trim((string) $section->setting('titles.'.app()->getLocale(), ''));
 @endphp
-{{-- ADR-0062: featured stories on night blue, with a Harari basket plate; plaster around them. --}}
-<section aria-label="{{ $section->heading() }}" class="bg-surface-muted">
-    @if ($slides === [])
-        {{-- ADR-0065/0066: Harar Gate behind the welcome, night blue over it, basket plates turning slowly. --}}
+@if ($slides !== [])
+    {{-- ADR-0070: the carousel an editor arranges under Content → Homepage carousel, then featured stories. --}}
+    <section>
+        <x-hero-carousel :slides="$slides" :settings="$data['settings']" :label="$custom !== '' ? $custom : __('homepage.carousel.label')" />
+    </section>
+    <span id="home-after-hero"></span>
+@else
+    {{-- ADR-0065/0066: with no slides, Harar Gate behind the welcome, night blue over it, basket plates turning slowly. --}}
+    <section aria-label="{{ $section->heading() }}" class="bg-surface-muted">
         <div class="relative isolate overflow-hidden bg-primary-950 text-white">
             <x-harar-photo name="gate" sizes="100vw" loading="eager" fetchpriority="high" class="animate-zoom absolute inset-0 -z-20 size-full object-cover object-[70%_50%]" />
             <div aria-hidden="true" class="absolute inset-0 -z-10 bg-linear-to-r from-primary-950 via-primary-950/85 to-primary-900/25"></div>
@@ -50,56 +48,5 @@
             <p class="absolute end-4 bottom-3 text-[11px] text-white/60"><x-harar-credit name="gate" /></p>
         </div>
         <span id="home-after-hero"></span>
-    @else
-        <div class="mx-auto max-w-page px-4 py-8 sm:px-6 sm:py-10">
-            <ul class="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth">
-                @foreach ($slides as $index => $slide)
-                    @php $url = route('news.show', ['locale' => $slide['translation']->locale, 'slug' => $slide['translation']->slug]); @endphp
-                    <li id="slide-{{ $index + 1 }}" lang="{{ $slide['translation']->locale }}" class="w-full shrink-0 snap-start">
-                        <article class="relative grid overflow-hidden rounded-[1.25rem] bg-primary-900 text-white lg:min-h-[30rem] lg:grid-cols-[1.1fr_1fr]">
-                            @include('pages.home._plate', ['class' => 'pointer-events-none absolute -end-16 -top-16 size-48 opacity-30 sm:size-72 lg:start-[46%] lg:end-auto'])
-                            <div class="relative order-2 flex flex-col justify-end gap-4 p-6 sm:p-10 lg:order-1">
-                                <p class="flex flex-wrap items-center gap-3 text-sm text-primary-100">
-                                    <x-ui.badge :tone="$slide['post']->type->tone()">{{ $slide['post']->type->label() }}</x-ui.badge>
-                                    @if ($slide['translation']->locale !== $locale)
-                                        <x-ui.badge>{{ __('news.in_language', ['language' => \App\Domain\Translation\Support\Locales::nativeName($slide['translation']->locale)]) }}</x-ui.badge>
-                                    @endif
-                                    @if ($slide['translation']->published_at)
-                                        <x-date :date="$slide['translation']->published_at" />
-                                    @endif
-                                </p>
-                                @if ($slide['translation']->kicker)
-                                    <p class="text-xs font-bold tracking-wider text-gold-400 uppercase">{{ $slide['translation']->kicker }}</p>
-                                @endif
-                                <h2 class="heading-1 text-white">
-                                    <a href="{{ $url }}" class="underline-offset-4 hover:underline">{{ $slide['translation']->title }}</a>
-                                </h2>
-                                @if ($slide['translation']->excerpt)
-                                    <p class="max-w-prose text-lg text-primary-100">{{ $slide['translation']->excerpt }}</p>
-                                @endif
-                                <p class="mt-2"><x-ui.button :href="$url" variant="gold" size="lg">{{ __('homepage.read_more') }}</x-ui.button></p>
-                            </div>
-                            @if ($slide['post']->featuredImage)
-                                <x-picture :media="$slide['post']->featuredImage" preset="landscape" sizes="(min-width: 64rem) 38rem, 100vw"
-                                           :loading="$index === 0 ? 'eager' : 'lazy'" :fetchpriority="$index === 0 ? 'high' : null"
-                                           class="order-1 aspect-video h-full w-full object-cover lg:order-2 lg:aspect-auto" />
-                            @endif
-                        </article>
-                    </li>
-                @endforeach
-            </ul>
-            @if (count($slides) > 1)
-                <nav aria-label="{{ __('homepage.slides') }}" class="pt-5">
-                    <ol class="flex justify-center gap-2">
-                        @foreach ($slides as $index => $slide)
-                            <li>
-                                <a href="#slide-{{ $index + 1 }}" class="inline-flex size-9 items-center justify-center rounded-full border border-line bg-surface text-sm font-bold hover:border-gold-500 hover:bg-gold-50"
-                                   aria-label="{{ __('homepage.slide', ['number' => $index + 1, 'title' => $slide['translation']->title]) }}">{{ $index + 1 }}</a>
-                            </li>
-                        @endforeach
-                    </ol>
-                </nav>
-            @endif
-        </div>
-    @endif
-</section>
+    </section>
+@endif
