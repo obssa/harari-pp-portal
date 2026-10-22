@@ -120,7 +120,7 @@ it('captures the screens of the staff manual', function () {
     }
     Artisan::call('health:check', ['--no-notification' => true]);
 
-    $leader = Leader::query()->whereHas('translations', fn ($q) => $q->where('name', 'Getu Weyesa'))->firstOrFail();
+    $leader = Leader::query()->whereHas('translations', fn ($q) => $q->where('name', 'H.E Getu Wayyesa Tola'))->firstOrFail();
     $league = League::query()->whereHas('translations', fn ($q) => $q->where('name', "Women's Wing"))->firstOrFail();
     $about = Page::query()->whereHas('translations', fn ($q) => $q->where('slug', 'about'))->firstOrFail();
     $path = fn (string $url): string => (string) parse_url($url, PHP_URL_PATH);

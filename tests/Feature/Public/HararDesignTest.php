@@ -60,7 +60,7 @@ it('loads the Harar photos onto the pages and the wings their colours and work, 
         ->assertSee('Resurgence Day')
         ->assertSee('https://t.me/hrprosperityparty/23217', escape: false);
     $this->get('/en/about')->assertOk()->assertSee(__('content.photo_credit', ['credit' => 'Giustino, CC BY 2.0, Wikimedia Commons']));
-    $this->get('/en/offices/harari-region-branch-office')->assertOk()->assertSee('Amir-Nur Woreda')->assertSee('Getu Weyesa');
+    $this->get('/en/offices/harari-region-branch-office')->assertOk()->assertSee('Amir-Nur Woreda')->assertSee('H.E Getu Wayyesa Tola');
 });
 
 it('keeps a colour an editor chose when the pack adds a wing profile later', function () {

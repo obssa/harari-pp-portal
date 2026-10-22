@@ -1,7 +1,7 @@
-# Harari Prosperity Party Portal
+# Harari Region Prosperity Party Portal
 
 Four-language (English, Amharic, Afaan Oromo, Harari) public portal and admin back-office for the
-Harari Prosperity Party branch office, built on Laravel 13 and Filament 5.
+Harari Region Prosperity Party branch office, built on Laravel 13 and Filament 5.
 
 - Staging: https://hararipp.orcamind.dev (deployed automatically from `main`)
 - Specification: [docs/PLAN.md](docs/PLAN.md)

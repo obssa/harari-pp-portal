@@ -1,7 +1,7 @@
 {
   "version": 1,
   "compiled": "2026-10-21",
-  "note": "Real content gathered from public sources on 2026-10-21; every item carries its source. Loaded once per key by `php artisan content:load-pack` (ADR-0063, ADR-0065).",
+  "note": "Real content gathered from public sources on 2026-10-21; every item carries its source. Loaded once per key by `php artisan content:load-pack` (ADR-0063, ADR-0065, ADR-0069).",
   "leagues": [
     {
       "key": "league.women",
@@ -254,18 +254,18 @@
       "source_date": "2026-10-15",
       "translations": {
         "en": {
-          "name": "Getu Weyesa",
-          "position": "Head of the Harari Region Branch Office",
+          "name": "H.E Getu Wayyesa Tola",
+          "position": "Head of Harari Region Prosperity Party",
           "summary": "Heads the branch office. Since 2 October 2026 he also chairs the board of the Harari Broadcasting Network (HBN)."
         },
         "am": {
-          "name": "አቶ ጌቱ ወዬሳ",
-          "position": "የብልፅግና ፓርቲ የሀረሪ ክልል ቅርንጫፍ ጽሕፈት ቤት ኃላፊ",
+          "name": "ክቡር አቶ ጌቱ ወዬሳ ቶላ",
+          "position": "የሐረሪ ክልል ብልጽግና ፓርቲ ኃላፊ",
           "summary": "የቅርንጫፍ ጽሕፈት ቤቱ ኃላፊ። ከመስከረም 22 ቀን 2019 ዓ.ም. ጀምሮ የሀረሪ ብሮድካስቲንግ ኔትዎርክ (HBN) የቦርድ ሰብሳቢም ናቸው።"
         },
         "om": {
-          "name": "Obbo Geetuu Wayyeessaa",
-          "position": "Itti Gaafatamaa Waajjira Paartii Badhaadhinaa Damee Naannoo Hararii",
+          "name": "Kabajamoo Obbo Geetuu Wayyeessaa Tolaa",
+          "position": "Itti Gaafatamaa Paartii Badhaadhinaa Naannoo Hararii",
           "summary": "Itti gaafatamaa waajjira damee. Onkololeessa 2, 2026 irraa kaasee dura taa'aa boordii Harari Broadcasting Network (HBN) ti."
         }
       },
@@ -564,7 +564,7 @@
                 "content": [
                   {
                     "type": "text",
-                    "text": "The Prosperity Party Harari Region Branch Office (in Amharic የብልፅግና ፓርቲ የሀረሪ ክልል ቅርንጫፍ ጽሕፈት ቤት, in Afaan Oromo Waajjira Paartii Badhaadhinaa Damee Naannoo Hararii) leads the party's work in the Harari Region. It is headed by Getu Weyesa."
+                    "text": "The Prosperity Party Harari Region Branch Office (in Amharic የብልፅግና ፓርቲ የሀረሪ ክልል ቅርንጫፍ ጽሕፈት ቤት, in Afaan Oromo Waajjira Paartii Badhaadhinaa Damee Naannoo Hararii) leads the party's work in the Harari Region. It is headed by H.E Getu Wayyesa Tola."
                   }
                 ]
               },
@@ -877,7 +877,7 @@
                 "content": [
                   {
                     "type": "text",
-                    "text": "የብልፅግና ፓርቲ የሀረሪ ክልል ቅርንጫፍ ጽሕፈት ቤት በሀረሪ ክልል የፓርቲውን ሥራዎች ይመራል። ጽሕፈት ቤቱን የሚመሩት አቶ ጌቱ ወዬሳ ናቸው።"
+                    "text": "የብልፅግና ፓርቲ የሀረሪ ክልል ቅርንጫፍ ጽሕፈት ቤት በሀረሪ ክልል የፓርቲውን ሥራዎች ይመራል። ጽሕፈት ቤቱን የሚመሩት ክቡር አቶ ጌቱ ወዬሳ ቶላ ናቸው።"
                   }
                 ]
               },
@@ -1190,7 +1190,7 @@
                 "content": [
                   {
                     "type": "text",
-                    "text": "Waajjirri Paartii Badhaadhinaa Damee Naannoo Hararii hojii paartii Naannoo Hararii keessatti ni geggeessa. Waajjirri kun Obbo Geetuu Wayyeessaatiin durfama."
+                    "text": "Waajjirri Paartii Badhaadhinaa Damee Naannoo Hararii hojii paartii Naannoo Hararii keessatti ni geggeessa. Waajjirri kun Kabajamoo Obbo Geetuu Wayyeessaa Tolaatiin durfama."
                   }
                 ]
               },
@@ -3501,6 +3501,7 @@
   },
   "settings": {
     "social_links": {
+      "facebook": "https://www.facebook.com/profile.php?id=100064354104698",
       "telegram": "https://t.me/hrprosperityparty"
     }
   },
@@ -4528,6 +4529,49 @@
             }
           ]
         }
+      }
+    },
+    {
+      "key": "leader.getu-weyesa#name-2026-10-22",
+      "target": "leader.getu-weyesa",
+      "rename": {
+        "en": {
+          "name": "H.E Getu Wayyesa Tola",
+          "position": "Head of Harari Region Prosperity Party"
+        },
+        "am": {
+          "name": "ክቡር አቶ ጌቱ ወዬሳ ቶላ",
+          "position": "የሐረሪ ክልል ብልጽግና ፓርቲ ኃላፊ"
+        },
+        "om": {
+          "name": "Kabajamoo Obbo Geetuu Wayyeessaa Tolaa",
+          "position": "Itti Gaafatamaa Paartii Badhaadhinaa Naannoo Hararii"
+        }
+      },
+      "note": "His name and title as the branch office gave them on 2026-10-22."
+    },
+    {
+      "key": "page.about#head-name-2026-10-22",
+      "target": "page.about",
+      "replace": {
+        "en": [
+          [
+            "Getu Weyesa",
+            "H.E Getu Wayyesa Tola"
+          ]
+        ],
+        "am": [
+          [
+            "አቶ ጌቱ ወዬሳ",
+            "ክቡር አቶ ጌቱ ወዬሳ ቶላ"
+          ]
+        ],
+        "om": [
+          [
+            "Obbo Geetuu Wayyeessaa",
+            "Kabajamoo Obbo Geetuu Wayyeessaa Tolaa"
+          ]
+        ]
       }
     }
   ]

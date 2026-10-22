@@ -24,7 +24,7 @@ return new class extends Migration
 
         DB::table('sites')->insert([
             'key' => 'harari',
-            'name' => 'Harari Prosperity Party',
+            'name' => 'Harari Region Prosperity Party',
             'domain' => null,
             'is_default' => true,
             'created_at' => now(),

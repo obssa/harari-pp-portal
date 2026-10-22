@@ -1,7 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Harari Prosperity Party Portal API",
+    "title": "Harari Region Prosperity Party Portal API",
     "version": "1.0.0",
     "description": "Read-only access to what the public site publishes, for the apps of the branch office. Every request needs a key in the X-Api-Key header. A Super Admin issues keys under Administration, API keys, each with the scopes and requests per minute its app needs. Answers carry an ETag: send it back in If-None-Match to get 304 when nothing changed. The member app also signs members in by SMS code and sends their token as a Bearer token."
   },

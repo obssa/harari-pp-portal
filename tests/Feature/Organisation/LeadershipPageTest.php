@@ -32,6 +32,9 @@ it('lists the region\'s government first, then the secretariat and the rest, wit
 it('draws initials without honorifics for people without a photo', function () {
     expect(Initials::of('Getu Weyesa'))->toBe('GW')
         ->and(Initials::of('አቶ ጌቱ ወዬሳ'))->toBe('ጌወ')
+        ->and(Initials::of('H.E Getu Wayyesa Tola'))->toBe('GW')
+        ->and(Initials::of('ክቡር አቶ ጌቱ ወዬሳ ቶላ'))->toBe('ጌወ')
+        ->and(Initials::of('Kabajamoo Obbo Geetuu Wayyeessaa Tolaa'))->toBe('GW')
         ->and(Initials::of('Obbo Geetuu Wayyeessaa'))->toBe('GW')
         ->and(Initials::of('Ordin'))->toBe('O');
 });

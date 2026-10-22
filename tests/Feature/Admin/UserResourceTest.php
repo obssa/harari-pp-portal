@@ -169,6 +169,6 @@ it('writes the sign-in email in the recipient language', function () {
     $user = User::factory()->create(['locale' => 'am']);
     $mail = (new SignInLink('https://example.test/reset', 60))->toMail($user);
 
-    expect($mail->subject)->toContain('የሐረሪ ብልጽግና ፓርቲ')
+    expect($mail->subject)->toContain('የሐረሪ ክልል ብልጽግና ፓርቲ')
         ->and($mail->actionText)->toBe(__('admin.mail.sign_in.action', [], 'am'));
 });

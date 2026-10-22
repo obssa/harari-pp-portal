@@ -174,7 +174,9 @@ final class LoadContentPack
     /**
      * Later additions to records the pack loaded (ADR-0065): a photo, a page
      * template, a league colour, a body. Each fills only what is still empty,
-     * once, so an editor's choice always stays.
+     * once, so an editor's choice always stays. Corrections the branch office
+     * asked for (ADR-0069) are the exception: `rename` sets a person's name
+     * and title, `replace` swaps a phrase in the record's text, each once.
      *
      * @param  array<string, mixed>  $update
      */
@@ -221,9 +223,73 @@ final class LoadContentPack
                 }
             }
 
+            if ($record instanceof Leader) {
+                foreach ((array) ($update['rename'] ?? []) as $locale => $values) {
+                    $translation = $record->translations()->where('locale', (string) $locale)->first();
+                    $values = array_intersect_key((array) $values, array_flip(['name', 'position']));
+                    if ($translation !== null && $values !== []) {
+                        $translation->fill($values)->save();
+                    }
+                }
+            }
+
+            if ($record instanceof Model && method_exists($record, 'translations')) {
+                foreach ((array) ($update['replace'] ?? []) as $locale => $pairs) {
+                    $translation = $record->translations()->where('locale', (string) $locale)->first();
+                    if ($translation instanceof Model) {
+                        $this->replaceText($translation, (array) $pairs);
+                    }
+                }
+            }
+
             ContentPackItem::remember($key, $record);
             $this->counts['updates'] = ($this->counts['updates'] ?? 0) + 1;
         });
+    }
+
+    /**
+     * Swaps phrases in a translation's text fields and in the text of its
+     * body; a field that already has the new phrase is left alone, so the
+     * swap never applies twice.
+     *
+     * @param  array<int, mixed>  $pairs  [[from, to], ...]
+     */
+    private function replaceText(Model $translation, array $pairs): void
+    {
+        $swap = function (string $text) use ($pairs): string {
+            foreach ($pairs as $pair) {
+                [$from, $to] = array_map('strval', array_values((array) $pair)) + ['', ''];
+                if ($from !== '' && str_contains($text, $from) && ! str_contains($text, $to)) {
+                    $text = str_replace($from, $to, $text);
+                }
+            }
+
+            return $text;
+        };
+        $walk = function (mixed $node) use (&$walk, $swap): mixed {
+            if (! is_array($node)) {
+                return $node;
+            }
+            foreach ($node as $key => $value) {
+                $node[$key] = $key === 'text' && is_string($value) ? $swap($value) : $walk($value);
+            }
+
+            return $node;
+        };
+
+        foreach (['title', 'name', 'position', 'summary', 'excerpt'] as $field) {
+            $value = $translation->getAttribute($field);
+            if (is_string($value) && $value !== '') {
+                $translation->setAttribute($field, $swap($value));
+            }
+        }
+        $body = $translation->getAttribute('body');
+        if (is_array($body)) {
+            $translation->setAttribute('body', $walk($body));
+        }
+        if ($translation->isDirty()) {
+            $translation->save();
+        }
     }
 
     /**
@@ -283,21 +349,33 @@ final class LoadContentPack
     }
 
     /**
-     * Social links the site does not have yet; links an editor set stay.
+     * Social links the site does not have yet, each platform once; a link an
+     * editor set stays.
      *
      * @param  array<string, string>  $links
      */
     private function socialLinks(array $links): void
     {
-        if ($links === [] || ContentPackItem::query()->where('key', 'settings.social_links')->exists()) {
+        $settings = app(SiteSettings::class);
+        $current = array_filter($settings->social_links);
+        $added = [];
+        foreach ($links as $platform => $url) {
+            $key = "settings.social_links.{$platform}";
+            if (ContentPackItem::query()->where('key', $key)->exists()) {
+                continue;
+            }
+            if (blank($current[$platform] ?? null)) {
+                $added[$platform] = $url;
+            }
+            ContentPackItem::remember($key, null);
+        }
+        if ($added === []) {
             return;
         }
 
-        $settings = app(SiteSettings::class);
-        $settings->social_links = [...$links, ...array_filter($settings->social_links)];
+        $settings->social_links = [...$current, ...$added];
         $settings->save();
-        ContentPackItem::remember('settings.social_links', null);
-        $this->counts['settings'] = 1;
+        $this->counts['settings'] = count($added);
     }
 
     /**

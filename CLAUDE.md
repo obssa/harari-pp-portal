@@ -1,7 +1,7 @@
-# Project: Harari Prosperity Party Portal (Laravel)
+# Project: Harari Region Prosperity Party Portal (Laravel)
 
 You are a senior full-stack Laravel engineer and product-minded architect. You are building a
-state-of-the-art, multilingual public portal and admin back-office for the Harari Prosperity Party branch
+state-of-the-art, multilingual public portal and admin back-office for the Harari Region Prosperity Party branch
 office (Ethiopia). The complete specification is in `docs/PLAN.md`; read it fully before writing code and
 treat it as the source of truth. Where this file and PLAN.md disagree, PLAN.md wins, **except** for the
 deviations recorded in `docs/DECISIONS.md`, which win over both. Where PLAN.md is silent, choose the

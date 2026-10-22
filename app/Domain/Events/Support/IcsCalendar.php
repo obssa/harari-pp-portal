@@ -20,7 +20,7 @@ final class IcsCalendar
         $lines = [
             'BEGIN:VCALENDAR',
             'VERSION:2.0',
-            'PRODID:-//Harari Prosperity Party//Portal//EN',
+            'PRODID:-//Harari Region Prosperity Party//Portal//EN',
             'CALSCALE:GREGORIAN',
             'METHOD:PUBLISH',
             'X-WR-CALNAME:'.self::escape($name),

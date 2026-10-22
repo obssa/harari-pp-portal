@@ -4,6 +4,12 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Harari Region Prosperity Party (2026-10-22)
+
+- The party is called Harari Region Prosperity Party everywhere on the site, in every language, and its
+  head is H.E Getu Wayyesa Tola, Head of Harari Region Prosperity Party (ADR-0069).
+- The footer and contact page link to the party's Facebook page next to its Telegram channel.
+
 ### "View on site" in the admin (2026-10-22)
 
 - Posts, pages, forms, events, documents, projects, galleries, videos, leaders, offices and leagues have a

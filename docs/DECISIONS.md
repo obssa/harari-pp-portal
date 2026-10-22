@@ -1999,3 +1999,26 @@ appears on the portal is created or changed: posts, pages, forms and the rest.
 **Consequences.** The button shows the page as visitors see it now, so changes appear after saving (and
 publishing, for content with a workflow). Drafts are seen through the preview link only.
 
+## ADR-0069 — "Harari Region Prosperity Party", the head's name and the official pages (2026-10-22)
+
+**Context.** The branch office asked that the party be called "Harari Region Prosperity Party" everywhere,
+that its head be named "H.E Getu Wayyesa Tola, Head of Harari Region Prosperity Party", and that the
+site link to its Facebook page and Telegram channel. The content pack had loaded the head's earlier
+spelling once (ADR-0063), and its rule is never to overwrite what is already there.
+
+**Decision.**
+
+- Every string with the party's name now reads Harari Region Prosperity Party (የሐረሪ ክልል ብልጽግና
+  ፓርቲ; Paartii Badhaadhinaa Naannoo Hararii), including texts, emails, calendar files and the
+  default site record (a migration renames it only if it still has the old name).
+- The content pack gains two kinds of correction for what the branch office asks to change:
+  `rename` sets a person's name and title, and `replace` swaps a phrase in a record's text and body.
+  Each runs once, by its key, so an editor's later change stays. Profile addresses keep their slug.
+- Social links are now added per platform, once each, only where none is set: Facebook (the page
+  behind the share link, `profile.php?id=100064354104698`) joins Telegram in the footer, on the
+  contact page and in the search engines' organisation data.
+- Initials skip "H.E", "ክቡር" and "Kabajamoo" as well as the earlier titles.
+
+**Consequences.** News stories keep the names they were published with. The Amharic and Afaan Oromo
+forms are listed in `docs/translations-review.md`.
+
