@@ -2135,3 +2135,25 @@ plugin therefore stays empty for much of the site's audience, and no change on t
 **Consequences.** Facebook posts appear on the site only once the token is set; until then the card
 leads to the page.
 
+## ADR-0074 — A modern header (2026-10-22)
+
+**Context.** On phones the header wrapped into stacked rows: the top bar's date, languages and member login,
+then the name, then three large buttons (search, "Join the party", "Menu"). The owner asked for a modern,
+clean header.
+
+**Decision.**
+
+- Top bar: one slim line. Phones show the languages and a person icon for the member portal; the date and
+  the hotline join from tablets up.
+- Header: one row, 64 pixels on phones and pinned at the top while reading (not on desktop, where it also
+  carries the section bar): the party's mark with a light ring, the name on two lines on phones (the
+  office's name joins from tablets up), then a search icon, a compact gold "Join" ("Join the party" with an
+  arrow from tablets up) and a round menu button. On desktop the search is a field-shaped button ("Search
+  the site").
+- The phone menu is a sheet under the header: a search field, each section opening in place (one at a
+  time, the current one open, "All of …" first), "Join the party" and "Member login", and the party's pages
+  as round marks. Still no script: `details` elements, one open at a time across search and menu.
+- Dark mode keeps every control visible (the menu button gets a light ring).
+
+**Consequences.** None for content; the strings `nav.join_short` and `search.short` are new.
+

@@ -33,10 +33,10 @@
         {{ __('nav.skip') }}
     </a>
 
-    {{-- ADR-0062: the dark top bar with both calendars, the hotline, the languages and the member portal. --}}
-    <div class="bg-ink-brand text-sm text-white/85">
-        <div class="mx-auto flex max-w-page flex-wrap items-center justify-between gap-x-6 gap-y-1 px-4 py-1.5 sm:px-6">
-            <div class="flex flex-wrap items-center gap-x-5 gap-y-1">
+    {{-- ADR-0062/0074: the slim dark top bar: both calendars and the hotline from tablets up, the languages and the member portal. --}}
+    <div class="bg-ink-brand text-[13px] text-white/85 sm:text-sm">
+        <div class="mx-auto flex max-w-page items-center justify-between gap-x-6 px-4 py-1 sm:px-6 sm:py-1.5">
+            <div class="hidden items-center gap-x-5 md:flex">
                 <p class="flex items-center gap-2">
                     <svg aria-hidden="true" class="size-4 text-gold-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
                     <span class="sr-only">{{ __('calendar.today') }}: </span><x-date :date="now()" />
@@ -49,36 +49,38 @@
                     </p>
                 @endif
             </div>
-            <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
-                <x-language-switcher :alternates="$alternates" />
-                <span aria-hidden="true" class="hidden h-4 w-px bg-white/20 sm:block"></span>
-                <a href="{{ route('member.sign-in') }}" class="inline-flex items-center gap-1.5 rounded-control px-2 py-1 font-semibold text-gold-400 hover:text-gold-300">
-                    <svg aria-hidden="true" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
-                    {{ __('nav.member_login') }}
+            <div class="flex min-w-0 flex-1 items-center justify-between gap-x-3 md:flex-none md:justify-end">
+                <div class="-ms-2.5 min-w-0 overflow-x-auto [scrollbar-width:none] md:ms-0"><x-language-switcher :alternates="$alternates" /></div>
+                <span aria-hidden="true" class="hidden h-4 w-px bg-white/20 md:block"></span>
+                <a href="{{ route('member.sign-in') }}" class="inline-flex shrink-0 items-center gap-1.5 rounded-full px-2 py-1 font-semibold text-gold-400 hover:bg-white/10 hover:text-gold-300">
+                    <svg aria-hidden="true" class="size-[1.1rem]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+                    <span class="sr-only sm:not-sr-only">{{ __('nav.member_login') }}</span>
                 </a>
             </div>
         </div>
     </div>
 
-    <header class="relative z-30 border-b border-line bg-surface">
-        <div class="mx-auto flex max-w-page flex-wrap items-center justify-between gap-x-6 gap-y-3 px-4 py-3 sm:px-6">
-            <a href="{{ route('home') }}" @if (request()->routeIs('home')) aria-current="page" @endif class="flex items-center gap-3 rounded-control no-underline">
-                <img src="/brand/logo-128.png" alt="" width="56" height="56" class="size-14 shrink-0 rounded-full">
-                <span class="leading-tight">
-                    <span class="block text-base font-extrabold tracking-tight sm:text-lg">{{ __('site.name') }}</span>
-                    <span class="block text-sm text-ink-muted">{{ __('site.office') }}</span>
+    {{-- ADR-0074: one clean row: the party's mark and name, then search, the call to join and (below desktop) the menu.
+         On phones the row stays pinned at the top while reading. --}}
+    <header class="sticky top-0 z-30 border-b border-line bg-surface/90 backdrop-blur-md supports-[backdrop-filter]:bg-surface/80 lg:static lg:bg-surface lg:backdrop-blur-none">
+        <div class="mx-auto flex h-16 max-w-page items-center justify-between gap-3 px-4 sm:px-6 lg:h-[4.75rem]">
+            <a href="{{ route('home') }}" @if (request()->routeIs('home')) aria-current="page" @endif class="flex min-w-0 items-center gap-3 rounded-control no-underline">
+                <img src="/brand/logo-128.png" alt="" width="56" height="56" class="size-11 shrink-0 rounded-full bg-white ring-1 ring-line lg:size-[3.25rem]">
+                <span class="min-w-0 leading-tight">
+                    <span class="block max-w-[10.5rem] text-[0.95rem] leading-[1.15] font-extrabold tracking-tight text-ink sm:max-w-none sm:text-lg">{{ __('site.name') }}</span>
+                    <span class="hidden truncate text-[13px] text-ink-muted sm:block">{{ __('site.office') }}</span>
                 </span>
             </a>
-            <div class="flex flex-wrap items-center gap-2">
+            <div class="flex shrink-0 items-center gap-1.5 sm:gap-2">
                 {{-- The search field opens under the header; name="site-nav" closes any open menu panel. The search page has its own. --}}
                 @unless (request()->routeIs('search'))
                 <details name="site-nav" class="group/search">
-                    <summary class="inline-flex size-11 cursor-pointer list-none items-center justify-center rounded-full border border-line text-ink hover:bg-surface-muted group-open/search:border-gold-500 group-open/search:bg-surface-muted [&::-webkit-details-marker]:hidden">
-                        <span class="sr-only">{{ __('search.label') }}</span>
-                        <svg aria-hidden="true" class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                    <summary class="inline-flex size-10 cursor-pointer list-none items-center justify-center gap-2 rounded-full text-ink transition-colors hover:bg-surface-muted group-open/search:bg-surface-muted lg:h-11 lg:w-60 lg:justify-start lg:border lg:border-line lg:bg-surface-muted/60 lg:px-4 lg:text-ink-muted lg:hover:border-primary-600/40 [&::-webkit-details-marker]:hidden">
+                        <svg aria-hidden="true" class="size-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                        <span class="sr-only lg:not-sr-only lg:truncate lg:text-sm">{{ __('search.short') }}</span>
                     </summary>
                     <div class="absolute inset-x-0 top-full z-40 border-t-3 border-gold-500 bg-surface shadow-2xl">
-                        <form method="get" action="{{ route('search') }}" role="search" class="mx-auto flex max-w-page gap-2 px-4 py-6 sm:px-6">
+                        <form method="get" action="{{ route('search') }}" role="search" class="mx-auto flex max-w-page gap-2 px-4 py-5 sm:px-6 sm:py-6">
                             <label for="site-search" class="sr-only">{{ __('search.label') }}</label>
                             <input id="site-search" type="search" name="q" maxlength="100" minlength="2" required placeholder="{{ __('search.placeholder') }}"
                                    class="min-w-0 flex-1 rounded-full border border-line bg-surface px-5 py-3 text-base focus:border-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-600/30">
@@ -87,7 +89,11 @@
                     </div>
                 </details>
                 @endunless
-                <a href="{{ route('membership.apply') }}" class="inline-flex items-center rounded-full bg-gold-500 px-5 py-2.5 font-bold text-ink-brand hover:bg-gold-400">{{ __('nav.join') }}</a>
+                <a href="{{ route('membership.apply') }}" class="group/join inline-flex h-10 items-center gap-2 rounded-full bg-gold-500 px-4 text-sm font-bold text-ink-brand shadow-sm shadow-gold-500/30 transition-colors hover:bg-gold-400 lg:h-11 lg:px-5 lg:text-[15px]">
+                    <span class="sm:hidden">{{ __('nav.join_short') }}</span>
+                    <span class="hidden sm:inline">{{ __('nav.join') }}</span>
+                    <svg aria-hidden="true" class="hidden size-4 transition-transform group-hover/join:translate-x-0.5 sm:block rtl:-scale-x-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </a>
                 <div class="lg:hidden"><x-site-nav variant="drawer" /></div>
             </div>
         </div>

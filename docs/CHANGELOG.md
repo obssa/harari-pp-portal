@@ -4,6 +4,12 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### A modern header (2026-10-22)
+
+- One slim top bar and one clean header row on phones, pinned while reading: mark, name, search, "Join" and a
+  round menu button; the menu opens as a sheet with search, sections that open in place, "Join the party",
+  "Member login" and the party's pages (ADR-0074).
+
 ### Social media wall (2026-10-22)
 
 - The Facebook card shows Facebook's page header (cover, followers, Follow, Share), beside a Telegram
