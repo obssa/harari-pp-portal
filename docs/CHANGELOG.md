@@ -4,6 +4,11 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Fix: the menu's panels opened off-screen on desktop (2026-10-23)
+
+- The header lost its positioning on desktop in the redesign, so the section panels and the search field
+  opened below the bottom of the screen. Restored, with a browser test that opens them (ADR-0074).
+
 ### The head's name: H.E Getu Weyessa Tola (2026-10-23)
 
 - The head of the party is H.E Getu Weyessa Tola, Head of Harari Region Prosperity Party, everywhere on the

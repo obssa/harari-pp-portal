@@ -62,3 +62,22 @@ it('publishes a post from the admin and shows it on the site', function () {
 
     visit('/en/news/sample-story-to-publish')->assertSee('Sample story to publish');
 });
+
+it('opens the menu, search and phone menu panels just under the header, on screen', function () {
+    $panel = fn (string $details): string => '(() => { const d = document.querySelector('.json_encode($details).'); const r = d.querySelector(":scope > div, :scope > nav").getBoundingClientRect(); return JSON.stringify([Math.round(r.top), Math.round(r.height), innerHeight]); })()';
+    $open = fn (string $details): string => 'document.querySelector('.json_encode($details.' > summary').').click()';
+
+    $desktop = visit('/en/news')->resize(1440, 900);
+    foreach (['header > div:last-child nav details', 'header details.group\/search'] as $details) {
+        $desktop->script($open($details));
+        [$top, $height, $screen] = json_decode((string) $desktop->script($panel($details)), true);
+        expect($top)->toBeGreaterThan(60)->toBeLessThan(300)
+            ->and($height)->toBeGreaterThan(60)
+            ->and($top + 60)->toBeLessThan($screen);
+    }
+
+    $phone = visit('/en/news')->resize(390, 844);
+    $phone->script($open('header details.group\/menu'));
+    [$top, $height] = json_decode((string) $phone->script($panel('header details.group\/menu')), true);
+    expect($top)->toBeGreaterThan(40)->toBeLessThan(200)->and($height)->toBeGreaterThan(200);
+});

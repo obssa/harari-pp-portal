@@ -62,7 +62,7 @@
 
     {{-- ADR-0074: one clean row: the party's mark and name, then search, the call to join and (below desktop) the menu.
          On phones the row stays pinned at the top while reading. --}}
-    <header class="sticky top-0 z-30 border-b border-line bg-surface/90 backdrop-blur-md supports-[backdrop-filter]:bg-surface/80 lg:static lg:bg-surface lg:backdrop-blur-none">
+    <header class="sticky top-0 z-30 border-b border-line bg-surface/90 backdrop-blur-md supports-[backdrop-filter]:bg-surface/80 lg:relative lg:bg-surface lg:backdrop-blur-none">
         <div class="mx-auto flex h-16 max-w-page items-center justify-between gap-3 px-4 sm:px-6 lg:h-[4.75rem]">
             <a href="{{ route('home') }}" @if (request()->routeIs('home')) aria-current="page" @endif class="flex min-w-0 items-center gap-3 rounded-control no-underline">
                 <img src="/brand/logo-128.png" alt="" width="56" height="56" class="size-11 shrink-0 rounded-full bg-white ring-1 ring-line lg:size-[3.25rem]">
