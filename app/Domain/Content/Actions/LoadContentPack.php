@@ -5,6 +5,7 @@ namespace App\Domain\Content\Actions;
 use App\Domain\Access\Enums\SystemRole;
 use App\Domain\Content\Models\ContentPackItem;
 use App\Domain\Content\Models\Page;
+use App\Domain\Content\Models\Post;
 use App\Domain\Content\Models\PostTranslation;
 use App\Domain\Content\Support\BodyRenderer;
 use App\Domain\Content\Workflow\ContentWorkflow;
@@ -19,6 +20,7 @@ use App\Domain\Import\Models\ContentImport;
 use App\Domain\Import\Models\ContentSource;
 use App\Domain\Media\Actions\SyncMediaUsage;
 use App\Domain\Media\Actions\UploadMedia;
+use App\Domain\Media\Models\Media;
 use App\Domain\Organisation\Actions\SaveLeader;
 use App\Domain\Organisation\Actions\SaveLeague;
 use App\Domain\Organisation\Actions\SaveOffice;
@@ -105,6 +107,9 @@ final class LoadContentPack
 
         foreach ((array) ($pack['updates'] ?? []) as $update) {
             $this->update((array) $update, $photos, $actor);
+        }
+        foreach ((array) ($pack['corrections'] ?? []) as $correction) {
+            $this->correction((array) $correction);
         }
 
         $this->homepageSections((array) ($pack['homepage'] ?? []), $actor);
@@ -279,40 +284,111 @@ final class LoadContentPack
      */
     private function replaceText(Model $translation, array $pairs): void
     {
-        $swap = function (string $text) use ($pairs): string {
-            foreach ($pairs as $pair) {
-                [$from, $to] = array_map('strval', array_values((array) $pair)) + ['', ''];
-                if ($from !== '' && str_contains($text, $from) && ! str_contains($text, $to)) {
-                    $text = str_replace($from, $to, $text);
-                }
-            }
-
-            return $text;
-        };
-        $walk = function (mixed $node) use (&$walk, $swap): mixed {
-            if (! is_array($node)) {
-                return $node;
-            }
-            foreach ($node as $key => $value) {
-                $node[$key] = $key === 'text' && is_string($value) ? $swap($value) : $walk($value);
-            }
-
-            return $node;
-        };
-
-        foreach (['title', 'name', 'position', 'summary', 'excerpt'] as $field) {
+        foreach (['title', 'name', 'position', 'summary', 'excerpt', 'kicker'] as $field) {
             $value = $translation->getAttribute($field);
             if (is_string($value) && $value !== '') {
-                $translation->setAttribute($field, $swap($value));
+                $translation->setAttribute($field, self::swap($value, $pairs));
             }
         }
         $body = $translation->getAttribute('body');
         if (is_array($body)) {
-            $translation->setAttribute('body', $walk($body));
+            $translation->setAttribute('body', self::swapAll($body, $pairs, 'text'));
         }
         if ($translation->isDirty()) {
             $translation->save();
         }
+    }
+
+    /**
+     * A phrase swapped in a text; a text that already has the new phrase is
+     * left alone, so a swap never applies twice.
+     *
+     * @param  array<int, mixed>  $pairs  [[from, to], ...]
+     */
+    public static function swap(string $text, array $pairs): string
+    {
+        foreach ($pairs as $pair) {
+            [$from, $to] = array_map('strval', array_values((array) $pair)) + ['', ''];
+            if ($from !== '' && str_contains($text, $from) && ! str_contains($text, $to)) {
+                $text = str_replace($from, $to, $text);
+            }
+        }
+
+        return $text;
+    }
+
+    /**
+     * The swap in every string of a nested array, or only under one key
+     * (the "text" of a body's nodes).
+     *
+     * @param  array<mixed>  $node
+     * @param  array<int, mixed>  $pairs
+     * @return array<mixed>
+     */
+    public static function swapAll(array $node, array $pairs, ?string $only = null): array
+    {
+        foreach ($node as $key => $value) {
+            if (is_array($value)) {
+                $node[$key] = self::swapAll($value, $pairs, $only);
+            } elseif (is_string($value) && ($only === null || $key === $only)) {
+                $node[$key] = self::swap($value, $pairs);
+            }
+        }
+
+        return $node;
+    }
+
+    /**
+     * A correction the branch office asked for after the pack was loaded
+     * (ADR-0075): phrases swapped, once by key, wherever the site shows them:
+     * people, pages, offices, leagues, stories, carousel slides and picture
+     * descriptions (or the kinds the correction names).
+     *
+     * @param  array<string, mixed>  $correction
+     */
+    private function correction(array $correction): void
+    {
+        $key = (string) ($correction['key'] ?? '');
+        $pairs = array_values((array) ($correction['replace'] ?? []));
+        if ($key === '' || $pairs === [] || ContentPackItem::query()->where('key', $key)->exists()) {
+            return;
+        }
+        $in = (array) ($correction['in'] ?? ['leaders', 'pages', 'offices', 'leagues', 'posts', 'slides', 'media']);
+
+        DB::transaction(function () use ($key, $pairs, $in): void {
+            $translated = ['leaders' => Leader::class, 'pages' => Page::class, 'offices' => Office::class, 'leagues' => League::class, 'posts' => Post::class];
+            foreach ($translated as $kind => $class) {
+                if (in_array($kind, $in, true)) {
+                    $class::query()->with('translations')->each(function (Model $record) use ($pairs): void {
+                        foreach ($record->getRelationValue('translations') ?? [] as $translation) {
+                            $this->replaceText($translation, $pairs);
+                        }
+                    });
+                }
+            }
+
+            if (in_array('slides', $in, true)) {
+                foreach (HeroSlide::query()->get() as $slide) {
+                    $slide->name = self::swap($slide->name, $pairs);
+                    $slide->content = self::swapAll($slide->content ?? [], $pairs);
+                    if ($slide->isDirty()) {
+                        $slide->save();
+                    }
+                }
+            }
+
+            if (in_array('media', $in, true)) {
+                foreach (Media::query()->whereNotNull('alt')->get() as $media) {
+                    $media->alt = self::swapAll((array) $media->alt, $pairs);
+                    if ($media->isDirty()) {
+                        $media->save();
+                    }
+                }
+            }
+
+            ContentPackItem::remember($key, null);
+            $this->counts['corrections'] = ($this->counts['corrections'] ?? 0) + 1;
+        });
     }
 
     /**

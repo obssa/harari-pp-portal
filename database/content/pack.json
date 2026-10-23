@@ -1,7 +1,7 @@
 {
   "version": 1,
   "compiled": "2026-10-21",
-  "note": "Real content gathered from public sources on 2026-10-21; every item carries its source. Loaded once per key by `php artisan content:load-pack` (ADR-0063, ADR-0065, ADR-0069, ADR-0070, ADR-0071, ADR-0072).",
+  "note": "Real content gathered from public sources on 2026-10-21; every item carries its source. Loaded once per key by `php artisan content:load-pack` (ADR-0063, ADR-0065, ADR-0069, ADR-0070, ADR-0071, ADR-0072, ADR-0075).",
   "leagues": [
     {
       "key": "league.women",
@@ -254,7 +254,7 @@
       "source_date": "2026-10-15",
       "translations": {
         "en": {
-          "name": "H.E Getu Wayyesa Tola",
+          "name": "H.E Getu Weyessa Tola",
           "position": "Head of Harari Region Prosperity Party",
           "summary": "Heads the branch office. Since 2 October 2026 he also chairs the board of the Harari Broadcasting Network (HBN)."
         },
@@ -564,7 +564,7 @@
                 "content": [
                   {
                     "type": "text",
-                    "text": "The Prosperity Party Harari Region Branch Office (in Amharic የብልፅግና ፓርቲ የሀረሪ ክልል ቅርንጫፍ ጽሕፈት ቤት, in Afaan Oromo Waajjira Paartii Badhaadhinaa Damee Naannoo Hararii) leads the party's work in the Harari Region. It is headed by H.E Getu Wayyesa Tola."
+                    "text": "The Prosperity Party Harari Region Branch Office (in Amharic የብልፅግና ፓርቲ የሀረሪ ክልል ቅርንጫፍ ጽሕፈት ቤት, in Afaan Oromo Waajjira Paartii Badhaadhinaa Damee Naannoo Hararii) leads the party's work in the Harari Region. It is headed by H.E Getu Weyessa Tola."
                   }
                 ]
               },
@@ -4536,7 +4536,7 @@
       "target": "leader.getu-weyesa",
       "rename": {
         "en": {
-          "name": "H.E Getu Wayyesa Tola",
+          "name": "H.E Getu Weyessa Tola",
           "position": "Head of Harari Region Prosperity Party"
         },
         "am": {
@@ -4557,7 +4557,7 @@
         "en": [
           [
             "Getu Weyesa",
-            "H.E Getu Wayyesa Tola"
+            "H.E Getu Weyessa Tola"
           ]
         ],
         "am": [
@@ -4582,7 +4582,7 @@
           "file": "getu-wayyesa-tola-office.jpg",
           "credit": "Harari Region Prosperity Party",
           "alt": {
-            "en": "H.E Getu Wayyesa Tola at his desk, between the Ethiopian flag and the party's flag",
+            "en": "H.E Getu Weyessa Tola at his desk, between the Ethiopian flag and the party's flag",
             "am": "ክቡር አቶ ጌቱ ወዬሳ ቶላ በኢትዮጵያና በፓርቲው ሰንደቅ ዓላማዎች መካከል በጠረጴዛቸው",
             "om": "Kabajamoo Obbo Geetuu Wayyeessaa Tolaa minjaala isaanii biratti, alaabaa Itoophiyaa fi alaabaa paartii gidduutti"
           }
@@ -4591,7 +4591,7 @@
           "file": "getu-wayyesa-tola-emblem.jpg",
           "credit": "Harari Region Prosperity Party",
           "alt": {
-            "en": "H.E Getu Wayyesa Tola seated before the emblem of Harari Region Prosperity Party",
+            "en": "H.E Getu Weyessa Tola seated before the emblem of Harari Region Prosperity Party",
             "am": "ክቡር አቶ ጌቱ ወዬሳ ቶላ በሐረሪ ክልል ብልጽግና ፓርቲ አርማ ፊት ተቀምጠው",
             "om": "Kabajamoo Obbo Geetuu Wayyeessaa Tolaa mallattoo Paartii Badhaadhinaa Naannoo Hararii duratti taa'anii"
           }
@@ -4600,7 +4600,7 @@
           "file": "getu-wayyesa-tola-commitment.jpg",
           "credit": "Harari Region Prosperity Party",
           "alt": {
-            "en": "Poster of H.E Getu Wayyesa Tola: \"We work with commitment to ensure the all-round benefit of our people!\"",
+            "en": "Poster of H.E Getu Weyessa Tola: \"We work with commitment to ensure the all-round benefit of our people!\"",
             "am": "የክቡር አቶ ጌቱ ወዬሳ ቶላ ፖስተር፦ «የህዝባችንን ሁለተናዊ ተጠቃሚነት ለማረጋገጥ በቁርጠኝነት እንሰራለን!»",
             "om": "Poostarii Kabajamoo Obbo Geetuu Wayyeessaa Tolaa: \"Fayyadamummaa hundagaleessa ummata keenyaa mirkaneessuuf kutannoon ni hojjenna!\""
           }
@@ -4609,7 +4609,7 @@
           "file": "getu-wayyesa-tola-message.jpg",
           "credit": "Harari Region Prosperity Party",
           "alt": {
-            "en": "Poster of H.E Getu Wayyesa Tola on the values of togetherness, respect and fraternity",
+            "en": "Poster of H.E Getu Weyessa Tola on the values of togetherness, respect and fraternity",
             "am": "የክቡር አቶ ጌቱ ወዬሳ ቶላ ፖስተር ስለ አብሮነት፣ መከባበርና እህትማማችነት እሴቶች",
             "om": "Poostarii Kabajamoo Obbo Geetuu Wayyeessaa Tolaa duudhaawwan tokkummaa, wal kabajuu fi obbolummaa irratti"
           }
@@ -4711,13 +4711,13 @@
     },
     {
       "key": "slide.head-message",
-      "name": "Message from H.E Getu Wayyesa Tola",
+      "name": "Message from H.E Getu Weyessa Tola",
       "layout": "portrait",
       "sort": 3,
       "photo": "getu-wayyesa-tola-message.jpg",
       "photo_credit": "Harari Region Prosperity Party",
       "photo_alt": {
-        "en": "H.E Getu Wayyesa Tola with his message, in Amharic, on the values of togetherness, respect and fraternity",
+        "en": "H.E Getu Weyessa Tola with his message, in Amharic, on the values of togetherness, respect and fraternity",
         "am": "ክቡር አቶ ጌቱ ወዬሳ ቶላ ስለ አብሮነት፣ መከባበርና እህትማማችነት እሴቶች ከሰጡት መልእክት ጋር",
         "om": "Kabajamoo Obbo Geetuu Wayyeessaa Tolaa ergaa isaanii duudhaawwan tokkummaa, wal kabajuu fi obbolummaa irratti kennan wajjin"
       },
@@ -4726,7 +4726,7 @@
           "kicker": "From the head of the party",
           "title": "Our proud values of togetherness, mutual respect and fraternity will be planted on a firm foundation!",
           "highlight": "on a firm foundation",
-          "note": "H.E Getu Wayyesa Tola\nHead of Harari Region Prosperity Party"
+          "note": "H.E Getu Weyessa Tola\nHead of Harari Region Prosperity Party"
         },
         "am": {
           "kicker": "ከፓርቲው ኃላፊ",
@@ -4770,6 +4770,39 @@
       "handle": "hrprosperityparty",
       "name": "Harari Region Prosperity Party",
       "interval_minutes": 30
+    }
+  ],
+  "corrections": [
+    {
+      "key": "correction.getu-weyessa-2026-10-23",
+      "note": "The head of the party writes his name H.E Getu Weyessa Tola (asked on 2026-10-23).",
+      "replace": [
+        [
+          "H.E Getu Wayyesa Tola",
+          "H.E Getu Weyessa Tola"
+        ]
+      ]
+    },
+    {
+      "key": "correction.getu-portrait-alt-2026-10-23",
+      "note": "His portrait was described with his name before H.E and Tola were added.",
+      "in": [
+        "media"
+      ],
+      "replace": [
+        [
+          "Getu Weyesa",
+          "H.E Getu Weyessa Tola"
+        ],
+        [
+          "አቶ ጌቱ ወዬሳ",
+          "ክቡር አቶ ጌቱ ወዬሳ ቶላ"
+        ],
+        [
+          "Obbo Geetuu Wayyeessaa",
+          "Kabajamoo Obbo Geetuu Wayyeessaa Tolaa"
+        ]
+      ]
     }
   ]
 }

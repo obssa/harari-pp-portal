@@ -4,6 +4,11 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### The head's name: H.E Getu Weyessa Tola (2026-10-23)
+
+- The head of the party is H.E Getu Weyessa Tola, Head of Harari Region Prosperity Party, everywhere on the
+  site: his profile, the About page, the homepage carousel and picture descriptions (ADR-0075).
+
 ### A modern header (2026-10-22)
 
 - One slim top bar and one clean header row on phones, pinned while reading: mark, name, search, "Join" and a
@@ -26,12 +31,12 @@ All notable changes. Dates are Gregorian.
 
 - The homepage and the social media page show the party's Facebook page (after the visitor agrees, or as
   set under Settings → Site) beside its Telegram channel (ADR-0071).
-- Profiles get a photo gallery; H.E Getu Wayyesa Tola's profile shows four photos from the branch office.
+- Profiles get a photo gallery; H.E Getu Weyessa Tola's profile shows four photos from the branch office.
 
 ### Homepage carousel (2026-10-22)
 
 - The homepage opens with a carousel: the welcome over Harar Gate, the Prosperity Party campaign banner
-  rebuilt with live text and a "Join now" button, and the message of H.E Getu Wayyesa Tola, Head of
+  rebuilt with live text and a "Join now" button, and the message of H.E Getu Weyessa Tola, Head of
   Harari Region Prosperity Party (ADR-0070).
 - Content → Homepage carousel: drag slides into order, switch them on and off, schedule them, choose
   their languages, preview them, duplicate them, and set the carousel's speed, transition, height and
@@ -40,7 +45,7 @@ All notable changes. Dates are Gregorian.
 ### Harari Region Prosperity Party (2026-10-22)
 
 - The party is called Harari Region Prosperity Party everywhere on the site, in every language, and its
-  head is H.E Getu Wayyesa Tola, Head of Harari Region Prosperity Party (ADR-0069).
+  head is H.E Getu Weyessa Tola, Head of Harari Region Prosperity Party (ADR-0069).
 - The footer and contact page link to the party's Facebook page next to its Telegram channel.
 
 ### "View on site" in the admin (2026-10-22)

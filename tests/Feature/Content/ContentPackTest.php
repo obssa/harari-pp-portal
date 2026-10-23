@@ -11,6 +11,7 @@ use App\Domain\Homepage\Models\HeroSlide;
 use App\Domain\Homepage\Models\HomepageSection;
 use App\Domain\Import\Models\ContentImport;
 use App\Domain\Import\Models\ContentSource;
+use App\Domain\Media\Actions\UploadMedia;
 use App\Domain\Organisation\Actions\SaveLeader;
 use App\Domain\Organisation\Enums\LeaderBody;
 use App\Domain\Organisation\Models\Leader;
@@ -43,7 +44,7 @@ it('loads the real content pack, published, with portraits, heads, pages and the
 
     expect($counts)->toMatchArray(['leagues' => 2, 'offices' => 10, 'leaders' => 14, 'pages' => 3, 'events' => 1, 'homepage' => 2, 'settings' => 2, 'slides' => 3]);
 
-    $head = Leader::query()->whereHas('translations', fn ($q) => $q->where('name', 'H.E Getu Wayyesa Tola'))->firstOrFail();
+    $head = Leader::query()->whereHas('translations', fn ($q) => $q->where('name', 'H.E Getu Weyessa Tola'))->firstOrFail();
     expect($head->translation('en')?->position)->toBe('Head of Harari Region Prosperity Party')
         ->and($head->translation('am', fallback: false)?->name)->toBe('ክቡር አቶ ጌቱ ወዬሳ ቶላ')
         ->and($head->body)->toBe(LeaderBody::Secretariat)
@@ -64,14 +65,14 @@ it('loads the real content pack, published, with portraits, heads, pages and the
         ->and(app(SiteSettings::class)->social_links['telegram'] ?? null)->toBe('https://t.me/hrprosperityparty')
         ->and(app(SiteSettings::class)->social_links['facebook'] ?? null)->toBe('https://www.facebook.com/profile.php?id=100064354104698');
 
-    $this->get('/en/about')->assertOk()->assertSee('About the branch')->assertSee('It is headed by H.E Getu Wayyesa Tola.')->assertSee('https://t.me/hrprosperityparty/23920', escape: false);
+    $this->get('/en/about')->assertOk()->assertSee('About the branch')->assertSee('It is headed by H.E Getu Weyessa Tola.')->assertSee('https://t.me/hrprosperityparty/23920', escape: false);
     $this->get('/am/about/history')->assertOk()->assertSee('ሀረሪ ብሔራዊ ሊግ');
     $this->get('/om/about/harar')->assertOk()->assertSee('Harar Jugol');
     $this->get('/am/about')->assertOk()->assertSee('ክቡር አቶ ጌቱ ወዬሳ ቶላ')->assertDontSee('ክቡር ክቡር');
-    $this->get('/en/leaders')->assertOk()->assertSee('H.E Getu Wayyesa Tola')->assertSee(LeaderBody::Government->label('en'));
+    $this->get('/en/leaders')->assertOk()->assertSee('H.E Getu Weyessa Tola')->assertSee(LeaderBody::Government->label('en'));
     expect(HeroSlide::query()->orderBy('sort')->pluck('layout')->map(fn ($layout) => $layout->value)->all())->toBe(['photo', 'banner', 'portrait']);
     $this->get('/en')->assertOk()
-        ->assertSeeInOrder(['id="hero-slide-1"', 'Harari Region Prosperity Party', 'id="hero-slide-2"', 'Prosperity Party ብልፅግና', 'id="hero-slide-3"', 'H.E Getu Wayyesa Tola'], escape: false)
+        ->assertSeeInOrder(['id="hero-slide-1"', 'Harari Region Prosperity Party', 'id="hero-slide-2"', 'Prosperity Party ብልፅግና', 'id="hero-slide-3"', 'H.E Getu Weyessa Tola'], escape: false)
         ->assertSee('href="'.url('/en/leaders/'.$head->translation('en')?->slug).'"', escape: false);
     $this->get('/am')->assertSee('ለኢትዮጵያ እና ህዝቦቿ ብልፅግና እንተጋለን');
     $this->get('/en/leaders/'.$head->translation('en')?->slug)->assertOk()
@@ -155,6 +156,37 @@ it('corrects a name and a phrase once, as the branch office asked, and then leav
     $leader->translation('en')?->forceFill(['name' => 'Name an editor chose'])->save();
     expect(app(LoadContentPack::class)->handle($corrections))->toBe([])
         ->and($leader->fresh()?->translation('en')?->name)->toBe('Name an editor chose');
+});
+
+it('corrects a phrase once wherever the site shows it, then leaves it to editors', function () {
+    $admin = staff(SystemRole::SuperAdmin, mfa: false);
+    $body = fn (string $text): array => ['type' => 'doc', 'content' => [['type' => 'paragraph', 'content' => [['type' => 'text', 'text' => $text]]]]];
+    app(LoadContentPack::class)->handle(samplePack([
+        'leaders' => [['key' => 'leader.sample', 'body' => 'secretariat', 'translations' => ['en' => ['name' => 'H.E Sample Wayyesa', 'position' => 'Sample head']]]],
+        'pages' => [['key' => 'page.sample', 'translations' => ['en' => ['title' => 'Sample page', 'slug' => 'sample-page', 'body' => $body('Led by H.E Sample Wayyesa.')]]]],
+        'slides' => [['key' => 'slide.sample', 'name' => 'Message from H.E Sample Wayyesa', 'layout' => 'photo', 'content' => ['en' => ['title' => 'Sample heading', 'note' => "H.E Sample Wayyesa\nSample head"]]]],
+    ]));
+    $path = storage_path('framework/testing/pack-picture-'.uniqid().'.jpg');
+    @mkdir(dirname($path), 0777, true);
+    $image = imagecreatetruecolor(640, 480);
+    imagefill($image, 0, 0, imagecolorallocate($image, 5, 37, 59));
+    imagejpeg($image, $path, 80);
+    $picture = app(UploadMedia::class)->handle($path, 'sample-portrait.jpg', $admin);
+    $picture->forceFill(['alt' => ['en' => 'Portrait of H.E Sample Wayyesa', 'am' => 'Sample Amharic text']])->save();
+    $correction = samplePack(['corrections' => [
+        ['key' => 'correction.sample', 'replace' => [['H.E Sample Wayyesa', 'H.E Sample Weyessa']]],
+    ]]);
+
+    expect(app(LoadContentPack::class)->handle($correction))->toBe(['corrections' => 1]);
+    expect(Leader::query()->firstOrFail()->translation('en')?->name)->toBe('H.E Sample Weyessa')
+        ->and(HeroSlide::query()->firstOrFail()->name)->toBe('Message from H.E Sample Weyessa')
+        ->and(HeroSlide::query()->firstOrFail()->text('note', 'en')[0])->toBe("H.E Sample Weyessa\nSample head")
+        ->and($picture->fresh()?->alt)->toEqual(['en' => 'Portrait of H.E Sample Weyessa', 'am' => 'Sample Amharic text']);
+    $this->get('/en/sample-page')->assertOk()->assertSee('Led by H.E Sample Weyessa.');
+
+    Leader::query()->firstOrFail()->translation('en')?->forceFill(['name' => 'H.E Sample Wayyesa'])->save();
+    expect(app(LoadContentPack::class)->handle($correction))->toBe([])
+        ->and(Leader::query()->firstOrFail()->translation('en')?->name)->toBe('H.E Sample Wayyesa');
 });
 
 it('publishes the stories imported from the branch before it was trusted, once, with their dates', function () {

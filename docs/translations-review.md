@@ -93,7 +93,7 @@ Drafts for the branch office's legal reviewers; the English text is the referenc
 | Keys or text | Languages | Context | Doubts |
 |---|---|---|---|
 | `site.name` and every string with the party's name | am, om | "Harari Region Prosperity Party" as the branch office asked | የሐረሪ ክልል ብልጽግና ፓርቲ (the office's own posters write የሀረሪ ክልል ብልፅግና ፓርቲ); Paartii Badhaadhinaa Naannoo Hararii |
-| Head of the branch, `database/content/pack.json` | am, om | "H.E Getu Wayyesa Tola, Head of Harari Region Prosperity Party" | ክቡር አቶ ጌቱ ወዬሳ ቶላ, የሐረሪ ክልል ብልጽግና ፓርቲ ኃላፊ; Kabajamoo Obbo Geetuu Wayyeessaa Tolaa, Itti Gaafatamaa Paartii Badhaadhinaa Naannoo Hararii |
+| Head of the branch, `database/content/pack.json` | am, om | "H.E Getu Weyessa Tola, Head of Harari Region Prosperity Party" | ክቡር አቶ ጌቱ ወዬሳ ቶላ, የሐረሪ ክልል ብልጽግና ፓርቲ ኃላፊ; Kabajamoo Obbo Geetuu Wayyeessaa Tolaa, Itti Gaafatamaa Paartii Badhaadhinaa Naannoo Hararii |
 
 ## Homepage carousel (ADR-0070)
 

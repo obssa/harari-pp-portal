@@ -2157,3 +2157,19 @@ clean header.
 
 **Consequences.** None for content; the strings `nav.join_short` and `search.short` are new.
 
+## ADR-0075 — Corrections across the site; the head's name is "H.E Getu Weyessa Tola" (2026-10-23)
+
+**Context.** The branch office corrected the English spelling of its head's name from "H.E Getu Wayyesa
+Tola" (ADR-0069) to "H.E Getu Weyessa Tola". The name had been loaded once into his profile, the About
+page, a carousel slide and picture descriptions, which the content pack never writes twice.
+
+**Decision.** The content pack gains `corrections`: phrases swapped once, by key, wherever the site shows
+them (people, pages, offices, leagues, stories, carousel slides and picture descriptions, or the kinds a
+correction names), never twice in the same text. The first two set the new spelling everywhere and finish
+the description of his portrait, which still had the name from before ADR-0069. The pack itself now writes
+the new spelling, and the title stays "Head of Harari Region Prosperity Party". Profile addresses keep
+their slug.
+
+**Consequences.** Amharic (ክቡር አቶ ጌቱ ወዬሳ ቶላ) and Afaan Oromo (Kabajamoo Obbo Geetuu Wayyeessaa Tolaa) keep
+their own spellings.
+
