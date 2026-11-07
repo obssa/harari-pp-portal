@@ -65,14 +65,16 @@ it('lists upcoming and past events and shows each event with its details', funct
 });
 
 it('offers calendar files for one event and for all upcoming events', function () {
-    makeEvent(['en' => ['title' => 'Sample calendar meeting, with a long title that needs folding in the calendar file', 'venue' => 'Hall; Room 2', 'published' => true]], '2026-11-02 10:00');
+    // A date ahead of today, so the feed of upcoming events still lists it whenever the suite runs.
+    $start = CarbonImmutable::now('UTC')->addMonth()->setTime(10, 0);
+    makeEvent(['en' => ['title' => 'Sample calendar meeting, with a long title that needs folding in the calendar file', 'venue' => 'Hall; Room 2', 'published' => true]], $start->format('Y-m-d H:i'));
 
     $single = $this->get('/en/events/sample-calendar-meeting-with-a-long-title-that-needs-folding-in-the-calendar-file.ics')
         ->assertOk()
         ->assertHeader('Content-Type', 'text/calendar; charset=UTF-8');
     $body = (string) $single->getContent();
     expect($body)->toContain("BEGIN:VEVENT\r\n")
-        ->toContain('DTSTART:20261102T100000Z')
+        ->toContain('DTSTART:'.$start->format('Ymd\THis\Z'))
         ->toContain('LOCATION:Hall\; Room 2')
         ->and(collect(explode("\r\n", $body))->every(fn (string $line): bool => strlen($line) <= 75))->toBeTrue();
 
