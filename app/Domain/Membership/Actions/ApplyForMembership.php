@@ -49,27 +49,26 @@ final class ApplyForMembership
     public function about(?MembershipApplication $application, array $input, string $locale): MembershipApplication
     {
         $errors = [];
+        // ADR-0076: each field says exactly what is wrong with it.
         $name = trim((string) preg_replace('/\s+/u', ' ', (string) ($input['name'] ?? '')));
-        if ($name === '' || mb_strlen($name) > 120) {
-            $errors['name'] = __('membership.validation.name');
+        if (($nameError = ApplicationOptions::nameError($name)) !== null) {
+            $errors['name'] = $nameError;
         }
         $sex = (string) ($input['sex'] ?? '');
         if (! in_array($sex, ApplicationOptions::SEXES, true)) {
             $errors['sex'] = __('membership.validation.sex');
         }
-        $birth = $this->birthDate($input);
-        if ($birth === null) {
-            $errors['birth_date'] = __('membership.validation.birth_date');
-        } elseif ($birth->diffInYears(CarbonImmutable::now()) < ApplicationOptions::MINIMUM_AGE) {
+        [$birth, $birthError] = $this->birthDate($input);
+        if ($birthError !== null) {
+            $errors['birth_date'] = $birthError;
+        } elseif ($birth !== null && $birth->diffInYears(CarbonImmutable::now()) < ApplicationOptions::MINIMUM_AGE) {
             $errors['birth_date'] = __('membership.validation.age', ['age' => ApplicationOptions::MINIMUM_AGE]);
         }
-        $idType = (string) ($input['id_type'] ?? '');
-        if (! in_array($idType, ApplicationOptions::ID_TYPES, true)) {
-            $errors['id_type'] = __('membership.validation.id_type');
-        }
-        $idNumber = strtoupper((string) preg_replace('/[\s-]/', '', (string) ($input['id_number'] ?? '')));
-        if ($idType !== 'none' && preg_match('/^[A-Z0-9]{4,30}$/', $idNumber) !== 1) {
-            $errors['id_number'] = __('membership.validation.id_number');
+        // ADR-0076: the branch registers members with Fayda only, so the form asks for nothing else.
+        $idType = 'fayda';
+        $idNumber = ApplicationOptions::faydaDigits((string) ($input['id_number'] ?? ''));
+        if (($faydaError = ApplicationOptions::faydaError($idNumber)) !== null) {
+            $errors['id_number'] = $faydaError;
         }
         $education = (string) ($input['education'] ?? '');
         if (! in_array($education, ApplicationOptions::EDUCATION, true)) {
@@ -85,7 +84,6 @@ final class ApplyForMembership
 
         $application ??= new MembershipApplication(['locale' => $locale]);
         $this->assertEditable($application);
-        $hasId = $idType !== 'none' && $idNumber !== '';
         $application->fill([
             'locale' => $locale,
             'name' => $name,
@@ -93,8 +91,8 @@ final class ApplyForMembership
             'birth_date' => $birth?->toDateString(),
             'birth_year' => $birth?->year,
             'id_type' => $idType,
-            'id_number' => $hasId ? $idNumber : null,
-            'id_hash' => $hasId ? MembershipApplication::hash($idType.':'.$idNumber) : null,
+            'id_number' => $idNumber,
+            'id_hash' => MembershipApplication::hash($idType.':'.$idNumber),
             'education' => $education,
             'occupation' => $occupation !== '' ? $occupation : null,
         ]);
@@ -137,8 +135,13 @@ final class ApplyForMembership
         $byEmail = MembershipSettings::verification() === MembershipSettings::EMAIL;
         $typedPhone = trim((string) ($input['phone'] ?? ''));
         $phone = PhoneNumber::normalise($typedPhone);
-        if ($phone === null && (! $byEmail || $typedPhone !== '')) {
-            $errors['phone'] = __('events.registration.validation.phone');
+        if ($typedPhone === '' && ! $byEmail) {
+            $errors['phone'] = __('membership.validation.phone_required');
+        } elseif ($typedPhone !== '' && preg_match('/^\+?[\d ]+$/', $typedPhone) !== 1) {
+            // ADR-0076: letters or signs are refused, not silently dropped.
+            $errors['phone'] = __('membership.validation.phone_digits');
+        } elseif ($typedPhone !== '' && $phone === null) {
+            $errors['phone'] = __('membership.validation.phone_invalid');
         }
         $email = mb_strtolower(trim((string) ($input['email'] ?? '')));
         if (($email !== '' || $byEmail) && (mb_strlen($email) > 190 || filter_var($email, FILTER_VALIDATE_EMAIL) === false)) {
@@ -309,28 +312,53 @@ final class ApplyForMembership
 
     /**
      * The birth date as typed: day, month and year in the Ethiopian or the
-     * Gregorian calendar.
+     * Gregorian calendar, each with its own months and days (ADR-0076). The
+     * form sends the month of each calendar under its own name; a plain
+     * birth_month is still read for older clients.
      *
      * @param  array<string, mixed>  $input
+     * @return array{0: ?CarbonImmutable, 1: ?string} the date, or the message saying what is wrong
      */
-    private function birthDate(array $input): ?CarbonImmutable
+    private function birthDate(array $input): array
     {
+        $gregorian = ($input['birth_calendar'] ?? 'ethiopian') === 'gregorian';
+        $calendar = $gregorian ? EthiopianCalendar::GREGORIAN : EthiopianCalendar::ETHIOPIAN;
         $day = filter_var($input['birth_day'] ?? null, FILTER_VALIDATE_INT);
-        $month = filter_var($input['birth_month'] ?? null, FILTER_VALIDATE_INT);
+        $month = filter_var($input["birth_month_{$calendar}"] ?? $input['birth_month'] ?? null, FILTER_VALIDATE_INT);
         $year = filter_var($input['birth_year'] ?? null, FILTER_VALIDATE_INT);
-        if (! is_int($day) || ! is_int($month) || ! is_int($year) || $year < 1890 || $year > 2100) {
-            return null;
+        if (! is_int($day) || ! is_int($month) || ! is_int($year)) {
+            return [null, __('membership.validation.birth_missing')];
+        }
+
+        $calendars = app(EthiopianCalendar::class);
+        $today = CarbonImmutable::now(EthiopianCalendar::timezone());
+        $maxYear = $gregorian ? $today->year : $calendars->toEthiopian($today)->year;
+        $minYear = $maxYear - 120;
+        $label = __("membership.calendar.{$calendar}");
+        if ($year < $minYear || $year > $maxYear) {
+            return [null, __('membership.validation.birth_year', ['calendar' => $label, 'min' => $minYear, 'max' => $maxYear])];
+        }
+        if ($month < 1 || $month > ($gregorian ? 12 : 13)) {
+            return [null, __('membership.validation.birth_missing')];
+        }
+        $days = $gregorian ? CarbonImmutable::create($year, $month, 1)->daysInMonth : EthiopianCalendar::daysInMonth($year, $month);
+        if ($day < 1 || $day > $days) {
+            return [null, __('membership.validation.birth_day', [
+                'month' => __("calendar.{$calendar}.month.{$month}"), 'year' => $year, 'days' => $days, 'calendar' => $label,
+            ])];
         }
 
         try {
-            $date = ($input['birth_calendar'] ?? 'ethiopian') === 'gregorian'
-                ? (checkdate($month, $day, $year) ? CarbonImmutable::create($year, $month, $day, 0, 0, 0, EthiopianCalendar::timezone()) : null)
-                : app(EthiopianCalendar::class)->toGregorian($year, $month, $day);
+            $date = $gregorian
+                ? CarbonImmutable::create($year, $month, $day, 0, 0, 0, EthiopianCalendar::timezone())
+                : $calendars->toGregorian($year, $month, $day);
         } catch (Throwable) {
-            return null;
+            return [null, __('membership.validation.birth_missing')];
         }
 
-        return $date instanceof CarbonImmutable && $date->isPast() ? $date->startOfDay() : null;
+        return $date instanceof CarbonImmutable && $date->isPast()
+            ? [$date->startOfDay(), null]
+            : [null, __('membership.validation.birth_future')];
     }
 
     /**

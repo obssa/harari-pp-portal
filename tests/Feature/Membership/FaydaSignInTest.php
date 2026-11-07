@@ -95,7 +95,7 @@ function faydaMember(array $details = []): Member
     $woreda = app(SaveOffice::class)->handle(new Office, ['type' => 'woreda', 'translations' => ['en' => ['name' => 'Sample Woreda West', 'published' => true]]], staff(SystemRole::Publisher));
 
     return app(SaveMember::class)->handle(new Member, [
-        'name' => 'Sample Fayda Member', 'sex' => 'female', 'id_type' => 'fayda', 'id_number' => 'FN7771010', 'phone' => '0911777101',
+        'name' => 'Sample Fayda Member', 'sex' => 'female', 'id_type' => 'fayda', 'id_number' => '7771 0101 7771 0101', 'phone' => '0911777101',
         'joined_on' => '2025-04-01', 'woreda_id' => $woreda->id, ...$details,
     ], staff(SystemRole::Admin));
 }
@@ -194,7 +194,7 @@ it('tells a person with no member record to sign in with a code first', function
 it('lets a signed-in member link and unlink their Fayda ID, one member per ID', function () {
     configureFayda();
     fakeEsignet(['phone_number' => null]);
-    $member = faydaMember(['phone' => '0911777102', 'id_number' => 'FN7771020']);
+    $member = faydaMember(['phone' => '0911777102', 'id_number' => '7771 0202 7771 0202']);
     $this->actingAs($member, 'member');
 
     $this->get('/en/member')->assertOk()->assertSee(__('members.fayda.link'));
@@ -204,7 +204,7 @@ it('lets a signed-in member link and unlink their Fayda ID, one member per ID', 
     expect($member->refresh()->fayda_sub_hash)->not->toBeNull();
     $this->get('/en/member')->assertSee(__('members.fayda.is_linked'));
 
-    $other = faydaMember(['phone' => '0911777103', 'id_number' => 'FN7771030']);
+    $other = faydaMember(['phone' => '0911777103', 'id_number' => '7771 0303 7771 0303']);
     $this->actingAs($other, 'member');
     faydaRoundTrip($this, '/en/member/fayda/link')->assertSessionHas('status', __('members.fayda.taken'));
     expect($other->refresh()->fayda_sub_hash)->toBeNull();

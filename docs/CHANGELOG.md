@@ -4,6 +4,12 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Membership form: exact messages, Fayda only, a month list per calendar (2026-11-07)
+
+- The application asks for the 16-digit Fayda number only; names take letters only; the phone refuses letters
+  and signs; each problem has its own message (ADR-0076).
+- The Ethiopian and Gregorian calendars have their own months (no Pagume in the Gregorian list), and the day
+  list follows the chosen month and year.
 ### Fix: the menu's panels opened off-screen on desktop (2026-10-23)
 
 - The header lost its positioning on desktop in the redesign, so the section panels and the search field

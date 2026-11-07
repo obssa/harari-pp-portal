@@ -17,6 +17,46 @@ final class ApplicationOptions
     /** Youngest age to apply. */
     public const MINIMUM_AGE = 18;
 
+    /** ADR-0076: the number on the Fayda card, the only document the public form accepts. */
+    public const FAYDA_DIGITS = 16;
+
+    /**
+     * The Fayda number as typed, without the spaces and dashes people group it with.
+     */
+    public static function faydaDigits(string $typed): string
+    {
+        return (string) preg_replace('/[\s-]/', '', $typed);
+    }
+
+    /**
+     * What is wrong with a Fayda number, in words the applicant can act on, or null.
+     */
+    public static function faydaError(string $typed): ?string
+    {
+        $digits = self::faydaDigits($typed);
+
+        return match (true) {
+            $digits === '' => __('membership.validation.fayda_required', ['digits' => self::FAYDA_DIGITS]),
+            preg_match('/^\d+$/', $digits) !== 1 => __('membership.validation.fayda_digits'),
+            strlen($digits) !== self::FAYDA_DIGITS => __('membership.validation.fayda_length', ['digits' => self::FAYDA_DIGITS, 'count' => strlen($digits)]),
+            default => null,
+        };
+    }
+
+    /**
+     * What is wrong with a name typed on the public form, or null: letters of any
+     * script with single spaces, and the apostrophe, hyphen or dot names use.
+     */
+    public static function nameError(string $name): ?string
+    {
+        return match (true) {
+            $name === '' => __('membership.validation.name_required'),
+            mb_strlen($name) > 120 => __('membership.validation.name_long', ['max' => 120]),
+            mb_strlen($name) < 2 || preg_match("/^[\\p{L}\\p{M}]+(?:[ '’.\\-][\\p{L}\\p{M}]+)*\\.?$/u", $name) !== 1 => __('membership.validation.name_letters'),
+            default => null,
+        };
+    }
+
     /**
      * @return array<string, string>
      */

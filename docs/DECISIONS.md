@@ -2173,3 +2173,28 @@ their slug.
 **Consequences.** Amharic (ክቡር አቶ ጌቱ ወዬሳ ቶላ) and Afaan Oromo (Kabajamoo Obbo Geetuu Wayyeessaa Tolaa) keep
 their own spellings.
 
+
+## ADR-0076 — The membership form says exactly what is wrong; Fayda only (2026-11-07)
+
+**Context.** A reviewer found that the application form accepted digits and signs in the name, letters in the ID
+number and the phone, offered Pagume among the Gregorian months (one list served both calendars, pairing
+Meskerem with January), let any day 1–31 through to a generic message, and offered ID types the branch cannot
+verify. The branch registers members with Fayda only.
+
+**Decision.**
+
+- The public form asks for the Fayda number only (16 digits, spaces or dashes allowed as typed) and stores
+  `id_type = fayda`. The admin keeps the other types for records already on file; a Fayda number typed there
+  is checked the same way (`ApplicationOptions::faydaError()`).
+- The name takes letters of any script with single spaces and the apostrophe, hyphen or dot names use.
+- The phone refuses letters and signs instead of dropping them, with its own message for an empty, a non-digit
+  and a non-mobile number.
+- Each calendar has its own month list (`birth_month_ethiopian`, `birth_month_gregorian`), shown with CSS
+  `:has()` so it works without script; the day is a list that `resources/js/membership-form.js` limits to the
+  real days of the month and year (Pagume 5, or 6 when the Ethiopian year % 4 == 3). The server checks the
+  same rules (`EthiopianCalendar::daysInMonth()`) and names the month, year and number of days in its message.
+  A single `birth_month` is still read for older clients.
+- Every error has its own message; the script also keeps letters out of the Fayda and phone fields.
+
+**Consequences.** People without a Fayda number cannot apply online; the branch registers them by hand in the
+admin. One more small script on the application pages.

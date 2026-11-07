@@ -23,7 +23,7 @@ function verifyAbout(): array
     return [
         'name' => 'Sample Applicant', 'sex' => 'female', 'birth_calendar' => 'gregorian',
         'birth_day' => '14', 'birth_month' => '3', 'birth_year' => '1995',
-        'id_type' => 'fayda', 'id_number' => '1234 5678 9012', 'education' => 'degree', 'occupation' => 'Sample teacher',
+        'id_number' => '1234 5678 9012 3456', 'education' => 'degree', 'occupation' => 'Sample teacher',
         SpamGuard::STARTED => Crypt::encryptString((string) (time() - 10)),
     ];
 }

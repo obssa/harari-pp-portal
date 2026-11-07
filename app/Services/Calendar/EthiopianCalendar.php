@@ -54,6 +54,15 @@ final class EthiopianCalendar
         return CarbonImmutable::instance($ethiopian->toGregorian());
     }
 
+    /**
+     * Days in an Ethiopian month: thirty in each of the twelve, and five in
+     * Pagume, six in the year before a Gregorian leap year (year % 4 == 3).
+     */
+    public static function daysInMonth(int $year, int $month): int
+    {
+        return $month === 13 ? ($year % 4 === 3 ? 6 : 5) : 30;
+    }
+
     public function formatEthiopian(DateTimeInterface $date, ?string $locale = null): string
     {
         $ethiopian = $this->toEthiopian($date);

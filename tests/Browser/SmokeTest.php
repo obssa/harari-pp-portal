@@ -63,6 +63,34 @@ it('publishes a post from the admin and shows it on the site', function () {
     visit('/en/news/sample-story-to-publish')->assertSee('Sample story to publish');
 });
 
+it('shows each calendar its own months, limits the days and keeps letters out of the Fayda number (ADR-0076)', function () {
+    $page = visit('/en/membership/apply');
+    $visible = fn (string $id): string => '(() => document.getElementById('.json_encode($id).').offsetParent !== null)()';
+    $days = '(() => [...document.getElementById("birth_day").options].filter((o) => o.value && !o.disabled).length)()';
+    $choose = fn (string $id, string $value): string => '(() => { const e = document.getElementById('.json_encode($id).'); e.value = '.json_encode($value).'; e.dispatchEvent(new Event("change", {bubbles: true})); })()';
+
+    // English opens on the Gregorian calendar: twelve months, no Pagume.
+    expect($page->script($visible('birth_month_gregorian')))->toBeTrue()
+        ->and($page->script($visible('birth_month_ethiopian')))->toBeFalse();
+    $page->fill('#birth_year', '1995');
+    $page->script($choose('birth_month_gregorian', '2'));
+    expect($page->script($days))->toBe(28);
+
+    $page->script('document.getElementById("birth-calendar-ethiopian").click()');
+    expect($page->script($visible('birth_month_ethiopian')))->toBeTrue()
+        ->and($page->script($visible('birth_month_gregorian')))->toBeFalse();
+    $page->fill('#birth_year', '1979');
+    $page->script($choose('birth_month_ethiopian', '13'));
+    expect($page->script($days))->toBe(6);
+    $page->fill('#birth_year', '1980');
+    $page->script($choose('birth_month_ethiopian', '13'));
+    expect($page->script($days))->toBe(5);
+
+    $page->fill('#id_number', '12ab34 56');
+    expect($page->script('document.getElementById("id_number").value'))->toBe('1234 56');
+    $page->assertNoJavaScriptErrors();
+});
+
 it('opens the menu, search and phone menu panels just under the header, on screen', function () {
     $panel = fn (string $details): string => '(() => { const d = document.querySelector('.json_encode($details).'); const r = d.querySelector(":scope > div, :scope > nav").getBoundingClientRect(); return JSON.stringify([Math.round(r.top), Math.round(r.height), innerHeight]); })()';
     $open = fn (string $details): string => 'document.querySelector('.json_encode($details.' > summary').').click()';

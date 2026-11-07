@@ -17,6 +17,11 @@ People apply at `/{language}/membership/apply` in three steps and confirm their 
 by SMS. Only then does the application reach the queue, with a reference such as `APP-7K3D-9Q2M` that the
 person can use to follow it at `/{language}/membership/status`.
 
+The form accepts the 16-digit Fayda number only (no other document), names in letters, and phone numbers in
+digits; the date of birth can be given in the Ethiopian or the Gregorian calendar, each with its own months.
+Someone without a Fayda number cannot apply online: add them by hand under **Members** (section 2), where the
+other document types remain for older records.
+
 1. The list starts with **Received, under review**. Use the filters for other statuses or a woreda.
 2. Open an application. The ID number shows its last four digits; choose **Show ID number** only to compare
    it with the document. Each look is recorded.

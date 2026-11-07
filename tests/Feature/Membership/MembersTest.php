@@ -84,6 +84,21 @@ it('adds members by hand with the next number and a renewal on the next annivers
     CarbonImmutable::setTestNow();
 });
 
+it('checks a newly typed Fayda number in the admin and keeps the numbers already on file (ADR-0076)', function () {
+    $north = memberWoreda('Sample Woreda North');
+
+    expect(fn () => sampleMember($north, ['id_type' => 'fayda', 'id_number' => 'FN1234']))->toThrow(ValidationException::class, __('membership.validation.fayda_digits'))
+        ->and(fn () => sampleMember($north, ['id_type' => 'fayda', 'id_number' => '1234 5678']))->toThrow(ValidationException::class, __('membership.validation.fayda_length', ['digits' => 16, 'count' => 8]));
+
+    $member = sampleMember($north, ['id_type' => 'fayda', 'id_number' => '1234-5678-9012-3456']);
+    expect($member->id_hash)->toBe(MembershipApplication::hash('fayda:1234567890123456'));
+
+    // An older record's number stays when the form leaves the field empty, as it does on an edit.
+    $older = sampleMember($north, ['id_number' => 'KB765432']);
+    expect(app(SaveMember::class)->handle($older, ['name' => $older->name, 'sex' => 'male', 'id_type' => 'kebele', 'id_number' => '', 'woreda_id' => $north->id, 'joined_on' => '2025-02-01'], staff(SystemRole::Admin))->id_number)
+        ->toBe('KB765432');
+});
+
 it('lists the members of an officer\'s woredas masked and finds them by number or phone', function () {
     $north = memberWoreda('Sample Woreda North');
     $south = memberWoreda('Sample Woreda South');

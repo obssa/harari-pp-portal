@@ -55,12 +55,17 @@
                         @error('sex')<p id="sex-error" class="mt-1 text-sm text-danger-600">{{ $message }}</p>@enderror
                     </fieldset>
 
-                    <fieldset @error('birth_date') aria-describedby="birth-error" @enderror>
+                    {{-- ADR-0076: each calendar shows its own months (CSS :has(), no script needed); the script only limits the
+                         days to the chosen month and year. The server checks everything again. --}}
+                    @php
+                        $birthDescribed = $errors->has('birth_date') ? 'aria-invalid="true" aria-describedby="birth-error"' : '';
+                    @endphp
+                    <fieldset class="group" data-birth-date @error('birth_date') aria-describedby="birth-error" @enderror>
                         <legend class="font-medium">{{ __('membership.field.birth_date') }}</legend>
                         <div class="mt-2 flex flex-wrap gap-6 text-sm">
                             @foreach (['ethiopian', 'gregorian'] as $calendar)
                                 <label class="flex items-center gap-2">
-                                    <input type="radio" name="birth_calendar" value="{{ $calendar }}" @checked($birthCalendar === $calendar) class="size-5 border-line text-primary-600">
+                                    <input id="birth-calendar-{{ $calendar }}" type="radio" name="birth_calendar" value="{{ $calendar }}" @checked($birthCalendar === $calendar) class="size-5 border-line text-primary-600">
                                     {{ __("membership.calendar.{$calendar}") }}
                                 </label>
                             @endforeach
@@ -68,47 +73,44 @@
                         <div class="mt-3 grid grid-cols-3 gap-3">
                             <div>
                                 <label for="birth_day" class="text-sm">{{ __('membership.field.day') }}</label>
-                                <input id="birth_day" name="birth_day" type="number" min="1" max="31" inputmode="numeric"
-                                       value="{{ old('birth_day', $birthCalendar === 'ethiopian' ? $birthEthiopian?->day : $birth?->day) }}" class="{{ $field }}">
-                            </div>
-                            <div>
-                                <label for="birth_month" class="text-sm">{{ __('membership.field.month') }}</label>
-                                <select id="birth_month" name="birth_month" class="{{ $field }}">
+                                <select id="birth_day" name="birth_day" {!! $birthDescribed !!} class="{{ $field }}">
                                     <option value="">—</option>
-                                    @foreach (range(1, 13) as $month)
-                                        <option value="{{ $month }}" @selected((int) old('birth_month', $birthCalendar === 'ethiopian' ? $birthEthiopian?->month : $birth?->month) === $month)>
-                                            {{ $month }} · {{ __("calendar.ethiopian.month.{$month}") }}@if ($month <= 12) / {{ __("calendar.gregorian.month.{$month}") }}@endif
-                                        </option>
+                                    @foreach (range(1, 31) as $day)
+                                        <option value="{{ $day }}" @selected((int) old('birth_day', $birthCalendar === 'ethiopian' ? $birthEthiopian?->day : $birth?->day) === $day)>{{ $day }}</option>
                                     @endforeach
                                 </select>
                             </div>
+                            {{-- Class names written out in full so Tailwind finds them. --}}
+                            @foreach (['ethiopian' => [13, 'hidden group-has-[#birth-calendar-ethiopian:checked]:block'], 'gregorian' => [12, 'hidden group-has-[#birth-calendar-gregorian:checked]:block']] as $calendar => [$months, $shown])
+                                <div class="{{ $shown }}">
+                                    <label for="birth_month_{{ $calendar }}" class="text-sm">{{ __('membership.field.month') }}</label>
+                                    <select id="birth_month_{{ $calendar }}" name="birth_month_{{ $calendar }}" {!! $birthDescribed !!} class="{{ $field }}">
+                                        <option value="">—</option>
+                                        @foreach (range(1, $months) as $month)
+                                            <option value="{{ $month }}" @selected((int) old("birth_month_{$calendar}", $calendar === 'ethiopian' ? $birthEthiopian?->month : $birth?->month) === $month)>{{ __("calendar.{$calendar}.month.{$month}") }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @endforeach
                             <div>
                                 <label for="birth_year" class="text-sm">{{ __('membership.field.year') }}</label>
-                                <input id="birth_year" name="birth_year" type="number" min="1890" max="2100" inputmode="numeric"
+                                <input id="birth_year" name="birth_year" type="text" inputmode="numeric" maxlength="4" autocomplete="bday-year" dir="ltr" {!! $birthDescribed !!}
                                        value="{{ old('birth_year', $birthCalendar === 'ethiopian' ? $birthEthiopian?->year : $birth?->year) }}" class="{{ $field }}">
                             </div>
                         </div>
                         @error('birth_date')<p id="birth-error" class="mt-1 text-sm text-danger-600">{{ $message }}</p>@enderror
                     </fieldset>
 
+                    {{-- ADR-0076: the branch registers members with Fayda only. --}}
+                    <div>
+                        <label for="id_number" class="font-medium">{{ __('membership.field.fayda') }}</label>
+                        <input id="id_number" name="id_number" type="text" value="{{ $value('id_number', $application?->id_number) }}" maxlength="19" inputmode="numeric" autocomplete="off" dir="ltr" required
+                               data-digits aria-describedby="id_number-help @error('id_number') id_number-error @enderror" @error('id_number') aria-invalid="true" @enderror class="{{ $field }} tracking-wider">
+                        <p id="id_number-help" class="mt-1 text-sm text-ink-muted">{{ __('membership.help.fayda', ['digits' => \App\Domain\Membership\Support\ApplicationOptions::FAYDA_DIGITS]) }}</p>
+                        @error('id_number')<p id="id_number-error" class="mt-1 text-sm text-danger-600">{{ $message }}</p>@enderror
+                    </div>
+
                     <div class="grid gap-4 sm:grid-cols-2">
-                        <div>
-                            <label for="id_type" class="font-medium">{{ __('membership.field.id_type') }}</label>
-                            <select id="id_type" name="id_type" @error('id_type') aria-invalid="true" aria-describedby="id_type-error" @enderror class="{{ $field }}">
-                                <option value="">—</option>
-                                @foreach ($options['idTypes'] as $key => $label)
-                                    <option value="{{ $key }}" @selected($value('id_type', $application?->id_type) === $key)>{{ $label }}</option>
-                                @endforeach
-                            </select>
-                            @error('id_type')<p id="id_type-error" class="mt-1 text-sm text-danger-600">{{ $message }}</p>@enderror
-                        </div>
-                        <div>
-                            <label for="id_number" class="font-medium">{{ __('membership.field.id_number') }}</label>
-                            <input id="id_number" name="id_number" type="text" value="{{ $value('id_number', $application?->id_number) }}" maxlength="40" autocomplete="off" dir="ltr"
-                                   aria-describedby="id_number-help @error('id_number') id_number-error @enderror" @error('id_number') aria-invalid="true" @enderror class="{{ $field }}">
-                            <p id="id_number-help" class="mt-1 text-sm text-ink-muted">{{ __('membership.help.id_number') }}</p>
-                            @error('id_number')<p id="id_number-error" class="mt-1 text-sm text-danger-600">{{ $message }}</p>@enderror
-                        </div>
                         <div>
                             <label for="education" class="font-medium">{{ __('membership.field.education') }}</label>
                             <select id="education" name="education" @error('education') aria-invalid="true" aria-describedby="education-error" @enderror class="{{ $field }}">
@@ -159,7 +161,7 @@
                     <div class="grid gap-4 sm:grid-cols-2">
                         <div>
                             <label for="phone" class="font-medium">{{ $verification === 'email' ? __('membership.field.phone_optional') : __('membership.field.phone') }}</label>
-                            <input id="phone" name="phone" type="tel" value="{{ $value('phone', $application?->phone) }}" @required($verification !== 'email') maxlength="20" autocomplete="tel" inputmode="tel" dir="ltr"
+                            <input id="phone" name="phone" type="tel" value="{{ $value('phone', $application?->phone) }}" @required($verification !== 'email') maxlength="20" autocomplete="tel" inputmode="tel" dir="ltr" data-phone
                                    aria-describedby="phone-help @error('phone') phone-error @enderror" @error('phone') aria-invalid="true" @enderror class="{{ $field }}">
                             <p id="phone-help" class="mt-1 text-sm text-ink-muted">{{ $verification === 'sms' ? __('membership.help.phone') : __('membership.help.phone_contact') }}</p>
                             @error('phone')<p id="phone-error" class="mt-1 text-sm text-danger-600">{{ $message }}</p>@enderror
@@ -233,4 +235,7 @@
             </p>
         </div>
     </div>
+    @if (in_array($step, ['about', 'place'], true))
+        @vite('resources/js/membership-form.js')
+    @endif
 </x-layouts.public>

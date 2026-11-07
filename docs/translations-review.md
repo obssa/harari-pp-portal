@@ -115,3 +115,9 @@ Drafts for the branch office's legal reviewers; the English text is the referenc
 |---|---|---|---|
 | `social.section.*`, `social.action.*`, `social.telegram.latest/read/all`, `social.facebook.slow/unreachable*` | am, om | social cards | "Subscribe" (ይመዝገቡ / Galmaa'aa) for YouTube; "connection" (ኔትዎርክ / quunnamtii) |
 
+
+## Membership form validation (ADR-0076)
+
+| Keys or text | Languages | Context | Doubts |
+|---|---|---|---|
+| `membership.validation.fayda_*`, `name_*`, `phone_*`, `birth_*`, `membership.field.fayda`, `membership.help.fayda` | am, om | application form errors | "calendar" in om (lakkoofsa guyyaa); "digit" (አሃዝ / dijiitii) |

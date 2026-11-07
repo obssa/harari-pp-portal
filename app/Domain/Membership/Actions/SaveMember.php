@@ -100,7 +100,10 @@ final class SaveMember
         $typed = strtoupper((string) preg_replace('/[\s-]/', '', (string) ($data['id_number'] ?? '')));
         // On an edit an empty number keeps the one on file (the form never shows it in full).
         $idNumber = $idType === 'none' ? null : ($typed !== '' ? $typed : $member->id_number);
-        if ($idType !== 'none' && ($idNumber === null || preg_match('/^[A-Z0-9]{4,30}$/', $idNumber) !== 1)) {
+        if ($idType === 'fayda' && $typed !== '' && ($faydaError = ApplicationOptions::faydaError($typed)) !== null) {
+            // ADR-0076: a newly typed Fayda number has its 16 digits; numbers kept from older records stay as they are.
+            $errors['data.id_number'] = $faydaError;
+        } elseif ($idType !== 'none' && ($idNumber === null || preg_match('/^[A-Z0-9]{4,30}$/', $idNumber) !== 1)) {
             $errors['data.id_number'] = __('membership.validation.id_number');
         }
         $idHash = $idNumber !== null ? MembershipApplication::hash($idType.':'.$idNumber) : null;
