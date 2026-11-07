@@ -121,3 +121,8 @@ Drafts for the branch office's legal reviewers; the English text is the referenc
 | Keys or text | Languages | Context | Doubts |
 |---|---|---|---|
 | `membership.validation.fayda_*`, `name_*`, `phone_*`, `birth_*`, `membership.field.fayda`, `membership.help.fayda` | am, om | application form errors | "calendar" in om (lakkoofsa guyyaa); "digit" (አሃዝ / dijiitii) |
+## Newsletter sign-up (ADR-0077)
+
+| Keys or text | Languages | Context | Doubts |
+|---|---|---|---|
+| `newsletter.fixed_email`, `other_email`, `also_sms`, `check_email_to` | am, om | newsletter page | "link" (ማስፈንጠሪያ / liinkii) |

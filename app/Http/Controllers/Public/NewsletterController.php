@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Public;
 
 use App\Domain\Engagement\Actions\Subscribe;
 use App\Domain\Engagement\Models\Subscriber;
+use App\Domain\Membership\Support\Mask;
 use App\Http\Controllers\Controller;
 use App\Support\PhoneNumber;
 use App\Support\SpamGuard;
@@ -24,10 +25,14 @@ final class NewsletterController extends Controller
 
     public function create(Request $request, Turnstile $turnstile): View
     {
+        // The footer's small form sends the address here to be completed; a valid one is kept as given (ADR-0077),
+        // and "Use a different email" opens the page without it.
+        $email = mb_strtolower(trim(mb_substr((string) $request->query('email', ''), 0, 190)));
+
         return view('pages.newsletter.create', [
             'turnstileKey' => $turnstile->siteKey(),
-            // The footer's small form sends the address here to be completed.
-            'email' => mb_substr((string) $request->query('email', ''), 0, 190),
+            'email' => $email,
+            'fixedEmail' => filter_var($email, FILTER_VALIDATE_EMAIL) !== false,
         ]);
     }
 
@@ -37,10 +42,11 @@ final class NewsletterController extends Controller
         $turnstile->check($request);
         $result = $subscribe->handle($request->all(), app()->getLocale());
 
+        // ADR-0077: the check page names, masked, the address and number the link and code went to.
         $request->session()->put(self::PENDING, [
             'id' => $result['subscriber']->id,
-            'email' => filled($request->input('email')) && in_array('email', (array) $request->input('channels', []), true),
-            'phone' => $result['code_sent'] ? PhoneNumber::mask((string) $result['subscriber']->phone) : null,
+            'email' => $result['email_to'] !== null ? Mask::email($result['email_to']) : null,
+            'phone' => $result['phone_to'] !== null ? PhoneNumber::mask($result['phone_to']) : null,
         ]);
 
         return redirect()->route('newsletter.check');
@@ -53,7 +59,7 @@ final class NewsletterController extends Controller
             return redirect()->route('newsletter.create');
         }
 
-        return view('pages.newsletter.check', ['email' => (bool) ($pending['email'] ?? false), 'phone' => $pending['phone'] ?? null]);
+        return view('pages.newsletter.check', ['email' => is_string($pending['email'] ?? null) ? $pending['email'] : null, 'phone' => $pending['phone'] ?? null]);
     }
 
     public function verify(Request $request, Subscribe $subscribe): RedirectResponse
@@ -69,11 +75,12 @@ final class NewsletterController extends Controller
         return redirect()->route('newsletter.preferences', ['token' => $subscriber->token])->with('status', __('newsletter.confirmed'));
     }
 
-    public function confirm(string $token, Subscribe $subscribe): RedirectResponse
+    public function confirm(Request $request, string $token, Subscribe $subscribe): RedirectResponse
     {
         $subscriber = Subscriber::byToken($token);
         abort_if($subscriber === null, 404);
-        $subscribe->confirmEmail($subscriber);
+        $change = $request->query('change');
+        $subscribe->confirmEmail($subscriber, is_string($change) ? $change : null);
 
         return redirect()->route('newsletter.preferences', ['token' => $token])->with('status', __('newsletter.confirmed'));
     }

@@ -4,6 +4,12 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Newsletter: the footer's address is kept, new details are confirmed where typed (2026-11-07)
+
+- The page after the footer's box shows the address given, with a way to use another one and to add SMS; the
+  email and phone fields appear only with their channel; the check page names where the link and code went.
+- A subscriber who types a new address or number gets the link or code there and switches once they confirm
+  (ADR-0077).
 ### Membership form: exact messages, Fayda only, a month list per calendar (2026-11-07)
 
 - The application asks for the 16-digit Fayda number only; names take letters only; the phone refuses letters

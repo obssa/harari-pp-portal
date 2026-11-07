@@ -9,6 +9,8 @@ use App\Domain\Translation\Support\Locales;
 use App\Services\Sms\SendSms;
 use App\Support\PhoneNumber;
 use Carbon\CarbonImmutable;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
@@ -32,9 +34,12 @@ final class Subscribe
     /** Days an unconfirmed sign-up waits before it is deleted. */
     public const UNCONFIRMED_DAYS = 7;
 
+    /** Cache key prefix of a new number waiting for its code (ADR-0077). */
+    private const NEW_PHONE = 'newsletter-new-phone:';
+
     /**
      * @param  array<string, mixed>  $input
-     * @return array{subscriber: Subscriber, code_sent: bool}
+     * @return array{subscriber: Subscriber, code_sent: bool, email_to: ?string, phone_to: ?string} where the link and the code went
      */
     public function handle(array $input, string $locale): array
     {
@@ -93,17 +98,28 @@ final class Subscribe
         }
         $subscriber->save();
 
+        // ADR-0077: the link and the code always go to what was typed. A subscriber found by their other
+        // detail gets the new address or number only once they confirm it, so nobody is moved by a typo.
         if ($email !== '') {
-            $this->sendLink($subscriber);
+            $this->sendLink($subscriber, $subscriber->email !== $email ? $email : null);
         }
-        $codeSent = $phone !== null && $this->sendCode($subscriber);
+        $codeSent = $phone !== null && $this->sendCode($subscriber, $subscriber->phone !== $phone ? $phone : null);
 
-        return ['subscriber' => $subscriber, 'code_sent' => $codeSent];
+        return ['subscriber' => $subscriber, 'code_sent' => $codeSent, 'email_to' => $email !== '' ? $email : null, 'phone_to' => $codeSent ? $phone : null];
     }
 
-    /** The link in the email: confirms the address (and asks for news again after an unsubscribe). */
-    public function confirmEmail(Subscriber $subscriber): void
+    /**
+     * The link in the email: confirms the address (and asks for news again
+     * after an unsubscribe). A link sent to a new address carries it,
+     * encrypted, and switches the subscriber to it unless another
+     * subscription already uses it (ADR-0077).
+     */
+    public function confirmEmail(Subscriber $subscriber, ?string $change = null): void
     {
+        $new = $change !== null ? $this->changedEmail($change) : null;
+        if ($new !== null && ! Subscriber::query()->whereNull('erased_at')->where('email_hash', Subscriber::hash($new))->whereKeyNot($subscriber->id)->exists()) {
+            $subscriber->forceFill(['email' => $new, 'email_hash' => Subscriber::hash($new), 'email_confirmed_at' => CarbonImmutable::now()]);
+        }
         if ($subscriber->email === null) {
             return;
         }
@@ -126,6 +142,11 @@ final class Subscribe
             throw ValidationException::withMessages(['code' => __('membership.validation.code')]);
         }
 
+        // ADR-0077: a code sent to a new number switches the subscriber to it, unless another subscription uses it.
+        $new = Cache::pull(self::NEW_PHONE.$subscriber->id);
+        if (is_string($new) && ! Subscriber::query()->whereNull('erased_at')->where('phone_hash', Subscriber::hash($new))->whereKeyNot($subscriber->id)->exists()) {
+            $subscriber->forceFill(['phone' => $new, 'phone_hash' => Subscriber::hash($new), 'phone_confirmed_at' => CarbonImmutable::now()]);
+        }
         $subscriber->forceFill([
             'code_hash' => null, 'code_expires_at' => null, 'code_attempts' => 0,
             'phone_confirmed_at' => $subscriber->phone_confirmed_at ?? CarbonImmutable::now(),
@@ -194,18 +215,44 @@ final class Subscribe
             ->first();
     }
 
-    private function sendLink(Subscriber $subscriber): void
+    /**
+     * The confirmation link, to the subscriber's address or, when they typed
+     * another one, to that address with the change it confirms.
+     */
+    private function sendLink(Subscriber $subscriber, ?string $newEmail = null): void
     {
+        $change = $newEmail !== null
+            ? Crypt::encryptString((string) json_encode(['email' => $newEmail, 'until' => CarbonImmutable::now()->addDays(self::UNCONFIRMED_DAYS)->getTimestamp()]))
+            : null;
         try {
-            Mail::to((string) $subscriber->email)->locale($subscriber->locale)->queue(new ConfirmSubscriptionMail($subscriber->token, $subscriber->locale, $subscriber->email_confirmed_at !== null));
+            Mail::to($newEmail ?? (string) $subscriber->email)->locale($subscriber->locale)
+                ->queue(new ConfirmSubscriptionMail($subscriber->token, $subscriber->locale, $newEmail === null && $subscriber->email_confirmed_at !== null, $change));
         } catch (Throwable $e) {
             report($e);
         }
     }
 
-    private function sendCode(Subscriber $subscriber): bool
+    private function changedEmail(string $change): ?string
     {
-        if ($subscriber->code_sent_at !== null && $subscriber->code_sent_at->diffInSeconds(CarbonImmutable::now()) < 60) {
+        try {
+            $data = json_decode(Crypt::decryptString($change), true, flags: JSON_THROW_ON_ERROR);
+        } catch (Throwable) {
+            return null;
+        }
+
+        return is_array($data) && is_string($data['email'] ?? null) && (int) ($data['until'] ?? 0) > CarbonImmutable::now()->getTimestamp()
+            ? $data['email']
+            : null;
+    }
+
+    /**
+     * A code by SMS to the subscriber's number or, when they typed another
+     * one, to that number, which is kept aside until the code confirms it.
+     */
+    private function sendCode(Subscriber $subscriber, ?string $newPhone = null): bool
+    {
+        if ($subscriber->code_sent_at !== null && $subscriber->code_sent_at->diffInSeconds(CarbonImmutable::now()) < 60
+            && Cache::get(self::NEW_PHONE.$subscriber->id) === $newPhone) {
             return true;
         }
         $code = (string) random_int(100000, 999999);
@@ -215,7 +262,12 @@ final class Subscribe
             'code_attempts' => 0,
             'code_sent_at' => CarbonImmutable::now(),
         ])->save();
-        SendSms::dispatchSync((string) $subscriber->phone, __('newsletter.sms.code', ['code' => $code, 'minutes' => self::CODE_MINUTES], $subscriber->locale));
+        if ($newPhone !== null) {
+            Cache::put(self::NEW_PHONE.$subscriber->id, $newPhone, CarbonImmutable::now()->addMinutes(self::CODE_MINUTES));
+        } else {
+            Cache::forget(self::NEW_PHONE.$subscriber->id);
+        }
+        SendSms::dispatchSync($newPhone ?? (string) $subscriber->phone, __('newsletter.sms.code', ['code' => $code, 'minutes' => self::CODE_MINUTES], $subscriber->locale));
 
         return true;
     }

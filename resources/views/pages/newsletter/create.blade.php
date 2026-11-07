@@ -10,29 +10,49 @@
     <div class="mx-auto max-w-page px-4 pt-2 pb-12 sm:px-6">
         <div class="max-w-2xl">
 
-            <form method="post" action="{{ route('newsletter.store') }}" class="mt-8 space-y-6" novalidate>
+            {{-- ADR-0077: an address from the footer is kept as given (another one needs "Use a different email"), and
+                 each contact field shows only while its channel is ticked (CSS :has(); without it, both show). --}}
+            <form method="post" action="{{ route('newsletter.store') }}" class="group mt-8 space-y-6" novalidate>
                 @csrf
-                <fieldset @error('channels') aria-describedby="channels-error" @enderror>
-                    <legend class="font-medium">{{ __('newsletter.field.channels') }}</legend>
-                    <div class="mt-2 flex flex-wrap gap-6">
-                        @foreach (SubscriptionOptions::channels() as $key => $label)
-                            <label class="flex items-center gap-2">
-                                <input type="checkbox" name="channels[]" value="{{ $key }}" @checked(in_array($key, $channels, true)) class="size-5 rounded border-line text-primary-600">
-                                {{ $label }}
-                            </label>
-                        @endforeach
+                @if ($fixedEmail)
+                    <div class="rounded-card border border-line bg-surface-muted px-4 py-3">
+                        <p>{{ __('newsletter.fixed_email', ['email' => $email]) }}</p>
+                        <input type="hidden" name="email" value="{{ $email }}">
+                        <input type="hidden" name="channels[]" value="email">
+                        <p class="mt-1 text-sm"><a href="{{ route('newsletter.create') }}" class="text-link underline underline-offset-4">{{ __('newsletter.other_email') }}</a></p>
                     </div>
-                    @error('channels')<p id="channels-error" class="mt-1 text-sm text-danger-600">{{ $message }}</p>@enderror
-                </fieldset>
+                    <label class="flex items-center gap-2">
+                        <input id="channel-sms" type="checkbox" name="channels[]" value="sms" @checked(in_array('sms', $channels, true)) class="size-5 rounded border-line text-primary-600">
+                        {{ __('newsletter.also_sms') }}
+                    </label>
+                @else
+                    <fieldset @error('channels') aria-describedby="channels-error" @enderror>
+                        <legend class="font-medium">{{ __('newsletter.field.channels') }}</legend>
+                        <div class="mt-2 flex flex-wrap gap-6">
+                            @foreach (SubscriptionOptions::channels() as $key => $label)
+                                <label class="flex items-center gap-2">
+                                    <input id="channel-{{ $key }}" type="checkbox" name="channels[]" value="{{ $key }}" @checked(in_array($key, $channels, true)) class="size-5 rounded border-line text-primary-600">
+                                    {{ $label }}
+                                </label>
+                            @endforeach
+                        </div>
+                        @error('channels')<p id="channels-error" class="mt-1 text-sm text-danger-600">{{ $message }}</p>@enderror
+                    </fieldset>
+                @endif
 
                 <div class="grid gap-4 sm:grid-cols-2">
-                    <div>
-                        <label for="email" class="font-medium">{{ __('newsletter.field.email') }}</label>
-                        <input id="email" name="email" type="email" value="{{ old('email', $email) }}" maxlength="190" autocomplete="email" dir="ltr"
-                               @error('email') aria-invalid="true" aria-describedby="email-error" @enderror class="{{ $field }}">
-                        @error('email')<p id="email-error" class="mt-1 text-sm text-danger-600">{{ $message }}</p>@enderror
-                    </div>
-                    <div>
+                    @unless ($fixedEmail)
+                        <div class="group-has-[#channel-email:not(:checked)]:hidden">
+                            <label for="email" class="font-medium">{{ __('newsletter.field.email') }}</label>
+                            <input id="email" name="email" type="email" value="{{ old('email', $email) }}" maxlength="190" autocomplete="email" dir="ltr"
+                                   @error('email') aria-invalid="true" aria-describedby="email-error" @enderror class="{{ $field }}">
+                            @error('email')<p id="email-error" class="mt-1 text-sm text-danger-600">{{ $message }}</p>@enderror
+                        </div>
+                    @endunless
+                    @error('email')
+                        @if ($fixedEmail)<p class="text-sm text-danger-600">{{ $message }}</p>@endif
+                    @enderror
+                    <div class="group-has-[#channel-sms:not(:checked)]:hidden">
                         <label for="phone" class="font-medium">{{ __('newsletter.field.phone') }}</label>
                         <input id="phone" name="phone" type="tel" value="{{ old('phone') }}" maxlength="20" autocomplete="tel" inputmode="tel" dir="ltr"
                                @error('phone') aria-invalid="true" aria-describedby="phone-error" @enderror class="{{ $field }}">

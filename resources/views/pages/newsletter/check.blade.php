@@ -7,7 +7,7 @@
         <div class="max-w-xl">
             <h1 class="heading-1">{{ __('newsletter.check_title') }}</h1>
             @if ($email)
-                <p role="status" class="mt-4 text-lg">{{ __('newsletter.check_email') }}</p>
+                <p role="status" class="mt-4 text-lg">{{ __('newsletter.check_email_to', ['email' => $email]) }}</p>
             @endif
             @if ($phone)
                 <p class="mt-4 text-lg">{{ __('newsletter.check_phone', ['phone' => $phone, 'minutes' => \App\Domain\Engagement\Actions\Subscribe::CODE_MINUTES]) }}</p>

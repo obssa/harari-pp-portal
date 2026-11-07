@@ -55,7 +55,7 @@
                         @error('sex')<p id="sex-error" class="mt-1 text-sm text-danger-600">{{ $message }}</p>@enderror
                     </fieldset>
 
-                    {{-- ADR-0076: each calendar shows its own months (CSS :has(), no script needed); the script only limits the
+                    {{-- ADR-0076: each calendar shows its own months (CSS :has(), no script needed; without :has() both lists show); the script only limits the
                          days to the chosen month and year. The server checks everything again. --}}
                     @php
                         $birthDescribed = $errors->has('birth_date') ? 'aria-invalid="true" aria-describedby="birth-error"' : '';
@@ -81,7 +81,7 @@
                                 </select>
                             </div>
                             {{-- Class names written out in full so Tailwind finds them. --}}
-                            @foreach (['ethiopian' => [13, 'hidden group-has-[#birth-calendar-ethiopian:checked]:block'], 'gregorian' => [12, 'hidden group-has-[#birth-calendar-gregorian:checked]:block']] as $calendar => [$months, $shown])
+                            @foreach (['ethiopian' => [13, 'group-has-[#birth-calendar-gregorian:checked]:hidden'], 'gregorian' => [12, 'group-has-[#birth-calendar-ethiopian:checked]:hidden']] as $calendar => [$months, $shown])
                                 <div class="{{ $shown }}">
                                     <label for="birth_month_{{ $calendar }}" class="text-sm">{{ __('membership.field.month') }}</label>
                                     <select id="birth_month_{{ $calendar }}" name="birth_month_{{ $calendar }}" {!! $birthDescribed !!} class="{{ $field }}">

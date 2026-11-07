@@ -2198,3 +2198,24 @@ verify. The branch registers members with Fayda only.
 
 **Consequences.** People without a Fayda number cannot apply online; the branch registers them by hand in the
 admin. One more small script on the application pages.
+## ADR-0077 — The newsletter keeps the footer's address and confirms new details where they were typed (2026-11-07)
+
+**Context.** The footer's email box opened a second form that asked again for an email and a phone, where the
+address could be changed and a phone typed while only "Email" was ticked was dropped without a word. When an
+existing subscriber was found by one detail, a newly typed address or number was ignored and the link or code
+went to the old one.
+
+**Decision.**
+
+- A valid address from the footer is shown as given ("We will send the news to …") with "Use a different email"
+  (the page without it) and "Also send me the news by SMS". Email stays the channel.
+- On the open form each contact field shows only while its channel is ticked (CSS `:has()`; without it both
+  show), so what is sent matches what is seen. The same visible-by-default rule now applies to the membership
+  form's month lists (ADR-0076).
+- The link and the code always go to what was typed. For a subscriber found by their other detail, the link
+  carries the new address encrypted with a seven-day limit, and the code's new number is kept in the cache for
+  its ten minutes; the subscriber switches only when they confirm, and never to a detail another subscription
+  uses. Nobody is told whether a detail is already on the list.
+- The check page names, masked, the address and number the link and code went to (`Mask::email()`).
+
+**Consequences.** No migration. A forged or expired change does nothing; the link still opens the preferences.

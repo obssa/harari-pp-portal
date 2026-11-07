@@ -30,6 +30,14 @@ final class Mask
         return $phone === null || $phone === '' ? '—' : PhoneNumber::mask($phone);
     }
 
+    /** "applicant@example.org" → "ap•••••••@example.org" */
+    public static function email(string $email): string
+    {
+        [$local, $domain] = array_pad(explode('@', $email, 2), 2, '');
+
+        return mb_substr($local, 0, 2).str_repeat('•', max(1, mb_strlen($local) - 2)).($domain !== '' ? '@'.$domain : '');
+    }
+
     /** "123456789012" → "••••••••9012" */
     public static function idNumber(string $number): string
     {

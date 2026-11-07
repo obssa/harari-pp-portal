@@ -51,7 +51,7 @@ it('subscribes by email with a confirmation link that opens the preferences', fu
     $this->get('/en/newsletter?email=reader@example.org')->assertOk()->assertSee('value="reader@example.org"', escape: false)
         ->assertHeader('Cache-Control', 'max-age=0, no-store, private');
     $this->post('/en/newsletter', subscription())->assertRedirect(route('newsletter.check', ['locale' => 'en']));
-    $this->get('/en/newsletter/check')->assertOk()->assertSee(__('newsletter.check_email'));
+    $this->get('/en/newsletter/check')->assertOk()->assertSee(__('newsletter.check_email_to', ['email' => 're••••@example.org']));
 
     $subscriber = Subscriber::query()->sole();
     expect($subscriber->email)->toBe('reader@example.org')
@@ -96,6 +96,71 @@ it('never says that an address is already on the list and keeps the existing cho
         ->and($first->refresh()->topics)->toBe(['news', 'events'])
         ->and($first->locale)->toBe('en');
     Mail::assertQueued(ConfirmSubscriptionMail::class, fn (ConfirmSubscriptionMail $mail): bool => $mail->alreadyConfirmed);
+});
+
+it('keeps the address the footer sent, with a way to use another one (ADR-0077)', function () {
+    $this->get('/en/newsletter?email=Reader@Example.org')->assertOk()
+        ->assertSee(__('newsletter.fixed_email', ['email' => 'reader@example.org']))
+        ->assertSee(__('newsletter.other_email'))->assertSee(__('newsletter.also_sms'))
+        ->assertDontSee('id="email"', escape: false)
+        ->assertSee('group-has-[#channel-sms:not(:checked)]:hidden', escape: false);
+
+    $this->get('/en/newsletter')->assertOk()->assertSee('id="email"', escape: false)->assertDontSee(__('newsletter.other_email'));
+    $this->get('/en/newsletter?email=not-an-address')->assertOk()->assertSee('id="email"', escape: false);
+});
+
+it('sends the link to a new address and switches to it only once it is confirmed (ADR-0077)', function () {
+    $this->post('/en/newsletter', subscription(['channels' => ['email', 'sms'], 'email' => 'old@example.org', 'phone' => '0911 22 33 44']));
+    $subscriber = Subscriber::query()->sole();
+    app(Subscribe::class)->confirmEmail($subscriber);
+    Mail::fake();
+
+    // Found by the phone, with another address typed: the link goes to the address typed.
+    $this->post('/en/newsletter', subscription(['channels' => ['email', 'sms'], 'email' => 'New@Example.org', 'phone' => '0911223344']));
+    $this->get('/en/newsletter/check')->assertSee(__('newsletter.check_email_to', ['email' => 'ne•@example.org']));
+    $change = null;
+    Mail::assertQueued(ConfirmSubscriptionMail::class, function (ConfirmSubscriptionMail $mail) use (&$change): bool {
+        $change = $mail->change;
+
+        return $mail->hasTo('new@example.org') && ! $mail->alreadyConfirmed;
+    });
+    expect(Subscriber::query()->count())->toBe(1)
+        ->and($subscriber->refresh()->email)->toBe('old@example.org')
+        ->and($change)->toBeString();
+
+    $this->get("/en/newsletter/confirm/{$subscriber->token}?change=".urlencode((string) $change))->assertRedirect();
+    expect($subscriber->refresh()->email)->toBe('new@example.org')
+        ->and($subscriber->email_hash)->toBe(Subscriber::hash('new@example.org'));
+
+    // A forged change does nothing.
+    $this->get("/en/newsletter/confirm/{$subscriber->token}?change=forged")->assertRedirect();
+    expect($subscriber->refresh()->email)->toBe('new@example.org');
+});
+
+it('sends the code to a new number and switches to it once the code is typed (ADR-0077)', function () {
+    $this->post('/en/newsletter', subscription(['channels' => ['email', 'sms'], 'phone' => '0911 22 33 44']));
+    $subscriber = Subscriber::query()->sole();
+    app(Subscribe::class)->confirmEmail($subscriber);
+
+    // Found by the address, with another number typed: the code goes to the number typed.
+    $this->post('/en/newsletter', subscription(['channels' => ['email', 'sms'], 'phone' => '0911 55 66 77']));
+    $this->get('/en/newsletter/check')->assertSee('+251••••••677');
+    $code = '';
+    Bus::assertDispatchedSync(SendSms::class, function (SendSms $sms) use (&$code): bool {
+        if ($sms->to !== '+251911556677') {
+            return false;
+        }
+        preg_match('/\b(\d{6})\b/', $sms->text, $m);
+        $code = $m[1] ?? '';
+
+        return true;
+    });
+    expect(Subscriber::query()->count())->toBe(1)
+        ->and($subscriber->refresh()->phone)->toBe('+251911223344');
+
+    $this->post('/en/newsletter/check', ['code' => $code])->assertRedirect();
+    expect($subscriber->refresh()->phone)->toBe('+251911556677')
+        ->and($subscriber->reachableBy('sms'))->toBeTrue();
 });
 
 it('refuses incomplete sign-ups', function (array $overrides, string $field) {
