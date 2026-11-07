@@ -3429,6 +3429,868 @@
           }
         }
       }
+    },
+    {
+      "key": "page.organisation",
+      "parent": "page.about",
+      "sort": 3,
+      "translations": {
+        "en": {
+          "title": "How the party is organised",
+          "slug": "organisation",
+          "excerpt": "From the Prosperity Council to the Prosperity Family: the party's bodies and levels, and how members meet, under Directive No. 24/2017.",
+          "body": {
+            "type": "doc",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "The Prosperity Party's bylaws were revised at its second regular congress. Under them, the Prosperity Council approved the Organisation and Working Directive No. 24/2017, which sets out how the party is organised at every level, from the head office to the Prosperity Family."
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "The party's leading bodies"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "content": [
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "The Congress: the party's highest body."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "The Prosperity Council: leads the party from one congress to the next."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "The Executive Committee: elected by the Prosperity Council from among its members; it carries out the decisions of the congress and of the council."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "The Inspection and Ethics Commission: set up at every level under the bylaws."
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "In the Harari Region"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "content": [
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "The regional Coordinating Committee, chaired by the head of the regional government with the head of the party's branch office as deputy, brings the work of the party and the government together and makes sure the decisions of the party's higher bodies are carried out."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "The branch office's Management Committee, chaired by the head of the branch office with the heads of its sectors, plans the party's political and organisational work, sends people to carry it out and follows it up."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "The same two committees lead the party at woreda and kebele level."
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Prosperity Unions and Prosperity Families"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "content": [
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Prosperity Family: 11 to 35 full and candidate members, organised where they live or work. It is the party's last level, where members build their capacity day to day. It meets every month and elects a chair, a head of political work, a head of organisation and a treasurer."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Prosperity Union: two or more Prosperity Families, with 22 to 210 members. Its members' conference meets every three months and elects a leadership committee of 10 to 12, with political, organisation and finance sub-committees."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "No one may lead a Prosperity Family and a Prosperity Union at the same time."
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Wings"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "\"Wing\" is the name the party gives together to its women's and youth organisations: the Women's Wing and the Youth Wing."
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Supporters"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "content": [
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Supporter members: people chosen for membership, or who have asked to join, organised to build their political capacity; after six months of party tasks those who are ready are put forward as candidate members."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Supporters: people who back the party with their knowledge, money or skills, organised in groups where they live or work."
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Source: Prosperity Party, Organisation and Working Directive No. 24/2017, approved by the Prosperity Council on Nehase 15, 2017 E.C. (21 August 2025) under the bylaws revised at the party's second regular congress. This page summarises it; the directive is the authority."
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "am": {
+          "title": "የፓርቲው አደረጃጀት",
+          "slug": "organisation",
+          "excerpt": "ከብልፅግና ምክር ቤት እስከ ብልፅግና ቤተሰብ፦ የፓርቲው አካላትና እርከኖች እንዲሁም አባላት የሚገናኙበት ሥርዓት፣ በመመሪያ ቁጥር 24/2017 መሠረት።",
+          "body": {
+            "type": "doc",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "የብልፅግና ፓርቲ መተዳደሪያ ደንብ በፓርቲው ሁለተኛ መደበኛ ጉባኤ ተሻሽሏል። በዚሁ መሠረት የብልፅግና ምክር ቤት የአደረጃጀትና የአሠራር መመሪያ ቁጥር 24/2017ን አፅድቋል፤ መመሪያው ፓርቲው ከዋና ጽሕፈት ቤት እስከ ብልፅግና ቤተሰብ በየደረጃው እንዴት እንደሚደራጅ ይደነግጋል።"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "የፓርቲው ከፍተኛ አካላት"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "content": [
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "ጉባኤ፦ የፓርቲው ከፍተኛ አመራር አካል።"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "የብልፅግና ምክር ቤት፦ ከጉባኤ እስከ ጉባኤ ፓርቲውን የሚመራ ከፍተኛ አካል።"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "ሥራ አስፈፃሚ ኮሚቴ፦ ከብልፅግና ምክር ቤት አባላት መካከል የሚመረጥ፣ የጉባኤውንና የምክር ቤቱን ውሳኔዎች የሚያስፈፅም አካል።"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "የኢንስፔክሽንና ሥነ-ምግባር ኮሚሽን፦ በመተዳደሪያ ደንቡ መሠረት በየደረጃው የተቋቋመ።"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "በሐረሪ ክልል"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "content": [
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "የክልሉ አስተባባሪ ኮሚቴ በክልሉ ርዕሰ መስተዳድር ሰብሳቢነትና በፓርቲው ቅርንጫፍ ጽሕፈት ቤት ኃላፊ ምክትል ሰብሳቢነት የፓርቲና የመንግሥት ሥራዎችን አቀናጅቶ ያስተባብራል፤ የፓርቲው የበላይ አካላት ውሳኔዎች በተግባር ላይ መዋላቸውን ያረጋግጣል።"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "የቅርንጫፍ ጽሕፈት ቤቱ ሥራ አመራር ኮሚቴ በጽሕፈት ቤቱ ኃላፊ ሰብሳቢነትና በዘርፍ ኃላፊዎች አባልነት የፓርቲውን የፖለቲካና የአደረጃጀት ሥራዎች ያቅዳል፣ ፈፃሚዎችን ያሰማራል፣ ይከታተላል።"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "እነዚሁ ሁለት ኮሚቴዎች በወረዳና በቀበሌ ደረጃም ፓርቲውን ይመራሉ።"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "ብልፅግና ህብረትና ብልፅግና ቤተሰብ"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "content": [
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "ብልፅግና ቤተሰብ፦ ከ11 እስከ 35 ሙሉና ዕጩ አባላት በመኖሪያ አካባቢ ወይም በሥራ ቦታ የሚደራጁበት፣ የአባላት የዕለት ተዕለት አቅም የሚገነባበት የፓርቲው የመጨረሻ እርከን። በየወሩ መደበኛ ስብሰባ ያደርጋል፤ ሰብሳቢ፣ የፖለቲካ ሥራዎች ኃላፊ፣ የአደረጃጀት ጉዳይ ኃላፊና ገንዘብ ያዥ ይመርጣል።"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "ብልፅግና ህብረት፦ ሁለትና ከዚያ በላይ የብልፅግና ቤተሰቦችን የያዘ፣ ከ22 እስከ 210 አባላት ያሉት። የአባላት ኮንፈረንሱ በየሦስት ወሩ ይካሄዳል፤ ከ10 እስከ 12 አባላት ያሉት አመራር ኮሚቴ ይመርጣል፤ የፖለቲካ፣ የአደረጃጀትና የፋይናንስ ንዑሳን ኮሚቴዎች አሉት።"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "አንድ ሰው በአንድ ጊዜ የብልፅግና ቤተሰብና የብልፅግና ህብረት አመራር ሊሆን አይችልም።"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "ክንፎች"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "«ክንፍ» የፓርቲው የሴቶችና የወጣቶች አደረጃጀት የወል መጠሪያ ነው፤ እነርሱም የሴቶች ክንፍና የወጣቶች ክንፍ ናቸው።"
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "ደጋፊዎች"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "content": [
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "የፓርቲ ደጋፊ አባላት፦ ለአባልነት የተለዩ ወይም ራሳቸው የአባልነት ጥያቄ ያቀረቡ ግለሰቦች የፖለቲካ አቅማቸውን የሚገነቡበት አደረጃጀት፤ ለስድስት ወራት የውስጠ-ፓርቲ ተልዕኮ ከተሰጣቸው በኋላ ለዕጩ አባልነት የበቁት ይለያሉ።"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "የፓርቲ ደጋፊ ግለሰቦች፦ ፓርቲውን በዕውቀት፣ በገንዘብና በሙያ የሚደግፉ፣ በመኖሪያ ወይም በሥራ ቦታ በቡድን የሚደራጁ ግለሰቦች።"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "ምንጭ፦ የብልፅግና ፓርቲ የአደረጃጀትና የአሠራር መመሪያ ቁጥር 24/2017፤ በፓርቲው ሁለተኛ መደበኛ ጉባኤ በተሻሻለው መተዳደሪያ ደንብ መሠረት በብልፅግና ምክር ቤት ነሐሴ 15 ቀን 2017 ዓ.ም የፀደቀ። ይህ ገጽ ማጠቃለያ ነው፤ የሚገዛው መመሪያው ነው።"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "om": {
+          "title": "Akkaataa paartichi itti gurmaa'e",
+          "slug": "organisation",
+          "excerpt": "Mana Maree Badhaadhinaa irraa hanga Maatii Badhaadhinaatti: qaamolee fi sadarkaalee paartichaa, akkasumas akkaataa miseensonni itti walgahan, akka Qajeelfama Lakk. 24/2017tti.",
+          "body": {
+            "type": "doc",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Seerri bulchiinsaa Paartii Badhaadhinaa walgahii idilee lammaffaa paartichaatiin fooyya'eera. Kanaan, Manni Maree Badhaadhinaa Qajeelfama Gurmaa'inaa fi Hojii Lakk. 24/2017 raggaasiseera; qajeelfamichi akkaataa paartichi waajjira muummee irraa hanga Maatii Badhaadhinaatti sadarkaa hundatti itti gurmaa'u ibsa."
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Qaamolee hoggansa paartichaa"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "content": [
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Walgahii Gaggeessaa: qaama hoggansa olaanaa paartichaa."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Mana Maree Badhaadhinaa: walgahii tokko irraa hanga isa itti aanuutti paartii hoggana."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Koree Raawwachiiftuu: miseensota Mana Maree Badhaadhinaa keessaa kan filatamu; murtiiwwan walgahii fi mana mareetii raawwachiisa."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Komishinii Sakatta'iinsaa fi Naamusaa: seera bulchiinsaatiin sadarkaa hundatti kan hundaa'e."
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Naannoo Hararii keessatti"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "content": [
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Koreen Qindeessaa naannichaa, pirezidaantii mootummaa naannichaatiin durfamee itti gaafatamaa waajjira damee paartichaa akka itti aanaatti qabatee, hojii paartii fi mootummaa walitti qindeessa; murtiiwwan qaamolee olaanoo paartichaa hojiirra ooluu isaanii mirkaneessa."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Koreen Hojii Gaggeessaa waajjira damee, itti gaafatamaa waajjirichaatiin durfamee itti gaafatamtoota kutaalee isaa waliin, hojii siyaasaa fi gurmaa'inaa paartichaa karoorsa, raawwattoota bobbaasa, hordofas."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Koreewwan lamaan kunneen sadarkaa aanaa fi gandaattis paartii hogganu."
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Tokkummaa Badhaadhinaa fi Maatii Badhaadhinaa"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "content": [
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Maatii Badhaadhinaa: miseensota guutuu fi kaadhimamtoota 11 hanga 35 kan iddoo jireenyaa ykn hojii isaaniitti gurmaa'an. Sadarkaa dhumaa paartichaa kan dandeettiin miseensotaa guyyaa guyyaan itti ijaaramu dha. Ji'a ji'aan walgaha; walitti qabaa, itti gaafatamaa hojii siyaasaa, itti gaafatamaa gurmaa'inaa fi qabaa maallaqaa filata."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Tokkummaa Badhaadhinaa: Maatiiwwan Badhaadhinaa lama fi isaa ol, miseensota 22 hanga 210 kan qabu. Koonfaransiin miseensotaa ji'a sadii sadiin walgaha; koree hoggansaa miseensota 10 hanga 12 qabu filata, koreewwan xixiqqaa siyaasaa, gurmaa'inaa fi faayinaansii qaba."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Namni tokko yeroo tokkotti hoggansa Maatii Badhaadhinaa fi Tokkummaa Badhaadhinaa ta'uu hin danda'u."
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Dameewwan"
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "\"Damee\" maqaa waliigalaa paartichi gurmaa'ina dubartootaa fi dargaggootaa isaatiif kenne dha: Damee Dubartootaa fi Damee Dargaggootaa."
+                  }
+                ]
+              },
+              {
+                "type": "heading",
+                "attrs": {
+                  "level": 2
+                },
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Deeggartoota"
+                  }
+                ]
+              },
+              {
+                "type": "bulletList",
+                "content": [
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Miseensota deeggartootaa: namoota miseensummaaf filataman ykn miseensa ta'uuf gaafatan, dandeettii siyaasaa isaanii ijaaruuf kan gurmaa'an; ji'a jaha ergama keessoo paartii erga raawwatanii booda warri qophaa'an miseensummaa kaadhimamaaf dhiyaatu."
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "listItem",
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Deeggartoota: namoota beekumsa, maallaqa ykn ogummaa isaaniitiin paartii deeggaran, iddoo jireenyaa ykn hojii isaaniitti gareen gurmaa'an."
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Madda: Paartii Badhaadhinaa, Qajeelfama Gurmaa'inaa fi Hojii Lakk. 24/2017, seera bulchiinsaa walgahii idilee lammaffaa paartichaatiin fooyya'e jalatti Mana Maree Badhaadhinaatiin Hagayya 15, 2017 A.L.I. (21 Hagayya 2025) kan raggaasifame. Fuulli kun cuunfaa isaa ti; kan murteessu qajeelfamicha."
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
     }
   ],
   "events": [
@@ -4801,6 +5663,27 @@
         [
           "Obbo Geetuu Wayyeessaa",
           "Kabajamoo Obbo Geetuu Wayyeessaa Tolaa"
+        ]
+      ]
+    },
+    {
+      "key": "correction.structure-terms-2026-11-07",
+      "note": "Directive No. 24/2017 organises members in Prosperity Unions and Prosperity Families, not basic organisations (ADR-0078).",
+      "in": [
+        "pages"
+      ],
+      "replace": [
+        [
+          "the woredas and basic organisations",
+          "the woredas, kebeles, Prosperity Unions and Prosperity Families"
+        ],
+        [
+          "ወረዳዎችና መሰረታዊ ድርጅቶች",
+          "ወረዳዎች፣ ቀበሌዎች፣ ብልፅግና ህብረቶችና ብልፅግና ቤተሰቦች"
+        ],
+        [
+          "aanaalee fi jaarmiyaalee bu'uuraatti",
+          "aanaalee, gandoota, Tokkummaawwanii fi Maatiiwwan Badhaadhinaatti"
         ]
       ]
     }

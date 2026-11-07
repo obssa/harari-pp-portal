@@ -42,7 +42,7 @@ it('loads the real content pack, published, with portraits, heads, pages and the
 
     $counts = app(LoadContentPack::class)->handle(database_path('content/pack.json'));
 
-    expect($counts)->toMatchArray(['leagues' => 2, 'offices' => 10, 'leaders' => 14, 'pages' => 3, 'events' => 1, 'homepage' => 2, 'settings' => 2, 'slides' => 3]);
+    expect($counts)->toMatchArray(['leagues' => 2, 'offices' => 10, 'leaders' => 14, 'pages' => 4, 'events' => 1, 'homepage' => 2, 'settings' => 2, 'slides' => 3]);
 
     $head = Leader::query()->whereHas('translations', fn ($q) => $q->where('name', 'H.E Getu Weyessa Tola'))->firstOrFail();
     expect($head->translation('en')?->position)->toBe('Head of Harari Region Prosperity Party')
@@ -68,6 +68,13 @@ it('loads the real content pack, published, with portraits, heads, pages and the
     $this->get('/en/about')->assertOk()->assertSee('About the branch')->assertSee('It is headed by H.E Getu Weyessa Tola.')->assertSee('https://t.me/hrprosperityparty/23920', escape: false);
     $this->get('/am/about/history')->assertOk()->assertSee('ሀረሪ ብሔራዊ ሊግ');
     $this->get('/om/about/harar')->assertOk()->assertSee('Harar Jugol');
+    // ADR-0078: the structure as Directive No. 24/2017 sets it, and the About page in its terms.
+    $this->get('/en/about/organisation')->assertOk()->assertSee('How the party is organised')
+        ->assertSee('Prosperity Family: 11 to 35 full and candidate members', escape: false)->assertSee('Directive No. 24/2017');
+    $this->get('/am/about/organisation')->assertOk()->assertSee('የፓርቲው አደረጃጀት')->assertSee('ብልፅግና ቤተሰብ፦ ከ11 እስከ 35');
+    $this->get('/om/about/organisation')->assertOk()->assertSee('Maatii Badhaadhinaa');
+    $this->get('/en/about')->assertOk()->assertSee('the woredas, kebeles, Prosperity Unions and Prosperity Families')->assertDontSee('basic organisations');
+    $this->get('/am/about')->assertOk()->assertSee('ብልፅግና ህብረቶችና ብልፅግና ቤተሰቦች')->assertDontSee('መሰረታዊ ድርጅቶች');
     $this->get('/am/about')->assertOk()->assertSee('ክቡር አቶ ጌቱ ወዬሳ ቶላ')->assertDontSee('ክቡር ክቡር');
     $this->get('/en/leaders')->assertOk()->assertSee('H.E Getu Weyessa Tola')->assertSee(LeaderBody::Government->label('en'));
     expect(HeroSlide::query()->orderBy('sort')->pluck('layout')->map(fn ($layout) => $layout->value)->all())->toBe(['photo', 'banner', 'portrait']);

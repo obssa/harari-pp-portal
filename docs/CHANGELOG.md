@@ -4,6 +4,11 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### The party's structure in the terms of Directive No. 24/2017 (2026-11-07)
+
+- "Basic organisation" reads "Prosperity Union", "Leagues and forums" reads "Women's and youth wings", and the
+  Central Committee reads "Prosperity Council", in all three translated languages (ADR-0078).
+- New About page "How the party is organised", with its source; the About page's wording corrected once.
 ### Newsletter: the footer's address is kept, new details are confirmed where typed (2026-11-07)
 
 - The page after the footer's box shows the address given, with a way to use another one and to add SMS; the

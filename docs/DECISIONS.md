@@ -2219,3 +2219,28 @@ went to the old one.
 - The check page names, masked, the address and number the link and code went to (`Mask::email()`).
 
 **Consequences.** No migration. A forged or expired change does nothing; the link still opens the preferences.
+## ADR-0078 — The party's structure in the terms of Directive No. 24/2017 (2026-11-07)
+
+**Context.** A reviewer asked that the League Forum, the basic organisation and the Central Committee follow the
+revised bylaws. The owner supplied the party's Organisation and Working Directive No. 24/2017 (approved by the
+Prosperity Council on Nehase 15, 2017 E.C. under the bylaws revised at the second regular congress) and the
+Members' and Organisations' Evaluation Directive (Tahsas 2017). The directive organises members in Prosperity
+Families (11–35 members) within Prosperity Unions (22–210), calls the women's and youth organisations "wings"
+(ክንፍ), and names the Congress, Prosperity Council, Executive Committee and, in each region, a Coordinating
+Committee and the branch office's Management Committee. It does not use "basic organisation", "league forum"
+or "central committee".
+
+**Decision.**
+
+- Visible terms follow the directive: the `basic_org` office type and the membership field read "Prosperity
+  Union"; "Leagues and forums" becomes "Women's and youth wings" / "Wings"; the `central_committee` leader body
+  reads "Prosperity Council". Keys, enum values and data stay as they are, so nothing stored changes.
+- A new About sub-page, "How the party is organised" (`page.organisation`, en/am/om), summarises the directive
+  with its source; it paraphrases and cites, and does not publish the directive itself (an internal document;
+  staff can upload it under Documents).
+- A pack correction rewrites the About page's "woredas and basic organisations" in the three languages, once.
+- The Evaluation Directive is internal and used only to cross-check definitions.
+
+**Consequences.** The party's values, objectives and principles still wait for the programme or the bylaws
+themselves; neither directive states them. The Oromo terms (Tokkummaa/Maatii Badhaadhinaa, Damee, Mana Maree
+Badhaadhinaa) are listed for review.

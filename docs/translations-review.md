@@ -126,3 +126,8 @@ Drafts for the branch office's legal reviewers; the English text is the referenc
 | Keys or text | Languages | Context | Doubts |
 |---|---|---|---|
 | `newsletter.fixed_email`, `other_email`, `also_sms`, `check_email_to` | am, om | newsletter page | "link" (ማስፈንጠሪያ / liinkii) |
+## Party structure terms (ADR-0078)
+
+| Keys or text | Languages | Context | Doubts |
+|---|---|---|---|
+| Wing strings (`leagues.*`, `nav.leagues`, `homepage.section.leagues`, `admin.leagues.*`), Prosperity Union strings (`*basic_org*`, `nav.offices_basic`, `structure.description`), `organisation.leader_body.central_committee`, `nav.leaders_hint`, page `page.organisation` | am, om | public pages and admin | om: "Damee" for wing, "Tokkummaa Badhaadhinaa" (Union), "Maatii Badhaadhinaa" (Family), "Mana Maree Badhaadhinaa" (Council); confirm against the party's Oromo documents |

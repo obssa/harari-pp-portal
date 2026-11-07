@@ -111,7 +111,9 @@ it('shows leagues with their chair and leadership', function () {
     ], staff(SystemRole::Publisher));
     directoryLeader(['en' => ['name' => 'Sample League Secretary', 'published' => true]], 'leagues', ['league_id' => $league->id]);
 
-    $this->get('/en/leagues')->assertOk()->assertSee('Sample Youth League')->assertSee('Sample summary');
+    $this->get('/en/leagues')->assertOk()->assertSee('Sample Youth League')->assertSee('Sample summary')
+        // ADR-0078: the directive's own word for the women's and youth organisations.
+        ->assertSee(__('leagues.title', [], 'en'))->assertDontSee('Leagues and forums');
     $this->get('/en/leagues/sample-youth-league')
         ->assertOk()
         ->assertSee('Sample League Chair')

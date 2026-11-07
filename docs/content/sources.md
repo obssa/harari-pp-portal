@@ -87,3 +87,11 @@ carries its links. Points left for the branch to confirm:
 4. The office's address, phone, email and hours (none are published) and its official English name.
 5. English spellings of names, which are transliterations where no official form was found.
 
+
+## Party documents (ADR-0078)
+
+| Document | Use on the site |
+|---|---|
+| Prosperity Party, Organisation and Working Directive No. 24/2017 (approved Nehase 15, 2017 E.C.), supplied by the owner on 2026-11-07 | Source of the terms and of the About sub-page "How the party is organised"; paraphrased and cited, not published |
+| Prosperity Party, Members' and Organisations' Evaluation Directive (Tahsas 2017), supplied the same day | Internal; used only to cross-check definitions |
+| Party programme and revised bylaws | Not yet supplied; needed for values, objectives and principles |
