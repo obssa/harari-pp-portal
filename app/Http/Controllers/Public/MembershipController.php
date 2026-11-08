@@ -15,9 +15,11 @@ use App\Support\PhoneNumber;
 use App\Support\SpamGuard;
 use App\Support\Turnstile;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Validation\ValidationException;
 
 /**
  * The membership application and its status page (PLAN.md §4, ADR-0044).
@@ -112,19 +114,39 @@ final class MembershipController extends Controller
         $found = null;
         $searched = $request->isMethod('POST');
         if ($searched) {
-            $reference = MembershipApplication::normaliseReference((string) $request->input('reference', ''));
+            $typed = trim((string) $request->input('reference', ''));
+            $reference = MembershipApplication::normaliseReference($typed);
             // ADR-0067: the phone or, for applications confirmed by email, the email address.
             $contact = trim((string) $request->input('phone', ''));
             $phone = PhoneNumber::normalise($contact);
-            $email = str_contains($contact, '@') ? mb_strtolower($contact) : null;
-            if ($reference !== '' && ($phone !== null || $email !== null)) {
-                $found = MembershipApplication::query()
-                    ->where('reference', $reference)
-                    ->where($phone !== null ? 'phone_hash' : 'email_hash', MembershipApplication::hash($phone ?? (string) $email))
-                    ->whereNotIn('status', [ApplicationStatus::Started->value])
-                    ->whereNull('erased_at')
-                    ->first();
+            $email = filter_var($contact, FILTER_VALIDATE_EMAIL) !== false ? mb_strtolower($contact) : null;
+
+            // ADR-0079: say which field is wrong instead of "no match" for a typing slip.
+            $errors = array_filter([
+                'reference' => match (true) {
+                    $typed === '' => __('membership.status.validation.reference_required'),
+                    $reference === '' => __('membership.status.validation.reference_format'),
+                    default => null,
+                },
+                'phone' => match (true) {
+                    $contact === '' => __('membership.status.validation.contact_required'),
+                    $phone === null && $email === null => __('membership.status.validation.contact_invalid'),
+                    default => null,
+                },
+            ]);
+            if ($errors !== []) {
+                throw ValidationException::withMessages($errors);
             }
+
+            // Whichever of the two the person gave when applying.
+            $hashes = array_map(MembershipApplication::hash(...), array_values(array_filter([$phone, $email])));
+            $found = MembershipApplication::query()
+                ->with('member')
+                ->where('reference', $reference)
+                ->where(fn (Builder $query) => $query->whereIn('phone_hash', $hashes)->orWhereIn('email_hash', $hashes))
+                ->whereNotIn('status', [ApplicationStatus::Started->value])
+                ->whereNull('erased_at')
+                ->first();
         }
 
         return view('pages.membership.status', ['searched' => $searched, 'application' => $found]);

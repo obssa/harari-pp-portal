@@ -4,6 +4,13 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Membership status page: clear messages and a link on every page (2026-11-09)
+
+- The status page says which field is wrong, keeps what was typed, matches the phone or the email, and shows an
+  approved member their number with a sign-in link (ADR-0079).
+- "Check your application" is linked in the footer, the mobile menu and the member sign-in page; the footer's
+  newsletter hint is gone.
+
 ### The party's structure in the terms of Directive No. 24/2017 (2026-11-07)
 
 - "Basic organisation" reads "Prosperity Union", "Leagues and forums" reads "Women's and youth wings", and the

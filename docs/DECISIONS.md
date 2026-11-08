@@ -2244,3 +2244,24 @@ or "central committee".
 **Consequences.** The party's values, objectives and principles still wait for the programme or the bylaws
 themselves; neither directive states them. The Oromo terms (Tokkummaa/Maatii Badhaadhinaa, Damee, Mana Maree
 Badhaadhinaa) are listed for review.
+
+## ADR-0079 — The application status page says what is wrong, and is linked from every page (2026-11-09)
+
+**Context.** The owner applied, approved the application in the admin, and the status page still answered "No
+application matches". The page needs the reference and the phone (or email) the person applied with, but any
+slip, an empty second field, a reference typed short, an email where the application holds only a phone,
+gave the same "no match" without saying which part was wrong, and the typed values were cleared. The page was
+linked only from the application pages and the get involved page. The footer's newsletter box still said "Or
+use a mobile number on the next page", which ADR-0077 made redundant.
+
+**Decision.**
+
+- The status form names the field at fault: no reference, a reference not in the APP-XXXX-XXXX form, no
+  phone or email, or something that is neither a mobile number nor an email address. Typed values stay.
+- The second field is matched against both the phone and the email the person gave, whichever they type.
+- An approved application shows the member number and a link to the members' sign-in.
+- The status page is linked in the footer, the mobile menu and the member sign-in page; the done page carries
+  the reference into it. The footer's newsletter hint is removed.
+
+**Consequences.** Both answers are still needed; a phone or a reference alone never shows a status, so a
+stranger with one of them learns nothing.

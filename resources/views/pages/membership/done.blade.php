@@ -9,7 +9,7 @@
             </p>
             <p class="mt-4 text-ink-muted">{{ __('membership.done.keep') }}</p>
             <p class="mt-8">
-                <a href="{{ route('membership.status') }}" class="font-semibold text-link underline-offset-4 hover:underline">{{ __('membership.status.link') }}</a>
+                <a href="{{ route('membership.status', ['reference' => $reference]) }}" class="font-semibold text-link underline-offset-4 hover:underline">{{ __('membership.status.link') }}</a>
             </p>
         </div>
     </div>

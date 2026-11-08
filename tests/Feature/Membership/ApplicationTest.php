@@ -2,6 +2,7 @@
 
 use App\Domain\Access\Enums\SystemRole;
 use App\Domain\Membership\Actions\ApplyForMembership;
+use App\Domain\Membership\Actions\ReviewApplication;
 use App\Domain\Membership\Enums\ApplicationStatus;
 use App\Domain\Membership\Models\MembershipApplication;
 use App\Domain\Organisation\Actions\SaveOffice;
@@ -204,6 +205,39 @@ it('shows the status to whoever has the reference and the phone number, and to n
         ->assertOk()->assertSee(__('membership.status.submitted'))
         ->assertHeader('Cache-Control', 'max-age=0, no-store, private');
     $this->post('/en/membership/status', ['reference' => $application->reference, 'phone' => '0922000000'])->assertSee(__('membership.status.not_found'));
+});
+
+it('shows an approved application its member number by phone or by email (ADR-0079)', function () {
+    $apply = app(ApplyForMembership::class);
+    $application = $apply->place($apply->about(null, aboutAnswers(), 'en'), ['woreda_id' => sampleWoreda()->id, 'phone' => '0911234567', 'email' => 'Applicant@Example.org']);
+    $apply->sendCode($application, true);
+    $apply->verify($application->refresh(), lastCode());
+    $member = app(ReviewApplication::class)->approve($application->refresh(), staff(SystemRole::SuperAdmin));
+
+    foreach (['0911 234 567', '+251911234567', '911234567', 'applicant@example.org', ' APPLICANT@example.org '] as $contact) {
+        $this->post('/en/membership/status', ['reference' => $application->reference, 'phone' => $contact])->assertOk()
+            ->assertSee(__('membership.status.approved'))
+            ->assertSee(__('membership.status.member_no', ['number' => $member->member_no]))
+            ->assertSee(route('member.sign-in', ['locale' => 'en']), escape: false);
+    }
+});
+
+it('says which status field is wrong instead of finding nothing (ADR-0079)', function (array $input, string $field, string $key) {
+    $this->from('/en/membership/status')->post('/en/membership/status', $input)
+        ->assertRedirect('/en/membership/status')
+        ->assertSessionHasErrors([$field => __($key)]);
+})->with([
+    'no reference' => [['reference' => '', 'phone' => '0911234567'], 'reference', 'membership.status.validation.reference_required'],
+    'short reference' => [['reference' => 'APP-7K3M', 'phone' => '0911234567'], 'reference', 'membership.status.validation.reference_format'],
+    'no contact' => [['reference' => 'APP-7K3M-Q9TX', 'phone' => ''], 'phone', 'membership.status.validation.contact_required'],
+    'neither phone nor email' => [['reference' => 'APP-7K3M-Q9TX', 'phone' => 'sample'], 'phone', 'membership.status.validation.contact_invalid'],
+]);
+
+it('links the status page from every page and from the member sign-in page (ADR-0079)', function () {
+    $this->get('/en')->assertOk()
+        ->assertSee(route('membership.status', ['locale' => 'en']), escape: false)
+        ->assertDontSee('Or use a mobile number on the next page.');
+    $this->get('/en/member/sign-in')->assertOk()->assertSee(route('membership.status', ['locale' => 'en']), escape: false);
 });
 
 it('forgets unfinished applications after a week and closed ones after the retention period', function () {

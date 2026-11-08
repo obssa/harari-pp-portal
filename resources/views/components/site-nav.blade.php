@@ -75,6 +75,8 @@
                         {{ __('nav.member_login') }}
                     </a>
                 </div>
+                <p class="mt-3 text-center text-sm text-ink-muted">{{ __('membership.status.prompt') }}
+                    <a href="{{ route('membership.status') }}" class="font-semibold text-link underline-offset-4 hover:underline">{{ __('membership.status.link') }}</a></p>
 
                 @php $socialLinks = \App\Support\SocialLinks::all(); @endphp
                 @if ($socialLinks !== [])

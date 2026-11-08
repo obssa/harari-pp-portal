@@ -29,6 +29,8 @@
             @endif
             <p class="mt-8 text-ink-muted">{{ __('members.portal.not_member') }}
                 <a href="{{ route('membership.apply') }}" class="font-semibold text-link underline underline-offset-4">{{ __('membership.apply.link') }}</a></p>
+            <p class="mt-2 text-ink-muted">{{ __('membership.status.prompt') }}
+                <a href="{{ route('membership.status') }}" class="font-semibold text-link underline underline-offset-4">{{ __('membership.status.link') }}</a></p>
         </div>
     </div>
 </x-layouts.public>

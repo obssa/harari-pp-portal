@@ -12,11 +12,16 @@
                 @csrf
                 <div>
                     <label for="reference" class="font-medium">{{ __('membership.reference') }}</label>
-                    <input id="reference" name="reference" type="text" value="{{ old('reference', request('reference')) }}" required maxlength="20" autocomplete="off" dir="ltr" class="{{ $field }}">
+                    <input id="reference" name="reference" type="text" value="{{ old('reference', request('reference')) }}" required maxlength="20" autocomplete="off" autocapitalize="characters" spellcheck="false" dir="ltr"
+                           @error('reference') aria-invalid="true" aria-describedby="reference-error" @enderror class="{{ $field }}">
+                    @error('reference')<p id="reference-error" class="mt-1 text-sm text-danger-600">{{ $message }}</p>@enderror
                 </div>
                 <div>
                     <label for="phone" class="font-medium">{{ __('membership.status.contact') }}</label>
-                    <input id="phone" name="phone" type="text" required maxlength="190" autocomplete="tel" dir="ltr" class="{{ $field }}">
+                    <input id="phone" name="phone" type="text" value="{{ old('phone', request('phone')) }}" required maxlength="190" autocomplete="tel" dir="ltr"
+                           aria-describedby="phone-help @error('phone') phone-error @enderror" @error('phone') aria-invalid="true" @enderror class="{{ $field }}">
+                    <p id="phone-help" class="mt-1 text-sm text-ink-muted">{{ __('membership.status.contact_help') }}</p>
+                    @error('phone')<p id="phone-error" class="mt-1 text-sm text-danger-600">{{ $message }}</p>@enderror
                 </div>
                 <div class="sm:col-span-2">
                     <button type="submit" class="inline-flex items-center rounded-control bg-primary-600 px-5 py-2.5 font-semibold text-white hover:bg-primary-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600">{{ __('membership.status.check') }}</button>
@@ -27,12 +32,17 @@
                 <div role="status" class="mt-8 rounded-card border border-line bg-surface p-5">
                     @if ($application === null)
                         <p>{{ __('membership.status.not_found') }}</p>
+                        <p class="mt-2 text-sm text-ink-muted">{{ __('membership.status.not_found_help') }}</p>
                     @else
                         <p class="text-sm text-ink-muted" dir="ltr">{{ $application->reference }}</p>
                         <p class="mt-1 heading-3">{{ $application->status->label() }}</p>
                         <p class="mt-2 text-ink-muted">{{ __("membership.status.explain.{$application->status->value}") }}</p>
                         @if ($application->submitted_at)
                             <p class="mt-2 text-sm">{{ __('membership.status.sent_on') }} <x-date :date="$application->submitted_at" /></p>
+                        @endif
+                        @if ($application->status === ApplicationStatus::Approved && $application->member !== null)
+                            <p class="mt-2">{{ __('membership.status.member_no', ['number' => $application->member->member_no]) }}</p>
+                            <p class="mt-3"><a href="{{ route('member.sign-in') }}" class="font-semibold text-link underline-offset-4 hover:underline">{{ __('nav.member_login') }}</a></p>
                         @endif
                         @if ($application->status === ApplicationStatus::Rejected && filled($application->reason))
                             <p class="mt-2">{{ __('membership.status.reason', ['reason' => $application->reason]) }}</p>
