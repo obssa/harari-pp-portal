@@ -6,6 +6,7 @@ use App\Domain\Documents\Models\Document;
 use App\Domain\Documents\Models\DocumentTranslation;
 use App\Domain\Documents\Support\MembersOnlyFile;
 use App\Domain\Events\Models\EventRegistration;
+use App\Domain\Membership\Actions\ChangeMemberPassword;
 use App\Domain\Membership\Actions\RequestMemberChange;
 use App\Domain\Membership\Actions\SignInMember;
 use App\Domain\Membership\Models\Member;
@@ -16,7 +17,6 @@ use App\Domain\Organisation\Models\Office;
 use App\Domain\Organisation\Queries\PublicDirectory;
 use App\Http\Controllers\Controller;
 use App\Services\Fayda\FaydaClient;
-use App\Support\PhoneNumber;
 use App\Support\QrCode;
 use App\Support\SpamGuard;
 use App\Support\Turnstile;
@@ -29,15 +29,14 @@ use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /**
- * The member portal (PLAN.md §4, ADR-0049): sign-in with a code by SMS, the
+ * The member portal (PLAN.md §4, ADR-0049): sign-in with the phone number and
+ * password (ADR-0080), the
  * membership card with a QR code anyone can check, the member's details with
  * correction requests, their event registrations and members-only documents.
  * Every page is private and never stored.
  */
 final class MemberPortalController extends Controller
 {
-    private const PENDING = 'member.sign_in';
-
     public function signIn(Turnstile $turnstile): View|RedirectResponse
     {
         if ($this->member() !== null) {
@@ -47,37 +46,26 @@ final class MemberPortalController extends Controller
         return view('pages.member.sign-in', ['turnstileKey' => $turnstile->siteKey(), 'fayda' => app(FaydaClient::class)->isConfigured()]);
     }
 
-    public function sendCode(Request $request, SignInMember $signIn, Turnstile $turnstile): RedirectResponse
+    /** ADR-0080: the phone number and password; the member's own session from then on. */
+    public function authenticate(Request $request, SignInMember $signIn, Turnstile $turnstile): RedirectResponse
     {
         SpamGuard::check($request);
         $turnstile->check($request);
-        $typed = (string) $request->input('phone', '');
-        $hash = $signIn->requestCode($typed, app()->getLocale());
-        $request->session()->put(self::PENDING, ['hash' => $hash, 'phone' => PhoneNumber::mask((string) PhoneNumber::normalise($typed)), 'at' => time()]);
+        $member = $signIn->attempt((string) $request->input('phone', ''), (string) $request->input('password', ''));
 
-        return redirect()->route('member.code');
-    }
-
-    public function code(Request $request): View|RedirectResponse
-    {
-        $pending = $this->pending($request);
-
-        return $pending === null ? redirect()->route('member.sign-in') : view('pages.member.code', ['phone' => $pending['phone']]);
-    }
-
-    public function verify(Request $request, SignInMember $signIn): RedirectResponse
-    {
-        $pending = $this->pending($request);
-        if ($pending === null) {
-            return redirect()->route('member.sign-in');
-        }
-        $member = $signIn->verify($pending['hash'], (string) $request->input('code', ''));
-
-        $request->session()->forget(self::PENDING);
         Auth::guard('member')->login($member);
         $request->session()->regenerate();
 
         return redirect()->route('member.home');
+    }
+
+    /** Members change their password with the current one (ADR-0080). */
+    public function changePassword(Request $request, ChangeMemberPassword $change): RedirectResponse
+    {
+        $change->handle($this->signedIn(), (string) $request->input('current_password', ''), (string) $request->input('password', ''), (string) $request->input('password_confirmation', ''));
+        $request->session()->regenerate();
+
+        return redirect()->route('member.profile')->with('status', __('members.portal.password_changed'));
     }
 
     public function signOut(Request $request): RedirectResponse
@@ -183,19 +171,6 @@ final class MemberPortalController extends Controller
         abort_if($member === null, 403);
 
         return $member;
-    }
-
-    /**
-     * @return array{hash: string, phone: string, at: int}|null
-     */
-    private function pending(Request $request): ?array
-    {
-        $pending = $request->session()->get(self::PENDING);
-        if (! is_array($pending) || ! is_string($pending['hash'] ?? null) || time() - (int) ($pending['at'] ?? 0) > SignInMember::CODE_MINUTES * 60) {
-            return null;
-        }
-
-        return ['hash' => $pending['hash'], 'phone' => (string) ($pending['phone'] ?? ''), 'at' => (int) $pending['at']];
     }
 
     /**

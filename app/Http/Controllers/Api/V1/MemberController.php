@@ -11,42 +11,32 @@ use App\Domain\Events\Models\EventRegistration;
 use App\Domain\Membership\Actions\IssueMemberToken;
 use App\Domain\Membership\Actions\SignInMember;
 use App\Domain\Membership\Models\Member;
-use App\Domain\Membership\Models\MembershipApplication;
 use App\Domain\Membership\Models\MemberToken;
 use App\Domain\Organisation\Queries\PublicDirectory;
-use App\Support\PhoneNumber;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /**
- * The member app (scope `members`, ADR-0057): sign-in with the same SMS code
- * as the member portal, then the member's card, details, event
- * registrations and members-only documents with their token.
+ * The member app (scope `members`, ADR-0057): sign-in with the same phone
+ * number and password as the member portal (ADR-0080), then the member's
+ * card, details, event registrations and members-only documents with their token.
  */
 final class MemberController extends ApiController
 {
     public function __construct(private readonly ApiPresenter $present) {}
 
-    /** Step 1: a code by SMS, when the number is a member's (the answer never says). */
-    public function requestCode(Request $request, SignInMember $signIn): JsonResponse
+    /** ADR-0080: the SMS code step is gone; the app asks for a token with the password. */
+    public function requestCode(): JsonResponse
     {
-        $signIn->requestCode((string) $request->input('phone', ''), $this->locale());
-
-        return response()->json(['message' => __('api.member.code_sent', ['minutes' => SignInMember::CODE_MINUTES])], 202);
+        return response()->json(['message' => __('api.member.use_password')], 410);
     }
 
-    /** Step 2: the code for a token the app keeps and sends as a Bearer token. */
+    /** The phone number and password for a token the app keeps and sends as a Bearer token. */
     public function token(Request $request, SignInMember $signIn, IssueMemberToken $tokens): JsonResponse
     {
-        $phone = PhoneNumber::normalise((string) $request->input('phone', ''));
-        if ($phone === null) {
-            throw ValidationException::withMessages(['phone' => __('events.registration.validation.phone')]);
-        }
-
-        $member = $signIn->verify(MembershipApplication::hash($phone), (string) $request->input('code', ''));
+        $member = $signIn->attempt((string) $request->input('phone', ''), (string) $request->input('password', ''));
         $key = $request->attributes->get('api_key');
         [$token, $plain] = $tokens->handle($member, $key instanceof ApiKey ? $key : null, (string) $request->input('device', ''));
         $member->load(['woreda.translations', 'kebele.translations']);

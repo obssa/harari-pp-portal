@@ -4,6 +4,12 @@ All notable changes. Dates are Gregorian.
 
 ## Unreleased
 
+### Members sign in with their phone number and a password (2026-11-10)
+
+- Applicants choose a password on the membership form; it works once the application is approved (ADR-0080).
+- The member portal and the member app sign in with the phone number and password instead of an SMS code.
+- Officers can set a password for any member ("Set password"); members change theirs on My details.
+
 ### Membership status page: clear messages and a link on every page (2026-11-09)
 
 - The status page says which field is wrong, keeps what was typed, matches the phone or the email, and shows an

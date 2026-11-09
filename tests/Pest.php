@@ -46,3 +46,13 @@ function staff(SystemRole $role, ?bool $mfa = null, array $attributes = []): Use
 
     return $user->fresh() ?? $user;
 }
+
+/**
+ * The password fields of the membership form's second step (ADR-0080).
+ *
+ * @return array{password: string, password_confirmation: string}
+ */
+function applicantPassword(string $password = 'sample pass 1'): array
+{
+    return ['password' => $password, 'password_confirmation' => $password];
+}

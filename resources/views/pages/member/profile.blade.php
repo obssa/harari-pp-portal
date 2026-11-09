@@ -82,5 +82,37 @@
                 <button type="submit" class="{{ $button }}">{{ __('members.portal.request_send') }}</button>
             </form>
         </section>
+
+        {{-- ADR-0080: the member's own portal password. --}}
+        <section class="mt-10 max-w-2xl" aria-labelledby="password-heading">
+            <h2 id="password-heading" class="heading-2">{{ __('members.portal.change_password') }}</h2>
+            @if ($member->hasPassword())
+                <form method="post" action="{{ route('member.password') }}" class="mt-6 space-y-4" novalidate>
+                    @csrf
+                    <div>
+                        <label for="current_password" class="font-medium">{{ __('members.portal.current_password') }}</label>
+                        <input id="current_password" name="current_password" type="password" required maxlength="120" autocomplete="current-password" dir="ltr"
+                               @error('current_password') aria-invalid="true" aria-describedby="current_password-error" @enderror class="{{ $field }}">
+                        @error('current_password')<p id="current_password-error" class="mt-1 text-sm text-danger-600">{{ $message }}</p>@enderror
+                    </div>
+                    <div class="grid gap-4 sm:grid-cols-2">
+                        <div>
+                            <label for="new_password" class="font-medium">{{ __('members.portal.new_password') }}</label>
+                            <input id="new_password" name="password" type="password" required maxlength="120" autocomplete="new-password" dir="ltr"
+                                   aria-describedby="new_password-help @error('password') new_password-error @enderror" @error('password') aria-invalid="true" @enderror class="{{ $field }}">
+                            @error('password')<p id="new_password-error" class="mt-1 text-sm text-danger-600">{{ $message }}</p>@enderror
+                        </div>
+                        <div>
+                            <label for="new_password_confirmation" class="font-medium">{{ __('membership.field.password_confirm') }}</label>
+                            <input id="new_password_confirmation" name="password_confirmation" type="password" required maxlength="120" autocomplete="new-password" dir="ltr" class="{{ $field }}">
+                        </div>
+                    </div>
+                    <p id="new_password-help" class="text-sm text-ink-muted">{{ __('membership.help.password_rule', ['min' => ApplicationOptions::PASSWORD_MIN]) }}</p>
+                    <button type="submit" class="{{ $button }}">{{ __('members.portal.save_password') }}</button>
+                </form>
+            @else
+                <p class="mt-2 text-ink-muted">{{ __('members.portal.no_password') }}</p>
+            @endif
+        </section>
     </div>
 </x-layouts.public>

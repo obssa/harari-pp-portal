@@ -47,6 +47,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property ?string $phone_hash
  * @property ?string $email
  * @property ?string $email_hash
+ * @property ?string $password
  * @property ?string $fayda_sub_hash
  * @property ?CarbonImmutable $fayda_linked_at
  * @property CarbonImmutable $joined_on
@@ -86,7 +87,7 @@ class Member extends Model implements AuthenticatableContract
         'phone', 'phone_hash', 'email', 'email_hash', 'joined_on', 'renewed_on', 'renewal_due_on',
     ];
 
-    protected $hidden = ['name', 'birth_date', 'id_number', 'phone', 'email', 'address_note', 'fayda_sub_hash'];
+    protected $hidden = ['name', 'birth_date', 'id_number', 'phone', 'email', 'address_note', 'fayda_sub_hash', 'password'];
 
     protected function casts(): array
     {
@@ -99,6 +100,7 @@ class Member extends Model implements AuthenticatableContract
             'address_note' => 'encrypted',
             'phone' => 'encrypted',
             'email' => 'encrypted',
+            'password' => 'hashed',
             'joined_on' => 'immutable_date',
             'renewed_on' => 'immutable_date',
             'renewal_due_on' => 'immutable_date',
@@ -129,10 +131,15 @@ class Member extends Model implements AuthenticatableContract
         return 'HPP-'.str_pad((string) $next, 6, '0', STR_PAD_LEFT);
     }
 
-    /** Members sign in with a code by SMS, never a password (ADR-0049). */
+    /** Members sign in with their phone number and a password (ADR-0080); empty until one is set. */
     public function getAuthPassword(): string
     {
-        return '';
+        return (string) $this->password;
+    }
+
+    public function hasPassword(): bool
+    {
+        return $this->password !== null;
     }
 
     /** ...and are never remembered on a device. */

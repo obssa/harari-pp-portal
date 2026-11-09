@@ -196,11 +196,11 @@ Route::prefix('{locale}')
         Route::get('newsletter/preferences/{token}', [NewsletterController::class, 'preferences'])->where('token', '[A-Za-z0-9]{40}')->middleware(NoStore::class)->name('newsletter.preferences');
         Route::post('newsletter/preferences/{token}', [NewsletterController::class, 'update'])->where('token', '[A-Za-z0-9]{40}')->middleware('throttle:forms')->name('newsletter.update');
 
-        // ADR-0049: the member portal, signed in with a code by SMS; the card check is public.
+        // ADR-0049: the member portal, signed in with the phone number and password (ADR-0080); the card check is public.
         Route::get('member/sign-in', [MemberPortalController::class, 'signIn'])->middleware(NoStore::class)->name('member.sign-in');
-        Route::post('member/sign-in', [MemberPortalController::class, 'sendCode'])->middleware('throttle:membership')->name('member.send-code');
-        Route::get('member/code', [MemberPortalController::class, 'code'])->middleware(NoStore::class)->name('member.code');
-        Route::post('member/code', [MemberPortalController::class, 'verify'])->middleware('throttle:membership')->name('member.verify-code');
+        Route::post('member/sign-in', [MemberPortalController::class, 'authenticate'])->middleware('throttle:membership')->name('member.authenticate');
+        // ADR-0080: the SMS code page is gone; old links land on the sign-in.
+        Route::redirect('member/code', 'sign-in');
         Route::post('member/sign-out', [MemberPortalController::class, 'signOut'])->name('member.sign-out');
         // ADR-0060: the donate page, only while donations are switched on.
         Route::get('donate', [DonationController::class, 'create'])->middleware(NoStore::class)->name('donations.create');
@@ -212,6 +212,7 @@ Route::prefix('{locale}')
             Route::get('member/card', [MemberPortalController::class, 'card'])->name('member.card');
             Route::get('member/profile', [MemberPortalController::class, 'profile'])->name('member.profile');
             Route::post('member/profile', [MemberPortalController::class, 'requestChange'])->middleware('throttle:forms')->name('member.request');
+            Route::post('member/password', [MemberPortalController::class, 'changePassword'])->middleware('throttle:membership')->name('member.password');
             Route::get('member/events', [MemberPortalController::class, 'events'])->name('member.events');
             Route::get('member/documents', [MemberPortalController::class, 'documents'])->name('member.documents');
             Route::get('member/fayda/link', [FaydaController::class, 'start'])->middleware('throttle:membership')->name('member.fayda.link');

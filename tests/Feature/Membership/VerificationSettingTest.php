@@ -45,13 +45,13 @@ beforeEach(function () {
     Mail::fake();
 });
 
-it('sends the code by email when applications are confirmed by email, with the phone optional', function () {
+it('sends the code by email when applications are confirmed by email, still asking for the phone to sign in with', function () {
     useVerification(MembershipSettings::EMAIL);
     $woreda = verifyWoreda();
 
     $this->post('/en/membership/apply/about', verifyAbout());
-    $this->post('/en/membership/apply/place', ['woreda_id' => $woreda->id, 'phone' => ''])->assertSessionHasErrors('email');
-    $this->post('/en/membership/apply/place', ['woreda_id' => $woreda->id, 'phone' => '', 'email' => 'applicant@example.org'])
+    $this->post('/en/membership/apply/place', ['woreda_id' => $woreda->id, 'phone' => '', ...applicantPassword()])->assertSessionHasErrors(['email', 'phone']);
+    $this->post('/en/membership/apply/place', ['woreda_id' => $woreda->id, 'phone' => '0911 23 45 67', 'email' => 'applicant@example.org', ...applicantPassword()])
         ->assertSessionHasNoErrors();
     $this->get('/en/membership/apply')->assertSee(__('membership.help.send_code_email', ['email' => 'applicant@example.org']));
 
@@ -69,7 +69,7 @@ it('sends the code by email when applications are confirmed by email, with the p
     expect($application->status)->toBe(ApplicationStatus::Submitted)
         ->and($application->email_verified_at)->not->toBeNull()
         ->and($application->phone_verified_at)->toBeNull()
-        ->and($application->phone)->toBeNull();
+        ->and($application->phone)->toBe('+251911234567');
     Mail::assertQueued(ApplicationReceivedMail::class, fn (ApplicationReceivedMail $mail): bool => $mail->reference === $application->reference);
 
     // The status page finds it by the email address.
@@ -82,7 +82,7 @@ it('submits without a code when none is asked for', function () {
     $woreda = verifyWoreda();
 
     $this->post('/en/membership/apply/about', verifyAbout());
-    $this->post('/en/membership/apply/place', ['woreda_id' => $woreda->id, 'phone' => '0911 23 45 67']);
+    $this->post('/en/membership/apply/place', ['woreda_id' => $woreda->id, 'phone' => '0911 23 45 67', ...applicantPassword()]);
     $this->get('/en/membership/apply')->assertSee(route('membership.submit', ['locale' => 'en']), escape: false)
         ->assertDontSee(__('membership.send_code'));
 
@@ -102,8 +102,8 @@ it('keeps the SMS code by default and refuses a direct submit then', function ()
     $woreda = verifyWoreda();
 
     $this->post('/en/membership/apply/about', verifyAbout());
-    $this->post('/en/membership/apply/place', ['woreda_id' => $woreda->id, 'phone' => ''])->assertSessionHasErrors('phone');
-    $this->post('/en/membership/apply/place', ['woreda_id' => $woreda->id, 'phone' => '0911 23 45 67']);
+    $this->post('/en/membership/apply/place', ['woreda_id' => $woreda->id, 'phone' => '', ...applicantPassword()])->assertSessionHasErrors('phone');
+    $this->post('/en/membership/apply/place', ['woreda_id' => $woreda->id, 'phone' => '0911 23 45 67', ...applicantPassword()]);
     $this->post('/en/membership/apply/submit', ['consent' => '1'])->assertSessionHasErrors('code');
     expect(MembershipApplication::query()->sole()->status)->toBe(ApplicationStatus::Started);
 });

@@ -61,6 +61,8 @@ final class ReviewApplication
             ]);
             $member->member_no = Member::nextNumber();
             $member->site_id = $application->site_id;
+            // ADR-0080: the password chosen on the form, as its hash; it works from now on.
+            $member->password = $application->password;
             $member->save();
 
             $application->forceFill(['status' => ApplicationStatus::Approved, 'reviewer_id' => $actor->id, 'decided_at' => $now, 'reason' => null])->save();

@@ -51,26 +51,10 @@ function appMember(array $details = []): Member
 
     return app(SaveMember::class)->handle(new Member, [
         'name' => 'Sample App Member', 'sex' => 'male', 'id_type' => 'kebele', 'id_number' => 'KB888001', 'phone' => '0911888001',
-        'joined_on' => '2025-02-01', 'woreda_id' => $woreda->id, ...$details,
+        'joined_on' => '2025-02-01', 'woreda_id' => $woreda->id, 'password' => 'sample pass 1', 'password_confirmation' => 'sample pass 1', ...$details,
     ], staff(SystemRole::Admin));
 }
 
-/** The six-digit code in the last SMS. */
-function appCode(): string
-{
-    $code = '';
-    Bus::assertDispatchedSync(SendSms::class, function (SendSms $sms) use (&$code): bool {
-        if (preg_match('/\b(\d{6})\b/', $sms->text, $m) === 1) {
-            $code = $m[1];
-        }
-
-        return true;
-    });
-
-    return $code;
-}
-
-/** A member token for this member, issued directly. */
 function appToken(Member $member): string
 {
     return app(IssueMemberToken::class)->handle($member, null, 'Sample phone')[1];
@@ -78,20 +62,15 @@ function appToken(Member $member): string
 
 beforeEach(fn () => Bus::fake([SendSms::class]));
 
-it('signs a member in by SMS code, shows the card and signs out', function () {
+it('signs a member in with the phone number and password, shows the card and signs out (ADR-0080)', function () {
     $key = memberAppKey();
     $member = appMember();
 
-    $this->postJson('/api/v1/member/sign-in', ['phone' => '0911 888 001'], ['X-Api-Key' => $key])
-        ->assertStatus(202)
-        ->assertJsonPath('message', __('api.member.code_sent', ['minutes' => 10]));
-    $code = appCode();
-
-    $this->postJson('/api/v1/member/token', ['phone' => '0911888001', 'code' => '000000'], ['X-Api-Key' => $key])
+    $this->postJson('/api/v1/member/token', ['phone' => '0911888001', 'password' => 'wrong pass 1'], ['X-Api-Key' => $key])
         ->assertUnprocessable()
-        ->assertJsonValidationErrors('code');
+        ->assertJsonPath('errors.phone.0', __('members.portal.wrong'));
 
-    $answer = $this->postJson('/api/v1/member/token', ['phone' => '0911888001', 'code' => $code, 'device' => 'Sample Android phone'], ['X-Api-Key' => $key])
+    $answer = $this->postJson('/api/v1/member/token', ['phone' => '0911 888 001', 'password' => 'sample pass 1', 'device' => 'Sample Android phone'], ['X-Api-Key' => $key])
         ->assertCreated()
         ->assertHeader('Cache-Control', 'no-store, private')
         ->assertJsonPath('data.token_type', 'Bearer')
@@ -121,15 +100,18 @@ it('signs a member in by SMS code, shows the card and signs out', function () {
         ->assertJsonPath('message', __('api.error.member_token'));
 });
 
-it('answers the same for a number that is not a member\'s and sends nothing', function () {
-    $this->postJson('/api/v1/member/sign-in', ['phone' => '0911000999'], ['X-Api-Key' => memberAppKey()])
-        ->assertStatus(202)
-        ->assertJsonPath('message', __('api.member.code_sent', ['minutes' => 10]));
-    Bus::assertNotDispatchedSync(SendSms::class);
-
-    $this->postJson('/api/v1/member/sign-in', ['phone' => 'not a phone'], ['X-Api-Key' => memberAppKey()])
+it('answers the same for a number that is not a member\'s, and retires the SMS code step', function () {
+    $this->postJson('/api/v1/member/token', ['phone' => '0911000999', 'password' => 'sample pass 1'], ['X-Api-Key' => memberAppKey()])
+        ->assertUnprocessable()
+        ->assertJsonPath('errors.phone.0', __('members.portal.wrong'));
+    $this->postJson('/api/v1/member/token', ['phone' => 'not a phone', 'password' => 'sample pass 1'], ['X-Api-Key' => memberAppKey()])
         ->assertUnprocessable()
         ->assertJsonValidationErrors('phone');
+
+    $this->postJson('/api/v1/member/sign-in', ['phone' => '0911000999'], ['X-Api-Key' => memberAppKey()])
+        ->assertStatus(410)
+        ->assertJsonPath('message', __('api.member.use_password'));
+    Bus::assertNotDispatchedSync(SendSms::class);
 });
 
 it('needs the members scope, a token, and a member who may still use the portal', function () {

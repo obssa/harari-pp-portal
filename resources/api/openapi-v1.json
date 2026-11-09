@@ -1920,8 +1920,8 @@
         "tags": [
           "Member app"
         ],
-        "summary": "Send a sign-in code by SMS",
-        "description": "Step 1. Five codes a day per number; a new code a minute after the last one. Key scope: `members`.",
+        "summary": "Retired: the SMS code step",
+        "description": "Retired (ADR-0080). Members sign in with their phone number and password at POST /member/token. Key scope: `members`.",
         "security": [
           {
             "apiKey": []
@@ -1933,18 +1933,8 @@
           }
         ],
         "responses": {
-          "202": {
-            "description": "Sent if the number is a member's; the answer is the same either way.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "A parameter has a value the API does not know.",
+          "410": {
+            "description": "Gone; use POST /member/token with the phone number and password.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1974,25 +1964,7 @@
             }
           }
         },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "phone"
-                ],
-                "properties": {
-                  "phone": {
-                    "type": "string",
-                    "description": "The phone on the member's record, such as 0911000000."
-                  }
-                }
-              }
-            }
-          }
-        }
+        "deprecated": true
       }
     },
     "/member/token": {
@@ -2000,8 +1972,8 @@
         "tags": [
           "Member app"
         ],
-        "summary": "Exchange the code for a member token",
-        "description": "Step 2. A code is valid ten minutes and five tries. A member is signed in on at most five devices; the oldest sign-in goes first. Key scope: `members`.",
+        "summary": "Sign in with the phone number and password for a member token",
+        "description": "The phone number on the member's record and the password chosen on the application or set by an officer (ADR-0080). Five wrong tries stop a number for fifteen minutes; a wrong number and a wrong password get the same answer. A member is signed in on at most five devices; the oldest sign-in goes first. Key scope: `members`.",
         "security": [
           {
             "apiKey": []
@@ -2062,14 +2034,16 @@
                 "type": "object",
                 "required": [
                   "phone",
-                  "code"
+                  "password"
                 ],
                 "properties": {
                   "phone": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "The phone on the member's record, such as 0911000000."
                   },
-                  "code": {
-                    "type": "string"
+                  "password": {
+                    "type": "string",
+                    "format": "password"
                   },
                   "device": {
                     "type": "string",

@@ -3,6 +3,7 @@
 use App\Domain\Access\Enums\SystemRole;
 use App\Domain\Membership\Actions\ApplyForMembership;
 use App\Domain\Membership\Actions\ReviewApplication;
+use App\Domain\Membership\Actions\SignInMember;
 use App\Domain\Membership\Enums\ApplicationStatus;
 use App\Domain\Membership\Models\MembershipApplication;
 use App\Domain\Organisation\Actions\SaveOffice;
@@ -13,6 +14,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 /** The answers of the first step, as a person fills them in. */
@@ -56,7 +58,7 @@ it('takes an application step by step and submits it once the phone is confirmed
         ->assertHeader('Cache-Control', 'max-age=0, no-store, private');
 
     $this->post('/en/membership/apply/about', aboutAnswers())->assertRedirect(route('membership.apply', ['locale' => 'en', 'step' => 'place']));
-    $this->post('/en/membership/apply/place', ['woreda_id' => $woreda->id, 'phone' => '0911 23 45 67', 'email' => 'Applicant@Example.org'])
+    $this->post('/en/membership/apply/place', ['woreda_id' => $woreda->id, 'phone' => '0911 23 45 67', 'email' => 'Applicant@Example.org', ...applicantPassword()])
         ->assertRedirect(route('membership.apply', ['locale' => 'en', 'step' => 'confirm']));
     $this->get('/en/membership/apply')->assertSee('Sample Applicant')->assertSee('+251911234567')->assertSee('Sample Woreda 1');
 
@@ -136,7 +138,7 @@ it('accepts names in every script, Pagume 6 in a leap year, and Fayda numbers as
 it('says what is wrong with the mobile number (ADR-0076)', function (string $phone, string $message) {
     $application = app(ApplyForMembership::class)->about(null, aboutAnswers(), 'en');
 
-    expect(fn () => app(ApplyForMembership::class)->place($application, ['address_note' => 'Sample street', 'phone' => $phone]))
+    expect(fn () => app(ApplyForMembership::class)->place($application, ['address_note' => 'Sample street', 'phone' => $phone, ...applicantPassword()]))
         ->toThrow(ValidationException::class, $message);
 })->with([
     'empty' => ['', 'Enter your mobile number.'],
@@ -157,14 +159,14 @@ it('shows each calendar its own months and asks for the Fayda number only', func
 it('needs a woreda or an address, and a mobile number', function () {
     $application = app(ApplyForMembership::class)->about(null, aboutAnswers(), 'en');
 
-    expect(fn () => app(ApplyForMembership::class)->place($application, ['phone' => '0911234567']))->toThrow(ValidationException::class)
-        ->and(fn () => app(ApplyForMembership::class)->place($application, ['address_note' => 'Sample street', 'phone' => '12']))->toThrow(ValidationException::class)
-        ->and(app(ApplyForMembership::class)->place($application, ['address_note' => 'Sample street', 'phone' => '0911234567'])->phone)->toBe('+251911234567');
+    expect(fn () => app(ApplyForMembership::class)->place($application, ['phone' => '0911234567', ...applicantPassword()]))->toThrow(ValidationException::class)
+        ->and(fn () => app(ApplyForMembership::class)->place($application, ['address_note' => 'Sample street', 'phone' => '12', ...applicantPassword()]))->toThrow(ValidationException::class)
+        ->and(app(ApplyForMembership::class)->place($application, ['address_note' => 'Sample street', 'phone' => '0911234567', ...applicantPassword()])->phone)->toBe('+251911234567');
 });
 
 it('limits code attempts, resends and the life of a code', function () {
     $apply = app(ApplyForMembership::class);
-    $application = $apply->place($apply->about(null, aboutAnswers(), 'en'), ['address_note' => 'Sample street', 'phone' => '0911234567']);
+    $application = $apply->place($apply->about(null, aboutAnswers(), 'en'), ['address_note' => 'Sample street', 'phone' => '0911234567', ...applicantPassword()]);
 
     expect(fn () => $apply->sendCode($application, false))->toThrow(ValidationException::class);
     $apply->sendCode($application, true);
@@ -193,7 +195,7 @@ it('stops a robot on the first step', function () {
 
 it('shows the status to whoever has the reference and the phone number, and to no one else', function () {
     $apply = app(ApplyForMembership::class);
-    $application = $apply->place($apply->about(null, aboutAnswers(), 'en'), ['address_note' => 'Sample street', 'phone' => '0911234567']);
+    $application = $apply->place($apply->about(null, aboutAnswers(), 'en'), ['address_note' => 'Sample street', 'phone' => '0911234567', ...applicantPassword()]);
 
     $this->post('/en/membership/status', ['reference' => $application->reference, 'phone' => '0911234567'])->assertOk()
         ->assertSee(__('membership.status.not_found'));
@@ -209,7 +211,7 @@ it('shows the status to whoever has the reference and the phone number, and to n
 
 it('shows an approved application its member number by phone or by email (ADR-0079)', function () {
     $apply = app(ApplyForMembership::class);
-    $application = $apply->place($apply->about(null, aboutAnswers(), 'en'), ['woreda_id' => sampleWoreda()->id, 'phone' => '0911234567', 'email' => 'Applicant@Example.org']);
+    $application = $apply->place($apply->about(null, aboutAnswers(), 'en'), ['woreda_id' => sampleWoreda()->id, 'phone' => '0911234567', 'email' => 'Applicant@Example.org', ...applicantPassword()]);
     $apply->sendCode($application, true);
     $apply->verify($application->refresh(), lastCode());
     $member = app(ReviewApplication::class)->approve($application->refresh(), staff(SystemRole::SuperAdmin));
@@ -220,6 +222,49 @@ it('shows an approved application its member number by phone or by email (ADR-00
             ->assertSee(__('membership.status.member_no', ['number' => $member->member_no]))
             ->assertSee(route('member.sign-in', ['locale' => 'en']), escape: false);
     }
+});
+
+it('asks for a password the applicant types twice (ADR-0080)', function (array $password, string $message) {
+    $apply = app(ApplyForMembership::class);
+    $application = $apply->about(null, aboutAnswers(), 'en');
+
+    expect(fn () => $apply->place($application, ['address_note' => 'Sample street', 'phone' => '0911234567', ...$password]))
+        ->toThrow(ValidationException::class, $message);
+})->with([
+    'none' => fn () => [['password' => '', 'password_confirmation' => ''], __('membership.validation.password_required')],
+    'short' => fn () => [applicantPassword('abc12'), __('membership.validation.password_short', ['min' => 8])],
+    'letters only' => fn () => [applicantPassword('onlyletters'), __('membership.validation.password_weak')],
+    'digits only' => fn () => [applicantPassword('12345678'), __('membership.validation.password_weak')],
+    'not the same' => fn () => [['password' => 'sample pass 1', 'password_confirmation' => 'sample pass 2'], __('membership.validation.password_mismatch')],
+]);
+
+it('keeps the chosen password when the place step is sent again empty, and never stores it in clear', function () {
+    $apply = app(ApplyForMembership::class);
+    $application = $apply->place($apply->about(null, aboutAnswers(), 'en'), ['address_note' => 'Sample street', 'phone' => '0911234567', ...applicantPassword()]);
+    $hash = $application->password;
+    $apply->place($application->refresh(), ['address_note' => 'Sample road', 'phone' => '0911234567', 'password' => '', 'password_confirmation' => '']);
+
+    expect($application->refresh()->password)->toBe($hash)
+        ->and(Hash::check('sample pass 1', (string) $hash))->toBeTrue()
+        ->and((string) DB::table('membership_applications')->value('password'))->not->toContain('sample');
+});
+
+it('lets the applicant sign in with the chosen password only once the application is approved (ADR-0080)', function () {
+    $apply = app(ApplyForMembership::class);
+    $application = $apply->place($apply->about(null, aboutAnswers(), 'en'), ['woreda_id' => sampleWoreda()->id, 'phone' => '0911234567', ...applicantPassword()]);
+    $apply->sendCode($application, true);
+    $apply->verify($application->refresh(), lastCode());
+
+    $this->post('/en/member/sign-in', ['phone' => '0911234567', 'password' => 'sample pass 1', SpamGuard::STARTED => Crypt::encryptString((string) (time() - 10))])
+        ->assertSessionHasErrors(['phone' => __('members.portal.pending')]);
+    expect(fn () => app(SignInMember::class)->attempt('0911234567', 'other pass 1'))->toThrow(ValidationException::class, __('members.portal.wrong'));
+
+    $member = app(ReviewApplication::class)->approve($application->refresh(), staff(SystemRole::SuperAdmin));
+    expect(Hash::check('sample pass 1', (string) $member->refresh()->password))->toBeTrue();
+
+    $this->post('/en/member/sign-in', ['phone' => '0911 234 567', 'password' => 'sample pass 1', SpamGuard::STARTED => Crypt::encryptString((string) (time() - 10))])
+        ->assertRedirect(route('member.home', ['locale' => 'en']));
+    $this->get('/en/member')->assertOk()->assertSee($member->member_no);
 });
 
 it('says which status field is wrong instead of finding nothing (ADR-0079)', function (array $input, string $field, string $key) {

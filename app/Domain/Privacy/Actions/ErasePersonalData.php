@@ -131,6 +131,7 @@ final class ErasePersonalData
             'phone_hash' => null,
             'email' => null,
             'email_hash' => null,
+            'password' => null,
             'erased_at' => now(),
         ]);
         if ($person instanceof MembershipApplication) {

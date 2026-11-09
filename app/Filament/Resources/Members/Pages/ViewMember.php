@@ -6,6 +6,7 @@ use App\Domain\Access\Support\OfficeScope;
 use App\Domain\Membership\Actions\ManageMember;
 use App\Domain\Membership\Enums\MemberStatus;
 use App\Domain\Membership\Models\Member;
+use App\Domain\Membership\Support\ApplicationOptions;
 use App\Filament\Resources\Members\MemberResource;
 use App\Filament\Support\CurrentUser;
 use App\Services\Calendar\EthiopianCalendar;
@@ -13,6 +14,7 @@ use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Support\Icons\Heroicon;
@@ -64,6 +66,22 @@ class ViewMember extends ViewRecord
                 ->action(function (array $data): void {
                     app(ManageMember::class)->note($this->member(), (string) $data['body'], CurrentUser::get());
                     Notification::make()->success()->title(__('membership.admin.noted'))->send();
+                }),
+            // ADR-0080: members sign in with their phone number and a password; officers set one when it is missing or forgotten.
+            Action::make('setPassword')
+                ->label(fn (): string => $this->member()->hasPassword() ? __('members.admin.reset_password') : __('members.admin.set_password'))
+                ->icon(Heroicon::OutlinedKey)
+                ->color('gray')
+                ->visible(fn (): bool => $canUpdate() && $this->member()->phone !== null)
+                ->modalDescription(__('members.admin.password_help'))
+                ->schema([
+                    TextInput::make('password')->label(__('membership.field.password'))->password()->revealable()->required()->maxLength(120)
+                        ->helperText(__('membership.help.password', ['min' => ApplicationOptions::PASSWORD_MIN])),
+                    TextInput::make('password_confirmation')->label(__('membership.field.password_confirm'))->password()->revealable()->required()->maxLength(120),
+                ])
+                ->action(function (array $data): void {
+                    app(ManageMember::class)->setPassword($this->member(), (string) $data['password'], (string) $data['password_confirmation'], CurrentUser::get());
+                    Notification::make()->success()->title(__('members.admin.password_saved'))->send();
                 }),
             Action::make('signOutApps')
                 ->label(__('members.admin.sign_out_apps'))

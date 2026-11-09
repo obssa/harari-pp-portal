@@ -4,6 +4,7 @@ use App\Domain\Access\Enums\ScopeType;
 use App\Domain\Access\Enums\SystemRole;
 use App\Domain\Membership\Actions\ManageMember;
 use App\Domain\Membership\Actions\SaveMember;
+use App\Domain\Membership\Actions\SignInMember;
 use App\Domain\Membership\Enums\ApplicationStatus;
 use App\Domain\Membership\Enums\MemberStatus;
 use App\Domain\Membership\Models\Member;
@@ -258,4 +259,35 @@ it('removes the history of purged applications with them', function () {
     $this->artisan('membership:purge-applications')->assertSuccessful();
 
     expect(MembershipApplication::query()->count())->toBe(0)->and(PersonNote::query()->count())->toBe(0);
+});
+
+it('lets the woreda officer set a portal password for a member who has none (ADR-0080)', function () {
+    $woreda = memberWoreda('Sample Woreda North');
+    $officer = memberOfficer($woreda);
+    $member = sampleMember($woreda, ['phone' => '0911555001']);
+    expect($member->hasPassword())->toBeFalse();
+
+    $this->actingAs($officer);
+    livewire(ViewMember::class, ['record' => $member->getRouteKey()])
+        ->assertSee(__('members.admin.password_not_set'))
+        ->callAction('setPassword', ['password' => 'short', 'password_confirmation' => 'short'])
+        ->assertHasActionErrors();
+    livewire(ViewMember::class, ['record' => $member->getRouteKey()])
+        ->callAction('setPassword', ['password' => 'given pass 7', 'password_confirmation' => 'given pass 7'])
+        ->assertHasNoActionErrors()->assertNotified(__('members.admin.password_saved'));
+
+    expect(app(SignInMember::class)->attempt('0911555001', 'given pass 7')->id)->toBe($member->id)
+        ->and($member->notes()->get()->pluck('body')->all())->toContain(__('members.note.password_set'))
+        ->and(Activity::query()->where('event', 'password_set')->value('properties')?->toArray() ?? [])->not->toHaveKey('password');
+
+    $outsider = memberOfficer(memberWoreda('Sample Woreda South'));
+    expect(fn () => app(ManageMember::class)->setPassword($member, 'other pass 8', 'other pass 8', $outsider))->toThrow(HttpException::class);
+});
+
+it('takes an optional password when an officer adds a member by hand', function () {
+    $member = sampleMember(memberWoreda('Sample Woreda North'), ['phone' => '0911555002', ...applicantPassword('hand pass 9')]);
+
+    expect(app(SignInMember::class)->attempt('0911555002', 'hand pass 9')->id)->toBe($member->id)
+        ->and(fn () => sampleMember(null, ['phone' => '0911555003', 'password' => 'nodigits', 'password_confirmation' => 'nodigits']))
+        ->toThrow(ValidationException::class, __('membership.validation.password_weak'));
 });

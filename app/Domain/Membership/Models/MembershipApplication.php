@@ -42,6 +42,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property ?string $phone_hash
  * @property ?string $email
  * @property ?string $email_hash
+ * @property ?string $password
  * @property ?string $code_hash
  * @property ?CarbonImmutable $code_expires_at
  * @property int $code_attempts
@@ -75,7 +76,7 @@ class MembershipApplication extends Model
         'woreda_id', 'kebele_id', 'basic_org_id', 'address_note', 'phone', 'phone_hash', 'email', 'email_hash',
     ];
 
-    protected $hidden = ['name', 'birth_date', 'id_number', 'phone', 'email', 'address_note', 'code_hash'];
+    protected $hidden = ['name', 'birth_date', 'id_number', 'phone', 'email', 'address_note', 'code_hash', 'password'];
 
     protected function casts(): array
     {
@@ -88,6 +89,7 @@ class MembershipApplication extends Model
             'address_note' => 'encrypted',
             'phone' => 'encrypted',
             'email' => 'encrypted',
+            'password' => 'hashed',
             'reason' => 'encrypted',
             'code_attempts' => 'integer',
             'codes_sent' => 'integer',

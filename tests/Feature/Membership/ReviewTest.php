@@ -24,6 +24,7 @@ use App\Services\Sms\SendSms;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\ValidationException;
@@ -49,6 +50,7 @@ function submittedApplication(?Office $woreda, array $details = []): MembershipA
         ...$details,
     ]);
     $application->forceFill([
+        'password' => 'sample pass 1',
         'reference' => MembershipApplication::newReference(), 'status' => ApplicationStatus::Submitted,
         'consented_at' => now(), 'phone_verified_at' => now(), 'submitted_at' => now(),
     ])->save();
@@ -83,7 +85,10 @@ it('approves an application: the person becomes a member with the next number an
         ->and($member->renewal_due_on->toDateString())->toBe(CarbonImmutable::now()->addMonthsNoOverflow(12)->toDateString())
         ->and($first->refresh()->status)->toBe(ApplicationStatus::Approved)
         ->and($first->reviewer_id)->toBe($officer->id)
-        ->and($first->notes()->sole()->kind)->toBe(PersonNote::DECISION);
+        ->and($first->notes()->sole()->kind)->toBe(PersonNote::DECISION)
+        // ADR-0080: the password chosen on the form works from now on, carried over as its hash.
+        ->and($member->refresh()->password)->toBe($first->password)
+        ->and(Hash::check('sample pass 1', (string) $member->password))->toBeTrue();
 
     $raw = json_encode((array) DB::table('members')->where('id', $member->id)->first());
     expect($raw)->not->toContain('Sample Applicant Person')->not->toContain('123456789012');

@@ -9,16 +9,22 @@
             @if (session('status'))
                 <p role="status" class="mt-6 rounded-card border border-primary-600/40 bg-primary-50 px-4 py-3 text-primary-800 dark:bg-primary-950 dark:text-primary-200">{{ session('status') }}</p>
             @endif
-            <form method="post" action="{{ route('member.send-code') }}" class="mt-8 space-y-6" novalidate>
+            {{-- ADR-0080: the phone number and the password chosen on the application. --}}
+            <form method="post" action="{{ route('member.authenticate') }}" class="mt-8 space-y-6" novalidate>
                 @csrf
                 <div>
                     <label for="phone" class="font-medium">{{ __('membership.field.phone') }}</label>
-                    <input id="phone" name="phone" type="tel" value="{{ old('phone') }}" required maxlength="20" autocomplete="tel" inputmode="tel" dir="ltr"
+                    <input id="phone" name="phone" type="tel" value="{{ old('phone') }}" required maxlength="20" autocomplete="username" inputmode="tel" dir="ltr"
                            @error('phone') aria-invalid="true" aria-describedby="phone-error" @enderror class="{{ $field }}">
                     @error('phone')<p id="phone-error" class="mt-1 text-sm text-danger-600">{{ $message }}</p>@enderror
                 </div>
+                <div>
+                    <label for="password" class="font-medium">{{ __('membership.field.password') }}</label>
+                    <input id="password" name="password" type="password" required maxlength="120" autocomplete="current-password" dir="ltr" class="{{ $field }}">
+                </div>
                 <x-forms.protection :turnstile-key="$turnstileKey" />
-                <button type="submit" class="{{ $button }}">{{ __('membership.send_code') }}</button>
+                <button type="submit" class="{{ $button }}">{{ __('members.portal.sign_in') }}</button>
+                <p class="text-sm text-ink-muted">{{ __('members.portal.forgot') }}</p>
             </form>
             @if ($fayda)
                 <div class="mt-8 border-t border-line pt-8">

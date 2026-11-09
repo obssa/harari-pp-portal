@@ -13,8 +13,9 @@ those woredas. Everything you do is written in the record's **History** and in t
 Who: membership officers (**Members and volunteers → Membership Applications**). The number next to the
 menu item is the number of applications waiting.
 
-People apply at `/{language}/membership/apply` in three steps and confirm their phone with a six-digit code
-by SMS. Only then does the application reach the queue, with a reference such as `APP-7K3D-9Q2M` that the
+People apply at `/{language}/membership/apply` in three steps. On the second step they give their phone
+number and choose a **password** for the member portal; it works only once you approve the application.
+After they confirm (with a code, or straight away, as **Settings → Membership** asks), the application reaches the queue, with a reference such as `APP-7K3D-9Q2M` that the
 person can use to follow it at `/{language}/membership/status`.
 
 The form accepts the 16-digit Fayda number only (no other document), names in letters, and phone numbers in
@@ -87,8 +88,8 @@ Sign-ups nobody followed up are deleted after a year.
 
 ## 5. Member portal
 
-Members sign in at `/{language}/member/sign-in` with the phone number on their record and a code by SMS.
-There they see their membership, a **membership card** to print with a QR code, their details (with a form to
+Members sign in at `/{language}/member/sign-in` with the phone number on their record and their password
+(no SMS is needed). The same phone number and password sign in to the member app. There they see their membership, a **membership card** to print with a QR code, their details (with a form to
 ask for corrections), their event registrations and the **members' documents**.
 
 - To share a document with members only, set **Who may see it** to **Members only** in **Documents**.
@@ -96,6 +97,12 @@ ask for corrections), their event registrations and the **members' documents**.
 - Anyone who scans the card's QR code sees whether the membership is in good standing, the number, the
   initials and the woreda, nothing more.
 - A member without a phone number on file cannot sign in until you add one.
+- Members added by hand or imported, members approved before passwords existed, and members who forgot
+  their password have none that works. Open the member and choose **Set password** (or **Set a new password**),
+  type a password twice, and give it to the member in person or by phone; they can change it under
+  **My details** in the portal. **Portal password** on the member's page shows whether one is set. When you add
+  a member by hand you can give the password straight away.
+- Someone whose application is still waiting is told so when they try to sign in with the right password.
 
 ## 6. Reports and privacy
 

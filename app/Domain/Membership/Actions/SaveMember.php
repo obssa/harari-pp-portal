@@ -37,9 +37,17 @@ final class SaveMember
         abort_unless($creating ? $actor->can('members.create') : OfficeScope::covers($actor, $member->woreda_id, 'members.update'), 403);
 
         $values = $this->validate($member, $data, $actor);
+        // ADR-0080: an officer adding a member may give them a portal password straight away.
+        $password = $creating ? (string) ($data['password'] ?? '') : '';
+        if ($password !== '' && ($error = ApplicationOptions::passwordError($password, (string) ($data['password_confirmation'] ?? ''))) !== null) {
+            throw ValidationException::withMessages(['password' => $error]);
+        }
 
-        return DB::transaction(function () use ($member, $values, $actor, $creating): Member {
+        return DB::transaction(function () use ($member, $values, $actor, $creating, $password): Member {
             $member->fill($values);
+            if ($password !== '') {
+                $member->forceFill(['password' => $password]);
+            }
             $changed = array_values(array_intersect(self::TRACKED, array_keys($member->getDirty())));
             if ($member->isDirty('renewal_due_on')) {
                 // A new due date gets its own reminder.

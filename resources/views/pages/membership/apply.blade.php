@@ -160,8 +160,8 @@
                     </div>
                     <div class="grid gap-4 sm:grid-cols-2">
                         <div>
-                            <label for="phone" class="font-medium">{{ $verification === 'email' ? __('membership.field.phone_optional') : __('membership.field.phone') }}</label>
-                            <input id="phone" name="phone" type="tel" value="{{ $value('phone', $application?->phone) }}" @required($verification !== 'email') maxlength="20" autocomplete="tel" inputmode="tel" dir="ltr" data-phone
+                            <label for="phone" class="font-medium">{{ __('membership.field.phone') }}</label>
+                            <input id="phone" name="phone" type="tel" value="{{ $value('phone', $application?->phone) }}" required maxlength="20" autocomplete="tel" inputmode="tel" dir="ltr" data-phone
                                    aria-describedby="phone-help @error('phone') phone-error @enderror" @error('phone') aria-invalid="true" @enderror class="{{ $field }}">
                             <p id="phone-help" class="mt-1 text-sm text-ink-muted">{{ $verification === 'sms' ? __('membership.help.phone') : __('membership.help.phone_contact') }}</p>
                             @error('phone')<p id="phone-error" class="mt-1 text-sm text-danger-600">{{ $message }}</p>@enderror
@@ -173,6 +173,21 @@
                             @error('email')<p id="email-error" class="mt-1 text-sm text-danger-600">{{ $message }}</p>@enderror
                         </div>
                     </div>
+                    {{-- ADR-0080: the member portal's password, usable once the application is approved. --}}
+                    <fieldset class="grid gap-4 sm:grid-cols-2">
+                        <legend class="sr-only">{{ __('membership.field.password') }}</legend>
+                        <div>
+                            <label for="password" class="font-medium">{{ __('membership.field.password') }}</label>
+                            <input id="password" name="password" type="password" @required($application?->password === null) maxlength="120" autocomplete="new-password" dir="ltr"
+                                   aria-describedby="password-help @error('password') password-error @enderror" @error('password') aria-invalid="true" @enderror class="{{ $field }}">
+                            @error('password')<p id="password-error" class="mt-1 text-sm text-danger-600">{{ $message }}</p>@enderror
+                        </div>
+                        <div>
+                            <label for="password_confirmation" class="font-medium">{{ __('membership.field.password_confirm') }}</label>
+                            <input id="password_confirmation" name="password_confirmation" type="password" @required($application?->password === null) maxlength="120" autocomplete="new-password" dir="ltr" class="{{ $field }}">
+                        </div>
+                        <p id="password-help" class="text-sm text-ink-muted sm:col-span-2">{{ $application?->password === null ? __('membership.help.password', ['min' => \App\Domain\Membership\Support\ApplicationOptions::PASSWORD_MIN]) : __('membership.help.password_kept') }}</p>
+                    </fieldset>
                     <div class="flex flex-wrap gap-3">
                         <a href="{{ route('membership.apply', ['step' => 'about']) }}" class="{{ $secondary }}">{{ __('membership.back') }}</a>
                         <button type="submit" class="{{ $button }}">{{ __('membership.next') }}</button>
@@ -188,6 +203,7 @@
                         @if ($application->email)
                             <div><dt class="text-sm text-ink-muted">{{ __('membership.field.email_short') }}</dt><dd dir="ltr">{{ $application->email }}</dd></div>
                         @endif
+                        <div><dt class="text-sm text-ink-muted">{{ __('membership.field.password') }}</dt><dd>{{ __('membership.password_set') }}</dd></div>
                         <div><dt class="text-sm text-ink-muted">{{ __('membership.field.woreda_id') }}</dt><dd>{{ $application->woreda_id ? ($woredas[$application->woreda_id] ?? '—') : ($application->address_note ?? '—') }}</dd></div>
                     </dl>
                     <p class="mt-4 text-sm"><a href="{{ route('membership.apply', ['step' => 'about']) }}" class="text-link underline-offset-4 hover:underline">{{ __('membership.change') }}</a></p>

@@ -131,21 +131,29 @@ final class ApplyForMembership
             $errors['woreda_id'] = __('membership.validation.place');
         }
 
-        // ADR-0067: by email, the address is required and the phone optional; otherwise the phone is required.
+        // ADR-0067: by email, the address is required too. ADR-0080: the phone always is, as members sign in with it.
         $byEmail = MembershipSettings::verification() === MembershipSettings::EMAIL;
         $typedPhone = trim((string) ($input['phone'] ?? ''));
         $phone = PhoneNumber::normalise($typedPhone);
-        if ($typedPhone === '' && ! $byEmail) {
+        if ($typedPhone === '') {
             $errors['phone'] = __('membership.validation.phone_required');
-        } elseif ($typedPhone !== '' && preg_match('/^\+?[\d ]+$/', $typedPhone) !== 1) {
+        } elseif (preg_match('/^\+?[\d ]+$/', $typedPhone) !== 1) {
             // ADR-0076: letters or signs are refused, not silently dropped.
             $errors['phone'] = __('membership.validation.phone_digits');
-        } elseif ($typedPhone !== '' && $phone === null) {
+        } elseif ($phone === null) {
             $errors['phone'] = __('membership.validation.phone_invalid');
         }
         $email = mb_strtolower(trim((string) ($input['email'] ?? '')));
         if (($email !== '' || $byEmail) && (mb_strlen($email) > 190 || filter_var($email, FILTER_VALIDATE_EMAIL) === false)) {
             $errors['email'] = __('events.registration.validation.email');
+        }
+        // ADR-0080: the password for the member portal, kept when left empty on a second visit.
+        $password = (string) ($input['password'] ?? '');
+        if ($password !== '' || $application->password === null) {
+            $passwordError = ApplicationOptions::passwordError($password, (string) ($input['password_confirmation'] ?? ''));
+            if ($passwordError !== null) {
+                $errors['password'] = $passwordError;
+            }
         }
         if ($errors !== []) {
             throw ValidationException::withMessages($errors);
@@ -166,6 +174,9 @@ final class ApplyForMembership
             // A new number or address needs a new code.
             $application->forceFill(['code_hash' => null, 'code_expires_at' => null, 'code_attempts' => 0]);
         }
+        if ($password !== '') {
+            $application->forceFill(['password' => $password]);
+        }
         $application->save();
 
         return $application;
@@ -185,7 +196,7 @@ final class ApplyForMembership
         if (! $consent) {
             throw ValidationException::withMessages(['consent' => __('events.registration.validation.consent')]);
         }
-        if (($byEmail ? $application->email : $application->phone) === null || $application->name === null) {
+        if (($byEmail ? $application->email : $application->phone) === null || $application->name === null || $application->password === null) {
             throw ValidationException::withMessages(['form' => __('membership.validation.incomplete')]);
         }
         if ($application->code_sent_at !== null && $application->code_sent_at->diffInSeconds(CarbonImmutable::now()) < self::RESEND_SECONDS) {
@@ -228,7 +239,7 @@ final class ApplyForMembership
         if (! $consent) {
             throw ValidationException::withMessages(['consent' => __('events.registration.validation.consent')]);
         }
-        if ($application->phone === null || $application->name === null) {
+        if ($application->phone === null || $application->name === null || $application->password === null) {
             throw ValidationException::withMessages(['form' => __('membership.validation.incomplete')]);
         }
 
@@ -251,6 +262,9 @@ final class ApplyForMembership
     public function verify(MembershipApplication $application, string $typed): MembershipApplication
     {
         $this->assertEditable($application);
+        if ($application->password === null) {
+            throw ValidationException::withMessages(['form' => __('membership.validation.incomplete')]);
+        }
         $code = (string) preg_replace('/\D/', '', $typed);
         $valid = $application->code_hash !== null
             && $application->code_expires_at !== null && $application->code_expires_at->isFuture()

@@ -6,6 +6,7 @@ use App\Domain\Access\Support\OfficeScope;
 use App\Domain\Membership\Enums\MemberStatus;
 use App\Domain\Membership\Models\Member;
 use App\Domain\Membership\Models\PersonNote;
+use App\Domain\Membership\Support\ApplicationOptions;
 use App\Models\User;
 use App\Services\Calendar\EthiopianCalendar;
 use Carbon\CarbonImmutable;
@@ -87,6 +88,24 @@ final class ManageMember
         $this->log($member, $actor, PersonNote::UPDATE, __('members.note.apps_signed_out', ['count' => $count]));
 
         return $count;
+    }
+
+    /**
+     * ADR-0080: a new portal password for a member who has none or forgot it.
+     * The officer hands it over; the member's apps are signed out.
+     */
+    public function setPassword(Member $member, string $password, string $confirmation, User $actor): void
+    {
+        $this->authorise($member, $actor, 'members.update');
+        $error = ApplicationOptions::passwordError($password, $confirmation);
+        if ($error !== null) {
+            throw ValidationException::withMessages(['password' => $error]);
+        }
+
+        $member->forceFill(['password' => $password])->save();
+        app(IssueMemberToken::class)->revokeAll($member);
+        $this->log($member, $actor, PersonNote::UPDATE, __('members.note.password_set'));
+        activity('membership')->performedOn($member)->causedBy($actor)->event('password_set')->log('Portal password set by an officer');
     }
 
     private function authorise(Member $member, User $actor, string $permission): void

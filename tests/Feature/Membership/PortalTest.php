@@ -40,23 +40,9 @@ function portalMember(array $details = []): Member
 {
     return app(SaveMember::class)->handle(new Member, [
         'name' => 'Sample Portal Member', 'sex' => 'female', 'id_type' => 'kebele', 'id_number' => 'KB777001', 'phone' => '0911777001',
-        'joined_on' => '2025-03-01', 'woreda_id' => portalWoreda()->id, ...$details,
+        'joined_on' => '2025-03-01', 'woreda_id' => portalWoreda()->id,
+        'password' => 'sample pass 1', 'password_confirmation' => 'sample pass 1', ...$details,
     ], staff(SystemRole::Admin));
-}
-
-/** The code the last sign-in SMS carried. */
-function portalCode(): string
-{
-    $code = '';
-    Bus::assertDispatchedSync(SendSms::class, function (SendSms $sms) use (&$code): bool {
-        if (preg_match('/\b(\d{6})\b/', $sms->text, $m) === 1) {
-            $code = $m[1];
-        }
-
-        return true;
-    });
-
-    return $code;
 }
 
 function portalStamp(): array
@@ -66,17 +52,20 @@ function portalStamp(): array
 
 beforeEach(fn () => Bus::fake([SendSms::class]));
 
-it('signs a member in with a code by SMS and out again', function () {
+it('signs a member in with the phone number and password and out again (ADR-0080)', function () {
     $member = portalMember();
 
     $this->get('/en/member')->assertRedirect(route('member.sign-in', ['locale' => 'en']));
-    $this->get('/en/member/sign-in')->assertOk()->assertSee(__('members.portal.sign_in_help'));
-    $this->post('/en/member/sign-in', ['phone' => '0911 777 001', ...portalStamp()])->assertRedirect(route('member.code', ['locale' => 'en']));
-    $this->get('/en/member/code')->assertOk()->assertSee('+251••••••001');
+    $this->get('/en/member/sign-in')->assertOk()->assertSee(__('members.portal.sign_in_help'))
+        ->assertSee('autocomplete="current-password"', escape: false)->assertSee(__('members.portal.forgot'));
+    $this->get('/en/member/code')->assertRedirect();
 
-    $this->post('/en/member/code', ['code' => '000000'])->assertSessionHasErrors('code');
-    $this->post('/en/member/code', ['code' => portalCode()])->assertRedirect(route('member.home', ['locale' => 'en']));
+    $this->post('/en/member/sign-in', ['phone' => '0911 777 001', 'password' => 'wrong pass 1', ...portalStamp()])
+        ->assertSessionHasErrors(['phone' => __('members.portal.wrong')]);
+    $this->post('/en/member/sign-in', ['phone' => '0911 777 001', 'password' => 'sample pass 1', ...portalStamp()])
+        ->assertRedirect(route('member.home', ['locale' => 'en']));
     expect(Auth::guard('member')->id())->toBe($member->id);
+    Bus::assertNotDispatchedSync(SendSms::class);
 
     $this->get('/en/member')->assertOk()->assertSee($member->member_no)->assertSee('Sample Portal Member')
         ->assertHeader('X-Robots-Tag', 'noindex, nofollow')->assertHeader('Cache-Control', 'max-age=0, no-store, private');
@@ -84,32 +73,58 @@ it('signs a member in with a code by SMS and out again', function () {
     $this->get('/en/member')->assertRedirect(route('member.sign-in', ['locale' => 'en']));
 });
 
-it('never says whether a number is a member\'s, and only lets active or lapsed members in', function () {
+it('answers the same for an unknown number, and only lets active or lapsed members with a password in', function () {
     portalMember(['phone' => '0911777002', 'id_number' => 'KB777002']);
     $suspended = portalMember(['phone' => '0911777003', 'id_number' => 'KB777003']);
     app(ManageMember::class)->changeStatus($suspended, MemberStatus::Suspended, 'Sample suspension', staff(SystemRole::Admin));
+    portalMember(['phone' => '0911777004', 'id_number' => 'KB777004', 'password' => '', 'password_confirmation' => '']);
+    $signIn = app(SignInMember::class);
 
-    $this->post('/en/member/sign-in', ['phone' => '0911999999', ...portalStamp()])->assertRedirect(route('member.code', ['locale' => 'en']));
-    $this->post('/en/member/sign-in', ['phone' => '0911777003', ...portalStamp()])->assertRedirect(route('member.code', ['locale' => 'en']));
-    Bus::assertNotDispatchedSync(SendSms::class);
+    foreach (['0911999999', '0911777003', '0911777004'] as $phone) {
+        expect(fn () => $signIn->attempt($phone, 'sample pass 1'))->toThrow(ValidationException::class, __('members.portal.wrong'));
+    }
+    expect(fn () => $signIn->attempt('0911777004', ''))->toThrow(ValidationException::class, __('members.portal.wrong'));
+    expect(fn () => $signIn->attempt('sample', 'sample pass 1'))->toThrow(ValidationException::class, __('membership.validation.phone_invalid'));
 
     $lapsed = Member::query()->where('phone_hash', MembershipApplication::hash('+251911777002'))->sole();
     $lapsed->forceFill(['status' => MemberStatus::Lapsed])->save();
-    $hash = app(SignInMember::class)->requestCode('0911777002', 'en');
-    expect(app(SignInMember::class)->verify($hash, portalCode())->id)->toBe($lapsed->id);
+    expect($signIn->attempt('+251 911 777 002', 'sample pass 1')->id)->toBe($lapsed->id);
 });
 
-it('stops a code after five wrong tries and ends idle sessions', function () {
+it('tells two members on one phone apart by their passwords', function () {
+    $first = portalMember(['id_number' => 'KB777011']);
+    $second = portalMember(['id_number' => 'KB777012', 'name' => 'Other Sample Member', 'password' => 'other pass 2', 'password_confirmation' => 'other pass 2']);
+
+    expect(app(SignInMember::class)->attempt('0911777001', 'sample pass 1')->id)->toBe($first->id)
+        ->and(app(SignInMember::class)->attempt('0911777001', 'other pass 2')->id)->toBe($second->id);
+});
+
+it('stops a number after five wrong passwords and ends idle sessions', function () {
     $member = portalMember();
-    $hash = app(SignInMember::class)->requestCode('0911777001', 'en');
-    $code = portalCode();
     foreach (range(1, SignInMember::ATTEMPTS) as $try) {
-        expect(fn () => app(SignInMember::class)->verify($hash, '111111'))->toThrow(ValidationException::class);
+        expect(fn () => app(SignInMember::class)->attempt('0911777001', 'wrong pass '.$try))->toThrow(ValidationException::class, __('members.portal.wrong'));
     }
-    expect(fn () => app(SignInMember::class)->verify($hash, $code))->toThrow(ValidationException::class);
+    expect(fn () => app(SignInMember::class)->attempt('0911777001', 'sample pass 1'))
+        ->toThrow(ValidationException::class, __('members.portal.too_many', ['minutes' => SignInMember::LOCK_MINUTES]));
 
     $this->actingAs($member, 'member')->withSession(['member.last_seen' => time() - (EnsureMemberSignedIn::IDLE_MINUTES + 1) * 60])
         ->get('/en/member')->assertRedirect(route('member.sign-in', ['locale' => 'en']));
+});
+
+it('lets a member change their password with the current one', function () {
+    $member = portalMember();
+    $this->actingAs($member, 'member');
+
+    $this->get('/en/member/profile')->assertOk()->assertSee(__('members.portal.change_password'));
+    $this->post('/en/member/password', ['current_password' => 'wrong pass 1', 'password' => 'fresh pass 3', 'password_confirmation' => 'fresh pass 3'])
+        ->assertSessionHasErrors(['current_password' => __('members.portal.current_wrong')]);
+    $this->post('/en/member/password', ['current_password' => 'sample pass 1', 'password' => 'short', 'password_confirmation' => 'short'])
+        ->assertSessionHasErrors(['password' => __('membership.validation.password_short', ['min' => 8])]);
+    $this->post('/en/member/password', ['current_password' => 'sample pass 1', 'password' => 'fresh pass 3', 'password_confirmation' => 'fresh pass 3'])
+        ->assertRedirect(route('member.profile', ['locale' => 'en']))->assertSessionHas('status', __('members.portal.password_changed'));
+
+    expect(fn () => app(SignInMember::class)->attempt('0911777001', 'sample pass 1'))->toThrow(ValidationException::class)
+        ->and(app(SignInMember::class)->attempt('0911777001', 'fresh pass 3')->id)->toBe($member->id);
 });
 
 it('shows a printable card whose QR code anyone can check without seeing the name', function () {

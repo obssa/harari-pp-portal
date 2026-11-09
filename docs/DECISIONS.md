@@ -2265,3 +2265,32 @@ use a mobile number on the next page", which ADR-0077 made redundant.
 
 **Consequences.** Both answers are still needed; a phone or a reference alone never shows a status, so a
 stranger with one of them learns nothing.
+
+## ADR-0080 — Members sign in with their phone number and a password (2026-11-10)
+
+**Context.** The member portal and the member app signed members in with a six-digit code by SMS (ADR-0049,
+ADR-0057). The branch office does not send SMS for now, so no member could sign in. The owner asked for the
+phone number and a password instead, the password chosen on the membership form and working only once the
+application is approved.
+
+**Decision.**
+
+- The application's second step asks for the phone number (now always, in every confirmation mode) and a
+  password typed twice: at least 8 characters with letters and digits (`ApplicationOptions::passwordError`).
+  It is stored hashed on the application, kept when the step is sent again empty, and copied as its hash to
+  the member on approval.
+- `SignInMember::attempt` takes the phone number and password. Only active or lapsed members with a password
+  get in; when several share a phone, the password says which. A wrong number and a wrong password get the
+  same answer; five failures stop a number for 15 minutes, on top of the per-IP limit. Someone whose
+  application still waits learns that only by giving its right password.
+- Officers with `members.update` for the member's woreda set a password ("Set password") for members added by
+  hand, imported, approved before this change, or who forgot theirs; adding a member by hand takes an
+  optional password. Members change theirs on **My details** with the current one. Both sign the member app
+  out everywhere and are logged without the password.
+- The member app's token endpoint takes the phone number and password; the SMS code endpoint answers 410.
+  The code page redirects to the sign-in. The `member_sign_in_codes` table is no longer used and stays until
+  a later clean-up.
+- Erasure clears the password with the rest of the personal data.
+
+**Consequences.** No reset by SMS or email: forgotten passwords go through the woreda office. Fayda sign-in
+(ADR-0058) is unchanged. ADR-0049's sign-in by code is superseded; the rest of the portal stays as it was.

@@ -57,6 +57,25 @@ final class ApplicationOptions
         };
     }
 
+    /** ADR-0080: the shortest password a member may choose. */
+    public const PASSWORD_MIN = 8;
+
+    /**
+     * What is wrong with a new member password, or null: at least eight
+     * characters with letters and digits, typed the same twice.
+     */
+    public static function passwordError(string $password, string $confirmation): ?string
+    {
+        return match (true) {
+            $password === '' => __('membership.validation.password_required'),
+            mb_strlen($password) < self::PASSWORD_MIN => __('membership.validation.password_short', ['min' => self::PASSWORD_MIN]),
+            mb_strlen($password) > 120 => __('membership.validation.password_long', ['max' => 120]),
+            preg_match('/\p{L}/u', $password) !== 1 || preg_match('/\d/', $password) !== 1 => __('membership.validation.password_weak'),
+            $password !== $confirmation => __('membership.validation.password_mismatch'),
+            default => null,
+        };
+    }
+
     /**
      * @return array<string, string>
      */

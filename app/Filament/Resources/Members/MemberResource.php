@@ -100,6 +100,10 @@ class MemberResource extends Resource
                 Textarea::make('address_note')->label(__('membership.field.address_note'))->rows(2)->maxLength(200),
                 TextInput::make('phone')->label(__('membership.field.phone'))->tel()->maxLength(20),
                 TextInput::make('email')->label(__('membership.field.email'))->email()->maxLength(190),
+                // ADR-0080: optional when adding by hand; "Set password" on the member's page later.
+                TextInput::make('password')->label(__('membership.field.password'))->password()->revealable()->maxLength(120)->visibleOn('create')
+                    ->helperText(__('members.admin.password_create_help', ['min' => ApplicationOptions::PASSWORD_MIN])),
+                TextInput::make('password_confirmation')->label(__('membership.field.password_confirm'))->password()->revealable()->maxLength(120)->visibleOn('create'),
             ]),
             Section::make(__('members.admin.membership'))->columns(2)->schema([
                 DatePicker::make('joined_on')->label(__('members.field.joined_on'))->required()->default(now())->maxDate(now()),
@@ -181,6 +185,9 @@ class MemberResource extends Resource
                 TextEntry::make('renewed_on')->label(__('members.field.renewed_on'))->formatStateUsing(CalendarDate::format())->placeholder('—'),
                 TextEntry::make('renewal_due_on')->label(__('members.field.renewal_due_on'))->formatStateUsing(CalendarDate::format())->placeholder('—')
                     ->color(fn (Member $record): ?string => $record->renewal_due_on !== null && $record->renewal_due_on->isPast() ? 'danger' : null),
+                TextEntry::make('portal_password')->label(__('members.field.portal_password'))
+                    ->state(fn (Member $record): string => $record->hasPassword() ? __('members.admin.password_is_set') : __('members.admin.password_not_set'))
+                    ->color(fn (Member $record): ?string => $record->hasPassword() ? null : 'warning'),
                 TextEntry::make('source')->label(__('members.field.source'))->formatStateUsing(fn (string $state): string => __("members.source.{$state}")),
                 TextEntry::make('application_reference')->label(__('members.field.application'))
                     ->state(fn (Member $record): ?string => $record->application?->reference)->placeholder('—')
